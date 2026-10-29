@@ -1,0 +1,150 @@
+{
+  "schema_id": "global-medicines-atlas.australian-benefits-release-field-contract",
+  "schema_version": "1.0.0",
+  "status": "requirements_frozen_qualification_incomplete",
+  "purpose": "Delivery acceptance requirements and evidence baseline; not an admission or release receipt.",
+  "scope": {
+    "new_sources": 0,
+    "frozen_candidate_paths": 1759,
+    "all_frozen_source_families_remain_in_qualification_denominator": true,
+    "all_91_workbooks_remain_required": true,
+    "existing_required_outputs_not_removed": true,
+    "scope_amendment": false
+  },
+  "field_states": [
+    "interpreted",
+    "native_unresolved",
+    "unavailable"
+  ],
+  "field_accounting": {
+    "required": "Every observed source field has a stable native identity, source path or cell address, occurrence denominator, state and evidence or an explicit unresolved reason.",
+    "native_preservation": "Native value, presence/null/blank, type, formula/error and lexical date or amount survive even where meaning or conversion is unresolved.",
+    "interpretation": "Promotion requires source-bound meaning evidence; a structural destination, typed parse or successful consumer is insufficient.",
+    "unavailable": "A requested capability or field unavailable in the exact source is explicit; absence does not establish a negative domain fact.",
+    "header_and_value_denominators": "Header meanings and individual native-value meanings are separate; never sum overlays or classify all values from the header state."
+  },
+  "required_consumers": [
+    "API",
+    "CLI",
+    "Atlas",
+    "deterministic_export"
+  ],
+  "consumer_requirements": [
+    {
+      "id": "source_observation",
+      "required": true,
+      "behavior": "Return bounded source-faithful observations with native identifier/path and field state; unresolved values remain displayable and countable as source observations."
+    },
+    {
+      "id": "provenance",
+      "required": true,
+      "behavior": "Bind source/acquisition, immutable revision/path, payload digest, schema era, lineage, rights record, semantic evidence and v4 admission to the same output."
+    },
+    {
+      "id": "uncertainty",
+      "required": true,
+      "behavior": "Return coverage denominator, missing periods, interpretation limits and unavailable capabilities without implying current status or completeness."
+    },
+    {
+      "id": "bounded_delivery",
+      "required": true,
+      "behavior": "Verify actual admitted revisions through bounded API, CLI, Atlas and deterministic export canaries; raw-reader and fixture success are insufficient."
+    },
+    {
+      "id": "unsupported_claims",
+      "required": true,
+      "behavior": "Reject or return explicitly unavailable unsupported pooling, current status, historical equivalence, patient rates, payable benefit, patient cost and clinical eligibility."
+    }
+  ],
+  "conditional_claims": [
+    {
+      "id": "value_and_era",
+      "condition": "A consumer asserts a converted date, amount, benefit, historical equivalence or change event.",
+      "evidence_required": "Exact source-era rule, native states, conversion limits, lineage and qualified snapshots; retain P7 ambiguity when no rule is selected."
+    },
+    {
+      "id": "domain_meaning",
+      "condition": "A consumer asserts PBS item/product identity, restriction meaning, currency, price basis, listing interval or funding status.",
+      "evidence_required": "Exact-source domain semantics; source structure or labels alone do not establish the domain assertion."
+    },
+    {
+      "id": "broader_relationships",
+      "condition": "A consumer promotes broader matching or semantic links beyond the accepted exact same-record MBS set.",
+      "evidence_required": "Real reviewed examples, negative controls, matcher/version/threshold binding and calibration limits. Literal matches remain diagnostics; abstention is valid."
+    },
+    {
+      "id": "historical_comparison",
+      "condition": "A consumer advertises old-versus-new comparisons.",
+      "evidence_required": "Two qualified snapshots, schema-era and temporal roles, complete declared cohort denominator and explicit missing-source limits."
+    }
+  ],
+  "evidence": {
+    "frozen_inventory": {
+      "path": "quality/qualifications/australian-m112-denominator-decision-20260930.json",
+      "sha256": "883b9517d8e646b41885a74da924a3fcb796e1772e5dcdd9394d469b09bb7b71"
+    },
+    "mbs_workbook_columns": {
+      "path": "quality/qualifications/mbs-historical-workbook-source-column-semantics-20261028.json",
+      "sha256": "5802c937eeb3e93cf211d0c8792a6663d3666cac9c82b194e530a3ae89f2d4a4"
+    },
+    "mbs_workbook_candidates": {
+      "path": "quality/qualifications/mbs-historical-workbook-cohort-20261023-39724026209-39891918206.json",
+      "sha256": "3bbcc74fee209cee521ce6ee85ef87f3ed13df2d202cb1f96effb02274b48546"
+    },
+    "mbs_workbook_rights": {
+      "path": "quality/qualifications/australian-mbs-historical-workbook-91-derived-rights-attestation-20261023.json",
+      "sha256": "c6b74963f09eb68733793af7be04fbcfcad0b32df41a455f94c4b02c0a473408"
+    },
+    "p7_value_era": {
+      "path": "quality/qualifications/mbs-p7-value-era-rules-20261024.json",
+      "sha256": "b7e8e91e13b76840689f5cf6e9733bb58a9d1633f01df8f6f5b8e27fc2f61d47"
+    },
+    "pbs_field_states": {
+      "path": "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r19.json",
+      "sha256": "b83943f2a3a9a4e8180edfc8d8a6c0fc346329d890e232d5d95a0a689c2e696a"
+    },
+    "pbs_exact_derived_rights": {
+      "path": "quality/qualifications/australian-pbs-native-silver-exact-derived-rights-attestation-20261023.json",
+      "sha256": "c204bd19b9099d0dda9d888da47cb4a5c1f0e878e4480430ecbacf7db31d069e"
+    },
+    "raw_delivery": {
+      "path": "quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261028.json",
+      "sha256": "c556cf596514d7cb69bce0a188f87460ad2746c3afacc559cec8ebd56cd7a3a3"
+    }
+  },
+  "baseline": {
+    "mbs_workbooks": {
+      "workbooks": 91,
+      "header_bindings": 728,
+      "source_column_meanings": 8,
+      "non_header_values": 310176929,
+      "non_header_values_interpreted": 0,
+      "non_header_values_native_unresolved": 310176929,
+      "unavailable_non_header_values": 0
+    },
+    "pbs_native": {
+      "source_fields": 18208758,
+      "interpreted": 3096735,
+      "native_unresolved": 15112023,
+      "unavailable": 0,
+      "counts_include_qualified_generic_roles_not_full_domain_semantics": true
+    }
+  },
+  "separate_obligations": [
+    "Exact output qualification, rights, publication, v4 admission and actual consumer delivery.",
+    "Independent administrative/geographical recovery and its existing RPO/RTO contract.",
+    "M-105 chronology disposition, M-106 patient denominator and M-107 unavailable delivery/coverage; no outreach is permitted.",
+    "Existing M-108 product obligations and compatibility commitments.",
+    "Stable v1 exact-candidate conditions and signed release package using existing approval."
+  ],
+  "non_claims": {
+    "semantic_completion": false,
+    "all_outputs_admitted": false,
+    "consumer_qualification_complete": false,
+    "independent_recovery_complete": false,
+    "federation_gate_closed": false,
+    "stable_release_qualified": false,
+    "new_approval_requested": false,
+    "outbound_communications": 0
+  }
+}

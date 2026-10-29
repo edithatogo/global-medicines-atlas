@@ -1,0 +1,241 @@
+{
+  "dataset": "edithatogo/australian-mbs-utilisation-archive",
+  "file_count": 28,
+  "files": [
+    {
+      "bytes": 852,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv.receipt.json",
+      "sha256": "8030d0700ce2062fe0c45a0429635e3eec794689f037f6cd1438a1951f4b9f59",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 845,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv.receipt.json",
+      "sha256": "b284c79f10cd4488c5fbb59b6cc4f25716f085a98b26449e866bf0db4305b92f",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 854,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv.receipt.json",
+      "sha256": "88f251843cad172739d30ca3e73cac4d4b77cd5708ef168313470271ee0ab6ad",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 858,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx.receipt.json",
+      "sha256": "964299dbd55b524629da727f56f451a825183f3772f8bc73b1efb1d97c55a628",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 855,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx.receipt.json",
+      "sha256": "e6b16613c8e9584e4dd4a3ebb1b7f57114f1fb13a4a6abbfb1c01b5604c0006c",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 860,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx.receipt.json",
+      "sha256": "e90964f58380c910d59be1762e8d36a0695aec18ea73106785f728935e142ffd",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 885,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip.receipt.json",
+      "sha256": "3fe89ec4d65cda99aa4a918b23bf7c50b6a91c38c671f17a05a17ca99c73db2e",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 885,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip.receipt.json",
+      "sha256": "685fbbb522ed3252dd87a1508a91de61b1600bc119fcf0b7ccdbb97844b17ddd",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 888,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip.receipt.json",
+      "sha256": "c6c4b22e2eb7d8c05c65f499cd22a8463e3f78457077fdebf5eaadcd7b6d4c94",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 885,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip.receipt.json",
+      "sha256": "e5997cb6eca4c1176866899e3b28ee869750c31a9405f427f97d8ccb5433b4e5",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 864,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip.receipt.json",
+      "sha256": "4eefa03cb054d5b5e211441e7e616ab082dac12d9b87dabeea762dfe57bd5f39",
+      "source_id": "au-data-gov-mbs-group"
+    },
+    {
+      "bytes": 864,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip.receipt.json",
+      "sha256": "5996ad9fc9490f9f51c21e6c5ae0a07bda3c57b1f67d67060095bef158c7c74d",
+      "source_id": "au-data-gov-mbs-group"
+    },
+    {
+      "bytes": 797,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/group/mbs-group-2016-july.csv.receipt.json",
+      "sha256": "8c7cb6671145bf0700f4a8864000da424fc07a5a361153510cbaf5cc39fc376d",
+      "source_id": "au-data-gov-mbs-group"
+    },
+    {
+      "bytes": 807,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/group/mbs-group-2016hr-july.xlsx.receipt.json",
+      "sha256": "414c380463f57cbe61051b16ebc7e8220bd09c75b8625834bde0a9aa32405c8a",
+      "source_id": "au-data-gov-mbs-group"
+    },
+    {
+      "bytes": 23934884,
+      "category": "mbs_demographics_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+      "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 23436706,
+      "category": "mbs_demographics_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+      "sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 7680041,
+      "category": "mbs_demographics_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+      "sha256": "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 21966140,
+      "category": "mbs_demographics_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+      "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 23765087,
+      "category": "mbs_demographics_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx",
+      "sha256": "7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 7316301,
+      "category": "mbs_demographics_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
+      "sha256": "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 185194594,
+      "category": "mbs_demographics_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip",
+      "sha256": "7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 240803157,
+      "category": "mbs_demographics_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip",
+      "sha256": "0c914176b3e45caaca9c14a926ea3d61740eabd4df53210f81858a84ce40ec8d",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 284302149,
+      "category": "mbs_demographics_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip",
+      "sha256": "9f649eb3c7c3fdc0c3b362d34f00ffb2e9f3374ec4629e9dd15a8c8ddc1d7c00",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 358227575,
+      "category": "mbs_demographics_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip",
+      "sha256": "7f7eeb62fbc6191ab76e3dcf6cc602aa9438b1eec037d7e5c385fe131acd5355",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 205885063,
+      "category": "mbs_group_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+      "sha256": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33",
+      "source_id": "au-data-gov-mbs-group"
+    },
+    {
+      "bytes": 237142509,
+      "category": "mbs_group_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip",
+      "sha256": "5d45554d8eae96b8e0b7f86a9fb38b63862168791b95954c9be953c03c2d1c96",
+      "source_id": "au-data-gov-mbs-group"
+    },
+    {
+      "bytes": 12291303,
+      "category": "mbs_group_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+      "sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b",
+      "source_id": "au-data-gov-mbs-group"
+    },
+    {
+      "bytes": 6857437,
+      "category": "mbs_group_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+      "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285",
+      "source_id": "au-data-gov-mbs-group"
+    }
+  ],
+  "generated_at": "2026-09-27T16:43:29Z",
+  "latest_run_coverage": {
+    "failed_resources": [
+      {
+        "filename": "medicare-quarterly-statistics-state-and-territory-june-quarter-2025-26.xlsx",
+        "source_id": "au-health-medicare-statistics"
+      },
+      {
+        "filename": "medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx",
+        "source_id": "au-health-medicare-statistics"
+      },
+      {
+        "filename": "medicare-statistics-year-to-date-summary-tables-july-to-june-2025-26.xlsx",
+        "source_id": "au-health-medicare-statistics"
+      },
+      {
+        "filename": "unavailable-medicare_annual_statistics_state_territory.txt",
+        "source_id": "au-health-medicare-statistics"
+      }
+    ],
+    "staged_resource_count": 4,
+    "status": "partial"
+  },
+  "schema_id": "global-medicines-atlas.harvest-manifest",
+  "schema_version": 1
+}

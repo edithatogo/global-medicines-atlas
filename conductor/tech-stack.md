@@ -2,7 +2,7 @@
 
 ## Architecture Baseline
 
-This is a Mojo-first, Python-compatible, provenance-first data system. Performance-critical kernels should be implemented in Mojo where the toolchain is suitable, while Python 3.15 is the configured target. Python 3.14 remains in the protected full-suite lane until Python 3.15 core dependencies are qualified across supported platforms.
+This is a Mojo-first, Python-compatible, provenance-first data system. Performance-critical kernels should be implemented in Mojo where the toolchain is suitable, while CPython 3.15.1 remains the complete reference implementation and operational fallback.
 
 No required capability may exist only in Mojo until its Python parity contract, fixtures, and fallback behavior are verified.
 
@@ -32,7 +32,7 @@ Every dependency decision must classify the component as maintainer-owned reuse,
 
 ### Python
 
-- Target CPython 3.15 for the primary Python package. Keep the protected Python 3.14 full-suite lane until full Python 3.15 validation covers the complete core dependency set and all supported platforms.
+- Require CPython 3.15.1 for the primary Python package and CI.
 - Use Python for source adapters, orchestration, schemas, validation, CLI/API surfaces, reporting, and the complete reference/fallback implementation.
 - Define public Python interfaces with strict typing.
 - Test every Mojo-accelerated behavior against shared Python golden fixtures and parity expectations.
@@ -209,7 +209,7 @@ Every candidate must pass an architecture decision record covering:
 - Alternatives considered.
 - Benchmark and profiling evidence.
 - Operational and supply-chain cost.
-- Python 3.15 and Mojo compatibility.
+- Python 3.15.1 and Mojo compatibility.
 - Data portability and regeneration.
 - Fallback and migration behavior.
 - Harness and CI implications.
@@ -295,7 +295,7 @@ profile.
 GitHub Actions should include:
 
 - Pull-request and protected-main validation.
-- CPython 3.15 locked-environment validation.
+- CPython 3.15.1 locked-environment validation.
 - Mojo stable validation on Linux.
 - Mojo nightly compatibility canary with clearly classified blocking semantics.
 - Platform-appropriate smoke testing.

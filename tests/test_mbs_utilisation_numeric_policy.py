@@ -9,6 +9,7 @@ from global_medicines_atlas.mbs_utilisation_numeric_policy import (
     ExactNumericPolicy,
     NumericTokenError,
     parse_exact_numeric_token,
+    parse_ooxml_numeric_token,
 )
 
 
@@ -108,3 +109,26 @@ def test_policy_token_bound_is_enforced() -> None:
 
     with pytest.raises(NumericTokenError):
         parse_exact_numeric_token("1234", policy=policy)
+
+
+@pytest.mark.parametrize("token", ["1.25e2", "-2E1", ".5", "1."])
+def test_ooxml_numeric_storage_grammar_preserves_decimal_value(token):
+    assert parse_ooxml_numeric_token(token) == Decimal(token)
+
+
+@pytest.mark.parametrize(
+    "token",
+    [
+        "",
+        " 1",
+        "1,000",
+        "NaN",
+        "Infinity",
+        "1e",
+        "1e9999999999999999999999999999",
+        "1" * 257,
+    ],
+)
+def test_ooxml_numeric_storage_rejects_malformed_or_unbounded_tokens(token):
+    with pytest.raises(NumericTokenError):
+        parse_ooxml_numeric_token(token)

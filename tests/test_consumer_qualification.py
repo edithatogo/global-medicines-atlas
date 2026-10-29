@@ -19,6 +19,15 @@ ROOT = Path(__file__).resolve().parents[1]
 BASELINE = ROOT / "contracts/openapi-v1.json"
 
 
+def test_clean_consumer_uses_and_checks_the_governed_runtime() -> None:
+    from scripts import qualify_clean_consumer
+
+    expected = qualify_clean_consumer._expected_python_version()
+    probe = qualify_clean_consumer._consumer_probe()
+    assert expected == "3.15.1"
+    assert f"platform.python_version() == '{expected}'" in probe
+
+
 def _baseline() -> dict[str, object]:
     return json.loads(BASELINE.read_text(encoding="utf-8"))
 
@@ -53,7 +62,7 @@ def test_installed_metadata_is_complete_and_dynamic_version_matches() -> None:
     assert identity.name == "global-medicines-atlas"
     assert identity.version
     assert identity.summary
-    assert set(identity.requires_python.split(",")) == {">=3.14", "<3.16"}
+    assert set(identity.requires_python.split(",")) == {">=3.15", "<3.16"}
 
 
 def test_installed_metadata_rejects_missing_required_field(
@@ -66,7 +75,7 @@ def test_installed_metadata_rejects_missing_required_field(
             "Name": "global-medicines-atlas",
             "Version": "1.0.0",
             "Summary": "",
-            "Requires-Python": ">=3.14,<3.15",
+            "Requires-Python": ">=3.15,<3.16",
         },
     )
     with pytest.raises(CompatibilityError) as exc_info:
@@ -115,7 +124,7 @@ def test_installed_metadata_rejects_runtime_version_disagreement(
             "Name": "global-medicines-atlas",
             "Version": "1.0.0",
             "Summary": "summary",
-            "Requires-Python": ">=3.14,<3.15",
+            "Requires-Python": ">=3.15,<3.16",
         },
     )
     monkeypatch.setattr(
@@ -140,7 +149,7 @@ def test_installed_metadata_returns_exact_validated_identity(
                 "Name": "distribution-name",
                 "Version": "3.4.5rc1",
                 "Summary": "A precise summary",
-                "Requires-Python": ">=3.14,<3.15",
+                "Requires-Python": ">=3.15,<3.16",
             }
         ),
     )
@@ -158,7 +167,7 @@ def test_installed_metadata_returns_exact_validated_identity(
         name="distribution-name",
         version="3.4.5rc1",
         summary="A precise summary",
-        requires_python=">=3.14,<3.15",
+        requires_python=">=3.15,<3.16",
     )
 
 

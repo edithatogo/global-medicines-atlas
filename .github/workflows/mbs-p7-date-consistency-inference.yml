@@ -1,0 +1,48 @@
+name: Qualify exact-copy P7 date consistency inference
+
+on:
+  workflow_dispatch:
+    inputs:
+      exact_commit:
+        description: Exact main commit to bind this read-only qualification to
+        required: true
+        type: string
+
+permissions: {}
+concurrency:
+  group: mbs-p7-date-consistency-inference
+  cancel-in-progress: false
+
+jobs:
+  profile:
+    name: Profile pinned P7 date consistency
+    if: >-
+      github.repository == 'edithatogo/global-medicines-atlas' &&
+      github.ref == 'refs/heads/main' &&
+      inputs.exact_commit == github.sha
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Qualify exact pinned workbook
+        env:
+          HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
+          HF_HUB_DISABLE_XET: "1"
+          EXACT_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          uv run --locked --python 3.15.1 python \
+            scripts/qualify_mbs_p7_date_consistency.py \
+            --exact-commit "$EXACT_COMMIT" \
+            --output "$RUNNER_TEMP/mbs-p7-date-consistency.json"
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: mbs-p7-date-consistency-${{ github.run_id }}
+          path: ${{ runner.temp }}/mbs-p7-date-consistency.json
+          if-no-files-found: error
+          retention-days: 90

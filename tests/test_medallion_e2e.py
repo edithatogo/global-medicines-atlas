@@ -6,7 +6,7 @@ import hashlib
 import io
 import json
 import os
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass, replace
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
@@ -177,7 +177,7 @@ type SyntheticOutput = tuple[
 
 
 def _exercise_benefits_cli(
-    resolver: StorageNeutralResolver,
+    resolver_factory: Callable[[], StorageNeutralResolver],
     resource_id: str,
     columns: tuple[str, ...],
     api_page: dict[str, Any],
@@ -188,7 +188,7 @@ def _exercise_benefits_cli(
     monkeypatch.setattr(
         platinum_configuration,
         "load_benefits_resolver",
-        lambda **_kwargs: resolver,
+        lambda **_kwargs: resolver_factory(),
     )
     monkeypatch.setenv("GMA_CURSOR_SECRET", cursor_key)
     trust_file = tmp_path / "synthetic-trust.json"
@@ -1998,6 +1998,42 @@ def _silver_gold_products(
     return silver, nodes, gold
 
 
+def _synthetic_platinum_resolver_factory(
+    contract: bytes,
+    gold: bytes,
+    receipt: SourceReceipt,
+    resource: ProductResource,
+    semantic_manifest: bytes,
+    handle: Callable[[httpx.Request], httpx.Response],
+) -> Callable[[], StorageNeutralResolver]:
+    schema = (
+        ROOT / "contracts/medallion/v4/federation.schema.json"
+    ).read_bytes()
+    binding = resource.binding
+    admission = _independently_admit_synthetic_output(
+        contract,
+        gold,
+        receipt,
+        layer="platinum",
+        path=binding.object.path,
+        bronze_stratum=None,
+    )
+
+    def create_resolver() -> StorageNeutralResolver:
+        return StorageNeutralResolver(
+            schema=schema,
+            resources=[resource],
+            admission_records=(admission,),
+            admitted_semantic_manifests=frozenset({
+                hashlib.sha256(semantic_manifest).hexdigest()
+            }),
+            transport_factory=lambda: httpx.MockTransport(handle),
+            clock=lambda: NOW,
+        )
+
+    return create_resolver
+
+
 def _query_synthetic_platinum(
     gold: bytes,
     receipt: SourceReceipt,
@@ -2046,27 +2082,16 @@ def _query_synthetic_platinum(
             )
         return httpx.Response(200, content=gold)
 
-    with StorageNeutralResolver(
-        schema=(
-            ROOT / "contracts/medallion/v4/federation.schema.json"
-        ).read_bytes(),
-        resources=[resource],
-        admission_records=(
-            _independently_admit_synthetic_output(
-                contract,
-                gold,
-                receipt,
-                layer="platinum",
-                path=binding.object.path,
-                bronze_stratum=None,
-            ),
-        ),
-        admitted_semantic_manifests=frozenset({
-            hashlib.sha256(semantic).hexdigest()
-        }),
-        transport_factory=lambda: httpx.MockTransport(handle),
-        clock=lambda: NOW,
-    ) as resolver:
+    resolver_factory = _synthetic_platinum_resolver_factory(
+        contract,
+        gold,
+        receipt,
+        resource,
+        semantic,
+        handle,
+    )
+
+    with resolver_factory() as resolver:
         if semantic_dimension == "service_benefit":
             client = cast(
                 "_IdentityHttpClient",
@@ -2174,7 +2199,7 @@ def _query_synthetic_platinum(
 
             if monkeypatch is not None and tmp_path is not None:
                 _exercise_benefits_cli(
-                    resolver,
+                    resolver_factory,
                     resource_id,
                     columns,
                     page,

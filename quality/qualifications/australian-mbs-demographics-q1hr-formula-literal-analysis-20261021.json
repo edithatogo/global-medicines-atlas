@@ -1,0 +1,49 @@
+{
+  "boundaries": {
+    "new_sources_added": false,
+    "public_dataset_mutated": false,
+    "rights_conclusion_changed": false,
+    "silver_promotion_performed": false,
+    "source_values_or_formula_text_emitted": false,
+    "v4_admission_or_consumer_canary_performed": false
+  },
+  "formula_column": {
+    "cached_results_are_strings": 171477,
+    "cached_results_differ_from_decoded_formula_literal": 0,
+    "cached_results_equal_decoded_formula_literal": 171477,
+    "excel_column": "E",
+    "formula_cells_in_read_only_workbook_view": 171477,
+    "formula_expressions_are_text_literals": 171477,
+    "formula_expressions_with_cell_references_or_operators": 0,
+    "formula_values_or_text_emitted": false,
+    "raw_xml_profile_formula_cells_with_explicit_text": 171346,
+    "raw_xml_profile_shared_formula_cells_without_text": 131,
+    "unique_literal_categories": 11,
+    "workbook_header": "Age_Range"
+  },
+  "inputs": {
+    "quality/qualifications/australian-mbs-demographics-q1hr-existing-csv-comparison-20261021.json": "5318d9328e72d64bb12a3157b3a59f7c16edd59cae22a7de5e6540e707684446",
+    "quality/qualifications/australian-mbs-demographics-q1hr-formula-syntax-profile-20261021.json": "01034f8a4d7f341a342c09f7591262ff13563ec492fea35294d9c83c9200a556",
+    "quality/qualifications/australian-mbs-demographics-q1hr-workbook-layout-candidate-20261021.json": "b9c8672e0ef8597ea9b3ad3ab5eb2df29829dfb427cee57d2fda7bcbdc5dec7c"
+  },
+  "interpretation": {
+    "existing_csv_exact_age_range_overlap": 0,
+    "field_meaning": "not_resolved",
+    "formula_behavior": "The workbook reader reconstructs a text-literal formula for every observed cell in the Age_Range column; each cached string equals its decoded literal.",
+    "period_or_temporal_meaning": "not_resolved",
+    "semantic_equivalence_to_existing_csv": "not_established"
+  },
+  "observed_at": "2026-10-21T04:12:31Z",
+  "schema_id": "global-medicines-atlas.mbs-demographics-q1hr-formula-literal-analysis",
+  "schema_version": 1,
+  "source": {
+    "byte_count": 21966140,
+    "dataset": "edithatogo/australian-mbs-utilisation-archive",
+    "identity_reverified_before_analysis": true,
+    "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+    "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+    "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d",
+    "source_bytes_persisted_locally": false
+  },
+  "status": "formula_literal_outputs_match_cached_results_field_and_period_semantics_open"
+}

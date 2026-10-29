@@ -1,0 +1,98 @@
+{
+  "active_comment_capable_runs_observed": [],
+  "active_run_audit_scope": "All pages of repository runs in queued, in_progress, waiting, pending and requested states",
+  "affected_paths": [
+    ".github/workflows/australian-legacy-hf-publication.yml",
+    ".github/workflows/australian-mbs-july-lifecycle-append.yml",
+    ".github/workflows/australian-mbs-release.yml",
+    ".github/workflows/australian-mbs-root-manifest-append.yml",
+    ".github/workflows/australian-mbs-schedule-harvest.yml",
+    ".github/workflows/australian-mbs-silver-publication.yml",
+    ".github/workflows/australian-mbs-utilisation-harvest.yml",
+    ".github/workflows/australian-mbs-utilisation-lifecycle.yml",
+    ".github/workflows/australian-mbs-utilisation-rights.yml",
+    ".github/workflows/australian-mbs-workbook-egress-preflight.yml",
+    ".github/workflows/australian-pbs-hf-publication.yml",
+    ".github/workflows/australian-pbs-utilisation-harvest.yml",
+    ".github/workflows/hf-legacy-composite-visibility.yml",
+    ".github/workflows/pbs-public-metadata-diagnostic.yml"
+  ],
+  "comment_commands_removed": 34,
+  "comment_commands_removed_including_pbs_route": 35,
+  "disabled": [
+    {
+      "id": 345202084,
+      "path": ".github/workflows/australian-legacy-hf-publication.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 388008494,
+      "path": ".github/workflows/australian-mbs-july-lifecycle-append.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 345735950,
+      "path": ".github/workflows/australian-mbs-release.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 386946789,
+      "path": ".github/workflows/australian-mbs-root-manifest-append.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 353105946,
+      "path": ".github/workflows/australian-mbs-schedule-harvest.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 368567479,
+      "path": ".github/workflows/australian-mbs-silver-publication.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 353105948,
+      "path": ".github/workflows/australian-mbs-utilisation-harvest.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 374560078,
+      "path": ".github/workflows/australian-mbs-utilisation-lifecycle.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 374495485,
+      "path": ".github/workflows/australian-mbs-utilisation-rights.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 368755681,
+      "path": ".github/workflows/australian-mbs-workbook-egress-preflight.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 345676297,
+      "path": ".github/workflows/australian-pbs-hf-publication.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 353105949,
+      "path": ".github/workflows/australian-pbs-utilisation-harvest.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 345156636,
+      "path": ".github/workflows/hf-legacy-composite-visibility.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 346596759,
+      "path": ".github/workflows/pbs-public-metadata-diagnostic.yml",
+      "state": "disabled_manually"
+    }
+  ],
+  "pbs_historical_qualification_state": "disabled_manually (API confirmed)",
+  "recorded_at": "2026-10-21T16:36:30.075036+00:00",
+  "total_disabled_workflows": 15,
+  "verification_artifacts_added": 18
+}

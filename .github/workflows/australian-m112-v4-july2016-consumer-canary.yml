@@ -1,0 +1,69 @@
+name: Australian M-112 admitted-object v4 consumer canary
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_commit:
+        description: Exact merged main commit to qualify and exercise
+        required: true
+        type: string
+      target_path:
+        description: Exact already-admitted raw B2 object to exercise
+        required: true
+        type: choice
+        options:
+          - raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx
+          - raw/mbs/utilisation/group/mbs-group-2016-july.csv
+          - raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip
+          - raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv
+          - raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv
+          - raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv
+          - raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx
+          - raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx
+
+permissions:
+  contents: read
+
+concurrency:
+  group: australian-m112-v4-canary-${{ inputs.target_commit }}-${{ inputs.target_path }}
+  cancel-in-progress: false
+
+jobs:
+  bounded-consumer-canary:
+    name: Bounded admitted-object consumers
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Require exact default-branch identity
+        env:
+          REQUESTED_COMMIT: ${{ inputs.target_commit }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = 'refs/heads/main'
+          test "$GITHUB_SHA" = "$REQUESTED_COMMIT"
+      - name: Verify admission and run bounded consumers
+        env:
+          TARGET_PATH: ${{ inputs.target_path }}
+        run: |
+          set -euo pipefail
+          uv run --locked --python 3.15.1 python scripts/qualify_m112_v4_july2016_admission.py \
+            --target-path "$TARGET_PATH" \
+            --check \
+            --verify \
+            --consumer-canary \
+            --workflow-commit "$GITHUB_SHA" \
+            --workflow-run-id "$GITHUB_RUN_ID" \
+            --workflow-run-attempt "$GITHUB_RUN_ATTEMPT" \
+            --verification-report "$RUNNER_TEMP/australian-m112-v4-canary.json"
+      - name: Publish metadata-only canary receipt
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: australian-m112-v4-canary-${{ github.sha }}
+          path: ${{ runner.temp }}/australian-m112-v4-canary.json
+          if-no-files-found: error
+          retention-days: 90

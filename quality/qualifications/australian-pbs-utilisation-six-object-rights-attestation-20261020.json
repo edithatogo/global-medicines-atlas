@@ -1,0 +1,61 @@
+{
+  "authorized_objects": [
+    {
+      "byte_count": 372149,
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+      "sha256": "32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b"
+    },
+    {
+      "byte_count": 468764,
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+      "sha256": "147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99"
+    },
+    {
+      "byte_count": 35384567,
+      "path": "raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+      "sha256": "4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4"
+    },
+    {
+      "byte_count": 36381946,
+      "path": "raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+      "sha256": "f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8"
+    },
+    {
+      "byte_count": 1063694,
+      "path": "raw/pbs/utilisation/reference/pbs-item-drug-map.csv",
+      "sha256": "51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8"
+    },
+    {
+      "byte_count": 117376499,
+      "path": "raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx",
+      "sha256": "48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca"
+    }
+  ],
+  "boundaries": {
+    "consumer_canary_performed": false,
+    "external_publication_performed": false,
+    "frozen_inventory_membership_changed": false,
+    "full_vocabulary_content_review_claimed": false,
+    "limited_vocabulary_screen_result_preserved": true,
+    "source_payload_files_written": false,
+    "v4_admission_performed": false
+  },
+  "dataset_identity": {
+    "dataset": "edithatogo/australian-pbs-utilisation-archive"
+  },
+  "decision": {
+    "consumer_canary": false,
+    "maintainer_response": "Attest permission covers all six",
+    "permission_instrument_existence_and_applicability": "maintainer_attested_not_independently_reviewed",
+    "permission_instrument_reference": null,
+    "public_release_performed": false,
+    "public_release_rights_attested": true,
+    "rights_inferred_from_lineage_or_source_category_authorization": false,
+    "scope": "The exact six dataset paths, SHA-256 digests, and byte counts listed below; permission includes all file contents, including any vocabulary previously excluded.",
+    "v4_admission": false
+  },
+  "purpose": "Record the maintainer's exact-scope attestation that applicable permission covers public release of six identified PBS utilisation raw files, including any otherwise unlicensed vocabulary. The permission instrument was not independently reviewed.",
+  "recorded_at": "2026-10-20T23:30:00+10:00",
+  "schema_id": "global-medicines-atlas.australian-pbs-utilisation-six-object-rights-attestation",
+  "schema_version": 1
+}

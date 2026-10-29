@@ -1,0 +1,93 @@
+{
+  "schema_id": "global-medicines-atlas.m112-pbs-v4-contract-candidates",
+  "schema_version": 1,
+  "recorded_at": "2026-10-28T11:58:07.323556+00:00",
+  "role_assessment": {
+    "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/156d3e5cd91735b4766b86bd89cada06a44b7b67/quality/qualifications/australian-m112-pbs-utilisation-role-readiness-20261028.json",
+    "sha256": "fb680271214008a850416151529a51933b16cb8b1521ec156c360872cd46d4b2"
+  },
+  "evidence_commit": "849c6b7fcaa0241e76e64590cc076e071d1ef4b8",
+  "objects": [
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+      "sha256": "32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b",
+      "byte_count": 372149,
+      "contract_path": "quality/qualifications/australian-m112-pbs-v4-contract-candidates-20261028/32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b.json",
+      "contract_sha256": "28c6642d690e693a8a56d78186ed8befa5e28b86d6d8401a1d20a74a5a78f5a7",
+      "status": "schema_semantics_and_receipt_closure_passed_candidate_not_admitted"
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+      "sha256": "147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99",
+      "byte_count": 468764,
+      "contract_path": "quality/qualifications/australian-m112-pbs-v4-contract-candidates-20261028/147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99.json",
+      "contract_sha256": "fa2fbb020b5eb62a20ba6b808d2f1c066d7b8270ec93ac24e6ef6e1f0472927a",
+      "status": "schema_semantics_and_receipt_closure_passed_candidate_not_admitted"
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+      "sha256": "4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4",
+      "byte_count": 35384567,
+      "contract_path": "quality/qualifications/australian-m112-pbs-v4-contract-candidates-20261028/4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4.json",
+      "contract_sha256": "a990f80f3554e090196a13a79a84c44e72018c0b031fad56ec1f9c7d657d80c5",
+      "status": "schema_semantics_and_receipt_closure_passed_candidate_not_admitted"
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+      "sha256": "f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8",
+      "byte_count": 36381946,
+      "contract_path": "quality/qualifications/australian-m112-pbs-v4-contract-candidates-20261028/f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8.json",
+      "contract_sha256": "699bcad8965918b5eff84c092cb53fbf4f82a401837edb6de308fbb64b6ade27",
+      "status": "schema_semantics_and_receipt_closure_passed_candidate_not_admitted"
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/utilisation/reference/pbs-item-drug-map.csv",
+      "sha256": "51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8",
+      "byte_count": 1063694,
+      "contract_path": "quality/qualifications/australian-m112-pbs-v4-contract-candidates-20261028/51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8.json",
+      "contract_sha256": "f12a5a8f91c3f4e3ac48ed10a2565e5a77fbeba0f789a7f11817e3276a38bc93",
+      "status": "schema_semantics_and_receipt_closure_passed_candidate_not_admitted"
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx",
+      "sha256": "48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca",
+      "byte_count": 117376499,
+      "contract_path": "quality/qualifications/australian-m112-pbs-v4-contract-candidates-20261028/48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca.json",
+      "contract_sha256": "13b0e58ac142e2f412975b969a0604d02482fd71629d6d1f9692c99f894199f9",
+      "status": "schema_semantics_and_receipt_closure_passed_candidate_not_admitted"
+    }
+  ],
+  "boundaries": {
+    "new_sources": 0,
+    "source_payloads_read": false,
+    "outbound_communications": 0,
+    "public_dataset_mutation": false,
+    "v4_admissions": 0,
+    "consumer_canaries": 0,
+    "receipt_closure_performed": true,
+    "independent_recovery_qualified": false,
+    "federation_gate_closed": false
+  },
+  "limitations": [
+    "These are schema/semantic-valid exact raw-B2 contract candidates, not admitted data.",
+    "Historical publication/restore receipt must be independently downloaded and its claims validated before trusted admission.",
+    "Object verification references the exact hosted replay receipt and timestamp; historical publication/primary-restore evidence remains separately bound.",
+    "No domain meanings, effective date, current status or patient-rate semantics are inferred."
+  ],
+  "receipt_closure": {
+    "path": "quality/qualifications/australian-m112-pbs-v4-contract-candidates-20261028/receipt-closure.json",
+    "sha256": "d4984ee6c5c3fdd511472157a1151bac6597c1b2fe112b402195c9c71d77d314"
+  }
+}

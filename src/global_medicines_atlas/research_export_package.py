@@ -21,9 +21,13 @@ from .research_exports import (
     ExportSource,
     QuerySnapshotManifest,
     canonical_manifest_bytes,
+    canonical_result_bytes,
     manifest_sha256,
 )
-from .research_lineage import ResearchLineageReceipt
+from .research_lineage import (
+    LOCAL_LINEAGE_SCHEMA_VERSION,
+    ResearchLineageReceipt,
+)
 from .research_package import (
     CrateDistribution,
     ResearchCrate,
@@ -73,6 +77,9 @@ def build_research_export_package(
     lineage: ResearchLineageReceipt,
 ) -> ResearchExportPackage:
     """Bind and compose matching manifest, crate, and lineage metadata."""
+    manifest = QuerySnapshotManifest.model_validate(manifest.model_dump())
+    crate = ResearchCrate.model_validate(crate.model_dump())
+    lineage = ResearchLineageReceipt.model_validate(lineage.model_dump())
     export_id = manifest_sha256(manifest)
     if crate.identifier != export_id or lineage.export_id != export_id:
         raise ValueError(
@@ -86,6 +93,7 @@ def build_research_export_package(
         matching_source = any(
             artifact.sha256 == source.sha256
             and (artifact.revision or lineage.revision) == source.revision
+            and artifact.public_url is not None
             and _lineage_input_binds_source(artifact.public_url, source)
             for artifact in input_artifacts
         )
@@ -100,11 +108,31 @@ def build_research_export_package(
         for artifact in lineage.artifacts
         if artifact.role == "output"
     }
+    output_references = {
+        artifact.identifier: artifact.content_address
+        for artifact in lineage.artifacts
+        if artifact.role == "output"
+    }
     for distribution in crate.distributions:
+        if (distribution.reference_kind == "content_addressed") != (
+            output_references.get(distribution.identifier) is not None
+        ):
+            raise ValueError("crate and lineage output reference scopes differ")
+        if (
+            distribution.reference_kind == "content_addressed"
+            and output_references[distribution.identifier]
+            != distribution.content_url
+        ):
+            raise ValueError("local crate and lineage content addresses differ")
         if output_digests.get(distribution.identifier) != distribution.sha256:
             raise ValueError(
                 "crate distributions must bind matching lineage outputs"
             )
+    if (
+        lineage.schema_version == LOCAL_LINEAGE_SCHEMA_VERSION
+        and lineage.revision != manifest.generator_commit
+    ):
+        raise ValueError("local lineage must bind the exact assembly commit")
     if manifest.result_sha256 not in output_digests.values():
         raise ValueError("lineage outputs must bind the query result digest")
 
@@ -138,11 +166,13 @@ def _lineage_input_binds_source(public_url: str, source: ExportSource) -> bool:
 
 def verify_research_export_package(
     archive_bytes: bytes,
+    *,
+    result_bytes: bytes | None = None,
 ) -> ResearchExportPackage:
-    """Rebuild and verify an export package from its saved archive alone.
+    """Rebuild metadata; local packages also require their exact result sidecar.
 
-    No network access or source/result payloads are needed. All ZIP members,
-    JSON documents, bound digests, and canonical archive bytes are checked.
+    No network access is needed. Published metadata-only packages retain their
+    archive-only verifier; local packages verify their canonical result bytes.
     """
     if not archive_bytes or len(archive_bytes) > _MAX_PACKAGE_BYTES:
         raise ValueError("research export package exceeds its byte budget")
@@ -159,6 +189,14 @@ def verify_research_export_package(
             "research export package metadata is invalid"
         ) from None
 
+    local = any(
+        item.reference_kind == "content_addressed"
+        for item in crate.distributions
+    )
+    if local:
+        _verify_local_result(manifest, result_bytes)
+    elif result_bytes is not None:
+        raise ValueError("result sidecar is only supported for local packages")
     rebuilt = build_research_export_package(
         manifest=manifest,
         crate=crate,
@@ -167,6 +205,55 @@ def verify_research_export_package(
     if rebuilt.archive_bytes() != archive_bytes:
         raise ValueError("research export package is not canonical")
     return rebuilt
+
+
+def _verify_local_result(
+    manifest: QuerySnapshotManifest, result_bytes: bytes | None
+) -> None:
+    """Require the exact bounded, canonical local query-result sidecar."""
+    if result_bytes is None:
+        raise ValueError("local research result sidecar is required")
+    if type(result_bytes) is not bytes or len(result_bytes) > 1024 * 1024:
+        raise ValueError(
+            "local research result sidecar exceeds its byte budget"
+        )
+    if hashlib.sha256(result_bytes).hexdigest() != manifest.result_sha256:
+        raise ValueError("local research result digest differs")
+    query = (
+        json.dumps(
+            manifest.query,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+            allow_nan=False,
+        )
+        + "\n"
+    ).encode()
+    if hashlib.sha256(query).hexdigest() != manifest.query_sha256:
+        raise ValueError("local research query digest differs")
+    try:
+        decoded: object = json.loads(
+            result_bytes, object_pairs_hook=unique_json_object
+        )
+    except json.JSONDecodeError, UnicodeDecodeError, ValueError, RecursionError:
+        raise ValueError(
+            "local research result sidecar is invalid JSON"
+        ) from None
+    if not isinstance(decoded, list):
+        raise ValueError(  # ruff: ignore[type-check-without-type-error] -- invalid untrusted sidecar value
+            "local research result sidecar must contain row objects"
+        )
+    candidates = cast("list[object]", decoded)
+    if not all(isinstance(row, dict) for row in candidates):
+        raise ValueError(
+            "local research result sidecar must contain row objects"
+        )
+    rows = cast("list[dict[str, Any]]", candidates)
+    if (
+        len(rows) != manifest.result_row_count
+        or canonical_result_bytes(rows) != result_bytes
+    ):
+        raise ValueError("local research result sidecar is not canonical")
 
 
 def _read_package_documents(archive_bytes: bytes) -> dict[str, bytes]:
@@ -257,6 +344,12 @@ def _crate_from_jsonld(
             content_url=_required_string(row, "contentUrl"),
             media_type=_required_string(row, "encodingFormat"),
             sha256=_required_string(row, "sha256"),
+            reference_kind=(
+                "content_addressed"
+                if row.get("additionalType")
+                == "urn:global-medicines-atlas:content-addressed"
+                else "public"
+            ),
         )
         for row in rows
         if row.get("@type") == "https://schema.org/DataDownload"

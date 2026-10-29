@@ -25,7 +25,6 @@ jobs:
     timeout-minutes: 45
     permissions:
       contents: read
-      issues: write # Required to persist the intent and success receipt on issue 340.
     steps:
       - name: Check out exact authorization contract
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
@@ -63,10 +62,15 @@ jobs:
               encoding='utf-8',
           )
           PY
-          gh issue comment 340 \
-            --repo "${GITHUB_REPOSITORY}" \
-            --body-file hf-legacy-composite-visibility-intent.json
+          : # Outbound comments prohibited; retain workflow artifacts instead.
 
+      - name: Retain verification artifact 3 without outbound messages
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: retained-verification-3-${{ github.run_id }}-${{ github.run_attempt }}
+          path: hf-legacy-composite-visibility-intent.json
+          if-no-files-found: error
+          retention-days: 30
       - name: Verify, publicize, and clean-room restore
         env:
           AUTHORIZATION_PATH: quality/qualifications/hf-legacy-composite-authorization-20260829.json
@@ -288,10 +292,15 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh issue comment 340 \
-            --repo "${GITHUB_REPOSITORY}" \
-            --body-file hf-legacy-composite-visibility-receipt.json
+          : # Outbound comments prohibited; retain workflow artifacts instead.
 
+      - name: Retain verification artifact 4 without outbound messages
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: retained-verification-4-${{ github.run_id }}-${{ github.run_attempt }}
+          path: hf-legacy-composite-visibility-receipt.json
+          if-no-files-found: error
+          retention-days: 30
   rollback-on-non-success:
     name: Reconcile failed or cancelled visibility transaction
     needs: publicize-and-verify
@@ -300,8 +309,7 @@ jobs:
           needs.publicize-and-verify.result != 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
-    permissions:
-      issues: write # Required to persist the rollback receipt on issue 340.
+    permissions: {}
     steps:
       - name: Restore private visibility and record reconciliation
         env:
@@ -356,17 +364,21 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh issue comment 340 \
-            --repo "${GITHUB_REPOSITORY}" \
-            --body-file hf-legacy-composite-visibility-rollback.json
+          : # Outbound comments prohibited; retain workflow artifacts instead.
 
+      - name: Retain verification artifact 5 without outbound messages
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: retained-verification-5-${{ github.run_id }}-${{ github.run_attempt }}
+          path: hf-legacy-composite-visibility-rollback.json
+          if-no-files-found: error
+          retention-days: 30
   reconcile-orphaned-public-visibility:
     name: Reconcile public visibility without a durable success receipt
     if: ${{ github.event_name == 'schedule' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
-    permissions:
-      issues: write # Required to read and persist watchdog receipts on issue 340.
+    permissions: {}
     steps:
       - name: Check durable receipts and fail closed
         id: reconcile
@@ -475,6 +487,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh issue comment 340 \
-            --repo "${GITHUB_REPOSITORY}" \
-            --body-file hf-legacy-composite-visibility-watchdog.json
+          : # Outbound comments prohibited; retain workflow artifacts instead.
+      - name: Retain verification artifact 6 without outbound messages
+        if: ${{ steps.reconcile.outputs.changed == 'true' }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: retained-verification-6-${{ github.run_id }}-${{ github.run_attempt }}
+          path: hf-legacy-composite-visibility-watchdog.json
+          if-no-files-found: error
+          retention-days: 30

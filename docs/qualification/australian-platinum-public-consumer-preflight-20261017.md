@@ -80,3 +80,15 @@ successful consumers of an independently admitted public product, resolve
 M-110 review, or change M-109, M-110, M-111, or M-112 acceptance. Public
 product freshness, coverage, cohort, confidence, rights, and admission gates
 remain open.
+
+## 2026-10-23 current readback
+
+The exact-main candidate traversal was repeated on commit
+`78e857839aad8298060c65eb5ef03a4e3114827a`; hosted run
+[39939296038](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39939296038)
+passed. The current candidate receipt is documented in
+[`australian-platinum-public-consumer-preflight-20261023.md`](australian-platinum-public-consumer-preflight-20261023.md).
+The user's exact same-record edge review is bound in the nested
+`reviewed_candidate` section; the graph's top-level `not_reviewed` retains its
+historical pre-review state. This does not alter the blocked M-111 product
+admission and release gates.

@@ -130,6 +130,20 @@
   See `quality/qualifications/mbs-p7-workbook-field-lineage-20261011.json`.
   This closes exact-main storage/header/lineage requalification only; broader
   value harmonisation and source-era date qualification remain open.
+- [x] Reconcile the frozen 91-workbook header and cell-state denominators into
+  one value-free report bound to the exact package, header, P7 typed-value, and
+  era-rule receipt digests. All 91 workbook identities match; 728 field rows
+  carry interpreted header roles and unresolved values. The 310,176,929
+  non-header cells remain `native_unresolved`; 728 header cells are counted
+  separately. The separate P7 report
+  lists 99 columns (97 mapped and two unresolved); 86 uniquely determined
+  calendar dates are interpreted per cell and 13,656 values remain
+  `native_unresolved`. Formula, error, decimal and date diagnostics remain
+  orthogonal; no P7 workbook-wide date profile or cross-era equivalence is
+  selected. Sixty-four focused tests pass; Ruff and BasedPyright pass.
+  This reconciles field states; it does not establish domain
+  meanings for non-header cells. See
+  `quality/qualifications/mbs-workbook-field-state-reconciliation-20261024.json`.
 
 ## Workbook value harmonisation
 
@@ -3490,7 +3504,9 @@
   result.
 - [x] Keep all 1,759 objects deferred; B1/B2-complete raw lineage is 6, exact
   source/release rights remain 2, v4 admissions remain 0, and consumer canaries
-  remain 0. No source payload bytes or new sources were used, and no rights
+  remain 0 at this 2026-10-18 checkpoint. The current 2026-10-21 readback below
+  records seven admissions and seven canaries. No source payload bytes or new
+  sources were used, and no rights
   conclusion was added. The source-owner-reserved PBS/M107 crosswalks and July
   derivative were not changed.
 - [x] Save the reproducible overlay at
@@ -3544,9 +3560,11 @@
   the stylesheet; the failed job retry passed all steps. The receipt remains
   `candidate_only` and `review_state=not_reviewed`; no admission, rights
   conclusion, publication, source retention, or M-112 acceptance occurred.
-- [ ] Keep M-112 per-object federation-reader canaries blocked until an eligible
-  object receives v4 admission. The frozen 1,759-object overlay therefore still
-  correctly reports zero M-112 consumer canaries and preserves all deferrals.
+- [x] At this 2026-10-18 checkpoint, keep per-object federation-reader canaries
+  blocked until an eligible object receives v4 admission. The then-current
+  overlay reported zero M-112 consumer canaries. This dated status is superseded
+  by the 2026-10-21 current readback below; the 1,752 remaining objects remain
+  deferred pending their own qualification.
 
 ### M-112 complete frozen-object identity readback (2026-10-18)
 
@@ -3673,7 +3691,8 @@
   projection members. The frozen 1,759-object denominator is unchanged; 22 raw
   and 10 projection B1/B2 lineages are complete (32 total), 1,714 raw and 13
   projection lineages remain incomplete, all objects remain deferred, and v4
-  admissions and M-112 federation-reader canaries remain zero.
+  admissions and M-112 federation-reader canaries were zero at this 2026-10-19
+  checkpoint. See the current 2026-10-21 readback below.
 - [~] Continue B1/B2 lineage work for remaining objects. The 1,707
   reimbursement-atlas raw rows and 12 medallion projections lack persisted
   landed-admission/source-receipt joins; PBS/M107 owner-managed objects remain
@@ -3724,9 +3743,11 @@
   current inventory now has 1,725 complete raw lineages and 10 complete
   projection lineages (1,735/1,759 total); 11 raw and 13 projection lineages
   remain incomplete. All objects remain deferred, rights remain unresolved
-  where previously unresolved, v4 admissions remain zero, and consumer
-  canaries remain zero. No source was added, no source-owner work was changed,
-  and no source payload bytes or values were read for this metadata join.
+  where previously unresolved, and v4 admissions and consumer canaries were
+  zero at this 2026-10-19 checkpoint. The current 2026-10-21 readback below
+  records seven admissions and seven canaries. No source was added, no source-
+  owner work was changed, and no source payload bytes or values were read for
+  this metadata join.
 - [x] Verify the focused tests (4 passed), the complete M-112 affected suite
   (103 passed), Ruff, formatting, BasedPyright, and diff checks. Test-Goblin
   full ran 6,945 tests with 2 unrelated stable-v1 reproducibility failures
@@ -3756,7 +3777,9 @@
 - [x] Reconcile the cumulative 1,759-object gate report: 1,731 raw and 10
   projection B1/B2 lineages are complete (1,741 total); five raw and 13
   projection lineages remain incomplete. All 1,759 objects remain deferred;
-  v4 admissions and consumer canaries remain zero.
+  v4 admissions and consumer canaries were zero at this 2026-10-19 checkpoint.
+  The later 2026-10-21 readback below records seven admissions and seven
+  canaries.
 - [x] Verify 3 focused tests and 106 M-112 tests, Ruff, formatting, `ty`,
   BasedPyright, Test-Goblin routine and repository checks. Test-Goblin full
   completed with exit code 0 under pinned `uv 0.11.29`; coverage was 97.92%
@@ -3889,7 +3912,9 @@
   remains unreviewed and blocks full-object release. The current snapshot has
   28 objects with positive scoped rights evidence and 1,731 unresolved. Rights
   evidence leaves all 1,759 objects deferred, zero v4 admissions, zero canaries,
-  and zero external publications unchanged. CMS remains external-reference-only;
+  and zero external publications unchanged at this 2026-10-19 checkpoint. The
+  later 2026-10-21 readback below records seven admissions and seven canaries;
+  the no-publication state remains current. CMS remains external-reference-only;
   no processing or derived rights are inferred.
 - [ ] Resolve the four exact August 2026 MBS Bronze projection rights and
   derived-output authority independently. Their B1/B2 and transformation
@@ -3900,6 +3925,31 @@
   PBS and reimbursement-atlas objects. Identity or lineage alone does not
   establish reuse authority.
 - Reconciliation implementation commit: `27007a797753c4ae9d8a53a81dede6c76a5a1369`.
+
+## M-112 rights-release preflight refresh (2026-10-20)
+
+- [x] Supersede the pre-decision October 19 rights-release preflight with a
+  digest-bound snapshot of current effective rights evidence. Preserve the
+  historical preflight unchanged. The exact six July 2025 MBS Silver objects
+  carry the maintainer-attested bounded release permission; no release was
+  performed. The exact July 2026 CMS HCPCS reference is permitted/reviewed,
+  while its acquisition-time `unknown` state remains historical and no
+  payload-processing, derived-rights, admission, canary, or publication
+  authority is inferred. See
+  `quality/qualifications/australian-m112-rights-release-preflight-20261020.json`.
+- [x] Reassert the frozen denominator (1,759), current rights counts (28 with
+  scoped positive rights evidence, 1,731 unresolved), zero v4 admissions, zero
+  canaries, and zero external publications at this 2026-10-20 checkpoint. The
+  later 2026-10-21 readback below records seven admissions and seven canaries;
+  no external publication occurred. PBS utilization's scoped grant
+  still excludes unlicensed vocabulary; full-object release remains blocked
+  pending exclusion review.
+- [ ] Resolve derived-output rights for the four exact August 2026 MBS Bronze
+  Parquet projections. Their complete lineage does not establish rights, and
+  the source authorization records no derived-output authority. Keep this
+  separate from the July Silver attestation.
+- [ ] Continue the remaining source-specific rights work for the unresolved
+  MBS, PBS, and reimbursement-atlas objects. No source coverage was added.
 
 ## M-112 raw B2 v1 conformance candidate (2026-10-19)
 
@@ -3962,10 +4012,20 @@
   only at 0.33 coverage and 0.50 recall. These six self-authored cases cannot
   establish calibration or select a production threshold. Report:
   `quality/qualifications/matching-behavior-synthetic-20261019.json`.
-- [ ] Complete PBS real admitted Silver screening, representative
-  human-adjudicated held-out labels, per-method/source calibration, and exact
-  candidate review before any scored relationship promotion. Synthetic graph
-  parity and this diagnostic do not close M-110.
+- [x] Run a value-free source-local reference screen over the exact admitted
+  April 2026 PBS v3 source object. Hosted run `39730665004` screened 2,160,066
+  reference fields against 567,785 definitions: 2,086,489 unique exact-literal
+  candidates and 73,577 with no exact literal. It fetched no external targets
+  and emitted no source values. This is lexical diagnostic coverage only; it
+  does not resolve URI bases, target type, predicate, or semantic relationship.
+  Receipt:
+  `quality/qualifications/pbs-native-reference-screen-20261022-39730665004.json`.
+- [ ] Complete PBS real Silver semantic relationship review, representative
+  human-adjudicated cross-jurisdiction held-out labels, per-method/source
+  calibration, and exact candidate review before scored relationship
+  promotion. The existing source-local screen remains unqualified for semantic
+  links; the 400/400 actual-matcher experiment is synthetic-only and has poor
+  held-out fit. No synthetic graph parity or literal match closes this gate.
 - [x] Focused matcher/graph/review selection: 98 passed. Broader affected MBS,
   PBS, matcher, and M-110 selection: 106 passed. Test-Goblin routine,
   deterministic report regeneration, Ruff, Ruff format, `ty`, BasedPyright,
@@ -4005,8 +4065,9 @@
   token-free clean-room restore receipts as `candidate_receipt_available_unbound`
   for these 14 objects. The two August objects remain without this receipt
   binding. This does not create a v4 contract, change rights, admit objects, or
-  qualify any consumer canary. Keep the denominator at 1,759, admissions at
-  zero, and M-112 canaries at zero.
+  qualify any consumer canary. The 1,759 denominator, zero admissions, and
+  zero canaries are the 2026-10-20 checkpoint state, superseded by the
+  2026-10-21 current readback below.
 - [x] Validate the deterministic refresh: focused selection 14 passed; broader
   federation and admission selection 195 passed; Test-Goblin routine, Ruff,
   `ty`, context/ecosystem validation, and `git diff --check` passed. Qualification
@@ -4031,3 +4092,2059 @@
   No public dataset mutation or source-payload retention occurred. This is
   M-110 candidate evidence only; M-112 admissions and M-112 consumer canaries
   remain zero.
+
+## M-112 admitted-object consumer canary preparation (2026-10-20)
+
+- [x] Build the exact v4.1 contract for the July 2016 MBS Group raw B2
+  object and verify all external receipt roles plus independent admission.
+  The contract pins public revision
+  `dee9a5b0580dfe394474dc26b372559462e157e7`, path
+  `raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx`, 6,857,437 bytes,
+  and SHA-256
+  `9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285`.
+  Its contract SHA-256 is
+  `b95056d6ab657f5b280870dc2ac7dcb1578019224e843d423a99e2880f451d7e`.
+  Receipt closure verified 12 role bindings and 10 unique receipt payloads;
+  one exact object is technically admitted. The source-native workbook layout
+  remains unqualified and no values or rows are interpreted.
+- [x] Prepare a default-branch-only, 15-minute hosted workflow to revalidate
+  that exact admission, exercise `bind_consumer_contract` and
+  `FederatedReader` on the live public object, verify stream digest/size and
+  reader cache cleanup, and retain an aggregate-only canary receipt.
+- [x] Run and verify the exact-main canary after the workflow and qualification
+  merged. The exact July 2016 Group workbook canary passed in run `39300224557`;
+  its receipt and the later current 7/7 reconciliation are recorded below.
+
+## M-112 consumer canary cache-expiry correction (2026-10-20)
+
+- [x] Record hosted canary run
+  [39298714672](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39298714672)
+  against merged main `fee2f3078b6c482ffce007d70f26bed5ad8fee62`. It reached the
+  admitted-object consumer check but failed its final combined assertion. The
+  contract cache expiry was 15 minutes after the v3 replay, before this run;
+  the production reader therefore correctly retained no expired cache entry.
+  This failed attempt is not a passing canary and the count remains zero.
+- [x] Correct the canary to derive expected cache occupancy from the exact
+  admitted expiry timestamp at the observation point. It now accepts a retained
+  exact-object cache only while its admission is live, requires zero retained
+  bytes after expiry, and always checks that closing the reader clears cache.
+  Focused cache-boundary tests cover both live and expired receipts.
+- [x] Merge the correction and rerun on exact `main`. Run `39300224557` passed
+  the exact-object reader and cleanup checks; the aggregate receipt is recorded
+  below. The current M-112 readback now counts seven unique admitted objects
+  and seven canaries.
+
+## M-112 July 2016 admitted-object consumer canary passed (2026-10-20)
+
+- [x] Run hosted canary
+  [39300224557](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39300224557)
+  on exact merged `main` commit
+  `500344931252ce65768b55fb2f3e07191470344c`. The production contract binder
+  and `FederatedReader` accepted the admitted contract and exercised the exact
+  public July 2016 raw B2 object. Both remote and consumer-stream SHA-256 and
+  byte count matched the pinned identity. The admitted cache expiry had passed,
+  so the reader retained zero bytes; close also left zero cache bytes.
+- [x] Read back and retain the metadata-only workflow receipt at
+  `quality/qualifications/australian-m112-v4-july2016-consumer-canary-20261020-39300224557.json`
+  (SHA-256 `af870552004e50ab5174fc535c9e5bbefe59f6edc4d03c830ce40129adf22b6a`).
+  The exact object now has one v4 admission and one consumer canary. The overall
+  approved denominator remains 1,759; the remaining 1,758 paths are not
+  implied complete. Native workbook layout remains unqualified and no rows or
+  values were interpreted.
+
+## M-112 CMS reference-only effective rights readback (2026-10-20)
+
+- [x] Reconcile the exact approved CMS HCPCS rights decision into the current
+  reference-only readback fields, while retaining acquisition-time `unknown`
+  and the superseded landed admission's `unreviewed` status as history. Keep
+  source bytes external-reference-only and keep processing, derived rights,
+  canaries, and publication unauthorized.
+- [x] Verify the regenerated qualification and overlay bind the current rights
+  review, decision, and superseding landed admission to the exact CMS file.
+  Focused checks (40 tests after merging the concurrent replay update), routine
+  profile, and all 39 hosted checks passed on PR #1208 before merge.
+- [x] Make the effective admission state explicit in the current readback and
+  fail closed unless the latest admission is approved, is for the exact CMS
+  acquisition/content, and supersedes the original landed admission. The new
+  report labels the superseded `unreviewed` admission and acquisition-time
+  `unknown` separately from the effective `permitted` / `approved` state. The
+  append-only current snapshot is
+  `quality/qualifications/australian-m112-rights-release-preflight-20261020-3.json`;
+  it preserves the prior `-2` snapshot unchanged. This clarifies the existing
+  exact-file decision only; external publication, processing, derived-table
+  rights, v4 admission, and canaries remain unauthorized.
+
+## M-112 second raw-object v3 replay preparation (2026-10-20)
+
+- [x] Generalize the metadata-only replay planner and hosted executor to one
+  exact raw MBS B2 path at a time. The target must uniquely match the frozen
+  role report and pass exact-rights, anonymous-digest, B1/B2, publication, and
+  restore checks. Reject paths outside the MBS raw-B2 prefix and any identity
+  already present in a v4 contract. Preserve the existing July workbook replay
+  plan identity.
+- [x] Validate the exact candidate
+  `raw/mbs/utilisation/group/mbs-group-2016-july.csv` at public revision
+  `dee9a5b0580dfe394474dc26b372559462e157e7` (12,291,303 bytes,
+  SHA-256 `62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b`).
+  Official metadata supports its July 2016 YTD temporal description; native
+  schema layout remains unqualified. The replay does not interpret rows or
+  source values.
+- [x] Focused replay tests (13), broader admission/consumer/replay tests (131),
+  Test-Goblin routine, Ruff, `ty`, BasedPyright, actionlint, and the existing
+  workbook replay plan check passed.
+- [~] Merge and run the bounded default-branch replay for this CSV. Read back
+  its exact run receipt and verify the digest, byte count, token-free fetch,
+  and temporary-byte cleanup before binding the new v3 role into a v4 contract.
+  The M-112 count is one admitted object and one consumer canary out of 1,759;
+  this candidate is not admitted by replay evidence alone.
+
+## M-112 July 2016 CSV admitted-object consumer canary (2026-10-20)
+
+- [x] Merge PR [#1212](https://github.com/edithatogo/global-medicines-atlas/pull/1212)
+  with all required hosted checks passing. The workflow now selects one exact
+  qualified object while remaining constrained to an exact merged-main commit.
+- [x] Run hosted canary
+  [39317542644](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39317542644)
+  on merge commit `8932efd261ff6e4956dfc013702a5db19281ca63`. The production
+  binder and `FederatedReader` read the exact admitted July 2016 CSV; remote and
+  streamed digest and byte count match. Cache bytes were zero after read and
+  close. No source values or rows were interpreted or retained.
+- [x] Read back the metadata-only receipt at
+  `quality/qualifications/australian-m112-v4-group2016-csv-consumer-canary-20261020-39317542644.json`
+  (SHA-256
+  `c129eb177924a1a2096c2bfd0ea9fac3585fedd9c53cb2a6c8fcbcf4ddcb7b1c`).
+  M-112 now has two admitted objects and two `FederatedReader` canaries out of
+  1,759 approved paths. This does not qualify API, CLI, Atlas, browser product
+  consumers, source-native CSV semantics, or the remaining denominator.
+
+## M-110 and M-112 bounded consumer canary refresh (2026-10-20)
+
+- [x] Requalify the admitted July 2016 MBS raw B2 object through the pinned
+  `FederatedReader` on exact `main` commit
+  `7dbf14db2403485cabbe699858579cf7c7567012`. Hosted canary run
+  [39306554319](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39306554319)
+  passed; remote and streamed digests matched, no source values were
+  interpreted or retained, and reader cache usage was zero after read and
+  close. Receipt:
+  `quality/qualifications/australian-m112-v4-july2016-consumer-canary-20261020-39306554319.json`
+  (SHA-256
+  `62aa052690bf3092aaf658d747654bc14316807e005e72f063ec11b158df4f18`).
+  The M-112 total remains one admitted object and one admitted-object canary;
+  the other 1,758 denominator entries are not implied complete.
+- [x] After checking the exact MBS Gold candidate qualification, run hosted
+  workflow [39306778440](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39306778440)
+  on the same exact `main` commit. API, CLI, Atlas, and Chromium traversed all
+  5,989 candidate edges with identical ordered edge-ID digests. The aggregate
+  receipt is
+  `quality/qualifications/australian-mbs-gold-candidate-consumers-20261020-39306778440.json`
+  (SHA-256
+  `4b9b4141a877d86aad7cb92fdc4e4d82ae012503e750418e5fb7ce2dccdf98af`).
+- [x] Keep the evidence scopes distinct: the MBS Gold traversal remains
+  candidate-only with `review_state=not_reviewed`; it does not establish M-110
+  acceptance, semantic calibration, M-112 admission, or increase the M-112
+  admitted-object canary count. No public dataset was mutated and no source
+  bytes were retained.
+## M-112 PBS publication and current admission/canary readback (2026-10-20)
+
+- [x] Reconcile the exact April 2026 PBS source ZIP to Decision 0009, its
+  publication-intent record, the hosted anonymous digest receipt, and the
+  current pinned path/digest/size. Record exact-object publication authority
+  separately from the still-unknown upstream licence and preserve the
+  acquisition-time `unknown` state.
+- [x] Keep the exact PBS Bronze Parquet projection
+  `bronze/2026-04-01/pbs-v3-source.parquet` unresolved; source permission does
+  not imply derivative rights. No rights conclusion, v4 admission, or release
+  is made for the projection.
+- [x] Reconcile the successful exact-main July 2016 MBS workbook and CSV
+  canary receipts. They bind two distinct rights-cleared raw B2 objects and
+  contracts, so current counts are two admitted objects, two canaried objects,
+  and 1,757 deferred objects. Source values and native layouts remain
+  unqualified. Rights remain 32 resolved and 1,727 unresolved across the frozen
+  1,759-object inventory.
+- [x] Refresh the effective-rights report and preflight with exact hashes and
+  both canary run receipts; preserve all other deferrals, keep inventory
+  membership unchanged, and add no sources or datasets.
+- [x] Focused rights/preflight tests passed (9); Ruff, format, ty, BasedPyright,
+  and diff checks passed. Full profile: 7,010 passed, 3 skipped, 3 failed. Two
+  failures require pinned uv 0.11.29; both passed in the pinned-toolchain rerun
+  after verifying the official release archive digest. One unrelated Chromium
+  end-to-end timeout passed when isolated. Coverage was 96.90%.
+- [ ] Resolve the exact PBS Bronze projection's own rights and continue the
+  remaining source-specific rights review.
+
+- [x] After integrating main commit `5b4d6626` (PR #1211), rerun the
+  rights/preflight and July 2016 admission/role suites together: 28 passed.
+  Routine profile, Ruff, format, ty, BasedPyright, and diff checks passed on the
+  integrated tree.
+
+## M-110 reviewed-candidate consumer canary (2026-10-20)
+
+- [x] Bind the exact maintainer disposition at
+  `quality/qualifications/australian-mbs-gold-same-record-review-20261018.json`
+  to the 5,989 source-explicit July 2025 MBS `source_record_has_benefit`
+  edges and their reviewed edge-ID digest. The disposition is
+  `accepted_candidate_only`; it does not establish overall M-110 acceptance,
+  payability, clinical equivalence, or production admission.
+- [x] Require the hosted consumer qualifier to verify that review receipt and
+  exact edge digest, then compare the complete ordered traversal through API,
+  CLI, Atlas, and Chromium. Preserve the underlying graph's immutable
+  `review_state=not_reviewed` and report review separately.
+- [x] Run the bounded traversal on exact `main` commit
+  `386b6bd292e6a657dc01d17c8355d9fa13d35bfa` (hosted run
+  [39322203034](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39322203034))
+  and read back the metadata-only receipt at
+  `quality/qualifications/australian-mbs-gold-reviewed-candidate-consumers-20261020-39322203034.json`
+  (SHA-256 `8b5d1a6b1537981cac50af6843a0dc52a7a3d1d1203f9850740b0c5552cf96a1`).
+  API, CLI, Atlas, and Chromium each returned the same ordered 5,989-edge
+  reviewed-candidate set (edge-ID SHA-256
+  `7a2ba8a0b31dca32101172bde49f6dc17d3ef6d873afb4760651f2a22c3a502d`).
+  This records four surface canary checks for one candidate relationship set;
+  it does not change the graph's immutable `review_state=not_reviewed`, accept
+  M-110 overall, establish clinical/payability/equivalence, or count as an
+  M-112 admitted-object canary. Earlier candidate traversals remain historical
+  and are not relabeled.
+
+## M-112 July 2025 MBS Silver current public metadata readback (2026-10-20)
+
+- [x] Read the anonymous current Hugging Face tree for
+  `edithatogo/australian-mbs-source-archive`. At revision
+  `42d73b6facac016f14a335d36d83f1a3b630add8`, all six exact July 2025 v3
+  Silver Parquet paths have the same LFS SHA-256 digests and byte counts as
+  the maintainer rights attestation. Record the metadata readback in
+  `quality/qualifications/australian-mbs-v4-current-public-tree-readback-20261020.json`.
+- [x] Reconcile that readback into the M-112 rights report and preflight. The
+  readback confirms current public metadata identity; the hosted receipt remains
+  the evidence of anonymous payload-byte verification at the publication
+  revision. No payload bytes or source values were read in this step.
+- [x] Preserve all boundaries: no new external publication, no new rights
+  conclusion, no v4 admission or promotion, no object-membership change. The six
+  objects remain a public candidate, not an accepted M-112 product. Frozen M-112
+  rights counts remain 32 resolved and 1,727 unresolved.
+- [x] Focused rights/preflight tests passed (9); Ruff, Ruff format, ty,
+  BasedPyright, routine Test-Goblin, and diff checks passed.
+
+## M-112 historical 1993–2015 raw B2 v4 role qualification (2026-10-20)
+
+- [x] Select `raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip`
+  from the frozen 1,759-path denominator. Exact-scope rights, B1/B2 lineage,
+  anonymous digest readback, official source period, publication/restore,
+  discovery, and v1 conformance evidence were already available; only the v3
+  replay/cache role was missing. Native source layout remains unqualified.
+- [x] Run the bounded hosted replay on exact `main`
+  `3df35dbd1475557122faa3025b915e37cf202a55`:
+  [39324097024](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39324097024).
+  Anonymous byte count and SHA-256 matched the frozen identity; the workflow
+  rebuilt only the append-only registration and removed temporary source bytes.
+- [x] Read back the aggregate-only receipt
+  `quality/qualifications/australian-m112-v3-replay-execution-20261020-39324097024.json`
+  (SHA-256 `d0b13510173001f20d4809d6389acd123465d55cb85091d8356c98104eb28731`)
+  and deterministic plan
+  `quality/qualifications/australian-m112-v3-replay-plan-20261020-39324097024.json`
+  (SHA-256 `1b1e68b33666b3d334e604534c50ab5ab912ae0c023d53764b0cd123a48fc7bf`).
+  The role qualifier now validates all three replay receipts. The current
+  admitted-object count remains two; replay alone does not admit the new object.
+- [x] Focused role/replay/contract tests passed (35), and the affected M-112
+  suite passed (172). The new contract path is
+  restricted to the exact public identity, rights decision, and bound role
+  evidence for this archive. Test-Goblin full completed with 7,017 passed,
+  3 skipped, and 2 failed at the existing Stable v1 clean-clone toolchain
+  checks because local uv is 0.13.1 while those checks require pinned uv
+  0.11.29; coverage was 96.89%. Context/registry, ecosystem validation,
+  Test-Goblin routine, Ruff, formatting, ty, BasedPyright (0 errors), and
+  diff checks passed.
+- [x] Build the per-object v4.1 raw-B2 contract against the merged role receipt,
+  verify the full external receipt closure, then record admission only if the
+  exact object and every required role validate. Keep native archive semantics
+  unqualified and all other denominator paths deferred.
+
+## M-110 screened-relationship consumer canary refresh (2026-10-20)
+
+- [x] After screening identified `source_record_has_benefit` as the only
+  evidence-qualified candidate class, rerun the bounded exact-main consumer
+  check on `e02e0b0dccf0893954125a2780c2a2b3436b6574`. Hosted run
+  [39326767284](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39326767284)
+  passed 5,989 candidate edges through API, CLI, Atlas, and Chromium with
+  matching ordered edge-ID digests. Bounded DuckDB/Polars date and decimal
+  queries also matched. Aggregate receipt:
+  `quality/qualifications/australian-mbs-gold-candidate-consumers-20261020-39326767284.json` (SHA-256 `0f8aa73bfa745610a70ce6ba4190fdcb1fef0ae7be5aa1c87a5b17640cbdca00`).
+- [x] This is one four-surface M-110 screened-candidate canary. It does not
+  accept M-110 overall, calibrate match scoring, promote cross-source
+  relationships, or count as an M-112 admitted-object canary.
+
+## M-112 historical 1993–2015 raw B2 v4 admission and canary preparation (2026-10-20)
+
+- [x] Bind candidate roles to merged exact-main evidence commit
+  `060114c0a9d1d6f8122f0829f24257861ae30e75`; create the exact raw-B2
+  v4.1 contract with SHA-256
+  `992eb2ce2d93891f51423284df2d718bc7d44af6511cc09c11c33a578588210b`.
+- [x] Independently verify the contract’s 12 receipt roles against 10
+  unique public receipts. The exact 1993–2015 object is admitted; native
+  archive layout remains unqualified. Recorded admission qualification:
+  `quality/qualifications/australian-m112-v4-historical-1993-2015-admission-qualification-20261020.json`.
+- [x] Refresh current role reconciliation: three v4 admissions, two
+  admitted-object canaries, approved denominator unchanged at 1,759.
+- [x] Extend the hosted bounded `FederatedReader` canary workflow to
+  accept this exact admitted path; focused admission/role tests passed (23),
+  broader affected suite passed (176), and routine Test-Goblin, Ruff,
+  formatting, role check, and diff checks passed.
+- [x] After this contract and workflow change merged, run the exact-main
+  hosted canary for this object, read back its aggregate receipt, then
+  refresh role qualification to count the third canary.
+
+## M-112 historical 1993–2015 admitted-object consumer canary (2026-10-20)
+
+- [x] Run the bounded hosted `FederatedReader` canary on exact `main`
+  commit `3149a5533ecb1b721d9deda66311d4abc94ee3d1`; workflow run
+  [39330593204](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39330593204)
+  passed for the exact 1993–2015 archive. Remote digest and streamed
+  digest matched; reader cache was zero after read and close; no source
+  values were interpreted or retained. Aggregate receipt:
+  `quality/qualifications/australian-m112-v4-historical-1993-2015-consumer-canary-20261020-39330593204.json`
+  (SHA-256 `b10a7f795014e0b6ebc975330062bb9e20dd13d66996a09b1a5a69c4b438803f`).
+- [x] Reconcile current M-112 qualification: 3 admitted objects and 3
+  per-object consumer canaries of 1,759 approved paths; the remaining
+  1,756 paths remain deferred. Native source archive layout remains
+  unqualified. The separate M-110 candidate consumer canary is not counted
+  as an M-112 admission canary.
+- [x] Focused admission/role tests passed (24); broader M-110/M-112 suite
+  passed (177); role reconciliation, Test-Goblin routine, Ruff, formatting,
+  and diff checks passed.
+
+## M-112 exact raw PBS rights reconciliation (2026-10-20)
+
+- [x] Bind the active owner-attested raw PBS redistribution permission at
+  `edithatogo/reimbursement-atlas` revision
+  `a93516ed416118bc51c1db2b71ab540fa4d0fe52` to exactly 1,708 frozen,
+  lineaged raw objects: 1,707 reimbursement-atlas objects and one already
+  landed PBS XML-V3 archive object. The permission snapshot digest is
+  `0817123492cfe20858f86b3ec14c92539081a647b17dd6933d2d2ff8c266d098`.
+- [x] Preserve the permission's limits: it is an owner attestation, not an
+  independently verified publisher licence; historical acquisition rights
+  remain unchanged; no public release, project-wide publication, v4 admission,
+  canary, payload-byte read, or source-value inspection is authorized by this
+  reconciliation. The PBS Bronze projection, 12 reimbursement-atlas derived
+  projections, and all other unresolved objects retain their own rights gates.
+- [x] Refresh current rights and release-preflight reports. Frozen membership
+  remains 1,759; effective rights are 1,740 resolved and 19 unresolved. All
+  1,756 deferrals, three existing admissions, and three admitted-object
+  canaries remain unchanged.
+- [x] Focused rights and preflight tests passed (11); broader M-112/M-110
+  rights, role, and graph tests passed (54). Updated post-canary verification
+  is recorded below with the corresponding PR evidence.
+- [ ] Resolve rights for the remaining derived and source-specific objects;
+  do not infer derived rights from this raw-source permission.
+
+## M-112 Reimbursement Atlas medallion rights-ledger readback (2026-10-20)
+
+- [x] Freeze the current upstream rights-ledger comparison for the 12 exact
+  Reimbursement Atlas medallion projection identities. At upstream revision
+  `a93516ed416118bc51c1db2b71ab540fa4d0fe52`, none of the 184 current
+  checksum-bound decisions match an exact path/digest pair, and none of the
+  19 standing-scope paths covers these outputs. The current licensing policy
+  requires source-specific approved evidence for derived-output publication.
+  Readback: `quality/qualifications/australian-m112-reimbursement-atlas-medallion-rights-ledger-readback-20261020.json`
+  (SHA-256 `20f1d99b97ff5e91a75d1c36413176061db451def6fbd19bb644ebf58c4827db`).
+- [x] Record the maintainer-attested public redistribution rights basis for
+  these exact 12 path/digest/byte-count identities, at maintainer direction
+  without locating the instrument. The qualification explicitly preserves
+  admission, consumer-canary, and release-execution gates:
+  `quality/qualifications/australian-reimbursement-atlas-medallion-rights-attestation-20261020.json`.
+  Reconciliation binds complete B1/B2 lineage and unchanged frozen membership;
+  no projection values or source payload bytes were inspected.
+- [ ] Resolve rights for the exact PBS Bronze source projection. Its raw-source
+  redistribution permission and lineage do not grant derived-output rights.
+
+## M-112 Reimbursement Atlas projection rights attestation (2026-10-20)
+
+- [x] Apply the maintainer's statement that exact written permission or another
+  applicable rights instrument exists to the 12 exact Reimbursement Atlas
+  medallion projection identities. Per instruction, the instrument was not
+  located or independently reviewed. The attestation is limited to these
+  frozen paths, digests, and byte counts; public release execution, v4
+  admission, and consumer canaries remain false. The reconciled rights count is
+  1,752 resolved and 7 unresolved, with all 1,759 frozen identities and the
+  three existing admissions/canaries unchanged. Current report:
+  `quality/qualifications/australian-m112-current-rights-reconciliation-20261020-2.json`.
+  Current preflight:
+  `quality/qualifications/australian-m112-rights-release-preflight-20261020-2.json`.
+- [ ] Resolve source-specific rights for the PBS Bronze projection, separately
+  from its raw archive permission.
+
+## M-112 PBS Bronze projection rights terms readback (2026-10-20)
+
+- [x] Compare the exact `bronze/2026-04-01/pbs-v3-source.parquet` identity
+  with current official PBS API documentation and the raw-source permission.
+  Official docs describe public access and download/local storage; they do not
+  record an express redistribution grant for this derived output. The exact
+  API `_meta` copyright notice has not been read back. The raw permission is
+  limited to raw objects. Rights remain unresolved; no release, processing, or
+  admission authority is inferred. Readback:
+  `quality/qualifications/australian-m112-pbs-bronze-projection-rights-source-terms-readback-20261020.json`
+  (SHA-256 `6d9f380ab3ce60a66c166de118afac613ab1a76927b487aa153aedef5aea31b6`).
+- [ ] Obtain an object-bound applicable rights basis for this projection; do
+  not infer its rights from the raw archive permission or lineage.
+
+## M-112 Q3 2016 demographics raw B2 replay role qualification (2026-10-20)
+
+- [x] Run exact-main bounded v3 replay for the Q3 2016 demographics CSV on
+  `1ebee786331c2e63d0a4d9501894ad657006ea9d`: hosted run
+  [39344611967](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39344611967) passed anonymous digest verification, rebuilt only its append-only
+  B2 registration, and removed temporary source bytes. Exact object digest is
+  `bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c`
+  (7,680,041 bytes).
+- [x] Retain and reconcile the deterministic plan, aggregate receipt, and
+  readback manifest. The current M-112 role report binds 4 of 16 candidate v3
+  replay/cache roles, with 14 publication/restore roles, 3 existing v4
+  admissions, and 3 existing admitted-object canaries. This replay creates no
+  v4 admission or canary.
+- [x] Build and independently verify the exact Q3 raw-B2 v4.1 contract after
+  the role-evidence merge, then run its admitted-object canary on exact `main`.
+  The exact-main qualification is recorded at
+  `quality/qualifications/australian-m112-v4-demographics-q3-july-admission-qualification-20261020-39356792827.json`.
+  Native source layout remains unqualified and outside this raw-B2 admission.
+
+## MBS August projections outside the frozen M-112 inventory (2026-10-20)
+
+- [x] Record the maintainer's attestation for the exact four already-public
+  August 2026 MBS Bronze Parquet outputs identified by product IDs
+  `d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b` and
+  `f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63`. The
+  permission instrument was not located or independently reviewed, as directed.
+  The attestation binds each exact path, digest, byte count, dataset, and public
+  revision. It does not add the outputs to frozen M-112 inventory, perform new
+  publication, inspect source/Parquet bytes, authorize v4 admission, or authorize
+  consumer canaries. The scoped readback is
+  `quality/qualifications/australian-mbs-public-august-projection-scope-exception-20261020.json`;
+  attestation is
+  `quality/qualifications/australian-mbs-august-outside-m112-projection-rights-attestation-20261020.json`.
+
+## M-112 Q3 HR contract candidate and consumer-canary readiness (2026-10-21)
+
+- [x] Merge the Q3 2016 July HR v3 replay evidence in PR [#1241](https://github.com/edithatogo/global-medicines-atlas/pull/1241) at exact main commit `6dc3f707382f65659b511c98e55412ecbdb0d6b2`. Hosted run [39431880718](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39431880718) passed anonymous digest verification for the exact 7,316,301-byte object (`7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152`) and removed temporary source bytes.
+- [x] Pre-canary baseline: six admitted objects had six passed admitted-object consumer canaries in the role qualification (SHA-256 `6b02c5cf5e93a15a753f573ff6e3da5c8d76183270c4be53c4ddef51fbc1679a`). This supersedes still-earlier plan snapshots that said zero or three; the Q3 HR admission and canary were pending at this checkpoint.
+- [x] Add Q3 HR as an exact target in the v4.1 contract builder and bounded consumer-canary workflow. Generate and validate the candidate contract bound to the merged replay receipt. Contract SHA-256: `f65f1da3d4b9018e61a1ba31a5de1ceeb9bfa732da363a142c88bc7260eca469`. Native workbook schema remains unqualified; admission and consumer-canary completion is recorded in the following section.
+- [x] Focused tests passed (20); broader affected admission/role/reconciliation tests passed (49). Ruff, formatting, `ty`, BasedPyright, actionlint, contract `--check`, and `git diff --check` passed. The local full Test-Goblin profile completed with 7,015 passed and 3 skipped but failed 31 tests because this workstation lacks Playwright Chromium and has uv 0.13.1 while reproducibility tests require 0.11.29. These environment failures do not pass the full profile; protected hosted checks remain required for the scoped PR.
+- [x] Merge the scoped target-support and contract PR, verify the contract on exact `main`, then run the bounded hosted v4 admission/consumer workflow for the Q3 HR path. Read back and validate the metadata-only hosted receipt before incrementing admission/canary counts or marking this item complete. Do not infer native schema qualification or cross-source relationship calibration from this raw-B2 reader canary. Completion evidence is recorded below.
+- [x] Preserve the historical rights-preflight snapshots. The first unit lane exposed that the plan digest was stale after this update; retain the prior snapshot byte-for-byte and bind the final plan bytes in the new current preflight revision `quality/qualifications/australian-m112-rights-release-preflight-20261021-3.json`, without changing rights, denominator, admission, or canary state.
+
+## M-112 Q3 HR exact-main v4 admission and consumer canary (2026-10-21)
+
+- [x] PR [#1243](https://github.com/edithatogo/global-medicines-atlas/pull/1243) merged by squash at exact main commit `0f95edc35778b848072602c4aed5c59d6c9564a6` after all required checks passed. The PR pins the merged evidence commit for reproducible Q3 HR contract regeneration.
+- [x] Exact-main hosted workflow [39444235017](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39444235017) passed the Q3 HR contract verification, v4.1 admission, and bounded `FederatedReader` consumer canary. It verified remote and consumer-stream digest matches, zero reader-cache bytes after read/close, and no public dataset mutation, source-value inclusion, or retained source bytes. Its metadata-only receipt is `quality/qualifications/australian-m112-v4-july2016-admission-qualification-20261021-39444235017.json` (SHA-256 `81497c806bd307688e11113e25160de2afbf5164579a877bf5b4d00bc70eab9e`). Native workbook schema remains unqualified.
+- [x] Reconcile the current role qualification to seven exact admitted objects and seven passed consumer canaries, preserving the approved 1,759-object denominator and recording 1,752 remaining deferrals. The role report SHA-256 is `d57fbdb0d1803e52593c4ffe19b0286cf60ea0ab1a036ad19f4e81ff630d790d`; current rights reconciliation SHA-256 is `22fd38ddc616c85743ef71898bfaefebcf983dfb868851b7f1dc24d93a3a6400`.
+- [x] Refresh the current rights-release preflight as `quality/qualifications/australian-m112-rights-release-preflight-20261021-5.json`, preserving revision 20261021-4 byte-for-byte as its predecessor. The exact-main workflow completed at `2026-10-20T14:59:44Z`; the current reconciliation uses that actual receipt time, not local midnight labeled UTC.
+- [x] Pin the Q3 HR receipt to dataset revision `dee9a5b0580dfe394474dc26b372559462e157e7` in current-rights reconciliation and reject receipts that change admission and canary revisions together.
+- [x] Validate the updated qualification with 58 focused contract/admission, role, current-rights, and preflight tests; Ruff, formatting, and `git diff --check` pass. Do not count this raw-B2 reader canary as native schema qualification or relationship calibration.
+
+## M-112 current qualification readback (2026-10-21)
+
+The latest preflight binds the current rights reconciliation and role report:
+all 1,759 frozen objects have resolved rights, seven exact objects are admitted
+and canaried, and 1,752 remain deferred. The July HR workbook reader canary does
+not itself qualify native layout or relationship semantics; separate physical
+layout evidence now qualifies the exact pinned workbook structure only. No
+source or dataset was added and no external publication was performed. Current receipts:
+`quality/qualifications/australian-m112-rights-release-preflight-20261021-7.json`,
+`quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json`,
+and `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json`.
+The latest local candidate-role refresh is
+`quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json`
+(SHA-256 `67fb4cd0ccf3073fd472c3b5677b4b6452b55047fff0791a3720eb14914369dd`);
+it retains seven admissions, seven canaries, and 1,752 deferrals. The bound
+preflight still references the 20261020 role-report input. This refresh does
+not itself perform the pending Q1 HR admission or canary.
+
+## M-112 lineage and next bounded v4 cohort (2026-10-21)
+
+- [x] Bind the July 2025 MBS XML (`db873768…11a556`, 8,194,522 bytes) and
+  July 2024 P7 workbook (`2f1cbc2d…e27b8`, 87,727 bytes) to their existing
+  receipt, acquisition, external-reference B2 manifest, and landed unreviewed
+  admission. Their lineage reports preserve the approved inventory revision
+  and path membership. P7's archive retrieval lineage does not establish its
+  original source-origin acquisition or qualify workbook date semantics.
+- [x] Qualify the next bounded cohort from the frozen inventory. The v4 role
+  report binds seven exact objects, eligibility, admissions, and passed
+  `FederatedReader` consumer canaries; seven remain admitted and canaried while
+  1,752 objects remain deferred. The exact Q1 HR workbook's physical layout is
+  qualified by the separate 2026-10-21 layout report; native field/formula
+  semantics and relationship semantics remain unqualified.
+- [x] Reconcile the current evidence without changing inventory membership,
+  adding sources, mutating the public dataset, or publishing. The reviewed
+  lineage overlay reports 22 complete raw B1/B2 lineages, 118 exact raw
+  digest/path joins (119 including the separately identified same-content
+  alias), and zero raw/projection objects without direct or alias SHA-256
+  evidence.
+- [x] Record the bounded completion in this track's append-only evidence
+  ledger under `m112_mbs_lineage_and_next_bounded_cohort`.
+
+## M-110 bounded MBS candidate content screen (2026-10-21)
+
+- [x] Re-read the six exact, already-authorized July 2025 MBS v4 candidate
+  Parquet objects at immutable revision `42d73b6facac016f14a335d36d83f1a3b630add8`,
+  verify each byte count and SHA-256, and screen all 35,934 rows in memory.
+  The bounded sensitive-field-name, email-like-value, and exact-digest screen
+  found no patterns across 1,040,085 bytes. The aggregate-only receipt is
+  `quality/qualifications/australian-mbs-v4-bounded-content-screen-20261021.json`
+  (SHA-256 `83ae8b29ad197495c6cb929165bf2560eaaf22f13ffbb8c7410f8a26ce2d6e5e`).
+- [x] Complete the bounded content screen and classify detected indicators
+  across the six exact July 2025 MBS v4 candidate tables and six exact PBS
+  utilisation objects. The current disposition reports 35,934 screened MBS
+  rows, 1,314,870 ATC-shaped PBS values, 136 terminology-marker occurrences,
+  zero UMLS-CUI matches, and zero email-like values; all observed indicators
+  have field/context classification. Receipt:
+  `quality/qualifications/australian-restricted-content-screen-disposition-20261021.json`
+  (SHA-256 `81fc11f9d4b1a07de3ff7ebbc3d5bf444b6eaabeed0acfc9fed794db53c3d184`).
+- [ ] Retain the residual boundary: the configured detectors are not
+  exhaustive, ATC membership is unverified, and the rights instruments were
+  not independently reviewed. This closes the bounded screen only; it does not
+  clear broader restricted content or authorize release.
+- [ ] Calibrate the actual matcher on representative, human-adjudicated,
+  case-disjoint held-out labels from the existing source scope. The available
+  400/400 generated matcher cases are synthetic-only and produce poor holdout
+  calibration; no confidence or production threshold is selected.
+
+## M-112 next bounded cohort preparation (2026-10-21)
+
+- [x] Confirm the two exact July 2026 MBS Basic Service Description sidecars
+  already have reviewed B1/B2 bindings. The reviewed lineage overlay binds the
+  CSV (`07563bb…3eb5b6`, 135,983 bytes) and XML (`b71f1f…be9f4a3`, 615,386
+  bytes) to their source receipts, acquisitions, external-reference B2
+  manifests, and landed unreviewed admissions. This does not admit either
+  object or qualify its source semantics.
+- [x] Replay the next eligible exact object, the Q1 2016 HR workbook, through
+  hosted run [39533443472](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39533443472)
+  on exact `main` `de76083a0da67414c803c7a74de00162fe5dfbad`. Anonymous digest
+  and byte-count verification passed for SHA-256
+  `d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d`
+  (21,966,140 bytes); the workflow read no source values and removed its
+  temporary bytes. The candidate-only receipt is
+  `quality/qualifications/australian-m112-v3-replay-execution-20261021-39533443472.json`.
+- [x] Bind that replay and cleanup evidence in successor manifest
+  `quality/qualifications/australian-m112-v3-replay-readbacks-20261021.json`
+  and role qualification
+  `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json`.
+  V3 replay candidates rise from seven to eight of 16; admission remains
+  seven, canaries seven, and 1,752 objects remain deferred.
+- [x] Add exact Q1 HR identity support to the v4 raw-B2 contract builder and
+  consumer-canary target set. The contract construction test verifies its
+  pinned identity and pending-consumer state. This creates no admission or
+  canary. The workbook's physical layout is qualified separately; native field
+  semantics and formulas remain unqualified.
+- [~] Complete exact-head v4 admission and consumer canary for this candidate
+  after the support changes and candidate contract are available on `main`.
+  The row remains open until hosted admission and canary readback are recorded.
+
+
+## M-110 PBS utilisation identifier-shape screen (2026-10-21)
+
+- [x] Re-screen all six exact, already-authorized PBS utilisation objects at
+  immutable revision `9f1d53cd50eea251b326da42a96f3ac72ebce97a` in memory.
+  Original byte counts and SHA-256 digests matched the pinned lineage for all
+  191,047,619 bytes. The aggregate-only qualification is
+  `quality/qualifications/australian-pbs-utilisation-identifier-shape-screen-20261021.json`
+  (SHA-256 `fa8b25d1bd312d097b9f72cf97e418af61e4aa33f7b4c55a40a7dcad20cafc71`).
+  The scan found 1,314,870 ATC-shaped strings, 928,410 six-to-eighteen-digit
+  numeric candidates, and 136 explicit terminology markers; the exact UMLS CUI
+  text pattern occurred zero times. No source values or files were retained.
+- [ ] Complete the vocabulary-membership review and determine excluded versus
+  cleared fields. The pattern counts are candidate indicators: numeric or
+  ATC-shaped strings cannot be assigned to a licensed vocabulary from shape
+  alone, and the existing approved scope contains no complete vocabulary
+  dictionary or source-owner field contract. The maintainer's exact six-object
+  rights attestation includes all vocabulary, but the instrument was not
+  independently reviewed. Full-content classification remains open; this scan
+  itself authorizes no admission or release.
+
+
+## M-110 PBS field-level pattern localization (2026-10-21)
+
+- [x] Attribute the previously observed pattern totals to file and column
+  positions in a second in-memory pass over the same six pinned PBS objects.
+  Forty-one field positions contained at least one pattern; the summary
+  workbook's column position 2 contains ATC-shaped strings across five sheets,
+  the item-drug map contains ATC-shaped strings at column position 3, the two
+  DOS CSVs contain numeric candidates in seven columns each, and the expenditure
+  workbooks contain explicit terminology-marker text. The aggregate report
+  stores column positions and opaque label hashes, not labels or values:
+  `quality/qualifications/australian-pbs-utilisation-field-pattern-screen-20261021.json`.
+- [ ] Human/source-contract review must map these positions to exact fields and
+  determine vocabulary membership and rights disposition. Opaque label hashes
+  cannot substitute for field meaning. The existing exact six-object rights
+  attestation covers all contents, including vocabulary, with the instrument
+  not independently reviewed; no admission or publication follows.
+
+
+## M-112 Q1 HR local role binding (2026-10-21)
+
+- [x] Build and validate the exact v4.1 raw-B2 contract for the replayed Q1
+  2016 HR object. The canonical contract is
+  `quality/qualifications/australian-m112-v4-demographics-q1-marchhr-raw-b2-contract.json`
+  (SHA-256 `5a8f97b0e36ad1e90110166e3fd66fda6ee7f12fd572232c5ba3cb0e8584d9a5`);
+  it binds the pinned 21,966,140-byte object and its exact digest, source,
+  acquisition and lineage roles. Schema and semantic checks pass. Native
+  physical workbook layout is qualified by the exact-object layout report.
+  Workbook metadata qualifies the processing-month basis, and the formula/cache
+  comparison qualifies text-literal storage behavior. Age category meaning,
+  `Benefits ($)` meaning, and a typed transform remain unqualified.
+- [~] Complete anonymous receipt closure and exact-main admission/canary. The
+  local closure attempt found that the Q1 replay receipt URL at pinned main
+  `de76083a0da67414c803c7a74de00162fe5dfbad` returns HTTP 404. The contract is
+  now bound to local evidence commit `de77e8e2b7f88994c1b99919c475d085fc9b39a7`,
+  which contains that receipt, but this commit is not publicly available while
+  the no-push/no-PR rule is active. Admission and canary remain 7 each; the
+  1,752 deferrals and 1,759 denominator are unchanged.
+
+
+## M-112 Q1 HR physical workbook layout qualification (2026-10-21)
+
+- [x] Bind the native physical layout of the exact Q1 2016 HR workbook to its
+  replayed source digest and byte count. The in-memory read verified the exact
+  21,966,140-byte object, two sheets, primary sheet `MBS Demographics 2016
+  Qtr1` with declared range `A1:H545077`, and a separate `Metadata` sheet. Its
+  primary header row is row 3 with eight fields. No source records or values
+  were emitted or retained. The aggregate inventory is
+  `quality/qualifications/australian-mbs-demographics-q1hr-workbook-layout-candidate-20261021.json`.
+- [x] Compare header shape with the already-reviewed Q1 demographics CSV schema
+  in the existing inventory. The workbook has four distinct header labels
+  (`Month`, `Item_Number`, `Age_Range`, `Benefits ($)`) versus the CSV schema
+  (`Month of Processing`, `Item Number`, `Age Range`, `Benefit`). This qualifies
+  a physical layout difference; it does not map those fields or assert semantic
+  equivalence. The workbook contains 171,477 formula cells; formulas were not
+  evaluated.
+- [x] Qualify the source-reported month interpretation and stored formula
+  behavior. The metadata sheet defines `Month` by service processing date
+  rather than service date; the formula/cache comparison finds every observed
+  `Age_Range` output is a text literal equal to its cached string. The reports
+  are `australian-mbs-demographics-q1hr-metadata-semantics-20261021.json`
+  (SHA-256 `927269591afa38f5393615510a0ae5dc8ce8a6b99040759de92f7bdeeb465bd5`)
+  and `australian-mbs-demographics-q1hr-formula-literal-analysis-20261021.json`
+  (SHA-256 `f324ae679840bd57fb7e7d566f9a18fdf7a90a4614289cce865b2086be97fa3e`).
+- [ ] Resolve `Age_Range` category meaning, `Benefits ($)` calculation,
+  unmatched rows, and any source-era mapping before a loss-aware typed
+  projection. These reports do not establish CSV equivalence or a valid
+  transformation. Exact-main admission and the reader canary remain separately
+  open.
+
+
+## M-112 Q1 HR formula and existing-CSV comparison (2026-10-21)
+
+- [x] Verify both existing Q1 objects at the same pinned revision and compare
+  workbook formula structure without emitting formula text or cell values. The
+  workbook contains 171,477 formula cells, all in `Age_Range`; 171,346 have
+  formula text with one normalized syntax shape, and 131 shared-formula cells
+  have no local formula text. No formula results were evaluated. Aggregate
+  profile: `quality/qualifications/australian-mbs-demographics-q1hr-formula-syntax-profile-20261021.json`
+  (SHA-256 `01034f8a4d7f341a342c09f7591262ff13563ec492fea35294d9c83c9200a556`).
+- [x] Compare workbook values to the already inventoried Q1 CSV in memory, with
+  no row values retained or emitted. Both objects passed their pinned digest
+  and byte-count checks. The workbook has 545,074 parsed data rows versus
+  545,070 in the CSV; row-order comparison and order-independent full-row
+  comparison found zero exact full-row matches. The workbook `Age_Range`
+  frequencies had no exact values in common with the CSV; `Benefits ($)` also
+  differs substantially under exact numeric canonicalization. Aggregate
+  reports: `quality/qualifications/australian-mbs-demographics-q1hr-existing-csv-comparison-20261021.json`
+  (SHA-256 `5318d9328e72d64bb12a3157b3a59f7c16edd59cae22a7de5e6540e707684446`)
+  and `quality/qualifications/australian-mbs-demographics-q1hr-existing-csv-multiset-comparison-20261021.json`
+  (SHA-256 `dc3ac67bb87954227e28775546a26c5a75200c06b500f50a913f5516d35bc2eb`).
+- [ ] Resolve field mapping, formula authoring and cached-result meaning, four
+  additional workbook rows, and source-era semantics before defining a
+  loss-aware typed projection. The comparisons do not establish equivalence or
+  explain differences. No admission, canary, Silver projection, or public
+  mutation followed; current M-112 counts remain 7 admissions, 7 canaries,
+  and 1,752 deferred of 1,759.
+
+- [x] Profile the exact workbook's formula-expression and cached-output
+  relationship without retaining or emitting source values. The read-only
+  workbook view exposes 171,477 text-literal formulas in `Age_Range`; each of
+  the 171,477 cached outputs is a string matching its decoded literal, with no
+  formula references or operators. The raw XML profile separately records
+  171,346 explicit formula texts and 131 shared-formula cells without local
+  text; the library reconstructs those expressions in its workbook view. This
+  resolves calculation behavior only. It does not establish the labels' field
+  meaning, temporal scope, the four extra workbook rows, or equivalence with
+  the CSV, whose `Age Range` values have zero exact frequency overlap. Receipt:
+  `quality/qualifications/australian-mbs-demographics-q1hr-formula-literal-analysis-20261021.json`
+  (SHA-256 `f324ae679840bd57fb7e7d566f9a18fdf7a90a4614289cce865b2086be97fa3e`).
+
+- [x] Read the metadata sheet of the same exact Q1 HR workbook in memory and
+  qualify the source's reporting-period context. It defines `Month` by service
+  processing date rather than service date, describes the eligible registered-
+  provider Medicare-benefit population and exclusions, states that service
+  totals net later-day adjustments, and defines the month-end enrolled-person
+  denominator for per-capita measures. It also describes MBS group statistics
+  by age range and gender. This source-era evidence does not resolve the
+  `Benefits ($)` calculation, exact age-range categories, or equivalence to the
+  existing CSV. No source bytes or row values were retained. Receipt:
+  `quality/qualifications/australian-mbs-demographics-q1hr-metadata-semantics-20261021.json`
+  (SHA-256 `927269591afa38f5393615510a0ae5dc8ce8a6b99040759de92f7bdeeb465bd5`).
+- [x] Test whether Unicode, case, whitespace, dash, and numeric canonicalization
+  explain the workbook/CSV age-label and record-key differences. Both exact
+  pinned objects were reverified in memory; normalized age-label sets still
+  had zero overlap and no full record keys joined. This rejects a simple
+  formatting-only crosswalk while retaining the semantic mapping as unresolved.
+  No source labels or values were emitted or retained. Receipt:
+  `quality/qualifications/australian-mbs-demographics-q1hr-label-normalization-20261021.json`
+  (SHA-256 `6224cd9c6b479b6d4c5a1ecec43c2e10290b7aab0c363209cd8e8db0d892aaad`).
+
+
+## M-110 PBS field-header mapping follow-up (2026-10-21)
+
+- [x] Map the existing field-pattern counts to exact headers in the three
+  already-screened CSVs. The DOS numeric candidates occur in month, count,
+  contribution, cost, and markup fields; ATC-shaped values occur in
+  `ATC5_Code`. Resolve `ATC5_CODE` in the five annual summary sheets that hold
+  1,304,100 ATC-shaped strings. These are exact field labels, not vocabulary
+  rights or relationship qualification. The value-free receipts are
+  `quality/qualifications/australian-pbs-utilisation-pattern-field-header-map-20261021.json`
+  (SHA-256 `1e6c2e254af3704ab422cfc4a495648441dae9a533907bca4097cfab15cb33a4`) and
+  `quality/qualifications/australian-pbs-utilisation-summary-workbook-header-resolution-20261021.json`
+  (SHA-256 `f717d2bda385a1dc7080b3493de9430998172146c03b5f8252f21e6f61ae71dd`).
+- [x] Classify the observed marker content in the two expenditure workbooks:
+  all 136 detected occurrences are contextual or label text, and the separate
+  ATC-shaped scan found zero cells in those files. See the exact pinned
+  aggregate receipt below. This does not establish ATC vocabulary membership,
+  exhaustive detection, independent rights review, admission, or publication.
+
+
+## M-110 PBS six-object privacy-pattern scan (2026-10-21)
+
+- [x] Run a bounded privacy-pattern scan over all six exact PBS utilisation
+  objects at the pinned revision (191,047,619 bytes); each digest and size
+  matched. No email-shaped values were found. Six sensitive-looking DOS CSV
+  header hits resolve to `PATIENT_CAT`, `PATIENT_CONTRIB`, and
+  `PATIENT_NET_CONTRIB`, aggregate category and contribution measures. The
+  value-free receipts are `quality/qualifications/australian-pbs-utilisation-private-pattern-screen-20261021.json` (SHA-256 `43c1c2a80adb86bb215dbd2340645fee1ce20d4c17a2a0545c9134c2d4c86f33`) and
+  `quality/qualifications/australian-pbs-dos-sensitive-header-context-20261021.json` (SHA-256 `a5046bae17eb24a63e286f0c083ca0a2269c997bc2918b7fe3bf97324ee40654`).
+- [ ] Review the workbook narrative-token hits and restricted terminology. This
+  bounded detector is not exhaustive and makes no privacy, rights, or vocabulary
+  clearance claim. The current aggregate screen still does not classify whether
+  these narrative tokens represent individual-level content.
+
+
+## M-112 current role-report reference reconciliation (2026-10-21)
+
+- [x] Verify the latest candidate-role qualification at
+  `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json`
+  (SHA-256 `4c73d269e8d69ebea185cf7c62909641147e035fd7c784a46b94bd415fd03f6c`).
+  Its readback remains seven v4 admissions, seven consumer canaries, and 1,752
+  deferred objects of 1,759.
+- [x] Reconcile the registry and current-readback sections in the Bronze,
+  federation, Platinum, and Australian benefits plans to identify the newer
+  candidate-role report while preserving the report actually bound by preflight
+  snapshot 20261021-7. Dated earlier zero-count entries remain historical.
+- [x] Preserve the pending Q1 HR admission/canary and all other gates; this
+  documentation update does not change inventory, rights, admission, canaries,
+  publication, or release state.
+
+
+## M-110 expenditure-workbook marker context (2026-10-21)
+
+- [x] Re-read the two exact expenditure workbooks at pinned revision
+  `9f1d53cd50eea251b326da42a96f3ac72ebce97a`, verifying their original byte
+  counts and SHA-256 digests before parsing XLSX text cells in memory.
+- [x] Classify all 136 detected ATC marker cells across the two reports as
+  contextual/label text; the separate ATC-shaped identifier scan found zero
+  cells. The aggregate-only receipt is
+  `quality/qualifications/australian-pbs-expenditure-marker-context-screen-20261021.json`
+  (SHA-256 `150c92ae5a2e488243b3bb324651ba946593246b548eb17c25694c7f0de149a1`).
+  No source values were emitted or persisted locally.
+- [x] The focused parser tests passed (2); the report regenerated and passed
+  `--check`, Python compilation, line-length review, and `git diff --check`.
+  Ruff was unavailable because the locked typing-group tool bootstrap stalled
+  while downloading its runtime; no lint pass is claimed.
+- [ ] Complete restricted-content classification across all six PBS objects
+  and the MBS candidate scope. This marker-context screen does not establish
+  vocabulary rights, rights clearance, admission, or release.
+- [ ] Calibrate the actual matcher on representative reviewed cross-jurisdiction
+  labels. The retained scope still lacks non-synthetic medicine labels for that
+  calibration; synthetic graph parity remains insufficient.
+
+
+## M-112 Q1 HR candidate receipt recovery (2026-10-21)
+
+- [x] Recover the exact replay receipt from unexpired GitHub Actions artifact
+  `australian-m112-v3-replay-39533443472-1`; verify its SHA-256
+  `c81490ada740101e0aaae38846409aa216d2bf2d69b8a74f94a35812c71858e0` matches
+  the locally committed receipt. The run is successful and explicitly records
+  no admission, consumer canary, source-value read, or public dataset mutation.
+- [x] Regenerate the Q1 HR candidate v4.1 contract with its receipt and B1/B2
+  inputs pinned to candidate evidence commit
+  `0dbc1d7def66b49c6df5372ca694d78bc7b5008f`; schema and semantic checks pass.
+- [ ] Re-run exact remote receipt closure and the consumer canary after the
+  candidate evidence commit becomes available on the public repository. Until
+  then this contract remains local candidate evidence; source-native workbook
+  layout remains unqualified.
+
+## M-112 July BSD sidecar lineage current readback (2026-10-21)
+
+- [x] Reconcile the two exact July BSD sidecars against the retained lineage
+  overlay and its pinned metadata readbacks. Both exact paths now bind their
+  source receipt, acquisition, external-reference B2 manifest, and landed
+  unreviewed admission at the proper content digest and byte count. The source
+  receipt and B2 metadata revision is `42d73b6facac016f14a335d36d83f1a3b630add8`;
+  the current dataset content revision is `40891976f77ee5e7688edceed25c9ac98a77547e`.
+  The metadata-only receipt is
+  `quality/qualifications/australian-m112-july-bsd-sidecar-lineage-current-readback-20261021.json`
+  (SHA-256 `f2cad69df7473d56a888bbb7616855e09d5116d3036de71c890798ba987639a2`).
+- [x] Preserve the earlier rights-preflight snapshot and clarify that its
+  statement about two incomplete sidecar bindings is superseded for lineage
+  only. Exact rights attestation, processing admission, consumer canary, and
+  release remain separate gates; the current 1,759 denominator is unchanged.
+- [~] Continue the bounded v4 cohort from the Q1 HR candidate contract. Local
+  contract qualification and replay receipt exist, but the exact-main Q1 HR
+  admission and canary have not run. The latest hosted canary remains the
+  seven-object readback; the candidate evidence commit is not on public main.
+- [x] Revalidate the existing exact-object Q1 HR raw-B2 contract against the
+  current v4.1 schema and federation semantics with the read-only `--check`
+  path. It passes. The check does not close remote receipt roles or qualify
+  admission. The contract builder still has no durable merged evidence commit
+  binding for this object, and exact-main admission/canary remain open.
+- [x] Rebuild the local Q1 HR contract with all 12 schema-defined receipt roles
+  bound to candidate evidence commit `c857e3c42cd6ffa7fa9d21d599613c1169ce1f9e`.
+  Seven Git-hosted role payloads match their exact local Git commit digests.
+  Five externally hosted receipts remain un-fetched, so remote closure and
+  eligibility are not established. The exact-object contract still passes
+  local schema/semantic validation. Contract SHA-256:
+  `5a8f97b0e36ad1e90110166e3fd66fda6ee7f12fd572232c5ba3cb0e8584d9a5`.
+- [ ] Attempt exact receipt closure with the read-only `--check --verify`
+  path. Closure stops at HTTP 404 for the v3 replay receipt pinned to the local
+  candidate commit. No source bytes were read and no admission or canary was
+  produced. Public `main` remains `de76083a0da67414c803c7a74de00162fe5dfbad`;
+  a durable accessible evidence commit is still required before retrying.
+
+## M-112 Q1 HR benefit-column diagnostic (2026-10-21)
+
+- [x] Compare the pinned workbook `Benefits ($)` cells with the existing CSV
+  `Benefit` cells in memory after rechecking both exact object digests and byte
+  counts. The value-free report records 545,066 numeric pairs; 19,904 are exact
+  numeric matches, and none of the tested fixed scales explains the aggregate
+  mismatch. The workbook contains 545,074 data rows while the CSV contains
+  545,070. No values were emitted or retained and no Silver projection was
+  created. The script SHA-256 is
+  `817284f6fb0561e4f5b55c945b25a8c3a1001224afd0ce05d153b1bdf19af588`;
+  receipt `quality/qualifications/australian-mbs-demographics-q1hr-benefit-scale-comparison-20261021.json`
+  SHA-256 is `465c655dd0bcad42ff31d94826ef857b32de4f491f851ed47c7347687e16c8b5`.
+- [ ] Resolve the meaning/calculation of `Benefits ($)`, the age-category
+  mapping, and the four-row count difference from source-supported evidence.
+  This diagnostic rules out only the tested fixed-scale relationships; it does
+  not establish row equivalence, semantic non-equivalence, or a valid transform.
+- [ ] Build and qualify a loss-aware Silver projection only after those source
+  semantics are established. Exact-main admission and its consumer canary also
+  remain gated on durable accessible receipt evidence.
+
+## M-112 Q1 HR age-context candidate comparison (2026-10-21)
+
+- [x] Compare the age labels using only six shared context fields from the
+  same two exact objects, after digest and byte-count verification. The
+  aggregate-only report finds 11 one-to-one candidate category pairs supported
+  by 360,235 unique row contexts; 75,767 repeated/ambiguous contexts are
+  excluded. All 436,002 CSV context keys match the workbook with identical
+  multiplicities; the workbook has three additional context keys and four
+  unmatched row occurrences. This localizes the count delta but does not explain
+  those records. The files contain 13 and 11 unique age labels; labels are
+  represented only by digests. No values or rows were emitted or retained.
+  The initial fail-closed parser recognized none of the 11 candidate pairs.
+  Value-free probes established that the nine CSV ranges have balanced outer
+  double quotes; removing only that wrapper raised the equal-bound count to 9.
+  A further masked probe identified an explicit `>=` lower-bound form and one
+  nonnumeric pair. The parser now handles the lower-bound form. The latest
+  report counts 10 pairs with equal explicit numeric bounds and one remaining
+  nonnumeric pair; after quote normalization, all 11 pairs have equal literal
+  labels. This is candidate syntax/literal evidence only. It does not establish
+  source-defined age meaning, equivalence of the nonnumeric category, explain
+  the four unmatched workbook rows, or authorize a Silver transform. Focused
+  tests (18), Ruff, formatting, and report regeneration passed. Current script
+  SHA-256: `385acef2c9883610a0ccb8b1fc0fe3e485dc1897c7ec7f89f2e24395251c94f9`;
+  report SHA-256:
+  `0aecb12f9c1ff28e9529df9509c9898abd5b782e78f5ae73833c05fba4a560a6`.
+- [ ] Obtain source-supported category definitions and review whether the
+  candidate pairs are semantically equivalent. Shared context and one-to-one
+  counts do not establish age-band meaning, row equivalence, or authorization
+  to transform Silver data. Explain the four workbook-only row occurrences and
+  resolve the `Benefits ($)` calculation before projection qualification.
+
+## M-110 restricted-content screen reconciliation (2026-10-21)
+
+- [x] Reconcile the value-free screens over all six exact PBS utilisation
+  objects and all six July 2025 MBS v4 candidate tables. The PBS findings
+  localize ATC-shaped values to the existing `ATC5_Code` and `ATC5_CODE`
+  fields, numeric shapes to existing period/count/contribution/cost fields,
+  and 136 expenditure-workbook markers to contextual or label text. The exact
+  UMLS CUI text pattern has zero matches. The MBS bounded screen reports no
+  configured field-name, email-like, or exact-digest patterns over 35,934
+  candidate rows. No source values were emitted. Consolidated receipt:
+  `quality/qualifications/australian-restricted-content-screen-reconciliation-20261021.json`
+  (SHA-256 `af14e16f255e4686f09ab25180c62139476edbd0aaf3dd5367a2f39c5e166e5b`).
+- [ ] Verify ATC membership against an authoritative reference already in the
+  approved inventory. No such dictionary is present in the retained source
+  scope. The exact six-object PBS and six-table MBS rights attestations cover
+  their stated scopes, but the instruments were not independently reviewed;
+  the configured scans are not exhaustive. No new vocabulary source is added,
+  and no admission, publication, or release follows from this reconciliation.
+
+- [x] Classify every content indicator reported by the bounded screens against
+  the exact field-header evidence and bind both six-object rights attestations
+  by path, digest and byte count. The 1,314,870 ATC-shaped occurrences map to
+  `ATC5_CODE`/`ATC5_Code`; 928,410 numeric candidates map to existing period,
+  prescription, contribution, cost and markup fields; 136 marker occurrences
+  are contextual/label text; exact UMLS CUI and email-like patterns are zero.
+  The 35,934 MBS candidate rows have no configured-screen findings. The exact
+  attestations cover those contents; the instruments remain unreviewed. This
+  closes disposition of observed indicators only, not exhaustive detection or
+  independent vocabulary membership. Receipt:
+  `quality/qualifications/australian-restricted-content-screen-disposition-20261021.json`
+  (SHA-256 `81fc11f9d4b1a07de3ff7ebbc3d5bf444b6eaabeed0acfc9fed794db53c3d184`).
+## M-110 PBS ATC-shaped field internal consistency (2026-10-21)
+
+- [x] Compare the two already screened and rights-attested PBS fields at the
+  pinned revision without emitting or retaining field values. All 980 distinct
+  ATC-shaped values in the five summary sheets are present in `ATC5_Code` of
+  the item-drug map; the map has 384 additional distinct ATC-shaped values.
+  The aggregate report records only counts and digests:
+  `quality/qualifications/australian-pbs-utilisation-atc-internal-consistency-20261021.json`
+  (SHA-256 `cd041b481f14c18e38e19d89d4178c4f430f89371c2340ddb71996becfa13688`).
+  Script SHA-256:
+  `2001f783a4350091768adb6a60a96586b34fbabf1fbbb551c3a18a17cd96d731`.
+- [ ] Explain the 384 item-map-only values and verify vocabulary membership
+  against an authoritative ATC reference already in the approved inventory.
+  The repository contains no such dictionary. Cross-file agreement is only
+  internal consistency, not vocabulary membership, licensing, or matcher
+  calibration. The PBS permission instrument remains maintainer-attested and
+  independently unreviewed.
+
+- [ ] Calibrate the actual cross-jurisdiction matcher. The current retained
+  source scope contains no real cross-jurisdiction medicine-pair labels. A
+  current-head inventory recount at `a038b2667330f668bbe1557297deaf6f1140f338`
+  found 18 B1 receipts, all for Australian MBS/PBS sources. The accepted
+  same-record MBS edges do not label medicine identity. Calibration remains
+  unmeasurable from this frozen source set; do not select a threshold or add
+  sources. Updated scope report:
+  `quality/qualifications/frontier-real-matcher-label-availability-20261021.json`
+  (SHA-256 `8eb8d7ae6bc2b83ae11aec3fd9210b8cd52ee772b9c460aeb3c96d137c7e7973`).
+
+## M-112 Q1 HR physical-layout role binding (2026-10-21)
+
+- [x] Bind the exact Q1 2016 HR workbook layout qualification to its matching
+  frozen candidate object in the v4 role report. The report records the
+  qualified physical structure while leaving source-field semantics, formula
+  semantics, the source contract role, admission, and consumer canary
+  unqualified. The cohort remains seven admitted and canaried, with 1,752
+  objects deferred. The role report is
+  `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json`;
+  its physical-layout input is
+  `quality/qualifications/australian-mbs-demographics-q1hr-workbook-layout-candidate-20261021.json`.
+- [x] Verify exact object identity and fail-closed behavior if the evidence
+  scope claims source semantics or admission. Fifteen focused tests, `ty`,
+  BasedPyright, Ruff, formatting, role-report `--check`, and `git diff --check`
+  passed.
+- [x] Close the exact raw-B2 contract roles and hosted receipt closure after
+  PR #1247 made the pinned evidence revision accessible. Run 39575404598 at
+  main b6e8a8e4f6d633dfea0056104b62972a669c1b3e passed on 2026-10-21 at
+  09:14:48 UTC. The Q1 HR receipt is retained in the current reconciliation;
+  its byte and streamed digests match and cache bytes after close are zero.
+  Unresolved field semantics continue to gate harmonization independently.
+
+
+## Authorized repository workflow and current preflight (2026-10-21)
+
+- [x] Apply the maintainer's instruction to preserve the absolute email and
+  messaging exclusion while permitting authorized technical commits, pushes,
+  PR metadata, CI/workflow execution, and green-check merges. Standalone
+  comments, outreach, invitations, and requests to send remain prohibited.
+  Earlier local-only/no-push notes above record the superseded policy.
+- [x] Preserve preflight 20261021-11 unchanged and bind the current plan and
+  tests in successor
+  `quality/qualifications/australian-m112-rights-release-preflight-20261021-12.json`.
+  The first focused run found two stale input digests in the previous snapshot;
+  its result was 64 passed and one failed. This refresh changes no rights,
+  inventory membership, admission, or canary count: 7/7 and 1,752 deferred.
+- [x] Publish the prepared candidate evidence through a technical PR, require
+  protected checks before merge, and run the Q1 HR exact-main verification
+  and reader canary. Its raw-B2 contract preserves uninterpreted immutable
+  bytes; unresolved age-category and benefit semantics continue to gate
+  Silver transformation independently.
+
+- [x] Repair review findings before publishing: assign the three new test
+  modules to the governed unit inventory; use the shared DTD/entity-rejecting
+  XML parser for the PBS expenditure screen; bound source download bytes, ZIP
+  expansion, XML members, and shared-string indexes. Negative tests cover
+  identity drift, XML DTDs, and expansion bounds. The two exact pinned PBS
+  reports still reproduce unchanged with the bounded parser. Routine checks
+  and targeted strict typing pass.
+- [~] Run focused and broader affected tests, the pinned-toolchain full profile,
+  and protected hosted checks against the frozen candidate branch before merge.
+
+## PR 1247 check repairs (2026-10-21)
+
+- [x] Remove one blank evidence-ledger line without changing any JSON record;
+  correct malformed quoted age-label equality with a negative regression case.
+- [x] Upgrade vulnerable certifi and transitive uv; preserve historical build
+  reproducibility with the content-bound patched custom CA bundle. Qualify
+  the temporary edgetest uv ceiling override against all three real environments.
+- [x] Supply dependency-canary collection dependencies and reject failed or
+  missing edgetest status reports even when its process returns zero.
+- [x] Preserve preflight -12 unchanged; successor
+  `quality/qualifications/australian-m112-rights-release-preflight-20261021-13.json`
+  binds the repaired inputs. Counts remain 7 admissions, 7 canaries, 1,752 deferred.
+- [x] Require the repaired-head checks and exact main-only Q1 HR canary. PR
+  #1247 merged with 40 passing checks and the Q1 HR run passed. The
+  first local full attempt was interrupted for confirmed CI failures; no full
+  pass is claimed for that attempt. Local receipt verification resolved all
+  required remote roles and returned admitted_pending_consumer_canary; this
+  is not a hosted admission or hosted canary.
+
+## Eighth admission, Silver semantics and matcher continuation (2026-10-21)
+
+- [x] Retain the exact Q1 HR hosted receipt from run 39575404598, merged main
+  b6e8a8e4f6d633dfea0056104b62972a669c1b3e, completed 09:14:48 UTC. The
+  role and rights reports now reconcile eight admissions and eight canaries
+  over 1,759 frozen objects, with 1,751 deferred. Preflight -14 binds the
+  current inputs and preserves -13 unchanged. No new admission was performed
+  by this reconciliation; the retained hosted receipt is the evidence.
+- [x] Join both exact Q1 objects using full source context plus normalized
+  literal age labels. All 545,070 CSV rows have unique workbook counterparts;
+  there are no repeated shared full keys and no unmatched CSV rows. The four
+  workbook-only rows all have nonnumeric years; two have text in all fields
+  and two have only a text year field. This is structural classification,
+  not authority to delete or interpret those rows.
+- [x] Test the benefit mismatch after correcting row alignment and excluding
+  ambiguous keys. All 545,070 pairs are numeric; only 54,693 agree exactly or
+  after rounding to two decimal places. A total of 490,365 differ by more than
+  0.01. No tested fixed multiplier explains the result. The mismatch is not
+  resolved by row order or numeric precision. Aggregate-only receipt:
+  `quality/qualifications/australian-mbs-demographics-q1hr-context-measure-diagnostics-20261021.json`.
+- [ ] Resolve the source-defined HR benefit measure and nonnumeric age category
+  before harmonization. Preserve native labels and the HR benefit field as a
+  distinct unresolved measure; do not substitute CSV values or infer payable
+  benefit. No Silver projection or semantic-equivalence claim is created.
+- [x] Recheck the unchanged 18-receipt, Australian-only retained label scope;
+  rerun the actual matcher on the existing 400/400 generated controls. Record
+  post-retrieval operating points, scope, input digests and missing real
+  labels in
+  `quality/qualifications/frontier-frozen-matcher-calibration-20261021.json`.
+  The 0.65 control cutoff admits 200/200 generated negatives; 0.9 excludes
+  them but misses 100/200 generated positives. These are synthetic controls,
+  not real-source operating estimates. No source threshold is selected.
+- [ ] Actual cross-jurisdiction medicine calibration remains blocked by zero
+  eligible reviewed real pair labels in the frozen scope. The 5,989 reviewed
+  same-record MBS edges do not supply those labels. No sources, outreach,
+  confidence authority or public releases are added.
+- [x] Review scope and negative controls: pin Q1 identity and exact hosted run,
+  reject self-consistent identity drift, exclude repeated keys and non-finite
+  measures, expose large differences, scope operating points to post-retrieval
+  scored cases, and require re-review when retained calibration inputs drift.
+- [x] Focused diagnostic and legacy checks passed (30), current preflight checks
+  passed (8), the broader bounded contract/matcher selection passed (183),
+  routine checks passed and strict typing returned zero errors or warnings.
+  A separate wider selection reached local asynchronous timeouts and was
+  interrupted with exit 2 after 196 passed and one timeout failure; it is
+  not counted as a pass. No repeated local
+  full profile is claimed: source-report reconciliation and offline diagnostics
+  leave production matching and release/publication behavior unchanged.
+- [~] Require complete protected CI on the final PR head before merging.
+  Production matching behavior and
+  release/publication gates are unchanged; this increment reconciles metadata
+  and adds offline diagnostics.
+
+## PR 1248 review corrections (2026-10-21)
+
+- [x] Bind the exact 18-receipt path/digest tree to the independently checked
+  original availability-audit revision a038b2667330f668bbe1557297deaf6f1140f338.
+  A receipt replacement with unchanged source/jurisdiction counts now fails
+  closed and requires renewed label review.
+- [x] Make both diagnostic CLIs directly executable using the established
+  package/direct-import pattern. Add an actual read-only --check entry point
+  for matcher readiness and regression tests for direct execution.
+- [x] Preserve published preflight -14 byte-for-byte and bind corrections in
+  successor -15. Admission/canary totals remain 8/8 with 1,751 deferred.
+- [x] Twenty initial focused review checks and 73 broader affected checks pass;
+  strict typing has zero errors/warnings and routine checks pass. Direct CLI
+  write/check consistency and read-only check behavior are covered.
+- [~] Require fresh protected CI before resolving review threads and merging.
+  No standalone review comment is sent.
+
+
+## Source meaning resolution (2026-10-21)
+
+- [x] Diagnose the exact retained Q1 workbook/CSV benefit discrepancy with
+  full-key rounding and truncation controls; keep aggregate evidence only.
+- [~] Identify the exact Q1 native nonnumeric data label as `Unknown`.
+  Preserve it verbatim without numeric bounds. Its source definition, cause,
+  relationship to suppression and CSV semantic equivalence remain unresolved.
+  This local observation requires hosted requalification before promotion.
+- [ ] Resolve P7 date and numeric conventions using the exact retained
+  workbook and its source-era evidence; preserve formula/error states.
+- [ ] Establish patient-count population, period and deduplication semantics
+  wherever those measures are included. Do not substitute service counts or
+  rounded population percentages for distinct patients.
+- [ ] Run affected checks, review, protected CI and reconcile the evidence.
+
+This increment uses the frozen existing sources and sends no outreach.
+
+
+### Hosted source-meaning reproducibility
+
+- [x] Implement aggregate-only Q1 unknown-age and rounding diagnostics with
+  exact object identities and main Actions commit guards; synthetic focused
+  checks pass. This creates no Silver promotion or benefit interpretation.
+- [x] Diagnose PR #1249 unit failure as stale preflight input digests after
+  the plan changed. Preserve preflight -15 and bind this increment in -16;
+  rights, admission and canary conclusions remain unchanged.
+- [~] Verify complete protected CI, merge the reviewed increment and execute
+  the read-only main workflow; retain the exact hosted aggregate receipt.
+
+
+### Exact hosted source-meaning readback (2026-10-21)
+
+- [x] Merge PR #1249 as `6522e7959b2065214e77cd623dbb05c379217b57`
+  after all 39 reported checks and 29 required checks passed.
+- [x] Execute main workflow run `39590928303`; download the actual aggregate
+  artifact and retain its exact bytes. It observes 58 native `Unknown` age
+  labels and reproduces all 545,070 full-key numeric comparisons and all
+  fourteen rounding/truncation counts. No Silver promotion follows.
+- [ ] Resolve the five source-definition requirements in
+  `quality/qualifications/silver-source-meaning-resolution-20261021-hosted.json`.
+  Hosted diagnostics do not resolve the benefit calculation, unknown-age
+  definition, P7 date/value conventions or included patient denominators.
+
+
+## Approved bounded Silver completion (2026-10-21)
+
+The maintainer authorizes field-level uncertainty treatments and completion of
+MBS/PBS qualification and delivery within the existing frozen inventory. This
+supersedes whole-layer blocking on missing meanings; it does not establish those
+meanings or grant new rights, publication, clinical claims or outreach.
+
+- [x] Implement interpreted/native-unresolved/unavailable field states and
+  consumer guards; source/field identity must prevent unqualified pooling.
+- [~] Preserve Q1 workbook/CSV measures independently and retain Unknown ages
+  in native rows, totals and coverage with unresolved suppression semantics.
+- [~] Carry P7 raw dates and numeric/formula/error evidence through typed
+  outputs; block temporal claims without source-bound qualified dates.
+- [x] Mark unsupported patient denominators/rates unavailable while retaining
+  supported service counts independently.
+- [ ] Finish MBS families and source eras in the frozen inventory.
+- [ ] Finish PBS domain harmonisation with field-level unresolved outcomes.
+- [ ] Qualify exact eligible outputs: coverage, identity, lineage, missing/error
+  states, lossless decimals and deterministic Parquet rebuilds.
+- [ ] Bind output digests to applicable rights/admission evidence; execute
+  authorized restore and consumer canaries and complete protected CI.
+
+
+### Q1 source-native Silver projection implementation (2026-10-21)
+
+- [~] Preserve primary-table rows and all eight native field slots, source
+  properties, per-object benefit identities, precision exceptions and native
+  age groups. Bind the producer to existing B1 acquisition and B2 manifest
+  identities; keep unsupported patient rates unavailable.
+- [ ] Complete receipt-bound source-byte extraction and ancillary workbook
+  metadata coverage. The primary-table producer alone does not qualify the
+  complete workbook or prove source-to-output extraction parity.
+- [ ] Qualify exact real-source outputs, independent Parquet restore and
+  consumers; retain source meanings as unresolved where evidence is absent.
+- [ ] Continue all remaining MBS/PBS families, source eras, exact output roles,
+  rights/admission binding and delivery work in the approved goal.
+
+
+### Q1 complete-source extraction follow-up (2026-10-21)
+
+- [~] Implement receipt-bound CSV/workbook extraction with primary rows, ancillary
+  cells, worksheet inventories and fully read ZIP-member fingerprints. Synthetic
+  extraction checks pass; real-source parity and deterministic output writing
+  remain pending.
+- [~] Correct review finding on PR #1252: carry exact object identity into the
+  generic benefit semantics so byte-identical path aliases remain distinct.
+  Focused regression passes; successor protected CI and merge remain pending.
+
+- [~] Build deterministic candidate primary/ancillary Parquet packages with
+  transactional finalization, ZIP/sheet inventories and independent restore
+  checks. Local synthetic tests pass; source parity, exact transform binding,
+  hosted qualification and delivery remain pending.
+
+
+### Protected Q1 native Silver qualification (2026-10-22)
+
+- [~] Implement exact-main read-only qualification for the existing Q1 workbook
+  and CSV: repeat deterministic package builds, independent source-field parity,
+  Parquet restore and DuckDB count/uncertainty checks. Retain only aggregate
+  output/manifest fingerprints; remove temporary derivatives on completion.
+- [ ] Merge the reviewed qualifier and execute it on its exact main commit;
+  retain the actual aggregate receipt before claiming real-source qualification.
+- [ ] Continue all remaining frozen MBS/PBS families and exact-output
+  rights/admission and federated consumer delivery after Q1 qualification.
+
+
+### Existing quarterly demographic CSV cohort (2026-10-22)
+
+- [~] Extend native candidate qualification to the three exact frozen Q1 March,
+  Q2 May and Q3 July CSVs using retained structural/header receipts and exact
+  B1/B2 identities. Preserve separate measure populations and unresolved age
+  semantics; no cross-quarter benefit equivalence is inferred.
+- [ ] Merge and execute protected exact-main per-object qualification, retain
+  actual output digests and restore receipts, then bind applicable output
+  admission/rights and authorized delivery.
+- [ ] Continue workbook, historical ZIP, other MBS families and broader PBS
+  domain/era qualification; the three-CSV cohort does not close those lanes.
+
+
+### Registered exact-main qualification entry points (2026-10-22)
+
+- [x] Merge native extraction/package PR #1253 as `9edd2a56` after 40
+  checks, then qualifier PR #1256 as `db057e20` after 39 reported checks
+  and complete required-check coverage. PR #1254 was superseded following
+  a stale head and failed reopen; its corrected files are on main.
+- [x] Retain the exact P7 current-main aggregate in PR #1257, merged as
+  `de299e3e`: 13,742 cells, four formulas, two errors, 36 representability
+  exceptions and 1,280 unqualified date cells. This is storage/profile proof;
+  typed-value package restore and date meaning remain unqualified.
+- [~] Expose the reviewed Q1-pair and quarterly-CSV native qualifiers through
+  registered workflow 391616583, retaining the legacy diagnostics default,
+  mutually exclusive modes, exact-main guards and aggregate-only artifacts.
+  The separate new Q1 workflow is present on main but returned HTTP 404 from
+  dispatch and is absent from the Actions registry; no source run is claimed.
+- [ ] Complete protected CI, merge, dispatch native modes on exact main and
+  retain actual source-to-output parity/restore receipts before qualification.
+
+The interrupted local full profiles for commits `269a6e33` and `044a07c5`
+no longer had live process handles after the intentional turn interruption.
+Their logs lack terminal summaries; no full pass is claimed. A fresh full
+profile applies to this changed workflow behavior after the code is frozen.
+
+
+### Source-native MBS group CSV candidate (2026-10-22)
+
+- [~] Preserve the separate July 2016 group CSV family: native group, subgroup,
+  item, state and period strings, service counts, benefit tokens and complete
+  header/record coverage. No age dimension or cross-era hierarchy equivalence.
+- [~] Build deterministic candidate Parquet with independent Arrow CSV/native-
+  field parity, typed-value/provenance checks and atomic finalization.
+- [ ] Bind the exact retained group object (164,543 source records) to a hosted
+  qualifier, execute on exact main and retain actual digests/restore evidence;
+  complete applicable rights/admission and delivery independently.
+
+PR #1258 merged as `ebd4e300` after all 40 reported checks passed. Exact-main
+Q1 run `39627539043` is active and quarterly CSV run `39627746801` is queued;
+source qualification remains pending their actual final artifacts.
+
+### Q1 exact-source qualification readback and group hosted route (2026-10-22)
+
+- [x] Retain the aggregate artifact from successful exact-main Q1 run
+  `39627539043`: both source objects have complete primary-field parity,
+  deterministic rebuild, independent Parquet restore and DuckDB checks.
+  Workbook 545,074 rows, 58 literal Unknown ages and 76,287 lossless-decimal
+  exceptions remain visible; CSV 545,070 rows. No benefit equivalence,
+  patient-rate support, new rights conclusion or output admission follows.
+- [~] Add the existing July group CSV qualifier to the registered workflow:
+  exact B1/B2/frozen identity, 164,543-row denominator, repeat build,
+  independent restore and bounded DuckDB checks; aggregate artifact only.
+- [ ] Complete group increment review, full validation, protected CI and
+  exact-main hosted execution. Quarterly run `39627746801` remains queued.
+- [ ] Continue remaining MBS families and eras, PBS domain harmonisation,
+  exact output rights/admission and consumer delivery within frozen scope.
+
+### P7 typed candidate package and exact restore (2026-10-22)
+
+- [~] Extend the existing P7 typed producer into a deterministic transactional
+  `cells.parquet` package. Preserve every native cell and its header mapping,
+  numeric text, formula/cache/error, source and receipt identity; date profile
+  remains unselected and all interpretation states remain native_unresolved.
+- [~] Extend the registered hosted workbook qualifier to build twice, compare
+  exact package fingerprints and independently restore every native cell and
+  typed field. Retain aggregate-only evidence and delete temporary packages.
+- [x] Verify synthetic corruption, rehashed Parquet/schema changes, manifest
+  drift, file-set/symlink/byte bounds, no overwrite and transactional failure.
+  Seventy affected tests pass; package branch coverage is 93.68%; affected
+  production typing has zero errors or warnings.
+- [ ] Complete full validation, review and protected CI, merge, then execute
+  the existing exact-main P7 workflow and retain its aggregate artifact.
+- [ ] Continue all remaining frozen MBS/PBS families, exact output admission
+  and actual consumer delivery; typed storage does not establish semantics.
+
+### Quarterly CSV source qualification and PBS native values (2026-10-22)
+
+- [x] Retain all three aggregate artifacts from successful exact-main run
+  `39627746801`. Complete native-field parity, deterministic rebuild, Parquet
+  restore and DuckDB checks cover 545,070 / 567,335 / 186,082 data rows.
+  Q2 retains 4,728 service-count conversion exceptions; no rows are dropped.
+  Source benefit meanings remain separate, patient rates unavailable, and
+  no output admission or rights conclusion follows from these checks.
+- [~] Add PBS native value candidates to both ordinary and historical entity
+  streams. Preserve all native fields, product/restriction/reference occurrence
+  identities and parent/archive/member lineage. Decimal candidates are lossless
+  only; currency stays literal; unsupported values and domain meanings remain
+  explicitly unresolved. No vocabulary membership or era equivalence inferred.
+- [x] Verify 94 affected checks and 100% branch coverage of PBS value handling.
+- [ ] Integrate PBS values into real-corpus output qualification and restore,
+  complete remaining source family/era mappings and applicable output roles.
+- [ ] Complete validation, review, protected CI and exact-main source execution;
+  keep remaining MBS/PBS inventory coverage and consumer delivery open.
+
+### Group source proof, PBS values qualification and outbound closure (2026-10-22)
+
+- [x] Retain successful group run `39634190836` at main `889608f2`:
+  164,543 data records plus header, 1,316,352 native slots, deterministic
+  rebuild, independent native parity and DuckDB checks. No age inference,
+  benefit equivalence, output admission or rights conclusion follows.
+- [~] Add an explicit PBS values projection to the existing exact-main hosted
+  route. Keep the five default structural projections unchanged. Verify full
+  native digest/denominators, Parquet equality and controlled conversion-state
+  counters; reject rounded candidates or semantic promotion independently.
+- [x] Remove legacy workflow comment commands and unused issue-write scopes.
+  Retain verification receipts in artifacts before source cleanup where comment
+  receipts previously supplied that checkpoint. Confirm 15 comment-capable
+  workflows disabled pending comment-free-main reconciliation; preserve all
+  unrelated validation routes. The account-level outbound ban remains absolute.
+- [x] Merge P7 PR #1260 as `d7bdaeb8` after all 40 hosted checks passed.
+  Dispatch exact-main workbook run `39636095527`; result remains pending.
+- [ ] Complete PBS increment validation/review/CI and exact-main values run.
+  Reconcile the continuing local full profile without claiming its browser
+  timeouts as passes; preserve all remaining inventory and delivery work.
+
+### P7 typed source qualification readback (2026-10-22)
+
+- [x] Retain exact-main run `39636095527` at `d7bdaeb8`: deterministic
+  typed package rebuild, native-cell parity and typed Parquet restoration pass
+  over 13,742 cells / four sheets. Preserve all four formula cells, two source
+  error cells, 36 unrepresentable decimal conversions and 1,280 unsupported
+  date formats. All 13,742 interpretation states remain native_unresolved;
+  date profile is unselected. Output admission/rights/publication remain false.
+- [x] Verify 324 affected PBS/workflow checks; 49 workflow-wide outbound
+  regression cases pass. Audit all active-state run pages for the 15 disabled
+  comment-capable workflows: none running or queued was observed.
+- [ ] Finish remaining MBS workbook/archive/family coverage, PBS domain/era
+  qualification, reproducible exact output roles and eligible consumer delivery.
+
+### PBS route CI source-binding repair (2026-10-22)
+
+- [x] Resolve hosted unit failures on `d89fbd4f` without restoring outbound
+  comments: verify harvest destinations against the actual authorization files
+  and invoked runners, and retain the exact historical root-manifest workflow
+  snapshot matching the published input digest. The old readback is unchanged;
+  the inert text snapshot and binding sidecar make its provenance reviewable.
+- [x] Verify 126 affected harvesting, historical binding and outbound checks.
+- [~] Retire the known-failing PBS full profile (exit 130), preserve its limits
+  and rerun the repaired source tree. No full pass is claimed for the old run.
+- [ ] Require repaired-head protected CI and complete exact-main PBS values
+  qualification before recording any real-corpus value-projection result.
+
+### Frozen quarterly demographic workbooks (2026-10-22)
+
+- [~] Extend the native candidate route to all three exact demographic
+  workbooks. Bind the Q1/Q2 latest streaming success and Q3 structural success
+  to the original B1 acquisition and B2 reference, frozen path/revision/digest
+  and B1 observed byte count. External-only B2 null byte counts are not zero.
+- [x] Verify metadata identity and negative controls: 12 checks pass with
+  100% branch coverage. Preserve the June Q2 workbook independently of the
+  May Q2 CSV; source periods and benefit meaning are not equated.
+- [~] Add protected per-workbook qualification using the existing deterministic
+  package and independent native reader. Count actual primary source rows,
+  reject empty denominators, preserve ancillary cells and use bounded DuckDB
+  counts only after restoration/parity. Aggregate artifacts only.
+- [x] Verify 28 cohort/qualifier checks with 97.01% combined branch coverage,
+  affected production typing with zero errors/warnings, and workflow lint.
+- [ ] Complete broader validation, review/CI and exact-main workbook runs.
+  No real Q2/Q3 typed-workbook result is claimed before those runs finish.
+- [ ] Continue group workbook, historical archives, remaining MBS source
+  families and eras, PBS semantics, exact eligible output roles and delivery.
+
+### PBS values progress boundary correction (2026-10-22)
+
+- [x] Retain failed exact-main run `39641247728` at `c84c4898`: the bounded
+  receipt records the 18,208,758-field denominator checkpoint and validation
+  failure before the first values batch. No projection result is qualified.
+- [x] Reproduce the same failure through the synthetic hosted wrapper with
+  progress enabled. Add only fixed `values` to the aggregate phase allowlist;
+  keep arbitrary phase labels and source text rejected. All 208 affected
+  PBS/workbook checks and production typing pass.
+- [~] Retire the superseded main-source full profile (exit 130) for this
+  runtime-proven correction and workbook extension. No full pass is claimed.
+- [ ] Complete repaired-head CI and rerun native-values qualification on exact
+  merged main; retain the successful artifact only after actual verification.
+
+### Frozen group workbook native layout discovery
+
+- [~] Bind the frozen July group workbook to original B1/B2 and structural
+  evidence, then inspect its own native layout on exact-main Actions before
+  assigning semantic column roles. Implementation passes 20 focused checks
+  (95.51% combined branch coverage), 168 broader affected checks, routine and
+  strict typing. All ZIP members and native worksheet cells contribute to
+  inventories; only bounded first-three-row header candidates are exposed.
+  This does not qualify a group workbook Silver output. Hosted layout readback,
+  reviewed field mapping, deterministic Parquet and restore remain pending.
+
+### Historical PBS candidate value package and restore
+
+- [~] Produce a complete deterministic PBS native-value Parquet package with
+  content-bound manifest/output identity and atomic completion. Implementation
+  passes 13 focused checks (96.8% branch-inclusive coverage), 112 broader
+  affected checks, routine and strict typing. Restore compares all native slots
+  to the separate unharmonised stream and all typed values/lineage/Arrow metadata
+  to the producer. Rehashed corruption, semantic promotion and partial builds
+  fail closed. Real-source complete-package qualification and applicable output
+  rights/admission/delivery remain pending; domain meanings remain unresolved.
+
+- [~] Qualify the complete PBS value package through the existing protected
+  exact-main route, retaining the 55-minute step/65-minute job limits. The
+  candidate mode writes two independent Parquet serialization files from one
+  bounded producer pass, requires identical file digests, then verifies a fresh
+  producer reparse and every original field against the restored package.
+  This is explicitly not two independent end-to-end pipeline builds. Each
+  temporary file is capped at 4 GiB; only aggregate evidence is uploaded and
+  temporary derivatives are removed. The hosted wrapper and progress boundary
+  pass synthetic checks; real-source execution and runtime fit remain pending.
+
+### Complete quarterly workbook readback and next source-family coverage
+
+- [x] Retain exact successful run 39648296077 for all three frozen demographic
+  workbooks. Q3 preserves 186082 native rows, 11 literal Unknown-age rows and
+  26193 lossless-decimal exceptions; source parity, two builds, independent
+  Parquet restore and DuckDB counts passed. No benefit pooling, patient rate,
+  new admission or publication follows.
+- [x] Retain group workbook native layout run 39651063652: the primary sheet
+  has 164558 physical rows/1316464 cells and Metadata has 228 cells. The actual
+  Group/Sub_Group header is independent of demographic and CSV profiles.
+- [~] Implement the group workbook native-row producer with separate group
+  dimensions, complete cell properties, formulas/cache/errors and lossless
+  numeric candidates. Primary-only output explicitly requires separate
+  ancillary retention. Complete-source package/restore and hosted typed-output
+  qualification remain pending.
+- [x] Retain successful PBS native-value run 39648302023 over 18208758 fields
+  and 7730684 entities. All entities remain native_unresolved; 7713891 are
+  unmapped and none reaches the existing price role. This does not establish
+  source absence of prices or domain completion.
+- [x] Qualify the new bounded PBS native schema-path inventory route before
+  extending domain mappings from the actual source structure. It emits paths,
+  counts and presence states only, with a separate 1 MiB inventory bound and
+  unchanged summary bound of 48000 bytes; no native values or new source are emitted.
+  Read-only schema work has an independent concurrency key; legacy qualifier
+  serialization and timeout limits remain intact. Exact-main run 39667604237
+  retained the complete 5,163-path inventory for 18,208,758 native fields.
+- [x] Implement an exact-main, digest-bound PBS root `version` metadata
+  receipt. The hosted profiler stops at the root start tag, emits only the
+  version metadata plus archive/member identity, and refuses unsafe or
+  unexpected roots. Focused tests and typing/lint checks pass. No source
+  values are emitted; schema minor remains unbound until the exact-main run.
+- [ ] Run the root-version workflow after this route is merged to main, then
+  bind its value-free receipt. If it reports only major v3, keep the minor
+  schema release unbound; do not infer a minor version.
+- [~] Observe complete-package run 39654897926, dispatched on exact merged
+  main eaee359d after PR1264 passed all 40 protected checks. No completed
+  real-source package claim is made until the terminal receipt is verified.
+
+
+### PBS actual schema inventory and restore recovery (2026-10-22)
+
+- [x] Qualify exact April 2026 native schema inventory in run 39667604237:
+  18,208,758 fields, 5,163 paths, 1,971,791 metadata bytes. Both original
+  path-count and aggregate-byte limits were exceeded; no truncation or native
+  values were emitted. Domain meanings remain unqualified.
+- [~] Remove redundant restore scans and native Arrow materialization while
+  retaining the existing native digest, exact typed row comparison, complete
+  metadata, lineage, file bounds and manifest format. Synthetic differential
+  controls pass; actual full-source package timing remains unqualified.
+- [ ] Extend explicit source-bound domain profiles from observed paths for
+  products, prescribing rules/restrictions, nested amount/pricing structures,
+  drug references, vocabulary metadata and historical records. Keep source
+  structural roles distinct from qualified payment or clinical meaning.
+- [ ] Qualify complete PBS outputs and applicable admission/consumer delivery.
+
+
+### Exact observed PBS domain profile and group workbook qualification
+
+- [x] Qualify complete group workbook native package in run 39669037532:
+  164555 primary rows, 252 ancillary cells, 1316692 total native cells,
+  two equal builds, independent field parity, complete restore and DuckDB
+  count checks. Retain 23987 benefit decimal exceptions and unresolved meaning.
+- [x] Implement separate opt-in PBS structural roles from the exact qualified
+  April inventory. Preserve every native field and parent occurrence; typed
+  amount candidates retain precision exceptions and absent currency evidence.
+- [~] Prepare protected read-only observed-domain-values qualification using
+  original B1/B2, independent native digest, exact storage equality and inventory
+  role denominators. Local synthetic checks do not qualify the real corpus.
+- [ ] Require exact-main hosted observed-profile qualification, then complete
+  substantive reference/domain semantics and eligible package delivery.
+- [x] Bind the bounded PBS domain profile to the exact root schema version
+  readback. Preserve domain-semantics v3 byte-for-byte and create v4 from the
+  same profile, removing only the limitation that the archive's schema minor
+  was not bound. The exact-main value-free receipt binds the April 2026
+  archive/member hashes to declared schema 3.1; patch remains unbound. Receipt
+  `quality/qualifications/pbs-root-schema-version-metadata-20261025-40145730405.json`
+  has file SHA-256 `27ce93f8e1e94ec4df0c2ba55b1f8d947d895e844e6a4c6b6dc1f77788dcce81`
+  and report SHA-256 `eb6155e226bfd0dedca590e442b3f673e2bde566656cbfbbe07d595c54660398`.
+  Successor `quality/qualifications/pbs-domain-field-semantics-20261025-v4.json`
+  has file SHA-256 `1336cd51392a08c29928cb66ae7f80a65589ceaa17b2c0c70f33c0d9a72c40c8`
+  and report SHA-256 `f2813888a484c0b36f4dbfbf967a418f07215f15c5379883789ecb8407fc18db`.
+  Currency, amount/value interpretation, other domain semantics, field-state
+  counts, references, rights, admission, publication, and canaries remain
+  unchanged.
+
+
+### Remaining frozen July MBS BSD/RVG family (2026-10-22)
+
+- [x] Bind exact frozen BSD CSV, BSD XML and RVG text identities to the retained
+  original acquisition, source receipt, B2 reference, landed unreviewed
+  admission and path receipt. Metadata contracts reject digest, lineage and
+  role mismatches. No source payload was read locally.
+- [ ] Inventory native formats in protected exact-main Actions before selecting
+  field/column/date/value mappings. Keep source families and meanings distinct.
+- [ ] Qualify complete source-faithful typed outputs, all native fields and
+  conversion exceptions, then applicable eligible admission and consumer proof.
+
+- [x] Implement protected sidecar-layout runner with exact-main checks,
+  anonymous digest/byte validation of all five original metadata roles before
+  each source payload, and before/after public-revision readback. Only bounded
+  shape/count/hash metadata is emitted; existing receipts are preserved and
+  source-bearing exception text is withheld. 154 local affected tests pass.
+- [ ] Require merged exact-main native inventory before choosing source-specific
+  column, field, encoding, date or numeric interpretations for these families.
+
+
+### Remaining frozen historical MBS archive members (2026-10-22)
+
+- [x] Bind all six frozen historical ZIP archives to their exact acquisition,
+  original external-reference B2, source digest and observed byte count.
+  Preserve four prior structural passes and two resource holds separately.
+- [ ] Inventory every member with streaming integrity and bounded native
+  container identification on protected runners. Avoid inferring XLS/OOXML,
+  CSV columns or eras from a filename alone.
+- [ ] Qualify every eligible member's source-faithful tables, identifiers,
+  null/error/precision/date behavior and reproducible outputs; retain explicit
+  resource or format holds until actual evidence resolves them.
+
+- [x] Implement bounded file-backed archive staging, complete streaming member
+  integrity checks, prior native-inventory parity and magic-prefix hints.
+  Default archive limits remain unchanged; only two exact frozen large source
+  identities use their exact compressed-byte sizes. Native filenames and body
+  values are withheld. 104 affected local tests and strict typing pass.
+- [~] Prepare protected archive-members mode with all six exact frozen inputs,
+  two concurrent read-only jobs and failure receipts. Actual member formats
+  remain unqualified until exact-main execution and source-specific parsing.
+
+
+### Typed native BSD/RVG record candidates (2026-10-22)
+
+- [x] Implement bounded Arrow record candidates over the observed layouts.
+  Preserve all CSV records including header candidates and empty records;
+  every XML text, tail and attribute slot with occurrence/parent links; and
+  exact literal RVG tab segments and line endings. Complete exhaustion checks
+  the independent native digest and record/field denominator.
+- [ ] Build deterministic complete Parquet packages, restore every native
+  field and exact metadata, then qualify the actual three-object source cohort.
+- [ ] Qualify source-specific headers/column roles, meanings and applicable
+  eligible delivery. Numeric/date interpretations and patient rates remain
+  unresolved/unavailable; no cross-source equivalence is inferred.
+
+
+### Actual observed PBS structural/value qualification (2026-10-22)
+
+- [x] Verify and retain exact-main run 39672588063: 18,208,758 native fields,
+  7,730,684 records, complete structural role denominators and Parquet
+  round-trip. Preserve 816,157 lossless price candidates and 16 unsupported
+  numeric grammars; every record remains native_unresolved.
+- [ ] Complete PBS package performance recovery and substantive semantics.
+  This structural qualification establishes neither complete-package restore,
+  domain semantic acceptance, admission nor publication.
+
+### Actual historical member inventory (2026-10-22)
+
+- [x] Verify all six archive receipts from exact-main run 39678641506 against
+  original source identities and acquisitions: 181 members, complete expanded
+  byte accounting and container integrity, including both previously held
+  archives. Keep prior statuses as historical evidence.
+- [ ] Qualify member formats and native tables. The 91 ZIP-signature/.xlsx
+  hints and 90 .csv suffix hints do not establish workbook or CSV schemas.
+
+### Complete native BSD/RVG package local verification
+
+- [x] Implement atomic deterministic Parquet packages with exact schema and
+  metadata, complete record restore and independent native-layout coverage
+  and digest checks. Reject a truncated producer and rehashed corruption.
+  All 54 affected tests, strict typing and routine checks pass.
+- [ ] Qualify all three actual source packages on protected exact-main runners.
+
+### Protected complete BSD/RVG package qualifier
+
+- [x] Add exact-main package mode reusing original five-role metadata and
+  source digest/size checks, anonymous transport and revision readback.
+  Qualify two independent builds, complete native restore and actual DuckDB
+  record counts. Retain aggregate-only receipts and unchanged 20-minute bound.
+  Reject unequal builds and incorrect consumer denominators.
+- [ ] Merge after protected checks and qualify the three existing actual
+  source objects. Semantics, admission and publication remain separate.
+
+- [x] Reconcile existing workflow contract with the added sidecar-package
+  selection and exact exclusion condition after unit job 119582066980
+  identified the stale expected mode list. All 50 affected tests pass.
+
+### PBS direct native value producer performance recovery
+
+- [x] Remove intermediate native/domain/entity Arrow materialization from
+  paired package writing. Reuse exact lineage validation, schemas, mapping,
+  entity rules, decimal exceptions and element/batch bounds. Preserve the
+  existing producer and separate native digest as independent restore checks.
+  All 117 affected tests pass; new module branch coverage is 98.41%.
+- [x] Retain incomplete hosted run 39671037524 separately: 7,730,684 rows
+  reached package-restore at the last observed progress; complete package
+  qualification and terminal failure cause remain unavailable.
+- [ ] Qualify the changed package path on exact-main hosted execution after
+  protected checks. Synthetic 5,012-row speedup does not qualify real runtime.
+
+### Actual complete BSD/RVG native packages (2026-10-22)
+
+- [x] Qualify all three exact existing source objects in protected main run
+  39706928954. Verify original identities and metadata, two equal builds,
+  complete native restore and DuckDB counts: BSD CSV 4,655 records/9,310
+  fields; BSD XML 13,963 records/27,926 slots including six nulls; RVG
+  482 records/2,410 literal tab fields including 299 empty fields.
+- [ ] Qualify source-specific meanings and eligible delivery. This evidence
+  establishes no CSV/XML equivalence, clinical/payment meaning, derived release
+  rights, new admission or federated canary.
+
+### Native historical member format profiles
+
+- [x] Implement bounded private staging and digest revalidation of every
+  inventoried member, complete native CSV record counts/digests and reuse
+  existing bounded file-backed workbook container/worksheet XML validation.
+  Preserve member parser/resource holds individually; abort integrity failures.
+  All 67 affected tests, strict typing, actionlint and routine checks pass.
+- [x] Register exact-main archive-formats over the original six-object cohort,
+  with unchanged two-job concurrency, 30-minute timeout and aggregate-only
+  receipts. Each member has a 32 MiB bound, above the retained largest member
+  (25,122,918 bytes); no archive policy or source membership is expanded.
+- [ ] Execute actual protected profiles and retain all outcomes. Workbook
+  cell values, native tables, dates, decimals and domain semantics remain open.
+
+### Complete historical native CSV packages
+
+- [x] Bind every one of the 181 inventoried members to immutable inventory
+  receipts and the original six archives/acquisitions/B1/B2; identify the
+  existing 90 CSV members without new sources or fabricated member receipts.
+- [x] Implement atomic deterministic native CSV packages with every first,
+  empty and quoted record, exact identifiers/Unknown/numeric strings, original
+  metadata and source identity, independent native digest/coverage restore,
+  two builds and actual DuckDB record/field counts. Preserve unqualified
+  headers, native numeric/date text, unavailable patient rates and uncertainty.
+  All 74 affected tests, 100% new-module branch coverage, typing and routine pass.
+- [ ] Register protected actual CSV package qualification over the frozen
+  member cohort after observing current native-format outcomes. Complete
+  source-column/domain semantics, workbook members and eligible delivery.
+- [x] Retain local full run at 16d7b01e as failed: 7,606 passed, three
+  browser/consumer timeouts, three skipped, 96.87% coverage. No deadline is
+  relaxed and passing protected CI remains separate from a local full pass.
+
+### Actual historical format profiles and CSV identity review
+
+- [x] Verify every original member identity and outcome from protected run
+  39709530322: all 181 members parsed, zero holds, including 91 workbook
+  container/worksheet XML profiles and 90 native CSV profiles. The CSVs
+  contain 38,398,407 records and 307,187,256 fields, all width eight.
+  Preserve first records; headers and domain semantics remain unqualified.
+- [x] Fix the independently reproduced CSV occurrence identity collision for
+  identical bytes at different paths. Scope IDs to archive object and member
+  path/content, reject alias package substitution, and preserve all native
+  values. All 77 affected tests pass with 100% new-module branch coverage.
+- [ ] Qualify complete actual CSV packages, complete workbook cells/tables,
+  source-column semantics and eligible delivery. Format profiles do not
+  complete source-faithful Silver tables or authorize admission/publication.
+
+### Protected complete historical CSV group runner
+
+- [x] Partition all 90 frozen CSV members into 18 disjoint groups of five.
+  Reuse bounded anonymous exact-parent staging and selected-member hashes,
+  validate every path identity, complete two package builds and native restore,
+  and require final public revision readback. Keep all native values/private
+  member names inside the runner. Preserve atomic bounded progress on
+  interruption and coded failures without source-bearing exception text.
+  All 98 affected tests, typing, actionlint and routine checks pass.
+- [ ] Merge after protected checks and qualify all 18 groups; reconcile every
+  member/output digest and native field denominator against existing profiles.
+- [x] Retain actual PBS complete-package timeout 39708116811 separately: the
+  restore phase began at 1,816,751ms after 7,730,684 rows, but the unchanged
+  55-minute step limit expired. No complete package is qualified.
+- [ ] Replace costly repeated PBS projection/restore work with a versioned
+  native-core verifier that still checks every original field, full lineage,
+  schema and typed annotation. Measure write/read phases; preserve old package
+  verification, file bounds and deadlines. Do not rerun unchanged code.
+
+### Complete actual historical CSV packages and PBS v2 verification
+
+- [x] Reconcile all 18 successful groups from exact-main run 39717430728
+  against the original frozen bindings and independent native format profiles:
+  90 distinct member/output identities, 38,398,407 native records and
+  307,187,256 native fields. Every member has two equal builds, complete
+  native restore and actual DuckDB count checks. Retain all 18 metadata-only
+  receipts. Source-column semantics, admission and release remain unqualified.
+- [x] Implement a versioned PBS native-core verifier preserving the full
+  existing logical Arrow schema and every original field. Verify all repeated
+  lineage constants, field identities, grouping, source-slot digest, structural
+  annotations and lossless conversion annotations. Preserve v1 verification.
+  All 214 affected tests pass; new-module branch coverage is 92.24%; typing
+  has zero errors. These are synthetic checks, not actual PBS qualification.
+- [ ] Complete performance measurement, further review, routine/full checks,
+  preflight reconciliation and protected CI before exact-main PBS execution.
+- [ ] Complete all 91 historical workbook cells/tables, source-specific
+  semantics across the remaining MBS/PBS families, and eligible delivery.
+
+### Historical workbook physical extraction
+
+- [x] Implement extraction over original frozen member bindings without a
+  fabricated member acquisition receipt or assumed demographic/group header.
+  Reuse bounded ZIP/XML/shared-string/cell decoding; retain every sheet's
+  cells, native numeric text, formulas, cached values, errors, row attributes,
+  empty rows, empty sheets and package fingerprints. Reject identity changes,
+  duplicate/misplaced cells, invalid row order and unexpected XML roots/parents.
+  All 48 affected synthetic tests and strict typing pass.
+- [ ] Complete deterministic Parquet packages, independent native restoration,
+  actual-source qualification across all 91 workbooks, source-specific field
+  meanings and eligible output delivery. This extractor is not those proofs.
+
+- [x] Implement atomic deterministic historical workbook Parquet packages with
+  every native extraction record plus queryable cell properties and lossless
+  decimal candidates. Full source reparse checks every restored record and
+  annotation; two independent builds must agree, and actual DuckDB counts must
+  match records/cells/rows/sheets. Reject rehashed corruption, manifest
+  promotions, unequal builds, truncation and resource-limit failures. All 109
+  affected tests pass; new-module combined branch coverage is 98.32%; typing
+  has zero errors. No actual historical workbook is yet package-qualified.
+- [ ] Reconcile the current preflight, complete review/full/protected checks,
+  and register bounded exact-main execution over all 91 existing workbooks.
+
+
+### Protected historical workbook package route
+
+- [x] Register all 91 existing frozen workbook members as disjoint single-member
+  jobs, with two-job concurrency, original parent/member digest checks,
+  anonymous public revision readback, private staging and aggregate-only
+  receipts. Keep the 30-minute bound and preserve safe progress on interruption.
+  Select group 76 (largest retained native XML profile) for initial real runtime
+  qualification before launching the full cohort. All 155 affected tests,
+  typing and actionlint pass; runner branch coverage is 95.73%.
+- [ ] Complete review/full/protected CI, merge and execute the largest member
+  on exact main. Retain runtime/restore/consumer outcome before all 91 jobs.
+- [ ] Complete substantive source-column/domain semantics and eligible output
+  admission and consumer delivery; native package passes do not establish them.
+
+
+### Source-local PBS reference screening
+
+- [x] Implement bounded private on-disk indexing of original XML ID/RDF about
+  definitions and RDF resource/XLink fragment candidates. Count exact lexical
+  matches, ambiguity, missing/empty literals and unsupported forms. Keep
+  namespaces and case distinct; perform no URI normalization or external
+  lookup. All 61 affected tests and strict typing pass; no real-source
+  reference screen or semantic relationship is yet qualified.
+- [x] Merge workbook PR #1278 after all 40 checks and start exact-main group
+  76 in run 39722586797. The full 91-member cohort has not been dispatched.
+- [x] Retain PBS local full result separately: main pytest 7,740 passed,
+  three skipped, 96.86% coverage; overall exit 1 from a mutation baseline
+  Hypothesis timing failure (265.76ms/200ms). Focused unchanged recheck passed;
+  no local full pass or deadline change is claimed.
+- [x] Add an exact-main, read-only PBS native reference screen route with a
+  private bounded index, aggregate-only checkpoints and receipt, source-local
+  literal comparison and no semantic promotion. Local source-boundary, workflow,
+  screening and failure-sanitization checks pass; actual-source execution is
+  still pending protected CI and merge.
+- [ ] Run the protected reference screen and retain its actual denominators and
+  diagnostics; continue source-specific PBS meaning qualification.
+- [x] Retain exact-main PBS v2 package run 39721534876 as passed. The aggregate
+  receipt verifies 18,208,758 native fields, 7,730,684 entities, two identical
+  serializations, complete source reparse and full restore, with no admission
+  or publication. The two serializations share one producer pipeline; PBS
+  domain meanings and derived release rights remain unqualified.
+- [x] Retain the reference-screen local full profile as failed: 7,818 passed,
+  two workflow-scope assertion failures, three skipped and 96.89% coverage.
+  Add the new mutually exclusive job to those old-route tests; rerun affected
+  checks and routine. Preserve the failed full result separately.
+- [~] Correct Codecov patch coverage on PR #1279. The initial exact head had
+  39 passing Actions checks, but Codecov reported 89.47% patch coverage and
+  did not post the required passing check. Exercise the actual 100,000-field
+  progress checkpoint, refresh the current preflight and rerun affected checks
+  before requesting final protected CI on the new head.
+
+### PBS source-local reference screen bounded retry
+
+- [x] Inspect protected run 39729236096 and its aggregate-only failure receipt. It stopped after 13,500,000 native fields with a validation classification; the safe receipt does not identify the exact failing bound.
+- [x] Raise only finite SQLite index limits from 2 million rows/1 GiB to 8 million rows/4 GiB, retaining exact-main source binding, private temporary cleanup, no native literal emission, and candidate-only meaning.
+- [x] Obtain the successful exact-main protected rerun and reconcile its
+  aggregate receipt before any source-local relation claim. [Run `39730665004`](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39730665004)
+  passed at workflow commit `c9fd61e92bf9c36d46f37d941a0cbdaf3db1b1f4` for
+  the exact pinned April 2026 PBS v3 member. It accounts for 2,160,066
+  source-local reference occurrences: 2,086,489 unique exact-literal
+  candidates and 73,577 with no exact literal. This is lexical screening only;
+  effective `xml:base`, document/graph scope, target type, link role and
+  predicate semantics remain unresolved, so zero semantic relationships are
+  qualified.
+- [x] Add value-free denominator and match-outcome counts by native reference
+  kind (`rdf:resource`, `xlink:href`, `rdf:about`, and `xml:id`) and reconcile
+  the selected URI/base/scope cases against the exact PBS source. Protected
+  exact-main run `40120162365` on `7084ee19081b6c5ce1ce5e2b6941125a446e8ee0`
+  records 1,167,610 RDF resource and 992,456 XLink occurrences, with 1,094,033
+  unique same-member RDF candidates, 992,456 same-member unique XML-ID XLink
+  candidates, and 73,577 RDF references without a member definition. Its
+  46-case packet binds 17 same-member XML-ID, 18 absolute-URI unique, and 11
+  no-member-definition outcomes. This completes source-bound screening and
+  structural outcome accounting only: as of that screen, zero cases were
+  reviewed, external targets are not fetched, and no semantic relationships
+  are qualified.
+
+### Historical workbook cohort reconciliation
+
+- [x] Validate the largest workbook group 76 in protected run 39722586797
+  against the frozen member identity, native format profile, output ID, full
+  restore and DuckDB denominators. Retain its aggregate-only receipt. It has
+  5,141,641 records and 4,570,321 cells; source-column meanings and output
+  admission remain unqualified.
+- [x] Dispatch all 91 frozen workbooks on exact main d338ee01 in protected
+  run 39724026209 with two concurrent members and unchanged 30-minute job
+  bound. This is in progress; no complete-cohort claim follows from dispatch.
+- [x] Implement offline reconciliation requiring all 91 exact aggregate
+  receipts, unique source/member and output identities, retained native format
+  profiles, two-build/full-restore claims and consistent record, cell, row,
+  sheet and conversion denominators. Test both record and cell denominators
+  against the actual early group 1 receipt. Account every retained cell as
+  `native_unresolved` until source-specific meaning is supported. Thirteen
+  focused tests pass with 95.62% branch coverage; production typing is clean.
+- [x] Retain and reconcile all 91 successful workbook package receipts,
+  resolving the six timed-out jobs through the bounded exact-member retry.
+- [ ] Complete exact eligible output rights, admission and consumer delivery.
+
+- [x] Run local full profile for workbook reconciler; it reached about 51% of pytest then stalled after three timeout traces and was interrupted with exit 130. Preserve the log as failed/incomplete evidence; focused and routine checks passed, and protected PR checks remain required.
+
+### Actual PBS source-local lexical reference screen
+
+- [x] Run the exact-main PBS XLink candidate exporter after merge. Protected run `40134726623` passed on workflow commit `04bd8c1d4f95f7535ebf72aa66edda656a423f30`; its value-free receipt `quality/qualifications/pbs-native-xlink-candidate-screen-20261025-40134726623.json` (file SHA-256 `648e0395216405d6d59b892491379268d51d6c82f6fb6de989b8a0e81ac0594c`, report SHA-256 `4743c249352e84ff97b8ee49b7dfaddacce819b5d68db2462fed62772495cd4e`) binds 992,247 source-local same-member candidate occurrences and 209 allowlist abstentions in the exact pinned member. The 312,077,643-byte candidate artifact was downloaded and its SHA-256 verified as `37783ac24cc4ac05693d6873dbb925ad608f792c2bffabe173451bd13c577b4d`; it contains only QName categories and pseudonymous occurrence hashes. Zero semantic relationships, admissions, canaries, or publications were recorded.
+- [x] Protected exact-main retry 39730665004 passed on c9fd61e9. Retain the aggregate-only receipt with 18,208,758 native fields, 567,785 definitions, 2,160,066 candidate references, 2,086,489 unique exact literals and 73,577 without an exact literal. The screen emitted no native values and made no semantic relationship or domain claim.
+- [x] Implement bounded, value-free occurrence context for PBS reference candidates and integrate it with hosted qualification and the offline meaning reconciler. Synthetic positive, negative, ambiguity, and conflicting-`xml:base` controls pass. The reconciler validates context structure, size, exact denominators, and value exclusion, while requiring abstention from semantic edges. Commit `cacce466f31f6e02a7a7ac3fe5f285837f0f7611`; 42 focused PBS tests, Ruff, formatting, and BasedPyright pass. This is implementation evidence only; the existing source run predates context integration.
+- [x] Complete the local full Test-Goblin profile and bounded recovery. Retain the full result as failed (7,960 passed, 5 failed, 4 skipped; 96.83% coverage). All five failure nodes passed on the failure-only recheck or the isolated PBS date recheck. The failures were timing/environment related; protected CI is still required for the final branch head.
+- [x] Bind value-free source context to exact-main run `40076190245` on commit `b3139f9c655f48ccbb7a1714712219ac2281d838`. The retained screen receipt `quality/qualifications/pbs-native-reference-screen-20261024-40076190245.json` (SHA-256 `570cc803a6657e421dc614855fe75013440f716dd3ff1d0096232c08ae363711`) records context schema v2 with 184 structural strata, 63 bounded examples and 2,160,003 omitted occurrences. The meaning review (SHA-256 `9c15cbfd8fb12b7078caf3c61411eb77df24a139b4cc27851c1abad2ca458084`) and packet (SHA-256 `2c27b44e32e0d0f4d9117c53f1f8417fbf572d7b06ec98194fa5be32654dd9df`) validate the exact run, commit and source receipt. This remains value-free diagnostic context: no source cases have been reviewed and semantic relationships remain unqualified.
+- [x] Extend the bounded context screen to report URI resolvability categories, single-member scope, structural attribute roles, and aggregate target element types without emitting values or resolved URI strings. Rebased implementation commit `48c2a7c5`; focused URI and context regressions remain green. Preflight revision 73 binds the current implementation inputs while preserving main revisions 69–72 unchanged; the v3 exact-main run remains pending, no source cases have been reviewed, and semantic relationships remain unqualified.
+- [x] Address the initial Codecov patch finding by testing invalid URI/base inputs and malformed enriched context and review-packet profiles; the meaning validator rejects invalid URI profile, scope, role, target QName and target count shapes. The rebased affected PBS/preflight tests pass (155); Ruff, formatting, `ty`, and BasedPyright pass on changed implementation and preflight code. Hosted checks on the rebased PR head remain pending.
+- [x] Resolve the exact selected reference cases against the pinned PBS member and bind outcome classes by case ID and occurrence-address digest. Exact-main run `40110616327` on commit `e5145eca0698bbc275c3497431ba0f179261e458` passed for all 46 cases: 18 absolute URI unique candidates, 17 same-member unique XML ID candidates, and 11 no-member-definition controls. The receipt emits no source values and leaves every case unreviewed and every semantic relationship unqualified; see `quality/qualifications/pbs-native-reference-uri-screen-20261025-40110616327.json` (file SHA-256 `ac53a6d8fc79f8491d261d4e8bd552daa4e7d58c4ecd51ee780dbaf72d16e583`, report SHA-256 `2fb946cc0b53f2fede31db2e85c369d5b420c250b499f69922719a677c098ef3`).
+- [x] Complete a bounded structural match-behavior review of the exact 46-case packet. The value-free receipt `quality/qualifications/pbs-native-uri-structural-review-20261025-40120162365.json` (file SHA-256 `8e7c61609c84d19e2eaf9f127cff5943319760e2b98481b508b3e2f3bc74dd35`, report SHA-256 `b5834d4e86879c93818bfc49939423e5fbee103a7f40b5114f1f836cafc3b684`) identifies 35 cases with a unique same-member target and no `xml:base` as generic `source_declared_reference_pointer` structural dispositions; 11 no-member-definition cases remain unresolved controls. It emits no graph edges and makes no domain, clinical, precision, recall, or corpus-wide claim. Focused URI tests (45), CLI receipt regeneration, Ruff, `ty`, BasedPyright, and `git diff --check` pass; no local full suite was run.
+- [ ] Adjudicate the 46 selected source cases for document and graph scope, relation role, target type, predicate meaning, and semantic correctness; calibrate reviewed positive and negative controls before qualifying any relationship. The deterministic sample is non-probabilistic, so it cannot estimate population precision or recall. Literal and URI-resolution matches remain diagnostics until this review is complete.
+
+### Six historical workbook runtime cancellations
+
+- [x] Reconcile terminal protected run 39724026209 at exact main d338ee01: 85 of 91 member jobs passed; six (65, 71, 80, 84, 86, 87) were cancelled at the 30-minute job bound. Their aggregate receipts remain `incomplete` at `member-native-check`; none are qualified.
+- [x] Add an exact six-member retry selection with a finite 60-minute job bound and unchanged two-job concurrency, source identity, byte limits, complete restore, output checks, and aggregate-only receipts.
+- [x] Merge after protected CI, execute the six on exact main, retain each successful receipt, and reconcile the 85 original successes plus six retry successes without double-counting. Protected run 39891918206 completed successfully for all six retry groups.
+
+### Two-run workbook receipt reconciliation
+
+- [x] Address PR #1282 review finding before merge: the 85 successful original receipts and six retry receipts have different exact-main commits. Require all 91 original receipts; verify the six original `member-native-check` incomplete states and their digests; select exactly six successful retry receipts; retain per-group run and commit; reject duplicate output/member identities and double counting. Nineteen focused tests pass with 92.89% branch coverage; 46 affected workbook tests and typing pass. The actual retry outcome is bound below.
+- [x] Retain the local full profile as failed: 7,834 passed, two stable-v1 reproducibility failures caused by host `uv` 0.13.4 where the repository requires 0.11.29, three skipped. A later pinned `uv` 0.11.29 full profile on the merged PBS head passed.
+- [x] Refresh current preflight, pass protected exact-head CI, resolve the review finding after the fix is on the PR head, merge and dispatch the exact six-member retry.
+
+### Historical workbook candidate output inventory
+
+- [x] Extend exact two-run reconciliation to emit each verified candidate output ID, Parquet digest and byte count, source/member digests, and `native_unresolved` field state. Reject malformed Parquet fingerprints even if an output ID is recomputed. This is aggregate metadata only; rights, admission and publication stay false. Twenty-three focused tests pass with 93.07% branch coverage.
+- [x] Complete the pinned-uv local full profile with exit 0. Correct PR #1283 review's digest-type gap by requiring a string SHA-256 and rejecting a rehashed array of 64 valid hex characters. Recheck affected tests and protected exact-head CI before merge.
+- [x] Reconcile the original 85 and retried six in `mbs-historical-workbook-cohort-20261023-39724026209-39891918206.json`: 91 unique member identities and candidate output IDs, 348,952,606 native records, 310,177,657 source cell records (including 728 header cells), 38,773,552 rows and 181 sheets. The separate non-header field-state denominator is 310,176,929; all non-header cells remain `native_unresolved`.
+- [x] Correct PR #1285 review's retained-report test gap by deriving both output-ID and source/member uniqueness from the 91 actual candidate entries, independently of reported summary counters.
+- [ ] Bind exact eligible derived-output rights, source-column interpretation where supportable, admission, restore and consumer evidence separately.
+- [x] Record the maintainer's exact public-release rights attestation for all 91 digest-pinned historical workbook Parquet candidate outputs. The instrument was not independently located or reviewed. Semantic interpretation, admission, restore, public release and consumer canaries remain separate gates.
+- [x] Add an exact-main protected profile of the 91 existing workbook members, grouping observed sheet/header candidates and binding the exact ordered demographic header contract. Run `40040624592` on exact main `43f72eb7844a1f3adf13ec1fb34788c1bb8faf71` reconciles all six frozen archives and 91 workbook identities: 91 exact header profiles, 728 interpreted header-column bindings, zero unresolved header candidates/labels. The retained aggregate receipt is `quality/qualifications/mbs-historical-workbook-header-cohort-20261024-40040624592.json` (SHA-256 `5a5858e0a458c46452188a4f52ea396bf1f98c9ce3710d747dd1a58588c196f1`). Non-header cells remain `native_unresolved`; whole-workbook semantics remain incomplete.
+- [x] Correct PR #1288's empty-archive observation: `header_labels_emitted` is now derived from observed candidate labels, so the CSV-only archive reports false while workbook candidates report true. Added both cases to the profile aggregation tests. Forty focused workbook-header/package tests pass; Ruff, formatting and diff checks pass. Protected exact-head checks remain required.
+- [x] Add and wire a six-archive reconciler for the frozen 91-workbook header-profile receipts. It checks exact archive/source/revision and workflow commit bindings, profile digests, per-profile member assignment counts, exact and unresolved header denominators, and every frozen member identity before aggregating. Exact-main run `40040624592` passed and emitted the combined cohort receipt above. Header-level column meanings are bound where the exact contracts match; values, currencies, and other non-header cells are not promoted by that review.
+- [x] Complete the 91-workbook header and source-column review at the supported scope. Exact-main run `40040624592` binds all 91 workbook profiles to `mbs-demographic-workbook-v1`, with 728 interpreted column/header bindings and no unresolved header candidates or labels. This review interprets header roles, including the benefit amount label while leaving currency unresolved; all 310,176,929 non-header cells remain `native_unresolved`, so value semantics and whole-workbook semantics remain incomplete.
+- [x] Bind the supported P7 value, formula, error, and era-handling rules in `quality/qualifications/mbs-p7-value-era-rules-20261024.json`: exact decimal preservation without rounding, native Benefit75/85 amount candidates, no formula evaluation, formula/cache/origin preservation, OOXML error preservation, and explicit source-era separation. Exact-main run `40094025412` on `11be72e328affc0df87395fd59165ef4f5bf9055` classifies 86 unique-per-cell valid calendar dates as interpreted and 13,656 cells as `native_unresolved`; 1,194 ambiguous date cells remain unresolved. No workbook-wide DMY/MDY order is selected and temporal comparison remains disabled. Four formulas and two OOXML errors remain preserved without evaluation.
+- [x] Add a value-free P7-to-current-XML field-era crosswalk for the exact July 2024 workbook and July 2025 XML identities: 48 named P7 fields, 40 same-name structural candidates, 8 annotation-only fields, 2 unlabeled columns and 4 tracked value-cell occurrences; qualify zero cross-era semantic equivalences. Report: `quality/qualifications/mbs-p7-xml-field-era-crosswalk-20261025.json` (file SHA-256 `dbdd2f709d518ff1abf5186aca2679aa86727a47b3163babe0744b700220c751`).
+- [x] Implement complete-field, value-free exact-copy calendar consistency profiling for the four contracted P7 date fields, with formula/error-before-null classification and negative controls. Focused profiler/CLI coverage is 100%/96%; 32 focused tests and 45 broader workbook/date tests pass. This profiler enables the exact-main source readback recorded in the next task; the profile alone selects no date interpretation.
+- [x] Run the exact-main P7 date consistency workflow on the pinned workbook. Run `40139026116` on exact main `cc5c6615be033b60a2e1bf6c50dc64d2cae9763c` completed the four contracted fields (320 cells each) and selected the bounded internal `mbs-dmy` file-consistency inference: all populated values were DMY-valid, with four DMY-only dates and 1,194 ambiguous date-shaped cells. The value-free receipt is `quality/qualifications/mbs-p7-date-consistency-inference-20261025-40139026116.json`. This does not establish Department provenance, date domain meaning, other-workbook/era behavior, or cross-era equivalence. Its integration into the deterministic typed candidate is complete in the successor implementation below; exact-main typed requalification and field-state readback remain pending.
+- [x] Integrate the exact-file inference into P7 typed candidate construction and field-state reconciliation. Implementation commit `e586d665bb94631d1bdc5c00f0314a6036a14433` accepts only the digest-pinned receipt, exact July 2024 P7 source, and four complete contracted date fields; only literal source-date text cells are interpreted. Preserve the separate per-cell profile, native values, formulas, cached values, errors, nulls and serials. The 1,194 formerly ambiguous cells are explicitly labeled as bounded internal file-consistency inference, not Department provenance, domain meaning or a cross-era rule. The field-state report generator now counts those inferred cells with per-field evidence. Four focused suites pass (180 tests) on Python 3.15.1; Ruff, formatting and diff checks pass. Exact-main typed requalification and field-state readback remain pending; this is not hosted candidate or semantic-completion evidence.
+- [x] Complete exact-main P7 typed requalification and current field-state readback. Workflow run `40143990472` succeeded on exact main commit `3c5ecf6d1170bb9d3028ae3c9f7de8a593de5bb6` with Python 3.15.1. Retained hosted report `quality/qualifications/mbs-p7-workbook-storage-qualification-20261025-40143990472.json` (report SHA-256 `1e648fd627e0a99b52d7a81fbb7c44739335b7f817954720d6af638c811feb2c`) and bound run receipt `quality/qualifications/mbs-p7-exact-main-run-receipt-20261025-40143990472.json` (SHA-256 `40abb1d235d97802af35e0af3458e32ffb8071a8e296f1e2f61e9e55f9437e09`) to artifact ID `12580062422`, archive/member digest `8bb426105b77584e2d51db6a45fce3614c816b21e041412822dccba20f2e9a57`, the preserved calendar profile and inference receipt. Successor field-state report `quality/qualifications/mbs-workbook-field-state-reconciliation-20261025-40143990472.json` (SHA-256 `c1fed62c80b731f969bdd7b91760e4f9527cf3c0be43b17c47de42e627272991`) reconciles P7's 13,742 cells as 1,280 interpreted (86 unique calendar dates plus 1,194 exact-file DMY consistency inferences), 12,462 native-unresolved, and zero unavailable. On the 13,645 non-header value denominator, 1,280 are interpreted, 12,365 remain unresolved, and zero are unavailable. All four contracted fields bind 320 cells each; four formulas and two source errors remain unevaluated/preserved. The 91-workbook historical cohort is byte-for-byte unchanged in the reconciliation. This internal file-consistency inference establishes no Department provenance, domain meaning, temporal-comparison eligibility, or cross-era equivalence; temporal comparison remains disabled. Preserve the prior dated field-state report and historical typed qualification. No rights, sources, admissions, publication, canaries, or source values changed.
+
+- [x] Bind exact-main value-shape diagnostics for all 91 historical workbooks
+  to the frozen field-state reconciliation without changing semantic states.
+  Exact-main six-archive workflow `40149410629` succeeded on commit
+  `7763d510df47e4298175ef5148cbe0998ca09411`. Aggregate artifact
+  `historical-workbook-value-shape-cohort` (ID `12585676757`, SHA-256
+  `a3ee4ce842d752d9ff97451e30dd9796a73c55d1aeb279c8fa872695abfbb117`)
+  reconciles six archives and 91 workbooks. Its retained report is
+  `quality/qualifications/mbs-historical-workbook-value-shape-cohort-20261025-40149410629.json`
+  (file SHA-256 `12e1af2eafa0d2aa7b1c2dbb3ccda9112d6ed1e232e2779f981e421a0699e373`);
+  the field-state successor is
+  `quality/qualifications/mbs-workbook-field-state-reconciliation-20261025-shapes-40149410629.json`
+  (file SHA-256 `634cabb9c1169a0e98343c9221d7fe361c43d69b6f3ab395638e18e443609b0b`).
+  The reports reconcile 310,177,657 source cell records as 728 separate header
+  cells plus 310,176,929 non-header cells. Eight contracted fields each cover
+  38,771,742 data rows (310,173,936 field cells); pre-header and other-sheet
+  cells remain included in the non-header unresolved denominator. All
+  310,176,929 non-header cells remain `native_unresolved` (zero interpreted,
+  zero unavailable), and 728 header roles remain separately interpreted.
+  The reports emit no source values and claim zero semantic interpretations,
+  admissions, canaries, or publications. Shape, storage type, missingness,
+  formula/cache, and error counts are diagnostics only; date, currency, source
+  column meaning, and cross-era equivalence remain unqualified. No semantic
+  completion is claimed.
+
+### PBS native reference-context follow-through
+
+- [x] Cover malformed XML and context-receipt validation bounds in the PBS reference screen and meaning tests. The focused 67-test run passes with 100% statement and branch coverage for both affected modules; commit `2fe9336335bd36ee04c7bd2eb0b88902b65d48a1`.
+- [x] Preserve the first protected rerun's stale preflight test-digest failure and bind the expanded tests in preflight revision 51, preserving revision 50 and all release boundaries.
+- [x] Resolve the two source-context review findings: bound serialized examples and example-free strata before the receipt ceiling, and exclude empty literals from match candidate counters. Commit `5eab02679ea6fe61fb4bec07f68d20439c1a8985`; 164 broader affected tests pass and both affected modules retain 100% statement and branch coverage.
+- [x] Correct the strict-profile `reportUnknownVariableType` finding by typing the empty-example strata representation explicitly. Local strict profile passes with 0 errors and 4 existing missing-source warnings; the first protected run's strict failure is retained pending the corrected head.
+- [x] Rerun protected CI on the corrected merged head in PR #1297; all required checks pass.
+- [x] Run the exact-main source-context screen on merge `21f7721a8971ca6c9e704924503eebdd75356dce`. Run `40052770374` failed during projection qualification after the lexical pass; its bounded receipt contains no source values and does not qualify context or relationships. Retain it at `quality/qualifications/pbs-native-reference-screen-failure-20261024-40052770374.json`.
+- [x] Add aggregate-only context substage progress and allowlisted validation codes so a repeat failure identifies the bounded parser/aggregation stage without exposing source values (`fd7d91f4`). The failure-code allowlist rejects unrecognized text. Focused tests: 33 passed with 100% statement and branch coverage in the context module; broader affected PBS/preflight tests: 195 passed; strict profile: 0 errors (4 existing missing-source warnings); Ruff, formatting, and diff checks pass. Full local profile retained: 7,995 passed, 4 skipped, one failure on the stale revision-55 preflight digest; the isolated revision-56 preflight readback then passed all 17 tests.
+- [x] Improve review context selection so the bounded screen orders examples across structural strata and retains up to five examples per stratum; version the value-free context report and keep v1 receipt compatibility. 210 tests across the five PBS reference suites and 227 tests with the M-112 preflight pass. Ruff, formatting, BasedPyright, and diff checks pass; changed-module branch coverage is 93% for context and 99% for meaning. Preserve the failed local full-profile result (8,073 passed, 10 failed, 4 skipped; 96.94%) and record the stale preflight-hash cause plus subsequent failure-only/affected-test recovery in preflight revision 64. This implementation improves representative context only; it does not qualify semantic relationships.
+- [x] Correct the downstream review-packet validator found by PR review: accept context v1 and the exact v2 selection policy, while keeping strict keys, value exclusion, bounds, and diagnostic-only flags. Add v2 acceptance and wrong-policy rejection regressions. All nine affected reference/preflight suites pass (299 tests); Ruff, formatting, and BasedPyright pass. Full local Test-Goblin: 8,121 passed, 2 failed, 4 skipped, 96.98% coverage. The only failures are unrelated product-qualification PERF-QUERY checks (359/590 ms versus the unchanged 250 ms limit); failure-only rerun reproduces at 697/723 ms. The current M-112 preflight successor binds changed inputs; hosted checks remain pending.
+- [x] Add a regression that rejects boolean and non-string per-kind count inputs, preserving fail-closed receipt parsing. The exact-run validator is present on current main; 142 focused PBS, packet/context, and preflight tests pass, with Ruff, formatting, `ty`, BasedPyright, and the routine harness passing. This hardens count validation only; contextual review and semantic relationship qualification remain open.
+- [x] Prepare a bounded value-free review packet from exact-main native-reference screen run `40091358786` on commit `a198ffff88531f06a34e4f237af6d55dfc74260a`. It contains 61 structural examples from 2,160,066 references and no source values; URI/base resolution, predicate/link-role meaning, target-type meaning, and reviewed positive/negative/ambiguous cases remain outstanding. No semantic edges are qualified. See `quality/qualifications/pbs-native-reference-review-packet-20261024-40091358786.json`.
+- [x] Merge the diagnostic successor, rerun the exact-main source-context screen, and reconcile the successful receipt from run `40076190245` against exact merge commit `b3139f9c655f48ccbb7a1714712219ac2281d838`. The schema-v2 receipt and downstream meaning review preserve the no-values/no-semantic-promotion boundary; see the current reconciliation below.
+- [x] Correct source-order bias in the bounded review packet by staging at most one value-free example per structural stratum under a 4 MiB cap, then selecting round-robin across reference kind and match-status groups under the 64 KB/1,000-example report limits. The meaning and packet consumers accept the versioned policy while retaining previous receipt policies. Four focused PBS suites pass (168 tests); Ruff and formatting pass. This changes sample selection only; the current exact-main readback remains the earlier 61-example report.
+- [x] Add explicit regressions for staging-byte, report-byte, and total-example caps; all emitted plus omitted counts conserve the source occurrence denominator. The four focused PBS suites now pass 171 tests on Python 3.15.1, and the affected implementation passes Ruff, formatting, BasedPyright, and `ty`. Full local suite not run.
+- [x] Run the protected exact-main PBS context screen with the new sampler, regenerate the meaning report and review packet, and verify QName/kind/status coverage. Run `40103169910` passed on exact merge `83465c87d5952e123cedd93a02b1ec9b4daa4eb4`; it retains 46 value-free examples from 184 strata across 29 RDF and 17 XLink cases, with 11 no-target controls and 35 unique-literal candidates. The deterministic packet is not a probability sample; at that run all cases remained unreviewed, URI resolution was not performed, and semantic relationships remained unqualified.
+
+### PBS native Silver field-state reconciliation
+
+- [x] Independently reconcile the protected PBS v2 complete package and source-local reference screen aggregate receipts. The initial field-state receipt counted all 18,208,758 source fields as `native_unresolved`; see the additive field-state reconciliation below for the later evidence-backed structural-role split. Bind the exact candidate output ID and Parquet digest and retain the lexical-reference boundary. No source-native values are emitted; rights, admission, canaries and publication remain false.
+- [x] Preserve preflight revision 32 and bind the current field-state receipt and reconciler in revision 33 after merging PR #1283's verified candidate output inventory.
+- [x] Correct PR #1284 review's digest-type finding: a rehashed package with 64 hex characters encoded as an array is rejected. Preserve the interrupted pre-fix full profile as exit 130 and rerun the corrected head.
+- [ ] Bind any supportable source-specific meanings and exact eligible output rights/admission, then run authorized consumer restore and delivery canaries.
+- [x] Record the maintainer's public-release rights attestation for the one exact PBS native Silver candidate Parquet output, bound to its output ID, SHA-256, byte count, source revision, and member identity. The instrument was not independently reviewed. Domain semantics, admission, publication, and consumer canaries remain separate.
+- [x] Qualify bounded item, product, restriction, price-component, and effective-date meanings against the exact pinned PBS v3 path inventory and existing official-schema evidence. Record the absence of an explicit status field, and leave status, price basis/currency/benefit, value interpretation, and cross-era meaning unresolved. No new sources, raw values, admission, canary, or publication are part of this qualification.
+- [x] Reconcile structural destinations for all 18,208,758 native field occurrences using exact source-bound role counters: 17,252,839 mapped structural roles and 955,919 unmapped roles. These counts are routing metadata, not semantic interpretations; retain native values unresolved. Count the 2,800 qualified date-role occurrences as a non-additive overlay. Patient rates, current listing status, and cross-era/jurisdiction pooling remain unavailable or unqualified.
+- [x] Reconcile semantic field states against the pinned PBS path/QName inventory: 40,667 interpreted meanings, 18,168,091 `native_unresolved`, and zero unavailable out of 18,208,758. Promoted roles are exact item identifiers, product presentation labels, AMT reference literals, restriction-associated text/date fields, and a document-valid date; no native values are interpreted. Price currency/basis, listing status/currentness, classification type, and terminology target resolution remain unresolved.
+- [x] Refresh the current field-state reconciliation as r6, binding the exact-main context screen, meaning review and review packet for run `40076190245`. The r6 report SHA-256 is `f1bf15ae0ed971de6bec1fed5d6f4a7265531e7fdd21708f100d6fb713136b6e`; the field partition and semantic limits are unchanged.
+- [x] Refresh the current field-state reconciliation as r8, binding the exact-main screen, meaning review, and 46-case packet from run `40103169910`. Report file SHA-256 is `4ffa3fc4b8824cbb3166e714a4ee5830928cd32c4d48ab1ecbfb0f1cbe687251` and canonical report SHA-256 is `dd75a90151ee5c4be608fe534c1ef6ab0f84244e792521ab4dc4fb378f8cd0b7`. The partition remains 40,667 interpreted meanings, 18,168,091 native-unresolved fields, and zero unavailable; no native values or semantic links were promoted.
+- [x] Reconcile PBS field-state and date-role denominators in `quality/qualifications/pbs-date-field-population-reconciliation-20261025.json` (file SHA-256 `d1f9c523ae89430fc62d18cba86a7ea19d988d8436f4a5f27a15c1c623719b3b`). The exact-main r11 partition accounts for all 18,208,758 fields as 934,628 interpreted, 17,274,130 `native_unresolved`, and 0 unavailable. Exact occurrence crosswalk run 40121732132 confirms 3,028 direct restriction-date path fields and 2,798 item date-profile fields have zero overlap; the prior 230 difference is a subtraction across disjoint populations, not missing identity. Domain semantics v3 records the 3,028 restriction date literals separately from 2,799 grammar-profiled item/schedule dates, leaving restriction date grammar, date precedence, current status, and intervals unqualified. The 2,800 date-profile slots include one recognized missing value whose identity is not inferred. No source values were emitted.
+- [x] Bind the current PBS field-state successor as r12 while preserving r11 as its predecessor. The r12 report binds domain semantics v3 (canonical report SHA-256 `ea11c97eff13051152fde6bf6c3be1788102e75b89662a38c9eb76712f21401a`) and retains the same conserved partition: 934,628 interpreted, 17,274,130 `native_unresolved`, and 0 unavailable of 18,208,758. The date-population reconciliation now references r12 and verifies its arithmetic plus the exact digests of the v3 domain, r12 field state, and crosswalk. No semantic values, rights, admissions, or delivery claims changed.
+- [x] Bind PBS bounded domain semantics v4 and the 46-case value-free structural review into field-state successor r13, preserving r12. The r13 report file SHA-256 is `90fd3fc41aca65338fa13fb5bbf1c69c97fff5f0375f320743dffcd7c373acc2` and canonical report SHA-256 is `f1d790d0c565c1c04a3a26ca973a539d3474601d4e593600847a11ff99f68faf`. It retains the full 18,208,758-field partition (934,628 interpreted, 17,274,130 `native_unresolved`, 0 unavailable), adds bounded domain-semantic and structural-review bindings, and records 46 supported structural pointer roles plus 11 no-target controls. It promotes zero native-value meanings and zero semantic relationships; complete domain semantics, rights, admission, publication, and delivery remain unqualified. Date-population reconciliation r2 binds r13 and preserves the non-overlapping source occurrence denominators.
+- [x] Preserve M-112 preflight revision 96 and bind the corrected P7 date-count plan in successor revision 97; no source inventory, rights, admissions, canaries, or publication state changes.
+- [x] Refresh the M-112 preflight snapshot as revision 69 to bind the r6 report, exact-main context screen and review-packet evidence. Preserve revision 68 unchanged; no admission, canary, publication, new source, or semantic relationship qualification follows.
+- [x] Preserve preflight revision 75 and prepare revision 76 after exact-main Silver reconciliation. It binds the P7 per-cell date report (86 interpreted, 13,656 unresolved), PBS domain field-state receipt, and value-free 61-example reference packet. The packet leaves semantic relationships unqualified; rights, admission, publication, and consumer delivery are unchanged. The protected unit lane first exposed two stale assertions; four directly affected test nodes pass after the snapshot and assertions were corrected.
+- [x] Refresh the current M-112 preflight as revision 82 after the exact-main PBS URI structural review and XLink candidate screen were added to the plan. Preserve revision 81 unchanged and update only the bound track-plan digest; rights, admission, publication, source inventory, and canary state do not change.
+
+### October 25 Silver semantics successors
+
+- [x] Qualify the documented XSD `YYYY-MM-DD` lexical grammar for the 3,028 direct PBS restriction/effective/date/text fields in domain semantics v5. The pinned archive binds schema major/minor 3.1, while the retained official Mapping Specification is release 3.1.9, so the patch version remains unbound. No field values were inspected or validated; calendar validity, intervals, status, eligibility, and nested reference dates remain unresolved.
+- [x] Reconcile the exact P7 donor copy with the retained value-free internal date-profile receipt. The four DMY-only cells select the internal same-copy DMY profile for the 1,194 ambiguous cells, giving 1,280 interpreted and 12,365 unresolved of 13,645 non-header values. This is internal file consistency only: operational conversion, source-owner provenance, domain date meaning, temporal comparison, and cross-era equivalence remain disabled or unqualified. All 91 historical workbook candidates remain 0 interpreted, 310,176,929 `native_unresolved`, and 0 unavailable; their 728 header roles are counted separately.
+- [x] Bind PBS domain semantics v5 into field-state successor r14 while preserving r13. The exact 3,028-field direct restriction date grammar is recorded as a lexical-role qualification only; the 18,208,758-field partition remains 934,628 interpreted, 17,274,130 `native_unresolved`, and 0 unavailable. Native values and semantic links are not promoted.
+- [x] Qualify generic same-member XLink link targets in PBS field-state successor r15. The exact URI screen resolves all 992,456 `xlink:href` fields to unique same-member `xml:id` targets across 186 source paths. The bounded value-free review contains 17 same-member positive examples, 11 no-target controls, and 18 RDF local candidates; it is not probability-based and does not estimate precision or recall. The field-state partition becomes 1,927,084 interpreted, 16,281,674 `native_unresolved`, and 0 unavailable. PBS-specific predicates, clinical meaning, the 1,167,610 RDF `rdf:resource` fields, edge materialization, and external target resolution remain open.
+
+### October 28 RDF/XML field role
+
+- [x] Qualify only the generic RDF/XML `rdf:resource` syntax role in PBS
+  field-state successor r16. The W3C RDF/XML Recommendation defines the
+  attribute as the IRI of an object node. Across 370 exact PBS schema paths,
+  1,159,282 previously unresolved fields receive that generic field role;
+  8,328 existing AMT-specific fields retain their narrower interpretation.
+  The full denominator remains 18,208,758 fields: 3,086,366 interpreted,
+  15,122,392 `native_unresolved`, and zero unavailable. The URI screen's
+  1,094,033 unique-literal candidates and 73,577 no-member-definition results
+  remain diagnostics. No source values are read or emitted; target identity,
+  PBS predicate/domain meaning, semantic edges, currentness, and M-109
+  acceptance remain unresolved. See
+  `docs/qualification/pbs-rdf-resource-field-state-20261028.md` and the
+  digest-bound r16 report. Focused reconciliation tests and local validation
+  are recorded in `evidence.jsonl`.
+
+## System completion execution focus (2026-10-25)
+
+Select the next task through the [system completion charter](../../system-completion.md)
+and [validated scheduling plan](../../system-completion.json). Name its shared
+capability or gate, concrete failure, bounded frozen-inventory scope, expected
+proof, and targeted validation. Advance the system lanes when prerequisites
+permit; perform dataset semantics or coverage work only when needed for a
+named gate. Preserve unresolved fields and all mandatory eligible-object
+identity, lineage, rights, admission, recovery, and consumer evidence. Broader
+coverage, new sources/terminology, and optional experiments remain deferred.
+This scheduling direction changes no acceptance criterion, current M-105/M-107
+disposition, or conditional release approval; current states come from the
+authoritative contract, reconciliation, and bound receipts.
+
+### October 28 RDF/XML subject field role
+
+- [x] Qualify the generic RDF/XML `rdf:about` subject-IRI-reference syntax
+  role for the exact pinned PBS source profile. The URI-screen definition count
+  and field inventory reconcile to 10,368 fields across 34 paths. The complete
+  field denominator remains 18,208,758: 3,096,734 interpreted, 15,112,024
+  `native_unresolved`, and zero unavailable. Individual values are not
+  resolved; no PBS predicate meaning, relationship, edge, or matcher behavior
+  is qualified. See the digest-bound r17 report and the W3C RDF 1.1 XML Syntax
+  specification. M-109 and the Australian federation gate remain blocked.
+  Focused test and contract evidence is recorded in `evidence.jsonl`; implementation commit `636c27bf` contains the code, report, Stable v1 bindings, and validation evidence.
+
+### October 28 PBS schema-path inventory digest binding
+
+- [x] Review r17 and correct the missing input-identity binding: r18 now pins
+  `pbs-schema-paths-20261022-39667604237.json` at SHA-256
+  `6da85f3e3526a52dca7b0f41206b5ec1afde854f89d858ae659867827219408b` before
+  applying the bounded `rdf:about` role. The complete field partition and
+  semantic limits are unchanged. Added a mismatched-inventory negative control
+  and a canonical retained-report test. PBS field-state tests pass (56), Stable
+  contract tests pass (63), and Ruff, formatting, `ty`, BasedPyright, context
+  validation, and diff checks pass. Review was performed by the implementing
+  agent; no independent review or M-109 acceptance is claimed. Commit
+  `2f2d61f0` records r18 and the validation evidence.
+
+### October 28 PBS root schema-version field role
+
+- [x] Bind the exact root `@version` field to the retained metadata-only PBS
+  schema-version receipt. The receipt declares schema version 3.1 for the
+  pinned April 2026 member and binds the exact QName path and member digest;
+  r19 promotes only that one metadata field. Schema patch, PBS values,
+  predicates, relationships, and M-109 acceptance remain unresolved. The
+  complete field-state partition is 3,096,735 interpreted, 15,112,023
+  `native_unresolved`, and zero unavailable of 18,208,758. After review
+  hardening the receipt path before file access, focused PBS and Stable
+  contract suites pass (60 and 64 tests); total focused coverage is 94.60%
+  and PBS module branch-inclusive coverage is 95%. Ruff, `ty`, source/runner
+  BasedPyright, context validation, and diff checks pass. Review is by the
+  implementing agent only. Commit `5f64d335` records the r19 increment.
+
+## October 28 MBS historical-workbook source-column semantics
+
+- [x] Reconcile the 91 exact historical workbook profiles against the existing
+  Services Australia and data.gov.au report definitions. All 91 distinct sheet
+  profiles share one normalized eight-column contract (728 header bindings).
+  The bounded source meaning receipt qualifies the report-period year and
+  processing month, MBS item reference, claim-time State/Territory basis,
+  patient age-range and gender dimensions, adjusted service total, and total
+  benefit amount label. It keeps item remapping, demographic codes, benefit
+  currency/calculation, every cell value, and cross-era equivalence unresolved.
+  No source values or payload bytes were read; all 310,176,929 non-header
+  cells remain `native_unresolved`. The affected Stable contract module passes
+  (66 tests); Ruff, formatting, `ty`, BasedPyright, context validation,
+  ecosystem validation, and diff checks pass. Receipt:
+  `quality/qualifications/mbs-historical-workbook-source-column-semantics-20261028.json`.
+- [ ] Continue value-level and era-specific qualification only where exact
+  source evidence supports it. MBS value semantics, P7 source-owner date
+  confirmation, PBS domain meanings/relationships, and M-109 acceptance remain
+  open.
+
+## Independent PBS native pipeline execution (2026-10-28)
+
+- [x] Identify the remaining build gap: the two existing serialization outputs
+  share a producer batch stream and do not prove two complete pipeline builds.
+- [~] Reuse the qualified exact-source producer in two isolated fresh hosted
+  jobs on the same exact main commit, retaining aggregate metadata only.
+- [ ] Retain and compare actual native job/run/artifact proof, input identities,
+  full native-core/coverage and exact Parquet fingerprints. Keep byte drift,
+  output rights, domain meaning, admission and publication as distinct states.
+
+## Phase 1 delivery field-contract freeze (2026-10-28)
+
+- [x] Freeze the release field/relationship requirements under the existing
+  approved completion policy in
+  `quality/qualifications/australian-benefits-release-field-contract-20261028.json`.
+  Every frozen source family and all 91 workbooks remain in the qualification
+  denominator. Native unresolved delivery is permitted without inventing
+  semantics; conditional claims require exact supporting evidence. This
+  requirements baseline does not complete semantic qualification or change
+  admission, publication, recovery, consolidation or Stable v1 acceptance.
+- [ ] Verify actual consumer behavior against the bound requirements after
+  exact eligible output qualification/admission; retain unsupported claims as
+  unavailable and compare all four consumer surfaces.
+
+## Actual isolated PBS pipeline builds (2026-10-29)
+
+- [x] Retain and validate two distinct successful complete pipeline jobs and
+  their artifact/envelope digests from exact-main run 40700877242. The current
+  outputs agree, including complete native-core and restore checks.
+- [ ] Resolve eligible output identity and rights binding before publication
+  or admission: new output `8e8bacdc…d23fc` has Parquet `86d65b14…6a88c`,
+  while the prior exact rights attestation binds `842f4130…17503` /
+  `e122b50a…bb1b2`. The old candidate is not independently reproduced.
+  No new rights conclusion, admission or consumer success is asserted.

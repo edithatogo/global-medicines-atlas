@@ -1,0 +1,45 @@
+{
+  "authorized_objects": [
+    {
+      "byte_count": 24367,
+      "path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/p7.parquet",
+      "sha256": "2da8606d3e408294bcfdc914906de4814d33c1a72acf5a2ba40f91473267516a"
+    },
+    {
+      "byte_count": 454247,
+      "path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/source.parquet",
+      "sha256": "80f8e0d3cc67f6f3a22f23cc3bfb0db5da4d44d79741da3ce1c31ee92836627a"
+    },
+    {
+      "byte_count": 24367,
+      "path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/p7.parquet",
+      "sha256": "6362f7f3a5d9870545cc074450b81a82475d68fdb062f38083713f56bd88d2fe"
+    },
+    {
+      "byte_count": 454247,
+      "path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/source.parquet",
+      "sha256": "5219094d2ec7f4386380b356cc17f071c97751db43ed367746a6d07ca4ff3eaf"
+    }
+  ],
+  "boundaries": {
+    "consumer_canaries_authorized": false,
+    "derived_rights_attestation_for_other_objects": false,
+    "four_additional_august_projection_outputs_outside_frozen_inventory_included": false,
+    "frozen_inventory_membership_changed": false,
+    "new_publication_performed": false,
+    "scope_is_exact_four_frozen_objects_only": true,
+    "source_payload_bytes_inspected": false,
+    "v4_admission_or_promotion_authorized": false
+  },
+  "dataset": "edithatogo/australian-mbs-source-archive",
+  "maintainer_response": "I have exact written permission or another applicable rights instrument.",
+  "permission_instrument_existence_and_applicability": "maintainer_attested_not_independently_reviewed_or_located_at_maintainer_direction",
+  "public_presence": "These objects were already present in the public dataset tree before this reconciliation; this action performed no publication.",
+  "public_release_rights_attested": true,
+  "recorded_at": "2026-10-19T17:51:10Z",
+  "schema_id": "global-medicines-atlas.australian-mbs-august-bronze-rights-attestation",
+  "schema_version": 1,
+  "scope": "Exact four August Bronze projection objects inside the frozen M-112 inventory, bound by path, SHA-256, and byte count.",
+  "source_release": "MBS 1 August 2026",
+  "track_id": "australian_benefits_silver_gold_20260829"
+}

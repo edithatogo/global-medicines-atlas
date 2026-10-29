@@ -1,0 +1,56 @@
+{
+  "completed_at": "2026-10-25T08:26:36.214584+00:00",
+  "created_at": "2026-10-25T08:26:05.677420+00:00",
+  "object_count": 6,
+  "objects": [
+    {
+      "byte_count": 100062,
+      "cache_entry_absent_before_restore": true,
+      "path": "silver/mbs/v4/2025-07-v3/services.parquet",
+      "restored_at": "2026-10-25T08:26:11.644477+00:00",
+      "restored_from_primary": true,
+      "sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535"
+    },
+    {
+      "byte_count": 51851,
+      "cache_entry_absent_before_restore": true,
+      "path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+      "restored_at": "2026-10-25T08:26:16.315847+00:00",
+      "restored_from_primary": true,
+      "sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756"
+    },
+    {
+      "byte_count": 620348,
+      "cache_entry_absent_before_restore": true,
+      "path": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+      "restored_at": "2026-10-25T08:26:21.111268+00:00",
+      "restored_from_primary": true,
+      "sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733"
+    },
+    {
+      "byte_count": 93072,
+      "cache_entry_absent_before_restore": true,
+      "path": "silver/mbs/v4/2025-07-v3/fees.parquet",
+      "restored_at": "2026-10-25T08:26:26.120309+00:00",
+      "restored_from_primary": true,
+      "sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420"
+    },
+    {
+      "byte_count": 114493,
+      "cache_entry_absent_before_restore": true,
+      "path": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+      "restored_at": "2026-10-25T08:26:31.259338+00:00",
+      "restored_from_primary": true,
+      "sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f"
+    },
+    {
+      "byte_count": 60259,
+      "cache_entry_absent_before_restore": true,
+      "path": "silver/mbs/v4/2025-07-v3/caps.parquet",
+      "restored_at": "2026-10-25T08:26:36.203412+00:00",
+      "restored_from_primary": true,
+      "sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb"
+    }
+  ],
+  "status": "passed"
+}

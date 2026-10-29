@@ -22,7 +22,7 @@ without source-specific evidence.
 
 | Capability | Current evidence |
 |---|---|
-| Python 3.15 package, CLI, API and server-rendered Atlas | Compatibility canary passes; DuckDB and full-platform qualification remain open |
+| Python 3.15.1 package, CLI, API and server-rendered Atlas | Software-qualified |
 | NZULM/NZMT, Drugs@FDA, PBS, EMA and initial global adapters | Representative fixtures |
 | Property, metamorphic, contract, deterministic simulation and mutation testing | Blocking CI |
 | Live regulatory and funding coverage | External qualification required |
@@ -48,8 +48,7 @@ track in the
 This is a single-accountable-maintainer repository with automated evidence
 rather than invented reviewer roles. Start with [`AGENTS.md`](AGENTS.md) and
 the machine-readable [context manifest](.context/project.toml). Pull requests
-run the complete protected Python 3.14 harness plus a scoped Python 3.15
-compatibility canary, locked Mojo canary, context-drift checks,
+run the complete Python 3.15.1 harness, locked Mojo canary, context-drift checks,
 CodeQL, Zizmor, dependency audit, and SBOM generation. Licensing, credentials,
 public release, external publication, compatibility archival, and
 consequential interpretation remain explicit human gates.
@@ -72,12 +71,10 @@ features and maturity levels to Conductor tracks and the native GitHub
 
 ### Five-minute local start
 
-The configured default target is CPython 3.15; CPython 3.14 remains in the
-protected full-suite lane until the complete 3.15 dependency stack qualifies.
-From a source checkout:
+The authoritative runtime is CPython 3.15.1. From a source checkout:
 
 ```console
-uv sync --python 3.15.0 --locked --no-dev
+uv sync --python 3.15.1 --locked --no-dev
 uv run global-medicines-atlas --help
 uv run global-medicines-atlas comparison --help
 uv run pytest -q tests/test_smoke.py

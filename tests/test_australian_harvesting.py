@@ -522,17 +522,37 @@ def test_medicare_statistics_domains() -> None:
 
 
 def test_harvest_workflows_enforce_governed_controls() -> None:
-    for wf_path, expected_dataset in [
-        (PBS_WORKFLOW, "edithatogo/australian-pbs-utilisation-archive"),
-        (MBS_WORKFLOW, "edithatogo/australian-mbs-source-archive"),
-        (MBS_UTIL_WORKFLOW, "edithatogo/australian-mbs-utilisation-archive"),
+    for wf_path, authorization, runner, expected_dataset in [
+        (
+            PBS_WORKFLOW,
+            PBS_AUTH_FILE,
+            "harvest_australian_pbs_utilisation.py",
+            "edithatogo/australian-pbs-utilisation-archive",
+        ),
+        (
+            MBS_WORKFLOW,
+            MBS_AUTH_FILE,
+            "harvest_australian_mbs_schedule.py",
+            "edithatogo/australian-mbs-source-archive",
+        ),
+        (
+            MBS_UTIL_WORKFLOW,
+            MBS_UTIL_AUTH_FILE,
+            "harvest_australian_mbs_utilisation.py",
+            "edithatogo/australian-mbs-utilisation-archive",
+        ),
     ]:
         text = wf_path.read_text(encoding="utf-8")
         assert "schedule:" in text
         assert "workflow_dispatch:" in text
         assert 'test "$GITHUB_REF" = refs/heads/main' in text
         assert 'test "$GITHUB_SHA" = "$REQUESTED_COMMIT"' in text
-        assert expected_dataset in text
+        assert (
+            json.loads(authorization.read_text())["dataset"] == expected_dataset
+        )
+        assert f"scripts/{runner}" in text
+        assert authorization.name in (ROOT / "scripts" / runner).read_text()
+        assert "gh issue comment" not in text
         assert "anonymous_digest_verification" in text
         assert "temporary_source_bytes_removed" in text
         assert "environment: australian-hf-publication" in text

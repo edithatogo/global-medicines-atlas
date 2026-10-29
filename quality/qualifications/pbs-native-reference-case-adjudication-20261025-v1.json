@@ -1,0 +1,961 @@
+{
+  "report": {
+    "schema_id": "global-medicines-atlas.pbs-native-reference-case-adjudication",
+    "schema_version": 1,
+    "status": "structural_pointer_roles_bounded_semantics_abstained",
+    "source": {
+      "dataset": "edithatogo/australian-pbs-source-archive",
+      "revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7",
+      "member_path": "sch-2026-04-01-r1.xml",
+      "member_sha256": "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43",
+      "member_values_read": false,
+      "new_sources": 0
+    },
+    "inputs": {
+      "case_packet_path": "quality/qualifications/pbs-native-reference-review-packet-20261025-40103169910.json",
+      "case_packet_file_sha256": "c38840116e821dffe5b06e5df14b1d7140f9e4446fbf8c14ea009a9e8b732829",
+      "case_packet_report_sha256": "885960352dcee9e70f12ac3aa843d5129b75a2c44b16263835ff5bc7b57a5c6b",
+      "uri_reconciliation_path": "quality/qualifications/pbs-native-reference-uri-review-reconciliation-20261025-40120162365.json",
+      "uri_reconciliation_file_sha256": "3698d217957c4d3263fce010d8ed6441c2050866052e1308fa352c6cd22772bb",
+      "uri_reconciliation_report_sha256": "31e22bbda75bb7da755af0d09ed29c93477a9da08a5c50ed499dc6bc23dcd4fa",
+      "uri_workflow_run_id": "40120162365",
+      "uri_workflow_commit": "7084ee19081b6c5ce1ce5e2b6941125a446e8ee0",
+      "source_packet_bytes_bound_by_uri_reconciliation": true
+    },
+    "review_scope": {
+      "case_count": 46,
+      "structural_pointer_roles_supported": 46,
+      "no_target_hard_negatives": 11,
+      "semantic_relationships_qualified": false,
+      "edges_emitted": false,
+      "precision_claimed": false,
+      "recall_claimed": false,
+      "corpus_generalizable_match_quality_claimed": false,
+      "admission_or_clinical_meaning_claimed": false,
+      "meaning": "structural roles and exact member-scoped resolution only; no semantic relationship adjudication"
+    },
+    "cases": [
+      {
+        "case_id": "94979eb833c21e8cf93c83fe6c6e2eeb93ab97d663872317546e81cc3a675d88",
+        "category": "unique_fragment_literal_candidate",
+        "reference_kind": "xlink_href",
+        "reference_occurrence_sha256": "b8bd84a47f494679d5764f51e83e6a47ab87e94095ec2912e908dad85b2d0c22",
+        "structural_pointer_role": "xlink_href_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "same_member_unique_id",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "d89876be89d1885fb1c89ff22cc108eef69d853e17ee59a05de5838c67692b5a",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "01f3fa691dcd268e464fb18b434ee31a1aa04fe8dd7c253a967b4b26dbc95d04",
+        "category": "no_target_negative_control",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "760a29890368ef966f6b6a5ebdae750c922352a076657d4400bdb7bb839ed7a6",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_no_member_definition",
+        "target_multiplicity": 0,
+        "target_occurrence_sha256": null,
+        "disposition": "no_definition_in_pinned_member_hard_negative",
+        "hard_negative": true,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "No same-member target definition exists for this exact scanned reference.",
+          "No source value or external target was retained or fetched; this does not establish that the relationship is false outside this member.",
+          "Predicate meaning and target meaning are not established."
+        ]
+      },
+      {
+        "case_id": "840ec11ab687aac0e8106419fc3d6f39e056a734f5a093dcb6e1e6a5ebe2e0a7",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "fa8c0eb48c086d89128a828b697eb3df283837462c40d833c62dcee9a99c2408",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_unique_candidate",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "be11ed142f639bf2790ba8a598f1341838fc5f1d1e9044e4d5441a028080f40f",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "03907fca6721c1d1a11e5461b8d97cc827d4c4dde9d819acc1183f040301ba5a",
+        "category": "unique_fragment_literal_candidate",
+        "reference_kind": "xlink_href",
+        "reference_occurrence_sha256": "058a7252969ed8dc99d1ccb0505dde6261c12cdf388f478cdf61db7b93a60c08",
+        "structural_pointer_role": "xlink_href_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "same_member_unique_id",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "772649145ce7b353f10434aea7b8632625cc3d7f03256be5f3f706c17e869eab",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "9b3ede446faf1d7feece725b9a876417a6e4ab3f1ccee88e6a92361514bd6742",
+        "category": "no_target_negative_control",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "518addce2bb7efd2dcb075188ddfc8ee72b350c9f85d3d87d86d657f7b61b8fb",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_no_member_definition",
+        "target_multiplicity": 0,
+        "target_occurrence_sha256": null,
+        "disposition": "no_definition_in_pinned_member_hard_negative",
+        "hard_negative": true,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "No same-member target definition exists for this exact scanned reference.",
+          "No source value or external target was retained or fetched; this does not establish that the relationship is false outside this member.",
+          "Predicate meaning and target meaning are not established."
+        ]
+      },
+      {
+        "case_id": "ff0e496295ef937f0b3acc4b948f0f2bf4c56b62401d2f50a0a92ec9a804c4e4",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "835c805fd754b47b19c0c48d7d1bf9d4d836a5f5c35f7042eebbfbc71f562f9d",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_unique_candidate",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "be11ed142f639bf2790ba8a598f1341838fc5f1d1e9044e4d5441a028080f40f",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "223eba5d757cd95463fd14deb92bff6691dd644e58f694c0bbdbb8269b5866e9",
+        "category": "unique_fragment_literal_candidate",
+        "reference_kind": "xlink_href",
+        "reference_occurrence_sha256": "53a0db417a15747e3cabd91129d0246b3b5aaa9603a96867e94abed5b89dee4f",
+        "structural_pointer_role": "xlink_href_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "same_member_unique_id",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "f41bcedd1670920a2b86ab97686d1cbee06120aeb563cf890e39a673656ccc6b",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "e54a9d3ea8c835bb1d8555bcf39f3bbc0cf60a06f0fb0ad0ad8d6d86c1c01e09",
+        "category": "no_target_negative_control",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "6166e3087fd299ceb549298cfbb20f1189497ae4e9a14ee10617dd39e8168442",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_no_member_definition",
+        "target_multiplicity": 0,
+        "target_occurrence_sha256": null,
+        "disposition": "no_definition_in_pinned_member_hard_negative",
+        "hard_negative": true,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "No same-member target definition exists for this exact scanned reference.",
+          "No source value or external target was retained or fetched; this does not establish that the relationship is false outside this member.",
+          "Predicate meaning and target meaning are not established."
+        ]
+      },
+      {
+        "case_id": "a6c4601e91d7811f7ed601ebc9636025fbda7ee76aaf5488cc30ce0178df1d0c",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "9d5977eb59cee424f1e199e9d4767544e2b2597923ae3dfbf8c25d05682800ff",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_unique_candidate",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "c9115ad607febdcb06a08271dd8d36858a5cc50c02d76988bd269b0679290903",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "6061342f4783650445c2dfaeed300b77108aa3d67b87fb5ee2e070c35eae09ff",
+        "category": "unique_fragment_literal_candidate",
+        "reference_kind": "xlink_href",
+        "reference_occurrence_sha256": "6c1da85522435ecc00a4d26997f297095c519083cf0af37cc69d41f3920803ee",
+        "structural_pointer_role": "xlink_href_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "same_member_unique_id",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "2dd5f7706d149b85ba039a0100595dc6517d5e34365273feaab6be7fde3477a8",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "4bce11c6d722514fc10c94743a2c384ef614cb77a1469dbf815ee7595b831206",
+        "category": "no_target_negative_control",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "61c8ead2942a642caa6abb3603b0aefa7162802581f3f5adad605854573d4b97",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_no_member_definition",
+        "target_multiplicity": 0,
+        "target_occurrence_sha256": null,
+        "disposition": "no_definition_in_pinned_member_hard_negative",
+        "hard_negative": true,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "No same-member target definition exists for this exact scanned reference.",
+          "No source value or external target was retained or fetched; this does not establish that the relationship is false outside this member.",
+          "Predicate meaning and target meaning are not established."
+        ]
+      },
+      {
+        "case_id": "0f911fae117c748718e5d1180cc605856655d57554a32afc46ce997b02caf2dc",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "82cdf1cfcd36bdb6a1310c955ca5e3942a4f2249799f6449c3d5eda808907f25",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_unique_candidate",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "c9115ad607febdcb06a08271dd8d36858a5cc50c02d76988bd269b0679290903",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "b24b3ffec3a53a416130528fece93b474f007c4189a708ed9e048fe1d8849b91",
+        "category": "unique_fragment_literal_candidate",
+        "reference_kind": "xlink_href",
+        "reference_occurrence_sha256": "0ea494bf494eefffbd2623fa840ac1e1e8c608fca3078585642c86fb5558af12",
+        "structural_pointer_role": "xlink_href_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "same_member_unique_id",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "fda6275999eb52078967811df450263906cdec26fbcc942b7075d50303373b5c",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "868fb65521dcef4ca36203bca00c8b5299f7bfaa198393261161693e5ec57f32",
+        "category": "no_target_negative_control",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "365d112592d7a622769408e5f2c118b1b7b9dca428fa0c8e3726e2608f83e66f",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_no_member_definition",
+        "target_multiplicity": 0,
+        "target_occurrence_sha256": null,
+        "disposition": "no_definition_in_pinned_member_hard_negative",
+        "hard_negative": true,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "No same-member target definition exists for this exact scanned reference.",
+          "No source value or external target was retained or fetched; this does not establish that the relationship is false outside this member.",
+          "Predicate meaning and target meaning are not established."
+        ]
+      },
+      {
+        "case_id": "9eb9e60e8e26c5c15a3ce421b284b60ed740861fd22a25077b10374e46e0ed1b",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "57a9cd182fb329e5b09cc19b5526948198f3215196a728595b53b5690f99a9af",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_unique_candidate",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "c9115ad607febdcb06a08271dd8d36858a5cc50c02d76988bd269b0679290903",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "06a1d097d58cd1306b9101f002569f60d2348727f323714d38ac866a9f337b10",
+        "category": "unique_fragment_literal_candidate",
+        "reference_kind": "xlink_href",
+        "reference_occurrence_sha256": "3769bc73bb21735c6d83a58dd90a8e67a6dd5958c318443ef1d33033c226dfa8",
+        "structural_pointer_role": "xlink_href_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "same_member_unique_id",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "d7564eefb41fc72adf493e23eb1fd97210e2ec88d3ced59a2d8d15c70b1e447a",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "6783827dc34a142cdd5dd64ef289dbc54376d89516fcd10ff2803d70611d4929",
+        "category": "no_target_negative_control",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "bf987cc6f1d530501747bc52e28e831afe0135e16da9b7a38e48b563ede7fc8e",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_no_member_definition",
+        "target_multiplicity": 0,
+        "target_occurrence_sha256": null,
+        "disposition": "no_definition_in_pinned_member_hard_negative",
+        "hard_negative": true,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "No same-member target definition exists for this exact scanned reference.",
+          "No source value or external target was retained or fetched; this does not establish that the relationship is false outside this member.",
+          "Predicate meaning and target meaning are not established."
+        ]
+      },
+      {
+        "case_id": "47603f7a84f5a74d06ed8dbdfe7b62bbeb4806f261daaea7f4494aac60e8b634",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "12caff3897462e771cfc91b0399e98efb63e0ea75abee25ddd4c12916836b4c5",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_unique_candidate",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "2520176f0a8cf1a39169bccc88de81abfecdb80063d3e2980b09b38f0019c456",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "92fec684d54a5d601ad53c611bcfe6e2b488bdca736eedf76904d078739d65de",
+        "category": "unique_fragment_literal_candidate",
+        "reference_kind": "xlink_href",
+        "reference_occurrence_sha256": "ccc888d923d67cebd0ddaf2c1ff3e903c50f7ff74dc16f66ac013e391d987bad",
+        "structural_pointer_role": "xlink_href_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "same_member_unique_id",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "d55d5fa69aec4d01c80288c7e8b626a298380ebde3a724a97e2b2a34f57b6369",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "41783b4a8381ed8ce406738ce95e292029c1567f077f3150c03ef9c0fb998150",
+        "category": "no_target_negative_control",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "7b90ebdd95afda50808045a0d7cb0cf1be681e29b631b47ffb76a1b92fb0b362",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_no_member_definition",
+        "target_multiplicity": 0,
+        "target_occurrence_sha256": null,
+        "disposition": "no_definition_in_pinned_member_hard_negative",
+        "hard_negative": true,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "No same-member target definition exists for this exact scanned reference.",
+          "No source value or external target was retained or fetched; this does not establish that the relationship is false outside this member.",
+          "Predicate meaning and target meaning are not established."
+        ]
+      },
+      {
+        "case_id": "01ab66d80e724ff0f19c8286e3801eb2435841229a21899b4d4c7f3915dac7b9",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "fa865181a6877d98bfd5733cada4abf40e884a3d9f579e29e2e3cfc0d0b6944f",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_unique_candidate",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "e3a7c852ed8d036b4a016688dfb6a54478cec27e2781deedac116169ecff4974",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "ad451b08dcf12b67a50000fbdaf346f6771f320488f0e15f6a9face3af0fd265",
+        "category": "unique_fragment_literal_candidate",
+        "reference_kind": "xlink_href",
+        "reference_occurrence_sha256": "c39f972900b0813de636c926639af056e065c537381c8a793ef473d83f6dca69",
+        "structural_pointer_role": "xlink_href_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "same_member_unique_id",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "56085f8b79b56f48023b01dfbb04fcfc323ccf0efc05da3ceab6460e1d746650",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "a648f876aab4a608b41df5ea411c5bbc24e013053649cb22c22fbac0e90c17fb",
+        "category": "no_target_negative_control",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "363fb28cfc6039dd655f8b6cae3b04b89c642eb59ac5b634ddd593519800566d",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_no_member_definition",
+        "target_multiplicity": 0,
+        "target_occurrence_sha256": null,
+        "disposition": "no_definition_in_pinned_member_hard_negative",
+        "hard_negative": true,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "No same-member target definition exists for this exact scanned reference.",
+          "No source value or external target was retained or fetched; this does not establish that the relationship is false outside this member.",
+          "Predicate meaning and target meaning are not established."
+        ]
+      },
+      {
+        "case_id": "97da435164c7548c10981f8790186e8de39a655166e17590661e4a9a783e9523",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "dec420dd788c5762866617fa4eddab40686dcdcb6bbf75066ab1d65d52b613cd",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_unique_candidate",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "829de9f22dc944a27159a59230f92fbe482f78e88ec0daf2d9230564a85d07fc",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "343ae0ecf65e2d8a587ca5c70726db536293e86a854a087e681431ada37a20cf",
+        "category": "unique_fragment_literal_candidate",
+        "reference_kind": "xlink_href",
+        "reference_occurrence_sha256": "e082d119694417858e652073f052fe87a1c3829bc655a3f8fccc13969a7012ef",
+        "structural_pointer_role": "xlink_href_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "same_member_unique_id",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "c9da33bd598df06c5e7149b1e631334e978b07816ea0dcc7fb2b1f7740d67084",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "1c7a8495efd4ffc0cf00a63383e8c4bc0141e95845b2b7e1e9b97dee049092bc",
+        "category": "no_target_negative_control",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "a68e0325d5fc8a5c24662dc0a686cc109a4f578e78aa959da964e46b5e3b7ef0",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_no_member_definition",
+        "target_multiplicity": 0,
+        "target_occurrence_sha256": null,
+        "disposition": "no_definition_in_pinned_member_hard_negative",
+        "hard_negative": true,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "No same-member target definition exists for this exact scanned reference.",
+          "No source value or external target was retained or fetched; this does not establish that the relationship is false outside this member.",
+          "Predicate meaning and target meaning are not established."
+        ]
+      },
+      {
+        "case_id": "698dbad427a3630c3925cedf06d41b3a60cce2ff3dd7cfca5bec54a84d946606",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "33afb9ddd16c47e6aad05706e04dc2962e625ef7232bb74699aa7e3805b330e6",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_unique_candidate",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "f469518ad84b673d04932012693d24bc678ab38b45aa5e3893d5fd35b7f96da8",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "d5a28274fe05472bee4a2213a5a049a65bd527e4ae13eba84f9620e5a6b76978",
+        "category": "unique_fragment_literal_candidate",
+        "reference_kind": "xlink_href",
+        "reference_occurrence_sha256": "7009de03d11d768c04591928ba43b15a11004d04ae5f0130a6460c0c598ade64",
+        "structural_pointer_role": "xlink_href_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "same_member_unique_id",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "894940d9c223e1310336f314f4ddc131f59d5e06a3e5c7559fc7f0c83ae6aca9",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "1c9b9d8290b11e58d0434a864495d1c09fc8c40e162c4b2d7f5d5cd225b12f94",
+        "category": "no_target_negative_control",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "cacd06534b33d1e26770697bbc4ab3c5ccfee98090fde7b7b1023879addab976",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_no_member_definition",
+        "target_multiplicity": 0,
+        "target_occurrence_sha256": null,
+        "disposition": "no_definition_in_pinned_member_hard_negative",
+        "hard_negative": true,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "No same-member target definition exists for this exact scanned reference.",
+          "No source value or external target was retained or fetched; this does not establish that the relationship is false outside this member.",
+          "Predicate meaning and target meaning are not established."
+        ]
+      },
+      {
+        "case_id": "b7955c0521aa67f693bed785e1b38589a359f56721a89e428aa0ce562a620067",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "5e9f9314ceecb494647181e48a53db605de140069568e3d5d650c6b86feae87e",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_unique_candidate",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "af99e32fa0edfe1692f4921630d8a4be0f8d8fab94f315a47bfe4fdd72876ef1",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "c06381170f8041b704245ea5d1038f1e4f716458543d3c95e4bd5ed3a6540dfb",
+        "category": "unique_fragment_literal_candidate",
+        "reference_kind": "xlink_href",
+        "reference_occurrence_sha256": "3b310159f8f328ab960495fffc2268b2cd73f516876d9c13146b4ff6b268cf63",
+        "structural_pointer_role": "xlink_href_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "same_member_unique_id",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "894940d9c223e1310336f314f4ddc131f59d5e06a3e5c7559fc7f0c83ae6aca9",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "2cf8c779e54716ca3a569c0819d3aacbcfa4f7d0c1d6bb7d2ff694952f909fd8",
+        "category": "no_target_negative_control",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "0df14a0df3b72f5e2ddc03af929b4c1f3a91e948269b383f6cfd6e36c553e4ac",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_no_member_definition",
+        "target_multiplicity": 0,
+        "target_occurrence_sha256": null,
+        "disposition": "no_definition_in_pinned_member_hard_negative",
+        "hard_negative": true,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "No same-member target definition exists for this exact scanned reference.",
+          "No source value or external target was retained or fetched; this does not establish that the relationship is false outside this member.",
+          "Predicate meaning and target meaning are not established."
+        ]
+      },
+      {
+        "case_id": "34a76e2e0f4447fce447697948abbe5570597bd1ed3d90c3930d301d474c186f",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "043f265501d690114b29f01af6cb3ad73c22929836d20dbabcb4aeb39242253f",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_unique_candidate",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "13e094b7164756e22278d35c18cc4c543d82246269dd878d1e7541bc4bbb5109",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "d72985a953b43ebb9e73615a90350a903dbaed333c5b5771691693dedc908c1b",
+        "category": "unique_fragment_literal_candidate",
+        "reference_kind": "xlink_href",
+        "reference_occurrence_sha256": "8f0b51546ca29aeff0e4974d42c995cd8325276aa904218b0110a115fc4aa819",
+        "structural_pointer_role": "xlink_href_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "same_member_unique_id",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "894940d9c223e1310336f314f4ddc131f59d5e06a3e5c7559fc7f0c83ae6aca9",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "9b37d3ac81582470197a52656278ff4cfc6813072dfb1bca5f893b8dfcef508e",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "84dbc45d284cc80cc1ee7651aa61276bbf2f1775481c6b2ddc84cfff192b2792",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_unique_candidate",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "ce0b3e14324edeccf033cd94b50375805706ecedbcbae11d64daf36cb463935c",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "8fe9b634094c1be7b159d24f3adc97efa03370fba2fd393a94af9e830daf3430",
+        "category": "unique_fragment_literal_candidate",
+        "reference_kind": "xlink_href",
+        "reference_occurrence_sha256": "ecede07bdbec880513a9e83b4db58b96c5e7c2a395fcb0d69a4f6ae70274109c",
+        "structural_pointer_role": "xlink_href_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "same_member_unique_id",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "c9da33bd598df06c5e7149b1e631334e978b07816ea0dcc7fb2b1f7740d67084",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "f1764de7bc7a3243fbb739b1fd6c6abbed4a78bc10b12e1d97267084ca127b64",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "769ac214ca09254beb89e8a465e381b7f1ba521e2c7891903444ca0ba21939a1",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_unique_candidate",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "cbedd7df997868f3dd3d76f3942f84120c4ed7b88ff0730fbccbbfe97e7c3889",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "05e2b9fc0ec7111d741abf448d5618b7f4521b246af89c726c0780531f20d059",
+        "category": "unique_fragment_literal_candidate",
+        "reference_kind": "xlink_href",
+        "reference_occurrence_sha256": "7a533ef64ff865c8858478cf454ec167debaa1662f14e3f4e1a710662b81e0b1",
+        "structural_pointer_role": "xlink_href_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "same_member_unique_id",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "894940d9c223e1310336f314f4ddc131f59d5e06a3e5c7559fc7f0c83ae6aca9",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "4a54aa17fb0b872823682698ba34d0928d8d101a3a9c9047b8a3ea3d6c4c0461",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "680984b3266f2572ae71ab0bb6a24c4bdcc7ed7b3894096612855cef62b94bde",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_unique_candidate",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "cbedd7df997868f3dd3d76f3942f84120c4ed7b88ff0730fbccbbfe97e7c3889",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "6b2fc8b0fd5ff061d3944d23e63635221b898958058049d767efecd7a1526e12",
+        "category": "unique_fragment_literal_candidate",
+        "reference_kind": "xlink_href",
+        "reference_occurrence_sha256": "c4fa05be180dba11ba1b8a4ee71c369af298f110a195699403a85191d4684c3e",
+        "structural_pointer_role": "xlink_href_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "same_member_unique_id",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "894940d9c223e1310336f314f4ddc131f59d5e06a3e5c7559fc7f0c83ae6aca9",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "7e6e6e737428abbd670552a8c2524a25982d3e8e27806c10e8fea9cd864aa5ba",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "b099061dc009165e376276abce607016103d5cdbf5e16706167c467ad3dce87e",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_unique_candidate",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "cbedd7df997868f3dd3d76f3942f84120c4ed7b88ff0730fbccbbfe97e7c3889",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "bfec0ab7a95648dbb63f3f485ae649c4c07cb177dead6d2193e28f92bbf44042",
+        "category": "unique_fragment_literal_candidate",
+        "reference_kind": "xlink_href",
+        "reference_occurrence_sha256": "c7a8cb3a69e36145144d97ca53deb3ef0531ae9d0da21017a31769372fc2dfdd",
+        "structural_pointer_role": "xlink_href_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "same_member_unique_id",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "f150ea2648f1cc1fe8c9d8daf307801b75fe14c4321471a7711aa6f5fafe2136",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "6954214000c8a7dab7044560107dde6931ba6a2c7888ce3a871dbe70bfa5af80",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "61e8dc8ff6c563a3332445dcde9bd63974810ace6a6a77dfdc0a687786a1da8e",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_unique_candidate",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "cbedd7df997868f3dd3d76f3942f84120c4ed7b88ff0730fbccbbfe97e7c3889",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "e5582f1aa23feb3aa7eef57a82311fdbe3a715f4e140a45478385010cd55e787",
+        "category": "unique_fragment_literal_candidate",
+        "reference_kind": "xlink_href",
+        "reference_occurrence_sha256": "319cfd33c1675a80677620ec909682567c8f6b8bb2e1ba5c2600c5a6cba9f51c",
+        "structural_pointer_role": "xlink_href_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "same_member_unique_id",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "894940d9c223e1310336f314f4ddc131f59d5e06a3e5c7559fc7f0c83ae6aca9",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "34687c71771e5f69625afdb0976092184bb281269634f5086b80d3b46302708b",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "63d562ae6a6b894b1bc65e30dbcf24179a4152731f23261a44bf134192ff2ff9",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_unique_candidate",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "cbedd7df997868f3dd3d76f3942f84120c4ed7b88ff0730fbccbbfe97e7c3889",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      },
+      {
+        "case_id": "5a8d5219f58fa509ec5e66abe89880acb2ab414ed2ccbde5f059cc09302559f2",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "reference_kind": "rdf_resource",
+        "reference_occurrence_sha256": "6c0c47d3513939d6c7e3e34b756c97f256767bb265c3610129a47506148fed2c",
+        "structural_pointer_role": "rdf_resource_attribute",
+        "structural_role_evidence": "exact occurrence-bound role in the retained URI reconciliation; attribute QName and kind agree",
+        "member_resolution": "absolute_uri_unique_candidate",
+        "target_multiplicity": 1,
+        "target_occurrence_sha256": "e6d80393ec6f0dd411f506d045df3cdbec0b765eff036b11098ceb70ef319c7a",
+        "disposition": "structural_pointer_role_supported_semantics_abstained",
+        "hard_negative": false,
+        "semantic_relationship_qualified": false,
+        "edges_emitted": false,
+        "missing_evidence": [
+          "Source-native reference value was intentionally not retained in the packet.",
+          "The reviewed context does not establish the source predicate's domain relationship meaning.",
+          "The target type meaning and semantic correctness of the relationship are not established."
+        ]
+      }
+    ]
+  },
+  "report_sha256": "e61cf3c3b5744b23d5b68282414750d9322b2ae53fa18298eac60e5eb5384260"
+}

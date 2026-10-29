@@ -1,0 +1,52 @@
+{
+  "boundaries": {
+    "csv_equivalence_established": false,
+    "data_rows_or_formula_text_emitted": false,
+    "loss_aware_silver_projection_created": false,
+    "metadata_prose_quotes_retained": false,
+    "new_sources_added": false,
+    "public_dataset_mutated": false,
+    "source_bytes_persisted_locally": false,
+    "v4_admission_or_canary_performed": false
+  },
+  "field_interpretation": {
+    "Age_Range": "age-range dimension is supported by report purpose; exact category meaning and mapping to the existing CSV remain unresolved",
+    "Benefits ($)": "exact calculation and whether the column represents an amount, per-capita statistic, or other report measure remain unresolved",
+    "Month": "source metadata establishes processing-month semantics",
+    "formula_behavior": "separate exact-object formula profile shows text-literal formulas with cached outputs equal to decoded literals; formula behavior does not resolve category definitions"
+  },
+  "inputs": {
+    "quality/qualifications/australian-mbs-demographics-q1hr-existing-csv-comparison-20261021.json": "5318d9328e72d64bb12a3157b3a59f7c16edd59cae22a7de5e6540e707684446",
+    "quality/qualifications/australian-mbs-demographics-q1hr-formula-literal-analysis-20261021.json": "f324ae679840bd57fb7e7d566f9a18fdf7a90a4614289cce865b2086be97fa3e",
+    "quality/qualifications/australian-mbs-demographics-q1hr-workbook-layout-candidate-20261021.json": "b9c8672e0ef8597ea9b3ad3ab5eb2df29829dfb427cee57d2fda7bcbdc5dec7c"
+  },
+  "observed_at": "2026-10-21T04:16:05Z",
+  "report_context": {
+    "excluded_population": [
+      "public-hospital services to public patients",
+      "services qualifying under the Department of Veterans Affairs National Treatment Account"
+    ],
+    "financial_year": "1 July through 30 June",
+    "included_population": "processed services performed by registered providers that qualify for Medicare Benefit",
+    "metadata_last_updated": "2016-04-28",
+    "month_basis": "date the service was processed, not the date it was provided",
+    "monthly_variation": "processing-day counts can vary by calendar month, public holidays, and overtime",
+    "per_capita_denominator": "people enrolled in Medicare at the end of the relevant month; metadata describes rates per 100000 population",
+    "purpose": "MBS group statistics by patient demographics, including age range and gender, with per-capita and percentage statistics described in the workbook metadata",
+    "service_total_basis": "services claimed net of later-day adjustments; totals may be negative when reversals exceed new claims",
+    "state_basis": "patient address at the time of claiming"
+  },
+  "schema_id": "global-medicines-atlas.mbs-demographics-q1hr-metadata-semantics",
+  "schema_version": 1,
+  "source": {
+    "byte_count": 21966140,
+    "dataset": "edithatogo/australian-mbs-utilisation-archive",
+    "metadata_sheet": "Metadata",
+    "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+    "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+    "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d",
+    "source_bytes_persisted_locally": false,
+    "verified_in_memory": true
+  },
+  "status": "source_embedded_reporting_context_qualified_column_value_semantics_partial"
+}

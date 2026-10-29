@@ -1,9 +1,9 @@
 # Stable v1 end-to-end product qualification
 
-Run the deterministic Phase 2 qualification with Python 3.15:
+Run the deterministic Phase 2 qualification with Python 3.15.1:
 
 ```console
-uv run --python 3.15.0 --group dev python scripts/qualify_stable_v1_e2e.py
+uv run --python 3.15.1 --group dev python scripts/qualify_stable_v1_e2e.py
 ```
 
 The command writes `build/stable-v1/e2e-qualification.json`. Its SHA-256

@@ -149,7 +149,8 @@ def _member(archive: ZipFile, name: str) -> bytes:
         ) from error
 
 
-def _relationship_path(target: str) -> str:
+def worksheet_relationship_path(target: str) -> str:
+    """Resolve a relative worksheet target inside the validated ZIP package."""
     if not target or "\\" in target:
         raise ValueError("workbook relationship target is invalid")
     target_path = PurePosixPath(target)
@@ -177,10 +178,11 @@ def _shared_strings(archive: ZipFile) -> tuple[str, ...]:
     )
 
 
-def _cell(
+def decode_workbook_cell(
     element: ET.Element,
     shared_strings: tuple[str, ...],
 ) -> MbsWorkbookCell:
+    """Decode native storage and cached values without evaluating formulas."""
     # ElementTree nodes are converted immediately into frozen scalar models.
     cell = element
     coordinate = cell.attrib.get("r", "")
@@ -245,7 +247,7 @@ def _sheet(
     root = parse_xml(_member(archive, path), policy=_XML_POLICY)
     dimension_node = root.find(f"{{{_MAIN}}}dimension")
     cells = tuple(
-        _cell(element, shared_strings)
+        decode_workbook_cell(element, shared_strings)
         for element in root.findall(f".//{{{_MAIN}}}c")
     )
     return MbsWorkbookSheet(
@@ -294,7 +296,7 @@ def parse_mbs_workbook(
             policy=_XML_POLICY,
         )
         targets = {
-            relationship.attrib.get("Id", ""): _relationship_path(
+            relationship.attrib.get("Id", ""): worksheet_relationship_path(
                 relationship.attrib.get("Target", "")
             )
             for relationship in relationships.findall(

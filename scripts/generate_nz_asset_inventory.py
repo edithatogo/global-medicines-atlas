@@ -202,7 +202,7 @@ def local_classification(path: Path) -> tuple[str, str, str, str, str, str]:
                 "fixtures."
             ),
             "FHIR projection is not the canonical medicine data model.",
-            "Python 3.14 contracts, properties, and source digests.",
+            "Python 3.15 contracts, properties, and source digests.",
         )
     if relative_path.startswith(("scripts/", "tests/", "docs/")):
         return (
@@ -297,7 +297,7 @@ def upstream_classification(path: Path) -> tuple[str, str, str, str, str, str]:
                 "Unpinned inline workflow is not suitable for the target CI "
                 "boundary."
             ),
-            "Python 3.14 harness and dedicated CI profiles.",
+            "Python 3.15 harness and dedicated CI profiles.",
         )
     if relative_upstream == "readme.md":
         return (

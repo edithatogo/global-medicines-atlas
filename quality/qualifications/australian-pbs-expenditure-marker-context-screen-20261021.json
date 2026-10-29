@@ -1,0 +1,201 @@
+{
+  "boundaries": {
+    "admission_performed": false,
+    "consumer_canary_performed": false,
+    "new_sources_added": false,
+    "public_dataset_mutated": false,
+    "rights_or_release_conclusion_changed": false,
+    "source_bytes_persisted_locally": false,
+    "source_values_emitted": false
+  },
+  "dataset": "edithatogo/australian-pbs-utilisation-archive",
+  "interpretation": "The detected ATC mentions occur in text cells classified as labels or context; an ATC-shaped identifier scan is reported separately. This does not resolve vocabulary rights, all workbook content, admission, or release.",
+  "method": {
+    "format": "XLSX shared-string, inline-string, and string cells parsed from memory",
+    "identity_verified_before_screen": true,
+    "marker_only_means_exact_textual_marker_not_identifier_membership": true,
+    "source_bytes_persisted_locally": false,
+    "source_values_emitted": false
+  },
+  "objects": [
+    {
+      "atc_code_shape_cell_count": 0,
+      "byte_count": 372149,
+      "context_text_cell_count": 75,
+      "marker_cell_count": 75,
+      "marker_only_cell_count": 0,
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+      "sha256": "32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b",
+      "sheets_with_markers": [
+        {
+          "atc_code_shape_cells": 0,
+          "context_text_cells": 4,
+          "marker_cells": 4,
+          "marker_counts": {
+            "ATC": 4
+          },
+          "marker_only_cells": 0,
+          "sheet": "Table7"
+        },
+        {
+          "atc_code_shape_cells": 0,
+          "context_text_cells": 3,
+          "marker_cells": 3,
+          "marker_counts": {
+            "ATC": 3
+          },
+          "marker_only_cells": 0,
+          "sheet": "Table8"
+        },
+        {
+          "atc_code_shape_cells": 0,
+          "context_text_cells": 2,
+          "marker_cells": 2,
+          "marker_counts": {
+            "ATC": 2
+          },
+          "marker_only_cells": 0,
+          "sheet": "Figure5(a)"
+        },
+        {
+          "atc_code_shape_cells": 0,
+          "context_text_cells": 2,
+          "marker_cells": 2,
+          "marker_counts": {
+            "ATC": 2
+          },
+          "marker_only_cells": 0,
+          "sheet": "Figure5(b)"
+        },
+        {
+          "atc_code_shape_cells": 0,
+          "context_text_cells": 34,
+          "marker_cells": 34,
+          "marker_counts": {
+            "ATC": 34
+          },
+          "marker_only_cells": 0,
+          "sheet": "Table10(a)-(b)"
+        },
+        {
+          "atc_code_shape_cells": 0,
+          "context_text_cells": 4,
+          "marker_cells": 4,
+          "marker_counts": {
+            "ATC": 4
+          },
+          "marker_only_cells": 0,
+          "sheet": "Table16(a)-(b)"
+        },
+        {
+          "atc_code_shape_cells": 0,
+          "context_text_cells": 26,
+          "marker_cells": 26,
+          "marker_counts": {
+            "ATC": 26
+          },
+          "marker_only_cells": 0,
+          "sheet": "Figure 5 input data"
+        }
+      ]
+    },
+    {
+      "atc_code_shape_cell_count": 0,
+      "byte_count": 468764,
+      "context_text_cell_count": 61,
+      "marker_cell_count": 61,
+      "marker_only_cell_count": 0,
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+      "sha256": "147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99",
+      "sheets_with_markers": [
+        {
+          "atc_code_shape_cells": 0,
+          "context_text_cells": 10,
+          "marker_cells": 10,
+          "marker_counts": {
+            "ATC": 10
+          },
+          "marker_only_cells": 0,
+          "sheet": "Table index"
+        },
+        {
+          "atc_code_shape_cells": 0,
+          "context_text_cells": 4,
+          "marker_cells": 4,
+          "marker_counts": {
+            "ATC": 4
+          },
+          "marker_only_cells": 0,
+          "sheet": "Table7"
+        },
+        {
+          "atc_code_shape_cells": 0,
+          "context_text_cells": 3,
+          "marker_cells": 3,
+          "marker_counts": {
+            "ATC": 3
+          },
+          "marker_only_cells": 0,
+          "sheet": "Table8"
+        },
+        {
+          "atc_code_shape_cells": 0,
+          "context_text_cells": 2,
+          "marker_cells": 2,
+          "marker_counts": {
+            "ATC": 2
+          },
+          "marker_only_cells": 0,
+          "sheet": "Figure7(a)"
+        },
+        {
+          "atc_code_shape_cells": 0,
+          "context_text_cells": 2,
+          "marker_cells": 2,
+          "marker_counts": {
+            "ATC": 2
+          },
+          "marker_only_cells": 0,
+          "sheet": "Figure7(b)"
+        },
+        {
+          "atc_code_shape_cells": 0,
+          "context_text_cells": 34,
+          "marker_cells": 34,
+          "marker_counts": {
+            "ATC": 34
+          },
+          "marker_only_cells": 0,
+          "sheet": "Table10(a)-(b)"
+        },
+        {
+          "atc_code_shape_cells": 0,
+          "context_text_cells": 2,
+          "marker_cells": 2,
+          "marker_counts": {
+            "ATC": 2
+          },
+          "marker_only_cells": 0,
+          "sheet": "Table14(d)"
+        },
+        {
+          "atc_code_shape_cells": 0,
+          "context_text_cells": 4,
+          "marker_cells": 4,
+          "marker_counts": {
+            "ATC": 4
+          },
+          "marker_only_cells": 0,
+          "sheet": "Table16(a)-(b)"
+        }
+      ]
+    }
+  ],
+  "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+  "schema_id": "global-medicines-atlas.pbs-expenditure-marker-context-screen",
+  "schema_version": 1,
+  "scope": {
+    "marker_pattern": "AMT, SNOMED CT, RxNorm, RxCUI, ATC, and UMLS CUI text forms",
+    "object_count": 2
+  }
+}

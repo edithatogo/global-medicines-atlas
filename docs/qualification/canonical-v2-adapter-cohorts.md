@@ -5,10 +5,10 @@ migration over bounded fixtures already committed to the repository. It emits
 a deterministic, content-bound receipt and verifies exact schema-v2 to
 schema-v1 rollback for every migrated record.
 
-Run it with Python 3.15:
+Run it with Python 3.15.1:
 
 ```powershell
-uv run --python 3.15.0 --group dev python scripts/qualify_canonical_v2_cohorts.py
+uv run --python 3.15.1 --group dev python scripts/qualify_canonical_v2_cohorts.py
 ```
 
 The command regenerates

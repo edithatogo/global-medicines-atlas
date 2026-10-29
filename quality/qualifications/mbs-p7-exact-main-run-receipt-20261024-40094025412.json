@@ -1,0 +1,40 @@
+{
+  "artifact": {
+    "artifact_id": 12559848688,
+    "member_sha256": "fd893d18c6a96d7daf6c6bae27066f56d207b8d01c14d8fc7622bdc07af99bd",
+    "name": "workbook-storage-qualification",
+    "path": "quality/qualifications/mbs-p7-workbook-storage-qualification-20261024-40094025412.json",
+    "report_sha256": "c31dbc2b6d166dbefdfa5f95fe33a231fdbecfa05ab502ea91f198771e4f0690"
+  },
+  "calendar_profile": {
+    "date_order_selected": false,
+    "path": "quality/qualifications/mbs-p7-calendar-profile-20261024-40088209026.json",
+    "sha256": "c9b49f60a9a608bc77674a2094b8fd4439115fc17bb200b04fc202c6b463d1bf",
+    "source_sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
+    "source_values_emitted": false
+  },
+  "qualification": {
+    "admission_performed": false,
+    "ambiguous_date_shaped_cells": 1194,
+    "error_cells": 2,
+    "formula_cells": 4,
+    "formula_evaluation_performed": false,
+    "interpreted_unique_calendar_date_cells": 86,
+    "p7_cells": 13742,
+    "publication_performed": false,
+    "rights_changed": false,
+    "source_byte_count": 87727,
+    "source_sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
+    "unavailable_cells": 0,
+    "unresolved_cells": 13656
+  },
+  "schema_id": "global-medicines-atlas.mbs-p7-exact-main-workbook-storage-run-receipt",
+  "schema_version": 1,
+  "workflow": {
+    "conclusion": "success",
+    "exact_commit": "11be72e328affc0df87395fd59165ef4f5bf9055",
+    "python": "3.15.1",
+    "run_id": 40094025412,
+    "url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40094025412"
+  }
+}

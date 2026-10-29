@@ -31,11 +31,11 @@ def test_pbs_publication_is_exact_actions_only_and_public_from_outset() -> None:
     assert "--retrieved-at" in text
     assert "global-medicines-atlas.hosted-retrieval-attempt" in text
     assert "'status': 'succeeded'" in text
-    assert "--body-file work/retrieval-attempt.json" in text
+    assert "path: work/retrieval-attempt.json" in text
     assert "manifest['source_receipt']" in text
     assert "manifest['admission']" in text
     assert "rollback=restore-private-on-failure" not in text
-    assert "visibility=public-from-outset" in text
+    assert text.index("private=False") < text.index("api.upload_folder(")
 
 
 def test_pbs_publication_verifies_before_cleanup() -> None:
@@ -49,4 +49,4 @@ def test_pbs_publication_verifies_before_cleanup() -> None:
     assert "temporary_source_bytes_removed'] = True" in text[cleanup:receipt]
     assert "if: always()" not in text[cleanup:]
     assert "anonymous digest mismatch" in text[verify:cleanup]
-    assert "gh issue comment 340" in text
+    assert "gh issue comment 340" not in text

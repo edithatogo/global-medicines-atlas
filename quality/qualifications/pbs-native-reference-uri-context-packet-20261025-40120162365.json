@@ -1,0 +1,1761 @@
+{
+  "report": {
+    "case_count": 46,
+    "cases": [
+      {
+        "adjudication": "unreviewed",
+        "case_id": "94979eb833c21e8cf93c83fe6c6e2eeb93ab97d663872317546e81cc3a675d88",
+        "category": "unique_fragment_literal_candidate",
+        "kind": "xlink_href",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}previous-list/1/{http:~1~1schema.pbs.gov.au~1}previous/1974/{http:~1~1schema.pbs.gov.au~1}administrative-advice-reference/1/attributes/{http:~1~1www.w3.org~11999~1xlink}href",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}administrative-advice-reference",
+            "occurrence_sha256": "4f42ac84bf7f4ac722a81fa5ba97c539c72eae293579ecdf5e38b5c5ec9ea14b"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}administrative-advice-reference",
+            "occurrence_sha256": "4f42ac84bf7f4ac722a81fa5ba97c539c72eae293579ecdf5e38b5c5ec9ea14b"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://schema.pbs.gov.au/}administrative-advice",
+              "occurrence_sha256": "d89876be89d1885fb1c89ff22cc108eef69d853e17ee59a05de5838c67692b5a",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}administrative-advice-reference",
+        "target_element_qname": "{http://schema.pbs.gov.au/}administrative-advice",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}previous-list/1/{http:~1~1schema.pbs.gov.au~1}previous/3866/{http:~1~1schema.pbs.gov.au~1}administrative-advice/1",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "01f3fa691dcd268e464fb18b434ee31a1aa04fe8dd7c253a967b4b26dbc95d04",
+        "category": "no_target_negative_control",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}drugs-list/1/{http:~1~1schema.pbs.gov.au~1}mp/1/{http:~1~1schema.pbs.gov.au~1}code/2/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}mp",
+            "occurrence_sha256": "17572fd70491d3fb03f67975127381153cf23593d9aecd380a1fb576d9c4f264"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}code",
+            "occurrence_sha256": "c78a1667726fe8d84f6d893b8672b9e5fb1ec2c8f56df61c1e4b6ac73285fe5d"
+          },
+          "same_member_literal_candidate_target_count": 0,
+          "same_member_literal_candidate_targets": [],
+          "uri_target_matches_context_candidate": null,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}code",
+        "target_element_qname": null,
+        "target_multiplicity": 0,
+        "target_occurrence": null,
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": null,
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "840ec11ab687aac0e8106419fc3d6f39e056a734f5a093dcb6e1e6a5ebe2e0a7",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}pharmaceutical-items-list/1/{http:~1~1schema.pbs.gov.au~1}pharmaceutical-item/1011/{http:~1~1extension.schema.pbs.gov.au~1}ex-manufacturer/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://extension.schema.pbs.gov.au/}ex-manufacturer",
+            "occurrence_sha256": "0ecd37e753f3e6ac7cce7bdc6642e33954b184e881824bef189a3ae75152669b"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://extension.schema.pbs.gov.au/}ex-manufacturer",
+            "occurrence_sha256": "0ecd37e753f3e6ac7cce7bdc6642e33954b184e881824bef189a3ae75152669b"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://pbs.gov.au/}pricing",
+              "occurrence_sha256": "be11ed142f639bf2790ba8a598f1341838fc5f1d1e9044e4d5441a028080f40f",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://extension.schema.pbs.gov.au/}ex-manufacturer",
+        "target_element_qname": "{http://pbs.gov.au/}pricing",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}RDF/1/{http:~1~1pbs.gov.au~1}pricing/4",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "03907fca6721c1d1a11e5461b8d97cc827d4c4dde9d819acc1183f040301ba5a",
+        "category": "unique_fragment_literal_candidate",
+        "kind": "xlink_href",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}previous-list/1/{http:~1~1schema.pbs.gov.au~1}previous/1836/{http:~1~1schema.pbs.gov.au~1}prescribing-rule/1/{http:~1~1schema.pbs.gov.au~1}prescribing-text-references-list/1/{http:~1~1schema.pbs.gov.au~1}administrative-advice-reference/1/attributes/{http:~1~1www.w3.org~11999~1xlink}href",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}prescribing-rule",
+            "occurrence_sha256": "c72594e553f498e7e4d342869ba0e73613880d42637856e476778d4585815f2e"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}administrative-advice-reference",
+            "occurrence_sha256": "043f5fec577fc10bc8b18dcd95e217e6cbeb244db1f26454da5c219094f6da4d"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://schema.pbs.gov.au/}administrative-advice",
+              "occurrence_sha256": "772649145ce7b353f10434aea7b8632625cc3d7f03256be5f3f706c17e869eab",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}administrative-advice-reference",
+        "target_element_qname": "{http://schema.pbs.gov.au/}administrative-advice",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}previous-list/1/{http:~1~1schema.pbs.gov.au~1}previous/2958/{http:~1~1schema.pbs.gov.au~1}administrative-advice/1",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "9b3ede446faf1d7feece725b9a876417a6e4ab3f1ccee88e6a92361514bd6742",
+        "category": "no_target_negative_control",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}drugs-list/1/{http:~1~1schema.pbs.gov.au~1}mpp/1/{http:~1~1schema.pbs.gov.au~1}code/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}mpp",
+            "occurrence_sha256": "56ffa9a079e5969a5b89c12728d66cb6b3c240b9172c142fc5f48e83c4a4982a"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}code",
+            "occurrence_sha256": "57769a9bece98c914ca3649cbda8f582056efcc48881faf236095a9e8b3b59b1"
+          },
+          "same_member_literal_candidate_target_count": 0,
+          "same_member_literal_candidate_targets": [],
+          "uri_target_matches_context_candidate": null,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}code",
+        "target_element_qname": null,
+        "target_multiplicity": 0,
+        "target_occurrence": null,
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": null,
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "ff0e496295ef937f0b3acc4b948f0f2bf4c56b62401d2f50a0a92ec9a804c4e4",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}pharmaceutical-items-list/1/{http:~1~1schema.pbs.gov.au~1}pharmaceutical-item/1/{http:~1~1extension.schema.pbs.gov.au~1}ex-manufacturer/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}pharmaceutical-item",
+            "occurrence_sha256": "e7473cf39d22f73bece2721cbde34e53f3ae3917b94c4aa2f2b2ce29b9cd8530"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://extension.schema.pbs.gov.au/}ex-manufacturer",
+            "occurrence_sha256": "66cd2eb80502a99cc1784c1f6991f7892949b0e0b3984d309ed3d0620e08441d"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://pbs.gov.au/}pricing",
+              "occurrence_sha256": "be11ed142f639bf2790ba8a598f1341838fc5f1d1e9044e4d5441a028080f40f",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://extension.schema.pbs.gov.au/}ex-manufacturer",
+        "target_element_qname": "{http://pbs.gov.au/}pricing",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}RDF/1/{http:~1~1pbs.gov.au~1}pricing/4",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "223eba5d757cd95463fd14deb92bff6691dd644e58f694c0bbdbb8269b5866e9",
+        "category": "unique_fragment_literal_candidate",
+        "kind": "xlink_href",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}prescribing-texts-list/1/{http:~1~1schema.pbs.gov.au~1}restriction/10/{http:~1~1schema.pbs.gov.au~1}administrative-advice-reference/1/attributes/{http:~1~1www.w3.org~11999~1xlink}href",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}restriction",
+            "occurrence_sha256": "66f31212ed225f42d00cec715272a40247287b8727b607d3d3e5ccd7c1919e8c"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}administrative-advice-reference",
+            "occurrence_sha256": "281d139c877bb512823ec91c0e6587b43ac444d4a0383b88d13fa8b3fe73b33d"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://schema.pbs.gov.au/}administrative-advice",
+              "occurrence_sha256": "f41bcedd1670920a2b86ab97686d1cbee06120aeb563cf890e39a673656ccc6b",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}administrative-advice-reference",
+        "target_element_qname": "{http://schema.pbs.gov.au/}administrative-advice",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}prescribing-texts-list/1/{http:~1~1schema.pbs.gov.au~1}administrative-advice/572",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "e54a9d3ea8c835bb1d8555bcf39f3bbc0cf60a06f0fb0ad0ad8d6d86c1c01e09",
+        "category": "no_target_negative_control",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}previous-list/1/{http:~1~1schema.pbs.gov.au~1}previous/2114/{http:~1~1schema.pbs.gov.au~1}mpp-reference/1/{http:~1~1schema.pbs.gov.au~1}code/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}mpp-reference",
+            "occurrence_sha256": "dd0b30cdb21f2f360ccc4fc0c58ad5c20de9465773d1e16a1f7bd0202faceac2"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}code",
+            "occurrence_sha256": "4ccf8cd0af65a48ed6f644e7bde62c35cca40487bb4c30e7206f32b1db165e46"
+          },
+          "same_member_literal_candidate_target_count": 0,
+          "same_member_literal_candidate_targets": [],
+          "uri_target_matches_context_candidate": null,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}code",
+        "target_element_qname": null,
+        "target_multiplicity": 0,
+        "target_occurrence": null,
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": null,
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "a6c4601e91d7811f7ed601ebc9636025fbda7ee76aaf5488cc30ce0178df1d0c",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}RDF/1/{http:~1~1pbs.gov.au~1}copayment/1/{http:~1~1pbs.gov.au~1}applies-to/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": null,
+          "nearest_subject_element": {
+            "element_qname": "{http://pbs.gov.au/}copayment",
+            "occurrence_sha256": "288a5134f1fb844f722322f2f03146f68cf0b5f75457f527b980da7fe53782ea"
+          },
+          "predicate_element": {
+            "element_qname": "{http://pbs.gov.au/}applies-to",
+            "occurrence_sha256": "7097986c148d7cc497fff230e4287123508567f2b2e1f43ac6faf03911bafa8b"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://pbs.gov.au/}patient",
+              "occurrence_sha256": "c9115ad607febdcb06a08271dd8d36858a5cc50c02d76988bd269b0679290903",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://pbs.gov.au/}applies-to",
+        "target_element_qname": "{http://pbs.gov.au/}patient",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}RDF/1/{http:~1~1pbs.gov.au~1}patient/1",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "6061342f4783650445c2dfaeed300b77108aa3d67b87fb5ee2e070c35eae09ff",
+        "category": "unique_fragment_literal_candidate",
+        "kind": "xlink_href",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}schedule/1/{http:~1~1schema.pbs.gov.au~1}program/1/{http:~1~1schema.pbs.gov.au~1}prescribing-rule/33/{http:~1~1schema.pbs.gov.au~1}prescribing-text-references-list/1/{http:~1~1schema.pbs.gov.au~1}caution-reference/1/attributes/{http:~1~1www.w3.org~11999~1xlink}href",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}prescribing-rule",
+            "occurrence_sha256": "0203a34317bf07ecaa801b5c855fdfc648b7113bda529110a675753f1c5edc29"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}caution-reference",
+            "occurrence_sha256": "eeccee08bf2273750cba6780d6d2c1585ce2a658368608e928958772f7b92a67"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://schema.pbs.gov.au/}caution",
+              "occurrence_sha256": "2dd5f7706d149b85ba039a0100595dc6517d5e34365273feaab6be7fde3477a8",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}caution-reference",
+        "target_element_qname": "{http://schema.pbs.gov.au/}caution",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}prescribing-texts-list/1/{http:~1~1schema.pbs.gov.au~1}caution/37",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "4bce11c6d722514fc10c94743a2c384ef614cb77a1469dbf815ee7595b831206",
+        "category": "no_target_negative_control",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}drugs-list/1/{http:~1~1schema.pbs.gov.au~1}mpuu/1/{http:~1~1schema.pbs.gov.au~1}code/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}mpuu",
+            "occurrence_sha256": "5e014f77cfa77582f2b3b85d1d2b25c6e05a64ee2efe0140ebcda48dc69ea35e"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}code",
+            "occurrence_sha256": "16c51b66781cff8be23f774f1b2add6cc36133cc9bc58e5e1ce96af8f9a1de77"
+          },
+          "same_member_literal_candidate_target_count": 0,
+          "same_member_literal_candidate_targets": [],
+          "uri_target_matches_context_candidate": null,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}code",
+        "target_element_qname": null,
+        "target_multiplicity": 0,
+        "target_occurrence": null,
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": null,
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "0f911fae117c748718e5d1180cc605856655d57554a32afc46ce997b02caf2dc",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}RDF/1/{http:~1~1pbs.gov.au~1}discount/1/{http:~1~1pbs.gov.au~1}applies-to/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": null,
+          "nearest_subject_element": {
+            "element_qname": "{http://pbs.gov.au/}discount",
+            "occurrence_sha256": "4bd1b118466fe59448439e147a867ea74e18ca8ed2a3079e04e13b75a4a8b7c1"
+          },
+          "predicate_element": {
+            "element_qname": "{http://pbs.gov.au/}applies-to",
+            "occurrence_sha256": "813193b52fcbe3969c890866f893d1dffeba9f1ca45a183dfc478def7d7c1553"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://pbs.gov.au/}patient",
+              "occurrence_sha256": "c9115ad607febdcb06a08271dd8d36858a5cc50c02d76988bd269b0679290903",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://pbs.gov.au/}applies-to",
+        "target_element_qname": "{http://pbs.gov.au/}patient",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}RDF/1/{http:~1~1pbs.gov.au~1}patient/1",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "b24b3ffec3a53a416130528fece93b474f007c4189a708ed9e048fe1d8849b91",
+        "category": "unique_fragment_literal_candidate",
+        "kind": "xlink_href",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}prescribing-texts-list/1/{http:~1~1schema.pbs.gov.au~1}restriction/1013/{http:~1~1schema.pbs.gov.au~1}caution-reference/1/attributes/{http:~1~1www.w3.org~11999~1xlink}href",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}restriction",
+            "occurrence_sha256": "f978c9520ad7b5b0b75a2c39dc3122aadd5280f9bfeae98e98457ea786685ebe"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}caution-reference",
+            "occurrence_sha256": "aa98efdecee276c2d8892001ab561bfc33e8b3aa9de327fe35c2018d6d2d6d28"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://schema.pbs.gov.au/}caution",
+              "occurrence_sha256": "fda6275999eb52078967811df450263906cdec26fbcc942b7075d50303373b5c",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}caution-reference",
+        "target_element_qname": "{http://schema.pbs.gov.au/}caution",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}prescribing-texts-list/1/{http:~1~1schema.pbs.gov.au~1}caution/61",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "868fb65521dcef4ca36203bca00c8b5299f7bfaa198393261161693e5ec57f32",
+        "category": "no_target_negative_control",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}previous-list/1/{http:~1~1schema.pbs.gov.au~1}previous/2112/{http:~1~1schema.pbs.gov.au~1}mpuu-reference/1/{http:~1~1schema.pbs.gov.au~1}code/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}mpuu-reference",
+            "occurrence_sha256": "37e1a34ca1493ffce48285d1d95e484697a5bdec82cd23879c466499934b3a8e"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}code",
+            "occurrence_sha256": "92fb896ca2d43c938dcf8b8b74a72fa58456dd51dda0408f3205aa2cf68e29a6"
+          },
+          "same_member_literal_candidate_target_count": 0,
+          "same_member_literal_candidate_targets": [],
+          "uri_target_matches_context_candidate": null,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}code",
+        "target_element_qname": null,
+        "target_multiplicity": 0,
+        "target_occurrence": null,
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": null,
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "9eb9e60e8e26c5c15a3ce421b284b60ed740861fd22a25077b10374e46e0ed1b",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}RDF/1/{http:~1~1pbs.gov.au~1}threshold/1/{http:~1~1pbs.gov.au~1}applies-to/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": null,
+          "nearest_subject_element": {
+            "element_qname": "{http://pbs.gov.au/}threshold",
+            "occurrence_sha256": "1a7a5809a40615d1003161f2873740989632463989227fc8053987c85778c6ac"
+          },
+          "predicate_element": {
+            "element_qname": "{http://pbs.gov.au/}applies-to",
+            "occurrence_sha256": "02260964d969aabb213a3db2bc7983184d0eebe52124e82b2710f3611cc827f2"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://pbs.gov.au/}patient",
+              "occurrence_sha256": "c9115ad607febdcb06a08271dd8d36858a5cc50c02d76988bd269b0679290903",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://pbs.gov.au/}applies-to",
+        "target_element_qname": "{http://pbs.gov.au/}patient",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}RDF/1/{http:~1~1pbs.gov.au~1}patient/1",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "06a1d097d58cd1306b9101f002569f60d2348727f323714d38ac866a9f337b10",
+        "category": "unique_fragment_literal_candidate",
+        "kind": "xlink_href",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}prescribing-texts-list/1/{http:~1~1schema.pbs.gov.au~1}indication/1/{http:~1~1schema.pbs.gov.au~1}condition-reference/1/attributes/{http:~1~1www.w3.org~11999~1xlink}href",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}indication",
+            "occurrence_sha256": "9a7e3cb43aa0ee10e7745c14444d64826e6de37e6b8324eaaf50a59264a58857"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}condition-reference",
+            "occurrence_sha256": "a5c850de30a92c4b9e4637e527910803b168b0e83c40f72d5f00d335fcb8ca3d"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://schema.pbs.gov.au/}condition",
+              "occurrence_sha256": "d7564eefb41fc72adf493e23eb1fd97210e2ec88d3ced59a2d8d15c70b1e447a",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}condition-reference",
+        "target_element_qname": "{http://schema.pbs.gov.au/}condition",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}prescribing-texts-list/1/{http:~1~1schema.pbs.gov.au~1}condition/1",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "6783827dc34a142cdd5dd64ef289dbc54376d89516fcd10ff2803d70611d4929",
+        "category": "no_target_negative_control",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}pharmaceutical-items-list/1/{http:~1~1schema.pbs.gov.au~1}pharmaceutical-item/1/{http:~1~1schema.pbs.gov.au~1}drug-references-list/1/{http:~1~1schema.pbs.gov.au~1}mp-reference/1/{http:~1~1schema.pbs.gov.au~1}code/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}pharmaceutical-item",
+            "occurrence_sha256": "e7473cf39d22f73bece2721cbde34e53f3ae3917b94c4aa2f2b2ce29b9cd8530"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}code",
+            "occurrence_sha256": "94bb6cf636a5c0142f2ca505b7f62d0e9023d97a60276697817d276386e86d2d"
+          },
+          "same_member_literal_candidate_target_count": 0,
+          "same_member_literal_candidate_targets": [],
+          "uri_target_matches_context_candidate": null,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}code",
+        "target_element_qname": null,
+        "target_multiplicity": 0,
+        "target_occurrence": null,
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": null,
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "47603f7a84f5a74d06ed8dbdfe7b62bbeb4806f261daaea7f4494aac60e8b634",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}RDF/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}Description/32/{http:~1~1pbs.gov.au~1}concept/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": null,
+          "nearest_subject_element": {
+            "element_qname": "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}Description",
+            "occurrence_sha256": "c565b7773ba35a402baa764f0cd9f71fb861bb7330e4e4643cb97d5bf682b8c7"
+          },
+          "predicate_element": {
+            "element_qname": "{http://pbs.gov.au/}concept",
+            "occurrence_sha256": "c4936415f20089d8a357c04f14270dcadcdc98af15867bef9867d7ed55b98dbd"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}Description",
+              "occurrence_sha256": "2520176f0a8cf1a39169bccc88de81abfecdb80063d3e2980b09b38f0019c456",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://pbs.gov.au/}concept",
+        "target_element_qname": "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}Description",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}RDF/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}Description/33",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "92fec684d54a5d601ad53c611bcfe6e2b488bdca736eedf76904d078739d65de",
+        "category": "unique_fragment_literal_candidate",
+        "kind": "xlink_href",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}schedule/1/{http:~1~1schema.pbs.gov.au~1}program/3/{http:~1~1schema.pbs.gov.au~1}prescribing-rule/1/{http:~1~1schema.pbs.gov.au~1}extemporaneous-preparation/1/{http:~1~1schema.pbs.gov.au~1}prescribing-rule/1/{http:~1~1schema.pbs.gov.au~1}standard-formula-preparation/1/{http:~1~1schema.pbs.gov.au~1}pricing/1/{http:~1~1schema.pbs.gov.au~1}reimbursement/1/{http:~1~1schema.pbs.gov.au~1}dpmq/1/{http:~1~1schema.pbs.gov.au~1}price/1/{http:~1~1schema.pbs.gov.au~1}container/1/attributes/{http:~1~1www.w3.org~11999~1xlink}href",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}container",
+            "occurrence_sha256": "e9707a7c99587ca379bf9613b7c2e44f78205f48f584b2d41686c81afe131f18"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}container",
+            "occurrence_sha256": "e9707a7c99587ca379bf9613b7c2e44f78205f48f584b2d41686c81afe131f18"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://schema.pbs.gov.au/}container-definition",
+              "occurrence_sha256": "d55d5fa69aec4d01c80288c7e8b626a298380ebde3a724a97e2b2a34f57b6369",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}container",
+        "target_element_qname": "{http://schema.pbs.gov.au/}container-definition",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}schedule/1/{http:~1~1schema.pbs.gov.au~1}program/3/{http:~1~1schema.pbs.gov.au~1}dispensing-rules-list/1/{http:~1~1schema.pbs.gov.au~1}dispensing-rule/1/{http:~1~1schema.pbs.gov.au~1}container-definitions-list/1/{http:~1~1schema.pbs.gov.au~1}container-definition/15",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "41783b4a8381ed8ce406738ce95e292029c1567f077f3150c03ef9c0fb998150",
+        "category": "no_target_negative_control",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}previous-list/1/{http:~1~1schema.pbs.gov.au~1}previous/1829/{http:~1~1schema.pbs.gov.au~1}prescribing-rule/1/{http:~1~1schema.pbs.gov.au~1}ready-prepared/1/{http:~1~1schema.pbs.gov.au~1}maximum-prescribable/1/{http:~1~1schema.pbs.gov.au~1}mpp-reference/1/{http:~1~1schema.pbs.gov.au~1}code/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}prescribing-rule",
+            "occurrence_sha256": "a36496694b813a551ea695106c826f767ca4719b78500b1d259de35f901cc3e7"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}code",
+            "occurrence_sha256": "f3ead90d578d3a060615a79cbf6a4ac3999a5e8d0e562153dc31bcdf54c47f66"
+          },
+          "same_member_literal_candidate_target_count": 0,
+          "same_member_literal_candidate_targets": [],
+          "uri_target_matches_context_candidate": null,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}code",
+        "target_element_qname": null,
+        "target_multiplicity": 0,
+        "target_occurrence": null,
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": null,
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "01ab66d80e724ff0f19c8286e3801eb2435841229a21899b4d4c7f3915dac7b9",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}RDF/1/{http:~1~1pbs.gov.au~1}special-handling/1/{http:~1~1pbs.gov.au~1}has-fee/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": null,
+          "nearest_subject_element": {
+            "element_qname": "{http://pbs.gov.au/}special-handling",
+            "occurrence_sha256": "ca8cae368a449fe4f629a2838b93524b92ea84091808e90d219ca52847b1c08a"
+          },
+          "predicate_element": {
+            "element_qname": "{http://pbs.gov.au/}has-fee",
+            "occurrence_sha256": "8e169a98da3f3e79cefd637a822539fc03640583ce8e2c69d39894c55a960bbe"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://pbs.gov.au/}fee",
+              "occurrence_sha256": "e3a7c852ed8d036b4a016688dfb6a54478cec27e2781deedac116169ecff4974",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://pbs.gov.au/}has-fee",
+        "target_element_qname": "{http://pbs.gov.au/}fee",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}RDF/1/{http:~1~1pbs.gov.au~1}fee/6",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "ad451b08dcf12b67a50000fbdaf346f6771f320488f0e15f6a9face3af0fd265",
+        "category": "unique_fragment_literal_candidate",
+        "kind": "xlink_href",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}prescribing-texts-list/1/{http:~1~1schema.pbs.gov.au~1}restriction/1/{http:~1~1schema.pbs.gov.au~1}all/1/{http:~1~1schema.pbs.gov.au~1}criteria-reference/1/attributes/{http:~1~1www.w3.org~11999~1xlink}href",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}restriction",
+            "occurrence_sha256": "3b7562664368485f0b262220bc533326d74b9a8aa3fe380331417065f8c53c18"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}criteria-reference",
+            "occurrence_sha256": "cb45aed9aa4647cc22e3a87652fb88067ca70bd8a3abe04072a2e85f94677093"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://schema.pbs.gov.au/}treatment",
+              "occurrence_sha256": "56085f8b79b56f48023b01dfbb04fcfc323ccf0efc05da3ceab6460e1d746650",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}criteria-reference",
+        "target_element_qname": "{http://schema.pbs.gov.au/}treatment",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}prescribing-texts-list/1/{http:~1~1schema.pbs.gov.au~1}treatment/58",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "a648f876aab4a608b41df5ea411c5bbc24e013053649cb22c22fbac0e90c17fb",
+        "category": "no_target_negative_control",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}previous-list/1/{http:~1~1schema.pbs.gov.au~1}previous/1829/{http:~1~1schema.pbs.gov.au~1}prescribing-rule/1/{http:~1~1schema.pbs.gov.au~1}ready-prepared/1/{http:~1~1schema.pbs.gov.au~1}product-listing/1/{http:~1~1schema.pbs.gov.au~1}tpp-reference/1/{http:~1~1schema.pbs.gov.au~1}code/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}product-listing",
+            "occurrence_sha256": "9603f8dc19b62d938c8954b88b0f1b327de2f2dfc0ec888ef57001f03f5f5bb7"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}code",
+            "occurrence_sha256": "9325e23548d59133d8a78a436815bd19da6012fc3a399c2e54d13c991f0e8f5e"
+          },
+          "same_member_literal_candidate_target_count": 0,
+          "same_member_literal_candidate_targets": [],
+          "uri_target_matches_context_candidate": null,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}code",
+        "target_element_qname": null,
+        "target_multiplicity": 0,
+        "target_occurrence": null,
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": null,
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "97da435164c7548c10981f8790186e8de39a655166e17590661e4a9a783e9523",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}RDF/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}Description/56/{http:~1~1pbs.gov.au~1}has-fee/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": null,
+          "nearest_subject_element": {
+            "element_qname": "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}Description",
+            "occurrence_sha256": "5a3e8291bd3808c6b4de96732a214dce62a71c663658ff78a5378ce4e90be56c"
+          },
+          "predicate_element": {
+            "element_qname": "{http://pbs.gov.au/}has-fee",
+            "occurrence_sha256": "09a02ce8a534731c401176282dbfe7aed820ca11c163bd9f8e4e5a85826244e9"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://pbs.gov.au/}fee",
+              "occurrence_sha256": "829de9f22dc944a27159a59230f92fbe482f78e88ec0daf2d9230564a85d07fc",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://pbs.gov.au/}has-fee",
+        "target_element_qname": "{http://pbs.gov.au/}fee",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}RDF/1/{http:~1~1pbs.gov.au~1}fee/8",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "343ae0ecf65e2d8a587ca5c70726db536293e86a854a087e681431ada37a20cf",
+        "category": "unique_fragment_literal_candidate",
+        "kind": "xlink_href",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}previous-list/1/{http:~1~1schema.pbs.gov.au~1}previous/1829/{http:~1~1schema.pbs.gov.au~1}prescribing-rule/1/{http:~1~1schema.pbs.gov.au~1}ready-prepared/1/{http:~1~1schema.pbs.gov.au~1}product-listing/1/{http:~1~1schema.pbs.gov.au~1}lowest/1/{http:~1~1schema.pbs.gov.au~1}dpmq/1/{http:~1~1schema.pbs.gov.au~1}price/1/{http:~1~1schema.pbs.gov.au~1}dispensing-rule-reference/1/attributes/{http:~1~1www.w3.org~11999~1xlink}href",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}dpmq",
+            "occurrence_sha256": "b2693cc1cf22a8a430ed9b057e3590a7ea26ae3430bada1b3da48002f3f64d49"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}dispensing-rule-reference",
+            "occurrence_sha256": "159a578326ff3562c8c10f17c002ebcdcca2fe14ba8bcecb64269e892968d684"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://schema.pbs.gov.au/}dispensing-rule",
+              "occurrence_sha256": "c9da33bd598df06c5e7149b1e631334e978b07816ea0dcc7fb2b1f7740d67084",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}dispensing-rule-reference",
+        "target_element_qname": "{http://schema.pbs.gov.au/}dispensing-rule",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}schedule/1/{http:~1~1schema.pbs.gov.au~1}program/2/{http:~1~1schema.pbs.gov.au~1}dispensing-rules-list/1/{http:~1~1schema.pbs.gov.au~1}dispensing-rule/1",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "1c7a8495efd4ffc0cf00a63383e8c4bc0141e95845b2b7e1e9b97dee049092bc",
+        "category": "no_target_negative_control",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}drugs-list/1/{http:~1~1schema.pbs.gov.au~1}tpp/1/{http:~1~1schema.pbs.gov.au~1}code/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}tpp",
+            "occurrence_sha256": "a0f1a5f829c5eae2f6b6c117b6ad965c3ffa9f9be1c3ee294103268f4bbb1f99"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}code",
+            "occurrence_sha256": "38e2fe0a702415bfdbeafcabe50f3d72d82cec121a5be3ebd6c61af1ebe6d5d8"
+          },
+          "same_member_literal_candidate_target_count": 0,
+          "same_member_literal_candidate_targets": [],
+          "uri_target_matches_context_candidate": null,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}code",
+        "target_element_qname": null,
+        "target_multiplicity": 0,
+        "target_occurrence": null,
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": null,
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "698dbad427a3630c3925cedf06d41b3a60cce2ff3dd7cfca5bec54a84d946606",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}RDF/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}Description/2/{http:~1~1pbs.gov.au~1}has-revision/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": null,
+          "nearest_subject_element": {
+            "element_qname": "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}Description",
+            "occurrence_sha256": "af99e32fa0edfe1692f4921630d8a4be0f8d8fab94f315a47bfe4fdd72876ef1"
+          },
+          "predicate_element": {
+            "element_qname": "{http://pbs.gov.au/}has-revision",
+            "occurrence_sha256": "f1678528887b9565ecff54e108da2758d7627da6b118067fc7a64bf2b8d72ed4"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}Description",
+              "occurrence_sha256": "f469518ad84b673d04932012693d24bc678ab38b45aa5e3893d5fd35b7f96da8",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://pbs.gov.au/}has-revision",
+        "target_element_qname": "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}Description",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}RDF/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}Description/6",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "d5a28274fe05472bee4a2213a5a049a65bd527e4ae13eba84f9620e5a6b76978",
+        "category": "unique_fragment_literal_candidate",
+        "kind": "xlink_href",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}schedule/1/{http:~1~1schema.pbs.gov.au~1}program/3/{http:~1~1schema.pbs.gov.au~1}prescribing-rule/100/{http:~1~1schema.pbs.gov.au~1}drug-tariff/1/{http:~1~1schema.pbs.gov.au~1}recovery-prices/1/{http:~1~1schema.pbs.gov.au~1}hundred-grams/1/{http:~1~1schema.pbs.gov.au~1}price/1/{http:~1~1schema.pbs.gov.au~1}dispensing-rule-reference/1/attributes/{http:~1~1www.w3.org~11999~1xlink}href",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}hundred-grams",
+            "occurrence_sha256": "881848431489e3b7a79d3335297178c56fbc445042d31137d5cf641f805ad136"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}dispensing-rule-reference",
+            "occurrence_sha256": "a6f9fea7b0f47fdd21e538bbbe8b01f322f70fa03ed5ff285e80f9b7a069a44c"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://schema.pbs.gov.au/}dispensing-rule",
+              "occurrence_sha256": "894940d9c223e1310336f314f4ddc131f59d5e06a3e5c7559fc7f0c83ae6aca9",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}dispensing-rule-reference",
+        "target_element_qname": "{http://schema.pbs.gov.au/}dispensing-rule",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}schedule/1/{http:~1~1schema.pbs.gov.au~1}program/3/{http:~1~1schema.pbs.gov.au~1}dispensing-rules-list/1/{http:~1~1schema.pbs.gov.au~1}dispensing-rule/1",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "1c9b9d8290b11e58d0434a864495d1c09fc8c40e162c4b2d7f5d5cd225b12f94",
+        "category": "no_target_negative_control",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}previous-list/1/{http:~1~1schema.pbs.gov.au~1}previous/2211/{http:~1~1schema.pbs.gov.au~1}tpp-reference/1/{http:~1~1schema.pbs.gov.au~1}code/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}tpp-reference",
+            "occurrence_sha256": "be909c7402639c3fda65ad3bef9caa04730f0d17471f08a2e1ba2e1c5b35570b"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}code",
+            "occurrence_sha256": "afb5dbdfb74991ecd9e71103e1bd66e9389c058427da70559a4e9c2c1db53f59"
+          },
+          "same_member_literal_candidate_target_count": 0,
+          "same_member_literal_candidate_targets": [],
+          "uri_target_matches_context_candidate": null,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}code",
+        "target_element_qname": null,
+        "target_multiplicity": 0,
+        "target_occurrence": null,
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": null,
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "b7955c0521aa67f693bed785e1b38589a359f56721a89e428aa0ce562a620067",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}RDF/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}Description/1/{http:~1~1pbs.gov.au~1}has-revision-history/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": null,
+          "nearest_subject_element": {
+            "element_qname": "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}Description",
+            "occurrence_sha256": "4a794ad93558cd1807ab4ea71523e3900dd0569d449656ebcd3ba5d0b92c8b66"
+          },
+          "predicate_element": {
+            "element_qname": "{http://pbs.gov.au/}has-revision-history",
+            "occurrence_sha256": "e3b6d9750f986877fb9f1d251dd5cc5ef275aa7ef56c4407aae81b0cf307798e"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}Description",
+              "occurrence_sha256": "af99e32fa0edfe1692f4921630d8a4be0f8d8fab94f315a47bfe4fdd72876ef1",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://pbs.gov.au/}has-revision-history",
+        "target_element_qname": "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}Description",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}RDF/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}Description/2",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "c06381170f8041b704245ea5d1038f1e4f716458543d3c95e4bd5ed3a6540dfb",
+        "category": "unique_fragment_literal_candidate",
+        "kind": "xlink_href",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}schedule/1/{http:~1~1schema.pbs.gov.au~1}program/3/{http:~1~1schema.pbs.gov.au~1}prescribing-rule/100/{http:~1~1schema.pbs.gov.au~1}drug-tariff/1/{http:~1~1schema.pbs.gov.au~1}recovery-prices/1/{http:~1~1schema.pbs.gov.au~1}one-gram/1/{http:~1~1schema.pbs.gov.au~1}price/1/{http:~1~1schema.pbs.gov.au~1}dispensing-rule-reference/1/attributes/{http:~1~1www.w3.org~11999~1xlink}href",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}one-gram",
+            "occurrence_sha256": "4bfddeb1319c811661896668090248cfda7fb0f45874fcc393ba79eed79fa6b1"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}dispensing-rule-reference",
+            "occurrence_sha256": "58d07c6b3104f54127edc6c579390ad38b0beae72d2158563d0c5c11801ce5ed"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://schema.pbs.gov.au/}dispensing-rule",
+              "occurrence_sha256": "894940d9c223e1310336f314f4ddc131f59d5e06a3e5c7559fc7f0c83ae6aca9",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}dispensing-rule-reference",
+        "target_element_qname": "{http://schema.pbs.gov.au/}dispensing-rule",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}schedule/1/{http:~1~1schema.pbs.gov.au~1}program/3/{http:~1~1schema.pbs.gov.au~1}dispensing-rules-list/1/{http:~1~1schema.pbs.gov.au~1}dispensing-rule/1",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "2cf8c779e54716ca3a569c0819d3aacbcfa4f7d0c1d6bb7d2ff694952f909fd8",
+        "category": "no_target_negative_control",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}drugs-list/1/{http:~1~1schema.pbs.gov.au~1}tpuu/1/{http:~1~1schema.pbs.gov.au~1}code/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}tpuu",
+            "occurrence_sha256": "3cc6d56f4bec729136691bef68943e083363574be2644abbef0d30d6feb42f51"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}code",
+            "occurrence_sha256": "0444482e942019da3880a977fd432525773d54108c18dae4e922743ccb9a3112"
+          },
+          "same_member_literal_candidate_target_count": 0,
+          "same_member_literal_candidate_targets": [],
+          "uri_target_matches_context_candidate": null,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}code",
+        "target_element_qname": null,
+        "target_multiplicity": 0,
+        "target_occurrence": null,
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": null,
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "34a76e2e0f4447fce447697948abbe5570597bd1ed3d90c3930d301d474c186f",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}previous-list/1/{http:~1~1schema.pbs.gov.au~1}previous/1829/{http:~1~1schema.pbs.gov.au~1}prescribing-rule/1/{http:~1~1schema.pbs.gov.au~1}ready-prepared/1/{http:~1~1schema.pbs.gov.au~1}ATC/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}prescribing-rule",
+            "occurrence_sha256": "a36496694b813a551ea695106c826f767ca4719b78500b1d259de35f901cc3e7"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}ATC",
+            "occurrence_sha256": "fa91c7bea562ae5605f83853c85b16acb94b994bdec014ff41dac92e20d01e76"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://www.w3.org/2004/02/skos/core#}Concept",
+              "occurrence_sha256": "13e094b7164756e22278d35c18cc4c543d82246269dd878d1e7541bc4bbb5109",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}ATC",
+        "target_element_qname": "{http://www.w3.org/2004/02/skos/core#}Concept",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}RDF/1/{http:~1~1www.w3.org~12004~102~1skos~1core#}Concept/6875",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "d72985a953b43ebb9e73615a90350a903dbaed333c5b5771691693dedc908c1b",
+        "category": "unique_fragment_literal_candidate",
+        "kind": "xlink_href",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}schedule/1/{http:~1~1schema.pbs.gov.au~1}program/3/{http:~1~1schema.pbs.gov.au~1}prescribing-rule/100/{http:~1~1schema.pbs.gov.au~1}drug-tariff/1/{http:~1~1schema.pbs.gov.au~1}recovery-prices/1/{http:~1~1schema.pbs.gov.au~1}one-tenth/1/{http:~1~1schema.pbs.gov.au~1}price/1/{http:~1~1schema.pbs.gov.au~1}dispensing-rule-reference/1/attributes/{http:~1~1www.w3.org~11999~1xlink}href",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}one-tenth",
+            "occurrence_sha256": "69f7838aa1d1825736b7ff1e161cea61358b24ce2c17a4e6d3b6811304db2f03"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}dispensing-rule-reference",
+            "occurrence_sha256": "91e67fef1c53930a99a3441bffefb1ac959ec83444c4e9ffd48cfc1aa1755e90"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://schema.pbs.gov.au/}dispensing-rule",
+              "occurrence_sha256": "894940d9c223e1310336f314f4ddc131f59d5e06a3e5c7559fc7f0c83ae6aca9",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}dispensing-rule-reference",
+        "target_element_qname": "{http://schema.pbs.gov.au/}dispensing-rule",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}schedule/1/{http:~1~1schema.pbs.gov.au~1}program/3/{http:~1~1schema.pbs.gov.au~1}dispensing-rules-list/1/{http:~1~1schema.pbs.gov.au~1}dispensing-rule/1",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "9b37d3ac81582470197a52656278ff4cfc6813072dfb1bca5f893b8dfcef508e",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}prescribing-texts-list/1/{http:~1~1schema.pbs.gov.au~1}administrative-advice/138/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}administrative-advice",
+            "occurrence_sha256": "192414b550d35d78712ffbad9c4607ab0b2e8e5d44a3701b6568aaf0ee25f549"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}administrative-advice",
+            "occurrence_sha256": "192414b550d35d78712ffbad9c4607ab0b2e8e5d44a3701b6568aaf0ee25f549"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}Description",
+              "occurrence_sha256": "ce0b3e14324edeccf033cd94b50375805706ecedbcbae11d64daf36cb463935c",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}administrative-advice",
+        "target_element_qname": "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}Description",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}RDF/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}Description/16",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "8fe9b634094c1be7b159d24f3adc97efa03370fba2fd393a94af9e830daf3430",
+        "category": "unique_fragment_literal_candidate",
+        "kind": "xlink_href",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}previous-list/1/{http:~1~1schema.pbs.gov.au~1}previous/1829/{http:~1~1schema.pbs.gov.au~1}prescribing-rule/1/{http:~1~1schema.pbs.gov.au~1}ready-prepared/1/{http:~1~1schema.pbs.gov.au~1}product-listing/1/{http:~1~1schema.pbs.gov.au~1}lowest/1/{http:~1~1schema.pbs.gov.au~1}pharmacist/1/{http:~1~1schema.pbs.gov.au~1}price/1/{http:~1~1schema.pbs.gov.au~1}dispensing-rule-reference/1/attributes/{http:~1~1www.w3.org~11999~1xlink}href",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}pharmacist",
+            "occurrence_sha256": "d56500a84f8595326f01abba41db7dc4a8023a8ba84ae2a8b04bc52278b9586c"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}dispensing-rule-reference",
+            "occurrence_sha256": "0f2703be3e8969f096e2a589a9b8f4963a709da225e02d763febdb33e75e81cf"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://schema.pbs.gov.au/}dispensing-rule",
+              "occurrence_sha256": "c9da33bd598df06c5e7149b1e631334e978b07816ea0dcc7fb2b1f7740d67084",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}dispensing-rule-reference",
+        "target_element_qname": "{http://schema.pbs.gov.au/}dispensing-rule",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}schedule/1/{http:~1~1schema.pbs.gov.au~1}program/2/{http:~1~1schema.pbs.gov.au~1}dispensing-rules-list/1/{http:~1~1schema.pbs.gov.au~1}dispensing-rule/1",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "f1764de7bc7a3243fbb739b1fd6c6abbed4a78bc10b12e1d97267084ca127b64",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}schedule/1/{http:~1~1schema.pbs.gov.au~1}program/3/{http:~1~1schema.pbs.gov.au~1}prescribing-rule/100/{http:~1~1schema.pbs.gov.au~1}drug-tariff/1/{http:~1~1schema.pbs.gov.au~1}recovery-prices/1/{http:~1~1schema.pbs.gov.au~1}hundred-grams/1/{http:~1~1schema.pbs.gov.au~1}price/1/{http:~1~1schema.pbs.gov.au~1}amount/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}hundred-grams",
+            "occurrence_sha256": "881848431489e3b7a79d3335297178c56fbc445042d31137d5cf641f805ad136"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}amount",
+            "occurrence_sha256": "0ce7bf987bc6f8d940dac777445b66bcb6267ad35f1d9f941de6e4ac562826db"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}Description",
+              "occurrence_sha256": "cbedd7df997868f3dd3d76f3942f84120c4ed7b88ff0730fbccbbfe97e7c3889",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}amount",
+        "target_element_qname": "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}Description",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}RDF/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}Description/50",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "05e2b9fc0ec7111d741abf448d5618b7f4521b246af89c726c0780531f20d059",
+        "category": "unique_fragment_literal_candidate",
+        "kind": "xlink_href",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}schedule/1/{http:~1~1schema.pbs.gov.au~1}program/3/{http:~1~1schema.pbs.gov.au~1}prescribing-rule/109/{http:~1~1schema.pbs.gov.au~1}drug-tariff/1/{http:~1~1schema.pbs.gov.au~1}not-to-be-broken-prices/1/{http:~1~1schema.pbs.gov.au~1}price-category/1/{http:~1~1schema.pbs.gov.au~1}price/1/{http:~1~1schema.pbs.gov.au~1}dispensing-rule-reference/1/attributes/{http:~1~1www.w3.org~11999~1xlink}href",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}prescribing-rule",
+            "occurrence_sha256": "672b9ce279d1ca557d6fa41472fc5082c8d5e3905d255fd7460553f4661202c4"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}dispensing-rule-reference",
+            "occurrence_sha256": "851243e7b182cd666f834c659c910e531666fd805e6e88e350ab15d69b5b2a7c"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://schema.pbs.gov.au/}dispensing-rule",
+              "occurrence_sha256": "894940d9c223e1310336f314f4ddc131f59d5e06a3e5c7559fc7f0c83ae6aca9",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}dispensing-rule-reference",
+        "target_element_qname": "{http://schema.pbs.gov.au/}dispensing-rule",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}schedule/1/{http:~1~1schema.pbs.gov.au~1}program/3/{http:~1~1schema.pbs.gov.au~1}dispensing-rules-list/1/{http:~1~1schema.pbs.gov.au~1}dispensing-rule/1",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "4a54aa17fb0b872823682698ba34d0928d8d101a3a9c9047b8a3ea3d6c4c0461",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}schedule/1/{http:~1~1schema.pbs.gov.au~1}program/3/{http:~1~1schema.pbs.gov.au~1}prescribing-rule/100/{http:~1~1schema.pbs.gov.au~1}drug-tariff/1/{http:~1~1schema.pbs.gov.au~1}recovery-prices/1/{http:~1~1schema.pbs.gov.au~1}one-gram/1/{http:~1~1schema.pbs.gov.au~1}price/1/{http:~1~1schema.pbs.gov.au~1}amount/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}one-gram",
+            "occurrence_sha256": "4bfddeb1319c811661896668090248cfda7fb0f45874fcc393ba79eed79fa6b1"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}amount",
+            "occurrence_sha256": "a8730b2f9ec539711ab37b10c7d15df630c829d646a68090b344a67a02c88ada"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}Description",
+              "occurrence_sha256": "cbedd7df997868f3dd3d76f3942f84120c4ed7b88ff0730fbccbbfe97e7c3889",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}amount",
+        "target_element_qname": "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}Description",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}RDF/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}Description/50",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "6b2fc8b0fd5ff061d3944d23e63635221b898958058049d767efecd7a1526e12",
+        "category": "unique_fragment_literal_candidate",
+        "kind": "xlink_href",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}schedule/1/{http:~1~1schema.pbs.gov.au~1}program/3/{http:~1~1schema.pbs.gov.au~1}prescribing-rule/1/{http:~1~1schema.pbs.gov.au~1}extemporaneous-preparation/1/{http:~1~1schema.pbs.gov.au~1}prescribing-rule/1/{http:~1~1schema.pbs.gov.au~1}standard-formula-preparation/1/{http:~1~1schema.pbs.gov.au~1}pricing/1/{http:~1~1schema.pbs.gov.au~1}drug-tariff-prices/1/{http:~1~1schema.pbs.gov.au~1}price/1/{http:~1~1schema.pbs.gov.au~1}dispensing-rule-reference/1/attributes/{http:~1~1www.w3.org~11999~1xlink}href",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}pricing",
+            "occurrence_sha256": "ac7cc6a1956e3587823d37c3cb35f1d961c30b6055199004fc2115d10a277fff"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}dispensing-rule-reference",
+            "occurrence_sha256": "36422ec92fa6dfc59cf95d7440bd89f6b433df23ba2afdd415f11f9ff732ee1d"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://schema.pbs.gov.au/}dispensing-rule",
+              "occurrence_sha256": "894940d9c223e1310336f314f4ddc131f59d5e06a3e5c7559fc7f0c83ae6aca9",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}dispensing-rule-reference",
+        "target_element_qname": "{http://schema.pbs.gov.au/}dispensing-rule",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}schedule/1/{http:~1~1schema.pbs.gov.au~1}program/3/{http:~1~1schema.pbs.gov.au~1}dispensing-rules-list/1/{http:~1~1schema.pbs.gov.au~1}dispensing-rule/1",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "7e6e6e737428abbd670552a8c2524a25982d3e8e27806c10e8fea9cd864aa5ba",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}schedule/1/{http:~1~1schema.pbs.gov.au~1}program/3/{http:~1~1schema.pbs.gov.au~1}prescribing-rule/100/{http:~1~1schema.pbs.gov.au~1}drug-tariff/1/{http:~1~1schema.pbs.gov.au~1}recovery-prices/1/{http:~1~1schema.pbs.gov.au~1}one-tenth/1/{http:~1~1schema.pbs.gov.au~1}price/1/{http:~1~1schema.pbs.gov.au~1}amount/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}one-tenth",
+            "occurrence_sha256": "69f7838aa1d1825736b7ff1e161cea61358b24ce2c17a4e6d3b6811304db2f03"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}amount",
+            "occurrence_sha256": "8fb04e113e248b69941bee14d1bdd228d92d71720f81fac2cc07d16f3593203d"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}Description",
+              "occurrence_sha256": "cbedd7df997868f3dd3d76f3942f84120c4ed7b88ff0730fbccbbfe97e7c3889",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}amount",
+        "target_element_qname": "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}Description",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}RDF/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}Description/50",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "bfec0ab7a95648dbb63f3f485ae649c4c07cb177dead6d2193e28f92bbf44042",
+        "category": "unique_fragment_literal_candidate",
+        "kind": "xlink_href",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}previous-list/1/{http:~1~1schema.pbs.gov.au~1}previous/1830/{http:~1~1schema.pbs.gov.au~1}prescribing-rule/1/{http:~1~1schema.pbs.gov.au~1}ready-prepared/1/{http:~1~1schema.pbs.gov.au~1}product-listing/1/{http:~1~1schema.pbs.gov.au~1}maximum-patient-charge/1/{http:~1~1schema.pbs.gov.au~1}price/1/{http:~1~1schema.pbs.gov.au~1}dispensing-rule-reference/1/attributes/{http:~1~1www.w3.org~11999~1xlink}href",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}product-listing",
+            "occurrence_sha256": "b0720c9a48e08b260da1d7428402efd632b4cdb6576e9ae5f083e33da5ca83f2"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}dispensing-rule-reference",
+            "occurrence_sha256": "0ae409fcb5efa98a49c1717563de189f72fc837c6d52ae7ab2d40f0af2913a15"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://schema.pbs.gov.au/}dispensing-rule",
+              "occurrence_sha256": "f150ea2648f1cc1fe8c9d8daf307801b75fe14c4321471a7711aa6f5fafe2136",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}dispensing-rule-reference",
+        "target_element_qname": "{http://schema.pbs.gov.au/}dispensing-rule",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}schedule/1/{http:~1~1schema.pbs.gov.au~1}program/4/{http:~1~1schema.pbs.gov.au~1}dispensing-rules-list/1/{http:~1~1schema.pbs.gov.au~1}dispensing-rule/1",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "6954214000c8a7dab7044560107dde6931ba6a2c7888ce3a871dbe70bfa5af80",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}schedule/1/{http:~1~1schema.pbs.gov.au~1}program/3/{http:~1~1schema.pbs.gov.au~1}prescribing-rule/109/{http:~1~1schema.pbs.gov.au~1}drug-tariff/1/{http:~1~1schema.pbs.gov.au~1}not-to-be-broken-prices/1/{http:~1~1schema.pbs.gov.au~1}price-category/1/{http:~1~1schema.pbs.gov.au~1}price/1/{http:~1~1schema.pbs.gov.au~1}amount/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}prescribing-rule",
+            "occurrence_sha256": "672b9ce279d1ca557d6fa41472fc5082c8d5e3905d255fd7460553f4661202c4"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}amount",
+            "occurrence_sha256": "f63c0ae28cddafee74f85fed01a8e8ef1cd1244676a7d180dd7b60cf4066c527"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}Description",
+              "occurrence_sha256": "cbedd7df997868f3dd3d76f3942f84120c4ed7b88ff0730fbccbbfe97e7c3889",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}amount",
+        "target_element_qname": "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}Description",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}RDF/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}Description/50",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "e5582f1aa23feb3aa7eef57a82311fdbe3a715f4e140a45478385010cd55e787",
+        "category": "unique_fragment_literal_candidate",
+        "kind": "xlink_href",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}schedule/1/{http:~1~1schema.pbs.gov.au~1}program/3/{http:~1~1schema.pbs.gov.au~1}prescribing-rule/100/{http:~1~1schema.pbs.gov.au~1}drug-tariff/1/{http:~1~1schema.pbs.gov.au~1}recovery-prices/1/{http:~1~1schema.pbs.gov.au~1}ten-grams/1/{http:~1~1schema.pbs.gov.au~1}price/1/{http:~1~1schema.pbs.gov.au~1}dispensing-rule-reference/1/attributes/{http:~1~1www.w3.org~11999~1xlink}href",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}ten-grams",
+            "occurrence_sha256": "7d2eb9701dccd12435f9795c47ee035429c5395bfb0e7fcb3bf594c5089c167c"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}dispensing-rule-reference",
+            "occurrence_sha256": "6bc502d364d7e4447e97dcf68f703d2b54af59a63477515757325f4944c1edba"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://schema.pbs.gov.au/}dispensing-rule",
+              "occurrence_sha256": "894940d9c223e1310336f314f4ddc131f59d5e06a3e5c7559fc7f0c83ae6aca9",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}dispensing-rule-reference",
+        "target_element_qname": "{http://schema.pbs.gov.au/}dispensing-rule",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}schedule/1/{http:~1~1schema.pbs.gov.au~1}program/3/{http:~1~1schema.pbs.gov.au~1}dispensing-rules-list/1/{http:~1~1schema.pbs.gov.au~1}dispensing-rule/1",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "34687c71771e5f69625afdb0976092184bb281269634f5086b80d3b46302708b",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}schedule/1/{http:~1~1schema.pbs.gov.au~1}program/3/{http:~1~1schema.pbs.gov.au~1}prescribing-rule/100/{http:~1~1schema.pbs.gov.au~1}drug-tariff/1/{http:~1~1schema.pbs.gov.au~1}recovery-prices/1/{http:~1~1schema.pbs.gov.au~1}ten-grams/1/{http:~1~1schema.pbs.gov.au~1}price/1/{http:~1~1schema.pbs.gov.au~1}amount/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}ten-grams",
+            "occurrence_sha256": "7d2eb9701dccd12435f9795c47ee035429c5395bfb0e7fcb3bf594c5089c167c"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}amount",
+            "occurrence_sha256": "bff80042b3b3df226d7eb073ed13f59971b883a47ed79f24a26360323c80ce46"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}Description",
+              "occurrence_sha256": "cbedd7df997868f3dd3d76f3942f84120c4ed7b88ff0730fbccbbfe97e7c3889",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}amount",
+        "target_element_qname": "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}Description",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}RDF/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}Description/50",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      },
+      {
+        "adjudication": "unreviewed",
+        "case_id": "5a8d5219f58fa509ec5e66abe89880acb2ab414ed2ccbde5f059cc09302559f2",
+        "category": "unique_literal_candidate_requires_uri_review",
+        "kind": "rdf_resource",
+        "link_role": "not_recorded_in_context_profile",
+        "reference_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1schema.pbs.gov.au~1}prescribing-texts-list/1/{http:~1~1schema.pbs.gov.au~1}restriction/1126/{http:~1~1schema.pbs.gov.au~1}assessment/1/attributes/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource",
+        "reference_xml_base_context": "no_xml_base",
+        "semantic_relationship_qualified": false,
+        "source_context": {
+          "document_scope": "single_xml_member",
+          "nearest_identifier_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}assessment",
+            "occurrence_sha256": "abc89bbd0f51516a11f707fc5d6fb00fdb6b4ae67cb5cf62e7f2d53940663644"
+          },
+          "nearest_subject_element": null,
+          "predicate_element": {
+            "element_qname": "{http://schema.pbs.gov.au/}assessment",
+            "occurrence_sha256": "abc89bbd0f51516a11f707fc5d6fb00fdb6b4ae67cb5cf62e7f2d53940663644"
+          },
+          "same_member_literal_candidate_target_count": 1,
+          "same_member_literal_candidate_targets": [
+            {
+              "element_qname": "{http://pbs.gov.au/}assessment",
+              "occurrence_sha256": "e6d80393ec6f0dd411f506d045df3cdbec0b765eff036b11098ceb70ef319c7a",
+              "xml_base_context": "no_xml_base"
+            }
+          ],
+          "uri_target_matches_context_candidate": true,
+          "xml_base_context": "no_xml_base"
+        },
+        "source_element_qname": "{http://schema.pbs.gov.au/}assessment",
+        "target_element_qname": "{http://pbs.gov.au/}assessment",
+        "target_multiplicity": 1,
+        "target_occurrence": "/{http:~1~1schema.pbs.gov.au~1}root/1/{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}RDF/1/{http:~1~1pbs.gov.au~1}assessment/1",
+        "target_type_meaning": "not_established",
+        "target_xml_base_context": "no_xml_base",
+        "uri_resolution": "not_performed"
+      }
+    ],
+    "context_examples_bound": 46,
+    "context_payload_sha256": "8aa9c594b881c478a177e803a886ad591ae93ec9d965f4ba629ac58dd5902e34",
+    "context_screen_receipt_sha256": "62a01d660dc8e59bcef39768f64a9deda10bc5a58ae899e3f138ec2816862722",
+    "dataset": "edithatogo/australian-pbs-source-archive",
+    "edges_emitted": false,
+    "member_path": "sch-2026-04-01-r1.xml",
+    "member_sha256": "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43",
+    "member_size_bytes": 313437585,
+    "precision_claimed": false,
+    "recall_claimed": false,
+    "revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7",
+    "sampling_is_probability_based": false,
+    "sampling_method": "deterministic source-order examples within context strata; not a probability sample",
+    "schema_id": "global-medicines-atlas.pbs-uri-reference-review-context-packet",
+    "schema_version": 1,
+    "semantic_relationships_qualified": false,
+    "source_packet_report_sha256": "885960352dcee9e70f12ac3aa843d5129b75a2c44b16263835ff5bc7b57a5c6b",
+    "source_packet_sha256": "c38840116e821dffe5b06e5df14b1d7140f9e4446fbf8c14ea009a9e8b732829",
+    "source_values_emitted": false,
+    "status": "value_free_context_enriched_semantics_unreviewed",
+    "target_type_meaning": "not_established",
+    "uri_receipt_report_sha256": "475655fd08abf4681908452ec9e76c6654904d697d10d702c6283c2490afde59",
+    "uri_receipt_sha256": "4a296004773c57d7c0a6d73aacc6fd67b052fc3e1900a96badb0948193a7b411",
+    "uri_run_id": "40120162365",
+    "uri_workflow_commit": "7084ee19081b6c5ce1ce5e2b6941125a446e8ee0"
+  },
+  "report_sha256": "d73fcbdee395e85c2d075963aaaccca076dd25bb98af2ce40218bdc4b1a354ef"
+}

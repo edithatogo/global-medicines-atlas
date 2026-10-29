@@ -6,10 +6,11 @@ import importlib
 import json
 import os
 import secrets
+import tempfile
 from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated, Any, NoReturn, cast
+from typing import TYPE_CHECKING, Annotated, Any, Literal, NoReturn, cast
 
 import typer
 from pydantic import ValidationError
@@ -23,6 +24,7 @@ from .gold_edge_review import (
 from .historical_change_configuration import load_historical_change_service
 from .platinum_edge_configuration import MAX_EDGE_FILE_ROWS, load_gold_edges
 from .platinum_edges import MAX_EDGE_ROWS, gold_edge_payload
+from .platinum_types import MAX_QUERY_OFFSET
 from .platinum_v2_contracts import (
     V2ComparisonQuery,
     V2ComparisonResponse,
@@ -374,19 +376,22 @@ def comparison(
 ) -> None:
     """Compare regulatory, funding, and formulary evidence."""
     output = ExportRequest(format=format_, max_rows=max_rows)
-    query = ComparisonQuery(
-        concept_id=concept_id,
-        jurisdictions=tuple(jurisdiction),
-        dimensions=tuple(
-            dimension
-            or (EvidenceDimension.REGULATORY, EvidenceDimension.FUNDING)
-        ),
-        valid_at=valid_at,
-        observed_at=observed_at,
-        limit=limit,
-        cursor=cursor,
-        export=output,
-    )
+    try:
+        query = ComparisonQuery(
+            concept_id=concept_id,
+            jurisdictions=tuple(jurisdiction),
+            dimensions=tuple(
+                dimension
+                or (EvidenceDimension.REGULATORY, EvidenceDimension.FUNDING)
+            ),
+            valid_at=valid_at,
+            observed_at=observed_at,
+            limit=limit,
+            cursor=cursor,
+            export=output,
+        )
+    except ValidationError as exc:
+        raise typer.BadParameter(str(exc)) from exc
     service = _service(database, allowed_root)
     _run(
         "comparison",
@@ -1036,6 +1041,7 @@ def benefits_query(
     secret = os.environ.get(_CURSOR_ENV, "")
     if len(secret.encode()) < _BENEFITS_CURSOR_KEY_BYTES:
         _fail(ErrorCode.SERVICE_UNAVAILABLE, f"{_CURSOR_ENV} requires 32 bytes")
+    resolver = None
     try:  # ruff: ignore[too-many-statements-in-try-clause] -- one stable CLI error envelope covers resolver and page traversal errors.
         query = BenefitsQuery(
             columns=tuple(columns),
@@ -1072,6 +1078,10 @@ def benefits_query(
             "The benefits query or operator configuration is invalid",
         )
 
+    finally:
+        if resolver is not None:
+            resolver.close()
+
 
 @app.command("source-structure")
 def source_structure_query(
@@ -1081,8 +1091,10 @@ def source_structure_query(
     schema_file: Annotated[Path, typer.Option(exists=True, dir_okay=False)],
     columns: Annotated[list[str], typer.Option("--column")],
     limit: Annotated[int, typer.Option(min=1, max=100)] = 100,
+    offset: Annotated[int, typer.Option(min=0, max=MAX_QUERY_OFFSET)] = 0,
     *,
     offline: bool = False,
+    view: Annotated[Literal["records", "fields"], typer.Option()] = "records",
 ) -> None:
     """Query bounded source-structure evidence from operator-pinned trust."""
     try:
@@ -1115,7 +1127,11 @@ def source_structure_query(
         ).query(
             resource_id,
             SourceStructureQuery(
-                columns=tuple(columns), limit=limit, offline=offline
+                columns=tuple(columns),
+                limit=limit,
+                offset=offset,
+                offline=offline,
+                view=view,
             ),
         )
     except UnknownPlatinumResourceError:
@@ -1179,6 +1195,36 @@ def dataset_list(
             "The dataset identity operator configuration is invalid",
         )
     typer.echo(page.model_dump_json())
+
+
+@app.command("demo")
+def demo_server(
+    port: Annotated[int, typer.Option(min=1024, max=65535)] = 8765,
+) -> None:
+    """Run the local, explicitly synthetic API and Atlas demo."""
+    try:
+        uvicorn = importlib.import_module("uvicorn")
+        demo = importlib.import_module(".demo", package=__package__)
+    except ImportError:
+        _fail(
+            ErrorCode.SERVICE_UNAVAILABLE,
+            "Install the demo extra with: uv sync --extra demo",
+        )
+    typer.echo(demo.DEMO_NOTICE, err=True)
+    typer.echo(f"Synthetic demo: http://127.0.0.1:{port}/", err=True)
+    try:
+        with tempfile.TemporaryDirectory(prefix="gma-demo-") as directory:
+            database = demo.create_demo_database(
+                Path(directory) / "demo.duckdb"
+            )
+            uvicorn.run(
+                demo.create_demo_app(database),
+                host="127.0.0.1",
+                port=port,
+                log_level="warning",
+            )
+    except OSError as error:
+        _fail(ErrorCode.SERVICE_UNAVAILABLE, str(error))
 
 
 def main() -> None:

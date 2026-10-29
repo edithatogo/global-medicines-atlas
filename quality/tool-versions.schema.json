@@ -9,7 +9,7 @@
     "versions": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["actionlint", "gitleaks", "mojo", "mojo_channel", "pixi", "python", "protected_python", "runner", "uv", "uv_315_canary"],
+      "required": ["actionlint", "gitleaks", "mojo", "mojo_channel", "pixi", "python", "python_free_threaded", "runner", "uv"],
       "properties": {
         "actionlint": {"type": "string"},
         "gitleaks": {"type": "string"},
@@ -17,10 +17,9 @@
         "mojo_channel": {"type": "string"},
         "pixi": {"type": "string"},
         "python": {"type": "string"},
-        "protected_python": {"type": "string"},
+        "python_free_threaded": {"type": "string"},
         "runner": {"type": "string"},
-        "uv": {"type": "string"},
-        "uv_315_canary": {"type": "string"}
+        "uv": {"type": "string"}
       }
     },
     "checksums": {

@@ -1,0 +1,197 @@
+{
+  "boundaries": {
+    "consumer_canary_performed": false,
+    "new_sources_added": false,
+    "public_dataset_mutated": false,
+    "public_release_performed": false,
+    "source_bytes_persisted_locally": false,
+    "source_values_read_or_emitted": false,
+    "v4_admission_performed": false
+  },
+  "dataset": "edithatogo/australian-pbs-utilisation-archive",
+  "interpretation": "Header labels identify fields carrying previously counted pattern shapes. Numeric strings and ATC-shaped strings remain pattern evidence, not proof of identifier validity, vocabulary membership, relationship eligibility, or release authority. Workbook field labels remain unresolved.",
+  "objects": [
+    {
+      "byte_count": 35384567,
+      "header_field_count": 12,
+      "path": "raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+      "pattern_hit_fields": [
+        {
+          "column_index": 0,
+          "field_label": "MONTH_OF_SUPPLY",
+          "pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 389050,
+            "umls_cui": 0
+          }
+        },
+        {
+          "column_index": 6,
+          "field_label": "PRESCRIPTIONS",
+          "pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 269,
+            "umls_cui": 0
+          }
+        },
+        {
+          "column_index": 7,
+          "field_label": "PATIENT_CONTRIB",
+          "pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 7478,
+            "umls_cui": 0
+          }
+        },
+        {
+          "column_index": 8,
+          "field_label": "GOVT_CONTRIB",
+          "pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 21173,
+            "umls_cui": 0
+          }
+        },
+        {
+          "column_index": 9,
+          "field_label": "TOTAL_COST",
+          "pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 27620,
+            "umls_cui": 0
+          }
+        },
+        {
+          "column_index": 10,
+          "field_label": "RETAIL_MARKUP",
+          "pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 3808,
+            "umls_cui": 0
+          }
+        },
+        {
+          "column_index": 11,
+          "field_label": "PATIENT_NET_CONTRIB",
+          "pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 7266,
+            "umls_cui": 0
+          }
+        }
+      ],
+      "sha256": "4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4",
+      "source_data_values_read_or_emitted": false
+    },
+    {
+      "byte_count": 36381946,
+      "header_field_count": 12,
+      "path": "raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+      "pattern_hit_fields": [
+        {
+          "column_index": 0,
+          "field_label": "MONTH_OF_SUPPLY",
+          "pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 399660,
+            "umls_cui": 0
+          }
+        },
+        {
+          "column_index": 6,
+          "field_label": "PRESCRIPTIONS",
+          "pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 220,
+            "umls_cui": 0
+          }
+        },
+        {
+          "column_index": 7,
+          "field_label": "PATIENT_CONTRIB",
+          "pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 7596,
+            "umls_cui": 0
+          }
+        },
+        {
+          "column_index": 8,
+          "field_label": "GOVT_CONTRIB",
+          "pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 23182,
+            "umls_cui": 0
+          }
+        },
+        {
+          "column_index": 9,
+          "field_label": "TOTAL_COST",
+          "pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 29768,
+            "umls_cui": 0
+          }
+        },
+        {
+          "column_index": 10,
+          "field_label": "RETAIL_MARKUP",
+          "pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 3883,
+            "umls_cui": 0
+          }
+        },
+        {
+          "column_index": 11,
+          "field_label": "PATIENT_NET_CONTRIB",
+          "pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 7437,
+            "umls_cui": 0
+          }
+        }
+      ],
+      "sha256": "f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8",
+      "source_data_values_read_or_emitted": false
+    },
+    {
+      "byte_count": 1063694,
+      "header_field_count": 4,
+      "path": "raw/pbs/utilisation/reference/pbs-item-drug-map.csv",
+      "pattern_hit_fields": [
+        {
+          "column_index": 3,
+          "field_label": "ATC5_Code",
+          "pattern_counts": {
+            "atc_code_shape": 10770,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        }
+      ],
+      "sha256": "51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8",
+      "source_data_values_read_or_emitted": false
+    }
+  ],
+  "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+  "schema_id": "global-medicines-atlas.pbs-utilisation-pattern-field-header-map",
+  "schema_version": 1,
+  "source_qualification": "quality/qualifications/australian-pbs-utilisation-field-pattern-screen-20261021.json",
+  "source_qualification_sha256": "a865255e2139db9bc3ec5bd46ca35db840dc6782fcd7df998cc7a8a32e66ffb9"
+}

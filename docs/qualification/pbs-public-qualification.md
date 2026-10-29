@@ -389,3 +389,287 @@ aggregate at [issue #341 comment 5863205715](https://github.com/edithatogo/globa
 The exact-main [run 36417477472](https://github.com/edithatogo/global-medicines-atlas/actions/runs/36417477472) selected `pbs-v3-pinned-2026-04-01-v1` for the archive member pinned at dataset revision `31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7`. The durable aggregate at [issue #341 comment 5870245890](https://github.com/edithatogo/global-medicines-atlas/issues/341#issuecomment-5870245890) binds manifest, parent receipt, archive and member digests. It records 2,799 conversions, one missing recognized date slot, and 7,727,884 XML elements outside the recognized date roles. No invalid or unsupported date state was reported; those unmapped elements are not date failures. All five structural/storage projections share the same native digest and verified Parquet round trips.
 
 The [value-free qualification receipt](../../quality/qualifications/pbs-v3-2026-04-01-date-profile-qualification-20260929.json) preserves the run and aggregate hashes. This qualifies only the documented XSD `YYYY-MM-DD` grammar for the exact 1 April 2026 V3 member. It does not infer validity intervals or current status, qualify PBS domain semantics or other eras, confer terminology rights, or authorize derived-data publication. The aggregate continues to state `domain_semantics_qualified=false` and `structural_storage_candidate_only`.
+
+## Bounded PBS domain-field meanings, 2026-10-23
+
+The value-free [domain-field qualification](../../quality/qualifications/pbs-domain-field-semantics-20261023.json)
+binds a small set of meanings to the exact April 2026 v3 member, its complete
+5,163-path/18,208,758-slot inventory, the prior source-bound role receipt, and
+the pinned date-profile receipt. The meaning basis is the existing PBS v3
+structural contract plus the official v3 developer guide and mapping
+specification already used by the date qualification. No new source or payload
+was added to this qualification.
+
+The source `pharmaceutical-item` occurrence, drug/product and nested `mp`
+structures, prescribing restriction/rule structures, source-labelled price
+component/amount structures, and the exact documented schedule/effectivity
+date roles have bounded source-structure meanings. The `dcterms:valid` field
+is classified separately from schedule effective dates. This records what the
+source fields represent in their native PBS XML structure. It does not turn
+codes into global identities, resolve product or terminology references,
+interpret restrictions as patient eligibility, or treat a price amount as a
+payable benefit or patient cost.
+
+The complete inventory contains no field named `status`; status remains
+unresolved. Price basis, currency, contribution and benefit meaning also
+remain unresolved. The 2026-04-01 v3 date grammar applies only to that member;
+the date roles remain separate and do not establish intervals or current
+listing status. Native values remain `native_unresolved`, and complete PBS
+domain semantics, other eras, rights, admission, publication and consumer
+canaries are not qualified by this bounded result.
+
+## PBS native field-state reconciliation, 2026-10-24
+
+The [current field-state reconciliation receipt](../../quality/qualifications/pbs-native-silver-field-reconciliation-20261024-r6.json)
+partitions all 18,208,758 native field occurrences from the exact 1 April 2026
+PBS v3 member across every one of the 5,163 inventoried schema paths. It binds
+the complete native Silver package, source-local
+reference screen, prior field-state reconciliation, observed role counters,
+schema-path inventory, and bounded domain-meaning profile by digest.
+
+| State | Fields | Meaning |
+| --- | ---: | --- |
+| `interpreted` | 17,252,839 | Bounded source-structure role for item, product, restriction/rule, and price-component fields. This does not interpret individual native values. |
+| `native_unresolved` | 955,919 | Historical-record, organisation, reference, schedule, and vocabulary-metadata roles without a qualified domain meaning. |
+| `unavailable` | 0 | The exact-source parse and role counters account for the full field denominator. This is a field-state count, not a claim that all PBS facts are available. |
+| **Total** | **18,208,758** | **Denominator closes exactly.** |
+
+The 2,800 qualified date-role slots are a non-additive overlay within the role
+partition. The date profile applies only
+to this pinned member and does not establish validity intervals, precedence,
+or current status. Native values, including identifiers, amounts, references,
+and text, remain preserved and unresolved; exact-literal references remain
+lexical diagnostics. This receipt is digest-bound to exact-main screen run
+`40040624594` and its value-free per-kind review; `rdf:resource` has 1,167,610
+reference fields and `xlink:href` has 992,456. Their candidate and no-match
+counts remain lexical diagnostics, and neither kind is promoted to semantic
+relationships.
+
+### PBS date denominator reconciliation
+
+The date counters above and the source-field reconciliation count different
+path populations. The value-free semantic path receipt interprets 3,028 fields
+at the direct
+`/root/prescribing-texts-list/restriction/effective/date/text` path as a
+restriction-associated date literal. That path interpretation does not qualify
+date grammar or the values. The pinned date-profile receipt instead counts
+2,798 item-level `pbs_effective_date` roles, one schedule effective-date role,
+and one document `dct:valid` role: 2,800 role slots, of which 2,799 values were
+converted and one recognized schedule slot was missing. Its role counters do
+not include a restriction-effective-date role. The domain field-semantics
+receipt reports 2,799 for `effective_date` (2,798 item roles plus one schedule
+role), while its prose also mentions restriction-effective dates. The 230
+difference between 3,028 and 2,798 cannot be treated as an unmatched remainder
+because the reports do not bind those counts to a common occurrence-level
+crosswalk. The domain description/count conflict and the 230 difference remain
+unresolved; no field identity or date meaning is inferred. See the value-free
+[date denominator reconciliation receipt](../../quality/qualifications/pbs-date-denominator-reconciliation-20261025.json)
+for exact input digests and limits.
+
+An exact-source occurrence crosswalk is now available in the
+`pbs-date-occurrence-reconciliation` Actions workflow. It compares the direct
+restriction-date path and item-level date-role set by exact `source_field_id`,
+then retains only role names, counts, and digests of the identity sets. The
+hosted crosswalk has not yet produced a receipt for this revision, so no
+overlap or unmatched count is claimed here. The denominator difference remains
+unresolved until that receipt is reviewed. Its exact-main verifier is pinned to
+the retained denominators (3,028 restriction-path fields and 2,798 item-date
+fields) and requires the expected disjoint identity sets before issuing a
+passing receipt; any mismatch fails closed. The generated domain-field profile
+description now names only schedule and item roles, which matches its existing
+2,799 count; the historical 2026-10-23 receipt remains immutable and documents
+the earlier wording conflict.
+
+The current successor r6 binds the exact-main context screen and meaning review described below. Context screening supplies bounded, value-free diagnostics; no source cases have been reviewed and semantic relationships remain unqualified.
+
+This is one historical PBS v3 schedule, so no cross-era or cross-jurisdiction
+pooling is qualified. No explicit PBS status field was observed; snapshot dates
+do not establish current listing status. Patient rates are unavailable because
+this source contains no patient-level numerator/denominator evidence. Price
+structure does not establish currency, payable benefit, patient cost, or
+clinical eligibility. These findings change no rights, admission, canary, or
+publication status and use no new sources or source values.
+
+## PBS source-local reference review, 2026-10-24
+
+The original lexical screen and interpretation below are retained as historical
+evidence. The current source-context successor is bound to protected exact-main
+run `40076190245`, merge commit
+`b3139f9c655f48ccbb7a1714712219ac2281d838`, and screen receipt
+[`pbs-native-reference-screen-20261024-40076190245.json`](../../quality/qualifications/pbs-native-reference-screen-20261024-40076190245.json)
+(SHA-256 `570cc803a6657e421dc614855fe75013440f716dd3ff1d0096232c08ae363711`).
+Its context schema v2 contains 184 structural strata, 63 value-free examples,
+and 2,160,003 omitted occurrences. The exact-run meaning review
+([receipt](../../quality/qualifications/pbs-native-reference-meaning-review-20261024-40076190245.json),
+SHA-256 `9c15cbfd8fb12b7078caf3c61411eb77df24a139b4cc27851c1abad2ca458084`)
+and review packet
+([receipt](../../quality/qualifications/pbs-native-reference-review-packet-20261024-40076190245.json),
+SHA-256 `2c27b44e32e0d0f4d9117c53f1f8417fbf572d7b06ec98194fa5be32654dd9df`)
+bind the same screen run, commit, and source-receipt digest. The refreshed
+[field-state reconciliation r6](../../quality/qualifications/pbs-native-silver-field-reconciliation-20261024-r6.json)
+(SHA-256 `f1bf15ae0ed971de6bec1fed5d6f4a7265531e7fdd21708f100d6fb713136b6e`)
+records this evidence without changing the existing field partition.
+
+This context is diagnostic and does not expose source values. It does not
+resolve effective URIs or establish source-case scope, relation roles, target
+types, or predicate meaning. No source cases have been reviewed; exact-literal
+matches remain lexical diagnostics and semantic relationships remain
+unqualified. The 63 examples are a bounded review sample, not reviewed labels
+or matcher calibration.
+
+The [value-free interpretation receipt](../../quality/qualifications/pbs-native-reference-meaning-review-20261024-40040624594.json)
+reviews the exact-main lexical screen for the 1 April 2026 V3 member at
+revision `31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7`. It binds screen run
+`40040624594`, workflow commit `43f72eb7844a1f3adf13ec1fb34788c1bb8faf71`, member SHA-256
+`73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43`, and
+native digest `890c607f0e8c9de95c37770610fdc51fd241ea97210ef5ea61d7ad22fd228a25`.
+
+The screen reported 2,086,489 unique exact-literal candidates among 2,160,066
+references (96.5938% candidate yield), with 73,577 `rdf:resource` references
+having no exact literal and no duplicate definition literals. Among the
+1,167,610 `rdf:resource` fields, 1,094,033 have a unique exact literal;
+992,456 `xlink:href` fields each have a unique exact literal. These are
+aggregate lexical counts, not semantic precision or recall, and do not
+establish target type, document scope, effective URI/base, relation role, or
+predicate meaning.
+
+An `rdf:resource` literal matching an `rdf:about` literal is only a same-spelling
+RDF subject candidate. An XLink fragment matching an `xml:id` is only a
+candidate fragment target. An `xml:id` remains a source-local identifier; it
+is not a global PBS item key or terminology identity. Effective `xml:base`,
+URI resolution, graph/document scope, link role, target type, and predicate
+meaning are needed before those candidates can support relationships.
+
+Synthetic calibration includes positive, missing, empty, duplicate-target,
+case, namespace, and unsupported-form controls. A counterexample with identical
+relative RDF literals under different `xml:base` contexts still passes literal
+equality, demonstrating why the matcher must abstain from semantic promotion.
+No PBS semantic relationship is qualified by this review. Future qualification
+requires kind-specific counts and occurrence-level context sufficient to
+resolve bases, scopes, target types, and relation meaning. No source values or
+new sources were added; this review changes no rights, admission, canary, or
+publication status.
+
+## Current PBS reference and field-state readback, 2026-10-25
+
+The current exact-main source-local context readback is protected run
+`40103169910` on commit `83465c87d5952e123cedd93a02b1ec9b4daa4eb4`. It screened
+2,160,066 reference occurrences and 567,785 definitions in the same pinned
+2026-04-01 PBS v3 member. The value-free context packet contains 46 examples
+across RDF and XLink kinds, with 11 no-target controls; all remain unreviewed.
+Its deterministic source-order sample is not a probability sample and cannot
+estimate semantic precision or recall.
+
+The bounded URI-resolution screen binds its aggregate classifier result to
+these 46 exact packet occurrences by structural address. The first exact-main
+attempt (`40108285562`) stopped at the 32 Mi-character aggregate index bound;
+its failure receipt retained no source values. After aligning that budget with
+the existing member-size cap, exact-main run [`40110616327`](https://github.com/edithatogo/global-medicines-atlas/actions/runs/40110616327)
+passed on commit `e5145eca0698bbc275c3497431ba0f179261e458`. Its retained receipt
+[`pbs-native-reference-uri-screen-20261025-40110616327.json`](../../quality/qualifications/pbs-native-reference-uri-screen-20261025-40110616327.json)
+records 7,730,684 XML elements and binds all 46 packet case IDs to occurrence
+address digests and URI-resolution outcomes: 18 absolute URI unique candidates,
+17 same-member unique XML ID candidates, and 11 absolute URIs with no member
+definition. It emits no source values and makes no semantic relationship claim.
+All cases remain unreviewed; resolution alone does not establish document
+scope, relation role, target type, predicate meaning, or semantic correctness.
+The sample remains deterministic and non-probabilistic, so no precision or
+recall estimate is available and no semantic relationship is qualified.
+
+The follow-up URI-screen schema v2 adds each selected reference kind, its
+structural attribute role, and reference element QName. For a unique in-member
+resolution it also binds the target element QName and a digest of its
+structural occurrence address. QNames are exposed only through explicit
+namespace/local-name allowlists; unknown QNames are bucketed. Missing or
+ambiguous targets have no target identity. The case record marks semantic
+review pending and preserves abstention. These value-free bindings improve
+case review but do not assign domain meaning or qualify a semantic
+relationship; an exact-main hosted rerun is required before they become
+current readback evidence. The occurrence-address hashes are deterministic
+structural digests, not anonymization; they are not a privacy boundary if
+source paths or source bytes are otherwise known.
+
+The earlier context screen records 1,094,033 unique RDF literal candidates,
+73,577 RDF no-target cases, and 992,456 unique XLink fragment candidates. That
+context pass did not perform URI/base resolution. The later URI screen resolves
+only the selected case occurrences and reports outcome classes; semantic
+adjudication and matcher calibration remain pending.
+The screen, meaning review and packet are retained in
+[`pbs-native-reference-screen-20261025-40103169910.json`](../../quality/qualifications/pbs-native-reference-screen-20261025-40103169910.json),
+[`pbs-native-reference-meaning-review-20261025-40103169910.json`](../../quality/qualifications/pbs-native-reference-meaning-review-20261025-40103169910.json),
+and [`pbs-native-reference-review-packet-20261025-40103169910.json`](../../quality/qualifications/pbs-native-reference-review-packet-20261025-40103169910.json).
+
+The current denominator-closed [field-state reconciliation r8](../../quality/qualifications/pbs-native-silver-field-reconciliation-20261025-r8.json)
+accounts for all 18,208,758 native fields: 40,667 interpreted, 18,168,091
+`native_unresolved`, and zero unavailable. The interpretations remain limited
+to exact path/QName meanings already supported by the pinned source contract
+and documentation; native values and reference relationships are not
+promoted. This completes field accounting, not full PBS domain semantics.
+No new source was added, and rights, admission, publication and canary states
+did not change.
+
+### URI-screen v2 structural reconciliation, 2026-10-25
+
+After PR #1322 merged, exact-main run
+[`40120162365`](https://github.com/edithatogo/global-medicines-atlas/actions/runs/40120162365)
+on commit `7084ee19081b6c5ce1ce5e2b6941125a446e8ee0` produced the required
+URI-screen v2 receipt. The [receipt](../../quality/qualifications/pbs-native-reference-uri-screen-20261025-40120162365.json)
+has file SHA-256
+`4a296004773c57d7c0a6d73aacc6fd67b052fc3e1900a96badb0948193a7b411` and
+canonical report SHA-256
+`475655fd08abf4681908452ec9e76c6654904d697d10d702c6283c2490afde59`. It
+binds the same April 2026 member and reports 1,167,610 `rdf:resource`
+references and 992,456 `xlink:href` references. URI outcomes are 1,094,033
+unique same-member `rdf:about` candidates, 73,577 RDF URIs with no member
+definition, and 992,456 same-member unique `xml:id` candidates for XLink
+fragments. No external target was fetched.
+
+The value-free [reconciled case packet](../../quality/qualifications/pbs-native-reference-uri-review-reconciliation-20261025-40120162365.json)
+has file SHA-256
+`3698d217957c4d3263fce010d8ed6441c2050866052e1308fa352c6cd22772bb` and
+canonical report SHA-256
+`31e22bbda75bb7da755af0d09ed29c93477a9da08a5c50ed499dc6bc23dcd4fa`. It
+binds all 46 deterministic cases by occurrence identity: 17 resolve to one
+same-member `xml:id`, 18 resolve to one same-member RDF subject candidate, and
+11 have no same-member definition. The receipt's aggregate target-QName
+counts are diagnostics; they are not source/target pair counts and do not
+constitute semantic edges. All 46 cases remain unreviewed, with no edges,
+precision or recall claim. The screen therefore improves URI-resolution
+coverage and review context but does not qualify PBS relationship meaning or
+matcher performance. The existing field-state partition remains unchanged.
+No new source, source value, right, admission, canary, or publication was
+added.
+
+### Exact PBS amount and restriction field meanings, 2026-10-25
+
+The versioned [PBS domain-field profile v2](../../quality/qualifications/pbs-domain-field-semantics-20261025-v2.json)
+and [field-state reconciliation r11](../../quality/qualifications/pbs-native-silver-field-reconciliation-20261025-r11.json)
+add two exact-schema meanings for the pinned 1 April 2026 v3 member. The
+published PBS XML Schema v3.1.9 defines `pbs:amount` content as a dollar value and
+defines `pbs:contribution` as patient contributions to drug and brand prices;
+the `pbs:price` content definition describes the product-price structure.
+The path inventory binds 891,163 exact PBS-namespace `amount/text` slots:
+817,216 within price structures, 2,279 within contribution structures, and
+71,668 in other source contexts. These are source-field roles, not a
+qualification of the native amount lexemes, precision, explicit currency,
+amount-reference classification, or an actual payment. A price amount does
+not establish a payable benefit or patient cost, and a patient-contribution
+role does not establish what a patient paid.
+
+The same schema defines `pbs:restriction` as the reason for subsidisation,
+including indications and criteria. This narrows the interpretation of the
+two direct restriction text slots (6,056 occurrences total) without resolving
+their reference descendants or making a patient-specific eligibility or
+clinical claim. The exact source documents are the [PBS amount definition](https://info.data.pbs.gov.au/xml-schema/doc/html/elements/pbs_amount.html),
+[price content definition](https://info.data.pbs.gov.au/xml-schema/doc/html/elements/pbs_pbs.price.content.html),
+[contribution definition](https://info.data.pbs.gov.au/xml-schema/doc/html/elements/pbs_contribution.html),
+and [restriction definition](https://info.data.pbs.gov.au/xml-schema/doc/html/elements/pbs_pbs.restriction.html).
+The path inventory does not independently bind the exact schema minor release
+used to author the archive; these labels are applied to its exact PBS namespace
+paths under the published v3.1.9 definitions.
+
+Reconciliation r11 partitions all 18,208,758 fields into 934,628 interpreted
+source roles, 17,274,130 `native_unresolved`, and zero unavailable. Native
+values remain unresolved. The pinned path inventory contains no explicit PBS
+`status` field; current status, intervals, cross-era pooling, source rights,
+admission, publication, and consumer canaries remain outside this result.
