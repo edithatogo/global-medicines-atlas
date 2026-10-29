@@ -1,0 +1,33 @@
+{
+  "authorized_output": {
+    "archive_sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+    "dataset": "edithatogo/australian-pbs-source-archive",
+    "member_sha256": "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43",
+    "native_core_sha256": "890c607f0e8c9de95c37770610fdc51fd241ea97210ef5ea61d7ad22fd228a25",
+    "output_id": "8e8bacdc72ea81ecfbb84d161b3f546eee03bddeae32f82daa7231c3759d23fc",
+    "parquet_bytes": 637012122,
+    "parquet_sha256": "86d65b147dc95787c5e3f14b13abe2630562f050e2221a1340939dcc7776a88c",
+    "revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7"
+  },
+  "boundaries": {
+    "consumer_canaries_performed": false,
+    "dataset_mutated": false,
+    "domain_semantics_qualified": false,
+    "instrument_independently_reviewed": false,
+    "new_sources_added": false,
+    "prior_candidate_reproduced": false,
+    "public_release_performed": false,
+    "v4_admission_performed": false
+  },
+  "maintainer_response": "I attest that applicable permission covers the newly reproduced PBS output.",
+  "permission_instrument_existence_and_applicability": "maintainer_attested_not_independently_reviewed_or_located",
+  "public_release_rights_attested": true,
+  "recorded_at": "2026-10-29",
+  "schema_id": "global-medicines-atlas.australian-pbs-native-silver-exact-derived-rights-attestation",
+  "schema_version": 1,
+  "scope": "Only the newly reproduced PBS native Silver output identified by its exact output ID and Parquet digest.",
+  "source_report": {
+    "path": "quality/qualifications/pbs-independent-pipeline-builds-20261029/reconciliation.json",
+    "sha256": "2d85ee0db7a19b3276da9baaaee9389558d09c87c43a0c57f68c5f31581ebaf8"
+  }
+}
