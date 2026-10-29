@@ -1,0 +1,68 @@
+{
+  "source_id": "ca-dpd",
+  "sha256": "d8bb108003233435a2fb7c9cfb3a15b8f26962cf1758b80082ad0e4d2203ee98",
+  "bytes": 1513654,
+  "crc_validation": "passed",
+  "members": [
+    {
+      "name": "form.txt",
+      "bytes": 559191,
+      "crc32": "cfa08a72"
+    },
+    {
+      "name": "ingred.txt",
+      "bytes": 2362738,
+      "crc32": "aae64d76"
+    },
+    {
+      "name": "package.txt",
+      "bytes": 283702,
+      "crc32": "94de2031"
+    },
+    {
+      "name": "pharm.txt",
+      "bytes": 97717,
+      "crc32": "aa01f8ac"
+    },
+    {
+      "name": "route.txt",
+      "bytes": 709809,
+      "crc32": "92c4b225"
+    },
+    {
+      "name": "schedule.txt",
+      "bytes": 766685,
+      "crc32": "1cdb45b0"
+    },
+    {
+      "name": "status.txt",
+      "bytes": 2879360,
+      "crc32": "9521dbb3"
+    },
+    {
+      "name": "ther.txt",
+      "bytes": 551087,
+      "crc32": "8d35b65e"
+    },
+    {
+      "name": "vet.txt",
+      "bytes": 54263,
+      "crc32": "9b4fd027"
+    },
+    {
+      "name": "biosimilar.txt",
+      "bytes": 7523,
+      "crc32": "566f2e5a"
+    },
+    {
+      "name": "drug.txt",
+      "bytes": 1647791,
+      "crc32": "89830797"
+    },
+    {
+      "name": "comp.txt",
+      "bytes": 2216806,
+      "crc32": "0da507e4"
+    }
+  ]
+}

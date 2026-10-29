@@ -19,11 +19,11 @@
     },
     "source_catalog": {
       "path": "src/global_medicines_atlas/data/medicine_source_catalog.json",
-      "sha256": "f400731c4d4287368bfa4c0ecffd07a2416b4ea5abaa7e09982fd53adcc26cc8"
+      "sha256": "e70f50f70ccef28c4f1ad36f844b2ac068e309dd564df6ccf69aedf2f0415610"
     },
     "source_landing_queue": {
       "path": "quality/qualifications/bronze-source-landing-queue.json",
-      "sha256": "281c9a25627ca959c054b332a922cc3a20e91cf1c5a53269cd97aeb0aed6895e"
+      "sha256": "7996ddbd98b4e4494f1075e3df8ff6c01109284b2b32d884471cd63312ebe4b5"
     },
     "landing_overrides": {
       "path": "src/global_medicines_atlas/data/source_landing_overrides.json",
@@ -31,7 +31,7 @@
     },
     "qualification_dependencies": {
       "algorithm": "sha256 of the ordered path/existence/content-digest manifest; covers full-scope evaluator evidence, direct current-scope receipt candidates, specialized authorization metadata, and adapter/fixture scan inputs",
-      "sha256": "6e666092238fb0702815f9ab7a9ba78e4f290f95ec2cfc62505e2d601b26de55",
+      "sha256": "95523e7b5e047b5eb8a7f0170f93fa6ff4b3738f3a223f6ed4ef751122386600",
       "file_count": 149,
       "files": [
         {
@@ -147,7 +147,7 @@
         {
           "path": "quality/qualifications/bronze-source-landing-queue.json",
           "exists": true,
-          "sha256": "281c9a25627ca959c054b332a922cc3a20e91cf1c5a53269cd97aeb0aed6895e"
+          "sha256": "7996ddbd98b4e4494f1075e3df8ff6c01109284b2b32d884471cd63312ebe4b5"
         },
         {
           "path": "quality/qualifications/cms-partd-public-huggingface-20260829.json",
@@ -462,7 +462,7 @@
         {
           "path": "src/global_medicines_atlas/data/medicine_source_catalog.json",
           "exists": true,
-          "sha256": "f400731c4d4287368bfa4c0ecffd07a2416b4ea5abaa7e09982fd53adcc26cc8"
+          "sha256": "e70f50f70ccef28c4f1ad36f844b2ac068e309dd564df6ccf69aedf2f0415610"
         },
         {
           "path": "src/global_medicines_atlas/data/source_landing_overrides.json",

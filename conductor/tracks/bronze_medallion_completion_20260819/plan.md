@@ -1535,3 +1535,19 @@ acquisition of every source, publication or federation work.
 
 Stop at that integration. Retain the earlier Swiss blocker and separate EMA
 publication decision; no other live sources, schedules or deferred milestones.
+
+## Approved EMA publication and next batch — 30 October 2026
+
+- [x] Prior shared URL implementation integrated by PR #1379, merge
+  `b84fabae7c5150f2430fdf75bf6b3574607247ac`; final checked head
+  `ab5fef8ceeb9077177a1a7986dfe8374864ba873`, all 29 required checks passed.
+- [x] Obtain direct maintainer EMA publication approval and recover exact
+  approved source bytes from existing hosted artifact, without recapture.
+- [x] Prepare narrow hosted wrapper over existing publication transport and
+  negative controls for local publication and changed payloads.
+- [x] Acquire the two specified Canadian ZIPs through the shared batch command;
+  record real reuse/rights checks, immutable receipts and member CRC verification.
+- [~] Integrate protected CI, dispatch EMA once and verify public pinned digests.
+
+Stop after these results. Swiss remains unresolved; federation remains deferred.
+The report is `docs/qualification/ema-canada-bronze-20261030.md`.

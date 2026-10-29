@@ -648,7 +648,7 @@
         "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
         "acquisition_profile": "public-bulk",
         "credentials_persisted": false,
-        "endpoint": "https://www.canada.ca/en/health-canada/services/drugs-health-products/drug-products/notice-compliance/database/data-extract.html",
+        "endpoint": "https://www.canada.ca/content/dam/hc-sc/documents/services/drugs-health-products/drug-products/notice-compliance/database/noc_files.zip",
         "family": "static_file_download",
         "formats": [
           "source_native"

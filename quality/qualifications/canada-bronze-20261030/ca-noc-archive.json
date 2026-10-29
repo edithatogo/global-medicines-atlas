@@ -1,0 +1,43 @@
+{
+  "source_id": "ca-noc",
+  "sha256": "578b60e0cb0935172548be8bd24ce9f06739697a24008789894b6ba04b170cae",
+  "bytes": 4621340,
+  "crc_validation": "passed",
+  "members": [
+    {
+      "name": "noc_product_route.txt",
+      "bytes": 3079067,
+      "crc32": "d4bd8616"
+    },
+    {
+      "name": "noc_product_ingredient.txt",
+      "bytes": 7254387,
+      "crc32": "20a8f9cf"
+    },
+    {
+      "name": "noc_din_product.txt",
+      "bytes": 2570087,
+      "crc32": "41f6044e"
+    },
+    {
+      "name": "noc_brand.txt",
+      "bytes": 1536780,
+      "crc32": "3ecd9099"
+    },
+    {
+      "name": "noc_main.txt",
+      "bytes": 15063711,
+      "crc32": "3453ec61"
+    },
+    {
+      "name": "noc_product_form.txt",
+      "bytes": 3569464,
+      "crc32": "6a2a1a74"
+    },
+    {
+      "name": "noc_vet_species.txt",
+      "bytes": 136150,
+      "crc32": "8d36e5d5"
+    }
+  ]
+}
