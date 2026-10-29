@@ -243,3 +243,37 @@ def test_source_structure_qualification_renders_in_chromium(
     )
     assert receipt["browser_qualification"] == "passed"
     assert receipt["browser_evidence"][0]["row_count"] == 2
+
+
+def test_source_structure_qualification_checks_bounds_and_consumer_agreement(
+    monkeypatch, tmp_path
+):
+    def loader(**_kwargs):
+        return resolver(
+            native_field_collection_payload(),
+            semantic_dimension="source_structure",
+        )
+
+    monkeypatch.setattr(qualification, "load_benefits_resolver", loader)
+    monkeypatch.setattr(cli, "_dataset_resolver_loader", lambda: loader)
+    options = {
+        "trust_file": tmp_path / "trust.json",
+        "metadata_root": tmp_path,
+        "schema_file": tmp_path / "schema.json",
+        "resource_id": "au.mbs.service-items",
+        "columns": ("source_field_id", "value"),
+        "view": "fields",
+        "limit": 2,
+    }
+    options["trust_file"].write_text("{}")
+    options["schema_file"].write_text("{}")
+    result = qualification.qualify_structure_consumers(**options)
+    assert result["consumers"] == ["api_v2", "cli", "atlas"]
+    assert result["browser_qualification"] == "not_run"
+    assert result["row_count"] == 2
+    with pytest.raises(ValueError, match="outside its bounds"):
+        qualification.qualify_structure_consumers(**{**options, "limit": 0})
+    with pytest.raises(ValueError, match="API canary failed"):
+        qualification.qualify_structure_consumers(
+            **{**options, "resource_id": "unknown.resource"}
+        )
