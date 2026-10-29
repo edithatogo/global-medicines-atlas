@@ -22,15 +22,15 @@ PlatinumSemanticDimension = Literal[
     "terminology",
     "source_structure",
 ]
-EntityGranularity = Literal[
+V1EntityGranularity = Literal[
     "service_item",
     "medicine_item",
     "evidence_edge",
     "history_event",
     "coverage_record",
     "provenance_record",
-    "source_record",
 ]
+EntityGranularity = Literal[V1EntityGranularity, "source_record"]
 Capability = Literal[
     "exact_v4_resolution",
     "anonymous_verified_read",
@@ -53,5 +53,6 @@ __all__ = [
     "EntityGranularity",
     "PlatinumSemanticDimension",
     "SemanticDimension",
+    "V1EntityGranularity",
     "validate_granularity_dimension",
 ]
