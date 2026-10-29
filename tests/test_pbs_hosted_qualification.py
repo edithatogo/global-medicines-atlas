@@ -15,6 +15,7 @@ import pytest
 import yaml
 from scripts import assemble_historical_pbs_reference_manifest as assemble_nodes
 from scripts import prepare_historical_pbs_qualification as prepare_cli
+from scripts import prepare_pbs_reproduced_delivery as delivery
 from scripts import qualify_historical_pbs_public as cli
 from test_au_pbs_v3 import _zip  # ruff: ignore[import-private-name]
 from test_australian_source_contracts import (
@@ -1625,3 +1626,131 @@ def test_package_mode_keeps_existing_hosted_deadlines_and_read_only_artifacts():
                 "inputs.qualification_scope != 'native-value-package'"
                 in old["if"]
             )
+
+
+def _stub_delivery_preparation(monkeypatch, tmp_path, *, tamper=False):
+    payload = b"pbs synthetic bytes"
+    digest = hashlib.sha256(payload).hexdigest()
+    monkeypatch.setattr(delivery, "OUTPUT_ID", "o" * 64)
+    monkeypatch.setattr(delivery, "PARQUET_SHA256", digest)
+    monkeypatch.setattr(delivery, "PARQUET_BYTES", len(payload))
+    monkeypatch.setattr(delivery, "NATIVE_SHA256", "n" * 64)
+    monkeypatch.setattr(delivery, "MEMBER_SHA256", "m" * 64)
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("GITHUB_REPOSITORY", "edithatogo/global-medicines-atlas")
+    monkeypatch.setenv("GITHUB_REF", "refs/heads/main")
+    monkeypatch.setenv("GITHUB_SHA", SHA)
+    monkeypatch.setenv("GITHUB_RUN_ID", "1")
+    monkeypatch.setenv("GITHUB_RUN_ATTEMPT", "1")
+    monkeypatch.setenv("RUNNER_TEMP", str(tmp_path))
+    attestation = tmp_path / "rights.json"
+    attestation.write_text(
+        json.dumps({
+            "public_release_rights_attested": True,
+            "authorized_output": {
+                "output_id": "o" * 64,
+                "parquet_sha256": digest,
+                "parquet_bytes": len(payload),
+                "native_core_sha256": "n" * 64,
+                "member_sha256": "m" * 64,
+                "archive_sha256": delivery.ARCHIVE_SHA256,
+                "dataset": delivery.DATASET,
+                "revision": delivery.REVISION,
+            },
+        })
+    )
+    monkeypatch.setattr(delivery, "ATTESTATION", attestation)
+    inputs = SimpleNamespace(archive=b"", xml=b"", parent=None, binding=None)
+    monkeypatch.setattr(
+        hosted, "_verified_inputs", lambda *_args, **_kwargs: inputs
+    )
+
+    def build(*args):
+        output = args[-1]
+        for directory in ("first", "second"):
+            target = output / directory
+            target.mkdir(parents=True)
+            (target / "values.parquet").write_bytes(
+                b"bad" if tamper and directory == "second" else payload
+            )
+        return {
+            "complete_source_reparse_and_restore": True,
+            "parquet_bytes_identical": True,
+            "package": {
+                "output_id": "o" * 64,
+                "parquet": {"bytes": len(payload), "sha256": digest},
+                "coverage": {"native_core_sha256": "n" * 64},
+                "member_binding": {"member_payload": {"sha256": "m" * 64}},
+            },
+        }
+
+    monkeypatch.setattr(hosted, "qualify_value_package_pair", build)
+    return delivery
+
+
+def test_reproduced_delivery_preparation_retains_verified_candidate(
+    monkeypatch, tmp_path
+):
+    delivery = _stub_delivery_preparation(monkeypatch, tmp_path)
+    output = tmp_path / "candidate"
+    report = delivery.prepare(SHA, output)
+    assert report["candidate_retained"] is True
+    assert report["publication_performed"] is False
+    assert report["v4_admission_performed"] is False
+    assert (output / "first" / "values.parquet").is_file()
+    assert (output / "second" / "values.parquet").is_file()
+
+
+def test_reproduced_delivery_rejects_staged_byte_mismatch(
+    monkeypatch, tmp_path
+):
+    delivery = _stub_delivery_preparation(monkeypatch, tmp_path, tamper=True)
+    with pytest.raises(ValueError, match="staged Parquet bytes"):
+        delivery.prepare(SHA, tmp_path / "candidate")
+
+
+def test_reproduced_delivery_rejects_local_or_outside_runner(
+    monkeypatch, tmp_path
+):
+    delivery = _stub_delivery_preparation(monkeypatch, tmp_path)
+    with pytest.raises(ValueError, match="inside RUNNER_TEMP"):
+        delivery.prepare(SHA, tmp_path.parent / "outside")
+    monkeypatch.delenv("GITHUB_ACTIONS")
+    with pytest.raises(ValueError, match="exact main Actions"):
+        delivery.prepare(SHA, tmp_path / "candidate")
+
+
+def test_reproduced_delivery_cli_redacts_exception(
+    monkeypatch, capsys, tmp_path
+):
+    monkeypatch.setattr(
+        delivery,
+        "prepare",
+        lambda *_args: (_ for _ in ()).throw(
+            ValueError("sensitive source text")
+        ),
+    )
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "prepare",
+            "--exact-commit",
+            SHA,
+            "--output",
+            str(tmp_path / "candidate"),
+        ],
+    )
+    assert delivery.main() == 1
+    output = capsys.readouterr()
+    assert "sensitive" not in output.out + output.err
+    assert json.loads(output.out)["status"] == "preparation_failed"
+
+
+def test_reproduced_delivery_rejects_wrong_attestation(monkeypatch, tmp_path):
+    delivery = _stub_delivery_preparation(monkeypatch, tmp_path)
+    attestation = json.loads(delivery.ATTESTATION.read_text())
+    attestation["authorized_output"]["parquet_sha256"] = "0" * 64
+    delivery.ATTESTATION.write_text(json.dumps(attestation))
+    with pytest.raises(ValueError, match="rights attestation"):
+        delivery.prepare(SHA, tmp_path / "candidate")
+    assert not (tmp_path / "candidate").exists()
