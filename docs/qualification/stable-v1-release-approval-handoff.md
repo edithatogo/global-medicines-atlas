@@ -119,3 +119,29 @@ reference and verify its exact sidecar digest while retaining the existing
 public-URL contract. No source, credential, publication or other native write
 is implied. The previous native-field assignment and its captured evidence
 remain history above.
+
+### Bounded software completion lane — 29 October 2026
+
+The maintainer explicitly selected bounded software completion and deferred
+unfinished Australian federation qualification. This changes scheduling only;
+the conditional Stable v1 promotion and every blocked federation requirement
+retain their existing conditions.
+
+- Chat: `01a18773-f302-7e83-ba8c-816fcea9d3f1`,
+  **Global Medicines Atlas — Completion — Simplify delivery**.
+- Worktree:
+  `/Users/doughnut/.codex/worktrees/gma-streamlined-completion/global-medicines-atlas`.
+- Branch: `codex/streamlined-completion-20261029`, based on `fc8c41530`.
+- Owned scope: this branch's contributor/agent workflow, roadmap and
+  system-completion scheduling edits, plus the bounded software verification
+  entry. No runtime, dependency, hook or submodule changes are assigned.
+- Native scope: read-only inspection of existing PR/check state; local
+  representative tests and clean package consumers. No data publication,
+  admission, authentication renewal or release operation.
+- Existing integrator `01a10ee2-71a5-7c03-ae11-2ba1d2ebce11` retains main,
+  PR #1377 and PBS publication/admission scope. Its latest terminal chat turn
+  reported the pending hosted gremlins job. This lane does not redispatch or
+  duplicate its operations or change its checkout.
+- Next operation: verify the bounded software packet, preserve one scoped
+  commit and technical PR, and provide terminal evidence for integration.
+  Historical track acceptance and previous assignments remain unchanged.

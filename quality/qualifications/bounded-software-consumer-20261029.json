@@ -1,0 +1,53 @@
+{
+  "artifacts": [
+    {
+      "artifact": "global_medicines_atlas-1.0.0rc1.post1.dev1170+gfc8c41530.d20261029-py3-none-any.whl",
+      "cli": "passed",
+      "consumer_python": "3.15.1",
+      "probe": {
+        "api": "passed",
+        "atlas_page": "passed",
+        "atlas_static_asset": "passed",
+        "core_fallback": "passed",
+        "metadata": {
+          "name": "global-medicines-atlas",
+          "requires_python": "<3.16,>=3.15",
+          "summary": "Global comparison of medicine registration, approval, funding, and reimbursement systems",
+          "version": "1.0.0rc1.post1.dev1170+gfc8c41530.d20261029"
+        },
+        "openapi_paths": 14,
+        "v2_comparison": "passed",
+        "v2_evidence": "passed"
+      },
+      "reinstall": "passed",
+      "sha256": "dd5aa30ede6fae20ab7b8738422c0653c818541e1282c93ea7daee298651861f"
+    },
+    {
+      "artifact": "global_medicines_atlas-1.0.0rc1.post1.dev1170+gfc8c41530.d20261029.tar.gz",
+      "cli": "passed",
+      "consumer_python": "3.15.1",
+      "probe": {
+        "api": "passed",
+        "atlas_page": "passed",
+        "atlas_static_asset": "passed",
+        "core_fallback": "passed",
+        "metadata": {
+          "name": "global-medicines-atlas",
+          "requires_python": "<3.16,>=3.15",
+          "summary": "Global comparison of medicine registration, approval, funding, and reimbursement systems",
+          "version": "1.0.0rc1.post1.dev1170+gfc8c41530.d20261029"
+        },
+        "openapi_paths": 14,
+        "v2_comparison": "passed",
+        "v2_evidence": "passed"
+      },
+      "reinstall": "passed",
+      "sha256": "f31a048591310261881646d18bf1946878cf25de9219a795629cd3c3b35a9b64"
+    }
+  ],
+  "machine": "arm64",
+  "platform": "darwin",
+  "python": "3.15.1",
+  "schema_version": 1,
+  "state": "passed"
+}

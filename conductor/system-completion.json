@@ -10,7 +10,7 @@
     "promote_optional_previews": false,
     "full_local_suite_per_dataset": false
   },
-  "selected_stage": "admitted-delivery",
+  "selected_stage": "consumers",
   "stages": [
     {
       "id": "silver-gold",
@@ -18,7 +18,7 @@
       "release_gate": "stable-v1-australian-health-federation",
       "capability": "Source-faithful Silver and reviewed Gold with explicit unknowns",
       "current_failure": "Structural and field-state evidence does not establish every required source meaning or semantic relationship.",
-      "next_action": "Resolve only interpretations or reviewed relationships required by the declared consumer contract; reconcile every field state and retain unsupported values as unresolved.",
+      "next_action": "Deferred from the bounded software milestone by the 2026-10-29 maintainer decision. On explicit resumption of federation: Resolve only interpretations or reviewed relationships required by the declared consumer contract; reconcile every field state and retain unsupported values as unresolved.",
       "completion_evidence": "Existing exact-source semantic, field-state, reviewed-control and producer receipts satisfy the required product contract.",
       "stop_condition": "Stop interpretation work when that contract passes or lacks supporting evidence; carry missing evidence as a blocker and advance independent system tasks.",
       "validation": "Select affected contract or matcher tests and their negative controls; reuse unchanged corpus receipts."
@@ -29,7 +29,7 @@
       "release_gate": "stable-v1-australian-health-federation",
       "capability": "Qualified producer output reaches independently admitted v4 delivery",
       "current_failure": "The exact six-table July 2025 MBS Silver cohort passes v4 admission and actual consumers. Six exact PBS raw-B2 objects now also pass native admission and bounded reader canaries, bringing the frozen raw-object totals to 14 admissions, 14 canaries and 1,745 deferred. These raw receipts do not qualify PBS domain meanings or derived delivery; other mandatory eligible outputs remain blocked by object-specific evidence.",
-      "next_action": "Reuse the qualified shared path for other mandatory eligible outputs once their exact identity, lineage, rights, and v4 roles qualify; retain unsupported object-specific evidence as blockers without changing the frozen inventory.",
+      "next_action": "Deferred from the bounded software milestone by the 2026-10-29 maintainer decision. On explicit resumption of federation: Reuse the qualified shared path for other mandatory eligible outputs once their exact identity, lineage, rights, and v4 roles qualify; retain unsupported object-specific evidence as blockers without changing the frozen inventory.",
       "completion_evidence": "Exact identity, lineage, rights, qualification, admission, remote-reader, and actual consumer receipts for every mandatory eligible output; current six-table receipts establish the shared path only.",
       "stop_condition": "Stop custom dataset work once the shared path works; record object-specific missing evidence without inventing admission or expanding the frozen inventory.",
       "validation": "Use focused affected admission, distribution, remote-reader, and consumer selectors; rerun the exact-main hosted qualification for each approved output cohort."
@@ -39,11 +39,11 @@
       "track": "federated_medicines_platinum_20260829",
       "release_gate": "stable-v1-australian-health-federation",
       "capability": "API, CLI, Atlas and exports consume the same qualified revisions",
-      "current_failure": "The exact six-table July 2025 MBS Silver cohort passes bounded API, CLI, Atlas HTML, deterministic JSONL export, Chromium rendering, and remote-reader canaries at one pinned revision; additional output cohorts remain blocked before admission, so they have no consumer receipts yet.",
-      "next_action": "Retain the revision- and digest-bound six-table receipts with provenance, bounded coverage and semantic limits. Reuse the same canary path only when another required output clears its identity, lineage, rights, semantics and admission gates.",
-      "completion_evidence": "Revision- and digest-bound API, CLI, Atlas HTML, Chromium browser, remote-reader, and deterministic export receipts with explicit coverage and semantic limits.",
-      "stop_condition": "Close the shared consumer capability after required paths pass; add more datasets only when their profile exposes an uncovered mandatory behavior.",
-      "validation": "For each newly admitted output, select affected consumer integration and export checks and retain exact revision, object and semantic digests; preserve complete protected hosted checks."
+      "current_failure": "The maintainer selected bounded software completion on 2026-10-29. Existing software needs one terminal verification packet and streamlined contributor instructions; full Australian federation is deferred with its blocked states preserved.",
+      "next_action": "Verify the existing CLI, read-only API, Atlas and exports on representative fixtures, run the existing clean wheel/sdist consumer harness, and integrate the bounded documentation and scheduling batch through protected CI.",
+      "completion_evidence": "For the current software milestone: locked Python 3.15.1 setup, representative product tests, clean wheel/sdist consumer receipt, supported contributor commands, and protected integration. Later live federation acceptance continues to require its original exact per-output receipts.",
+      "stop_condition": "Stop when the bounded software checklist in system-completion.md passes. Do not start deferred federation work or claim Stable v1 release readiness.",
+      "validation": "Use existing focused context and product tests and one clean-consumer package check; reuse unchanged hosted coverage/security evidence and retain all required PR checks."
     },
     {
       "id": "recovery",
@@ -51,7 +51,7 @@
       "release_gate": "stable-v1-australian-health-federation",
       "capability": "Reproducible restoration and revision-pinned compatibility",
       "current_failure": "Primary restoration and byte closure alone do not establish the independent recovery and compatibility checkpoints.",
-      "next_action": "Exercise existing restore and compatibility machinery for required qualified outputs; record unavailable independent recovery authority as its own blocker.",
+      "next_action": "Deferred from the bounded software milestone by the 2026-10-29 maintainer decision. On explicit resumption of federation: Exercise existing restore and compatibility machinery for required qualified outputs; record unavailable independent recovery authority as its own blocker.",
       "completion_evidence": "Required clean-room restore, independent recovery and compatibility receipts under their existing authority and acceptance contracts.",
       "stop_condition": "Retain failed or unavailable recovery evidence explicitly; do not relabel duplicate primary storage as independent recovery or repeatedly retry an unchanged authority blocker.",
       "validation": "Use affected restore and compatibility selectors and one bounded authorized rehearsal for the applicable failure mode."
@@ -62,7 +62,7 @@
       "release_gate": "stable-v1-australian-health-federation",
       "capability": "Existing Stable v1 acceptance and promotion close with observable evidence",
       "current_failure": "The authoritative Stable v1 reconciliation still retains Australian federation as unresolved.",
-      "next_action": "Reconcile the existing requirement and release contract after system evidence changes; resolve required M-105/M-107 or other blockers only through their existing decision contracts.",
+      "next_action": "Deferred from the bounded software milestone by the 2026-10-29 maintainer decision. On explicit resumption of federation: Reconcile the existing requirement and release contract after system evidence changes; resolve required M-105/M-107 or other blockers only through their existing decision contracts.",
       "completion_evidence": "Existing qualification contract and readiness reconciliation pass, followed by exact candidate, protected checks and attestation under the existing conditional promotion approval.",
       "stop_condition": "Do not claim stable qualification, issue a release or waive a dependent requirement from this scheduling plan; stop at the existing release and authority boundaries.",
       "validation": "Run affected reconciliation tests and required final integration, package, security and release gates once at the coherent system milestone."
