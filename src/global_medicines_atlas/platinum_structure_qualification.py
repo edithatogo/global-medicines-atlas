@@ -60,7 +60,7 @@ class _Table(HTMLParser):
             self.rows[-1][-1] += data
 
 
-def qualify_structure_consumers(
+def qualify_structure_consumers(  # ruff: ignore[too-many-locals]
     *,
     trust_file: Path,
     metadata_root: Path,
@@ -140,6 +140,35 @@ def qualify_structure_consumers(
             or cli_page.query_sha256 != page.query_sha256
         ):
             raise ValueError("source-structure API and CLI evidence differs")
+        first_export = CliRunner().invoke(
+            cli.app, [*arguments, "--format", "jsonl"]
+        )
+        second_export = CliRunner().invoke(
+            cli.app, [*arguments, "--format", "jsonl"]
+        )
+        if (
+            first_export.exit_code != 0
+            or second_export.exit_code != 0
+            or first_export.stdout != second_export.stdout
+        ):
+            raise ValueError("source-structure deterministic export failed")
+        export = [json.loads(line) for line in first_export.stdout.splitlines()]
+        expected_summary = {
+            "type": "summary",
+            "identity": page.identity.model_dump(mode="json"),
+            "query_sha256": page.query_sha256,
+            "source_completeness": "not_established",
+        }
+        if (
+            len(export) != len(page.rows) + 1
+            or [record.get("record") for record in export[:-1]]
+            != list(page.rows)
+            or any(
+                export[-1].get(key) != value
+                for key, value in expected_summary.items()
+            )
+        ):
+            raise ValueError("source-structure export evidence differs")
         rendered = cast("httpx.Client", atlas).get(
             "/federated/source-structure",
             params={
@@ -182,6 +211,9 @@ def qualify_structure_consumers(
             "query_sha256": page.query_sha256,
             "row_count": len(page.rows),
             "rows_sha256": hashlib.sha256(rows).hexdigest(),
+            "export_sha256": hashlib.sha256(
+                first_export.stdout.encode()
+            ).hexdigest(),
             "consumers": ["api_v2", "cli", "atlas"],
             "comparison_validity": page.comparison_validity,
             "public_export_performed": False,
