@@ -2271,3 +2271,51 @@ def test_pbs_receipt_artifact_requires_exact_successful_run(monkeypatch):
         admission.authenticate_publication_artifact(
             workflow_commit=SHA, run_id="123", artifact_id="99"
         )
+
+
+def test_pbs_preparation_artifact_binds_manifest_and_native_core(monkeypatch):
+    import io  # ruff: ignore[import-outside-top-level]
+    import zipfile  # ruff: ignore[import-outside-top-level]
+
+    from scripts import qualify_pbs_reproduced_v4 as admission  # ruff: ignore[import-outside-top-level]
+
+    manifest = json.dumps({
+        "output_id": delivery.OUTPUT_ID,
+        "parquet": {
+            "bytes": delivery.PARQUET_BYTES,
+            "sha256": delivery.PARQUET_SHA256,
+        },
+        "coverage": {"native_core_sha256": delivery.NATIVE_SHA256},
+        "member_binding": {
+            "member_payload": {"sha256": delivery.MEMBER_SHA256}
+        },
+    }).encode()
+    candidate, _, _ = _publication_plan_inputs()
+    receipt = {
+        **candidate,
+        "package_manifest_sha256": hashlib.sha256(manifest).hexdigest(),
+        "complete_source_reparse_and_restore": True,
+        "parquet_bytes_identical": True,
+        "independent_pipeline_builds": False,
+    }
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w") as archive:
+        archive.writestr("preparation.json", json.dumps(receipt))
+        archive.writestr("candidate/first/manifest.json", manifest)
+    monkeypatch.setattr(
+        admission, "_authenticated_archive", lambda **_kwargs: buffer.getvalue()
+    )
+    raw, saved_manifest = admission.authenticate_preparation_artifact(
+        workflow_commit=SHA, run_id="123", artifact_id="99"
+    )
+    assert json.loads(raw)["complete_source_reparse_and_restore"] is True
+    assert saved_manifest == manifest
+    receipt["package_manifest_sha256"] = "0" * 64
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w") as archive:
+        archive.writestr("preparation.json", json.dumps(receipt))
+        archive.writestr("candidate/first/manifest.json", manifest)
+    with pytest.raises(ValueError, match="preparation receipt differs"):
+        admission.authenticate_preparation_artifact(
+            workflow_commit=SHA, run_id="123", artifact_id="99"
+        )

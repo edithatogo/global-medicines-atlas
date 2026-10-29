@@ -7,15 +7,17 @@ close all configured receipt roles before invoking the shared admission gate.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
-from typing import Any, cast
+from typing import Any, Literal, cast
 
 from scripts import prepare_pbs_reproduced_delivery as candidate
 
 from global_medicines_atlas.strict_json import unique_json_object
 
 MAX_RECEIPT_BYTES = 64 * 1024
+PREPARATION_FILE_COUNT = 2
 
 
 def validate_publication_receipt(
@@ -66,13 +68,15 @@ def validate_publication_receipt(
     return document
 
 
-def authenticate_publication_artifact(
-    *, workflow_commit: str, run_id: str, artifact_id: str
-) -> tuple[bytes, dict[str, Any]]:
-    """Read the exact successful Actions run and its retained receipt artifact."""
-    import io  # ruff: ignore[import-outside-top-level]
+def _authenticated_archive(
+    *,
+    workflow_commit: str,
+    run_id: str,
+    artifact_id: str,
+    artifact_kind: Literal["receipt", "preparation"],
+) -> bytes:
+    """Bind an artifact archive to one successful exact-main workflow run."""
     import subprocess  # ruff: ignore[import-outside-top-level, suspicious-subprocess-import]
-    import zipfile  # ruff: ignore[import-outside-top-level]
 
     if re.fullmatch(r"[0-9a-f]{40}", workflow_commit) is None or any(
         re.fullmatch(r"[1-9][0-9]*", value) is None
@@ -128,7 +132,9 @@ def authenticate_publication_artifact(
     size = artifact.get("size_in_bytes")
     expected_artifact = {
         "id": int(artifact_id),
-        "name": f"pbs-silver-publication-receipt-{run_id}-1",
+        "name": f"pbs-silver-publication-receipt-{run_id}-1"
+        if artifact_kind == "receipt"
+        else f"pbs-silver-preparation-{run_id}-1",
         "expired": False,
     }
     if (
@@ -145,8 +151,23 @@ def authenticate_publication_artifact(
         raise ValueError(
             "PBS publication receipt artifact differs from the exact run"
         )
-    archive: bytes = read_api(
-        f"actions/artifacts/{artifact_id}/zip", binary=True
+    return cast(
+        "bytes", read_api(f"actions/artifacts/{artifact_id}/zip", binary=True)
+    )
+
+
+def authenticate_publication_artifact(
+    *, workflow_commit: str, run_id: str, artifact_id: str
+) -> tuple[bytes, dict[str, Any]]:
+    """Read the exact successful Actions run and its retained receipt artifact."""
+    import io  # ruff: ignore[import-outside-top-level]
+    import zipfile  # ruff: ignore[import-outside-top-level]
+
+    archive = _authenticated_archive(
+        workflow_commit=workflow_commit,
+        run_id=run_id,
+        artifact_id=artifact_id,
+        artifact_kind="receipt",
     )
     with zipfile.ZipFile(io.BytesIO(archive)) as zipped:
         entries = zipped.infolist()
@@ -160,3 +181,61 @@ def authenticate_publication_artifact(
     return raw, validate_publication_receipt(
         raw, workflow_commit=workflow_commit, run_id=run_id, run_attempt="1"
     )
+
+
+def authenticate_preparation_artifact(
+    *, workflow_commit: str, run_id: str, artifact_id: str
+) -> tuple[bytes, bytes]:
+    """Authenticate the bounded manifest and reconstruction receipt for this run."""
+    import io  # ruff: ignore[import-outside-top-level]
+    import zipfile  # ruff: ignore[import-outside-top-level]
+
+    archive = _authenticated_archive(
+        workflow_commit=workflow_commit,
+        run_id=run_id,
+        artifact_id=artifact_id,
+        artifact_kind="preparation",
+    )
+    with zipfile.ZipFile(io.BytesIO(archive)) as zipped:
+        entries = zipped.infolist()
+        names = {entry.filename for entry in entries}
+        if (
+            len(entries) != PREPARATION_FILE_COUNT
+            or names != {"preparation.json", "candidate/first/manifest.json"}
+            or any(entry.file_size > MAX_RECEIPT_BYTES for entry in entries)
+        ):
+            raise ValueError("PBS preparation artifact inventory differs")
+        receipt_raw = zipped.read("preparation.json")
+        manifest_raw = zipped.read("candidate/first/manifest.json")
+    receipt: dict[str, Any] = json.loads(
+        receipt_raw, object_pairs_hook=unique_json_object
+    )
+    manifest: dict[str, Any] = json.loads(
+        manifest_raw, object_pairs_hook=unique_json_object
+    )
+    candidate.validate_candidate_identity(manifest)
+    expected = {
+        "status": "candidate_prepared_not_published_or_admitted",
+        "workflow_commit": workflow_commit,
+        "run_id": run_id,
+        "run_attempt": "1",
+        "output_id": candidate.OUTPUT_ID,
+        "parquet_sha256": candidate.PARQUET_SHA256,
+        "parquet_bytes": candidate.PARQUET_BYTES,
+        "source_member_sha256": candidate.MEMBER_SHA256,
+        "native_core_sha256": candidate.NATIVE_SHA256,
+        "package_manifest_sha256": hashlib.sha256(manifest_raw).hexdigest(),
+        "complete_source_reparse_and_restore": True,
+        "parquet_bytes_identical": True,
+        "independent_pipeline_builds": False,
+        "publication_performed": False,
+        "v4_admission_performed": False,
+    }
+    if any(
+        type(receipt.get(key)) is not type(value) or receipt.get(key) != value
+        for key, value in expected.items()
+    ):
+        raise ValueError(
+            "PBS preparation receipt differs from the exact candidate"
+        )
+    return receipt_raw, manifest_raw
