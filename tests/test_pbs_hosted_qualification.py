@@ -1785,3 +1785,69 @@ def test_reproduced_delivery_rejects_non_dispatch_event(monkeypatch, tmp_path):
     with pytest.raises(ValueError, match="explicit workflow dispatch"):
         delivery.prepare(SHA, tmp_path / "candidate")
     assert not (tmp_path / "candidate").exists()
+
+
+def _publication_plan_inputs():
+    root = Path(
+        "quality/qualifications/pbs-reproduced-public-tree-readback-20261029"
+    )
+    candidate = {
+        "status": "candidate_prepared_not_published_or_admitted",
+        "output_id": delivery.OUTPUT_ID,
+        "parquet_sha256": delivery.PARQUET_SHA256,
+        "parquet_bytes": delivery.PARQUET_BYTES,
+        "source_member_sha256": delivery.MEMBER_SHA256,
+        "native_core_sha256": delivery.NATIVE_SHA256,
+        "candidate_retained": True,
+        "publication_performed": False,
+        "v4_admission_performed": False,
+        "workflow_commit": SHA,
+        "run_id": "123",
+        "run_attempt": "1",
+    }
+    return (
+        candidate,
+        (root / "readback.json").read_bytes(),
+        (root / "tree.json").read_bytes(),
+    )
+
+
+def test_publication_plan_binds_frozen_evidence_without_mutation():
+    candidate, readback, tree = _publication_plan_inputs()
+    plan = delivery.build_publication_plan(candidate, readback, tree)
+    assert plan["expected_parent_revision"] == delivery.PUBLIC_PARENT_REVISION
+    assert plan["remote_path"].endswith(f"/{delivery.OUTPUT_ID}/values.parquet")
+    assert plan["maintainer_publication_approved"] is False
+    assert plan["publication_performed"] is False
+    assert plan["v4_admission_performed"] is False
+
+
+def test_publication_plan_rejects_altered_candidate_and_evidence():
+    candidate, readback, tree = _publication_plan_inputs()
+    candidate["parquet_sha256"] = "0" * 64
+    with pytest.raises(ValueError, match="exact candidate"):
+        delivery.build_publication_plan(candidate, readback, tree)
+    candidate["parquet_sha256"] = delivery.PARQUET_SHA256
+    with pytest.raises(ValueError, match="readback digest"):
+        delivery.build_publication_plan(candidate, readback + b" ", tree)
+    with pytest.raises(ValueError, match="frozen observation"):
+        delivery.build_publication_plan(candidate, readback, tree + b" ")
+
+
+def test_publication_plan_rejects_destination_collision(monkeypatch):
+    candidate, readback, tree = _publication_plan_inputs()
+    entries = json.loads(tree)
+    entries[0]["path"] = (
+        f"silver/pbs/v4/2026-04-01/{delivery.OUTPUT_ID}/values.parquet"
+    )
+    tree = json.dumps(entries).encode()
+    tree_digest = hashlib.sha256(tree).hexdigest()
+    observation = json.loads(readback)
+    observation["tree_sha256"] = tree_digest
+    readback = json.dumps(observation).encode()
+    monkeypatch.setattr(delivery, "PUBLIC_TREE_SHA256", tree_digest)
+    monkeypatch.setattr(
+        delivery, "PUBLIC_READBACK_SHA256", hashlib.sha256(readback).hexdigest()
+    )
+    with pytest.raises(ValueError, match="target already exists"):
+        delivery.build_publication_plan(candidate, readback, tree)

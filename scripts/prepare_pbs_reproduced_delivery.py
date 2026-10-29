@@ -14,7 +14,7 @@ import os
 import subprocess  # ruff: ignore[suspicious-subprocess-import]
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from global_medicines_atlas import pbs_hosted_qualification as hosted
 
@@ -36,6 +36,14 @@ ARCHIVE_SHA256 = (
 )
 DATASET = "edithatogo/australian-pbs-source-archive"
 REVISION = "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7"
+PUBLIC_PARENT_REVISION = "208f0b0f1db7768018b3c50929596d63d16e3392"
+PUBLIC_TREE_SHA256 = (
+    "8f38b87b6dee2d0d65275f29695dfcb52726b3df330835467f6a83e767e2bea3"
+)
+PUBLIC_TREE_ENTRY_COUNT = 16
+PUBLIC_READBACK_SHA256 = (
+    "ec742349ffc4abafc1ade3bfcfcf610a7547dba9109fff121c23512805dfeb2c"
+)
 MEMBER_SHA256 = (
     "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43"
 )
@@ -161,6 +169,87 @@ def prepare(exact_commit: str, output: Path) -> dict[str, Any]:
         "publication_performed": False,
         "v4_admission_performed": False,
         "candidate_retained": True,
+    }
+
+
+def build_publication_plan(
+    prepared: dict[str, Any], readback_bytes: bytes, tree_bytes: bytes
+) -> dict[str, Any]:
+    """Describe a dry-run append; do not grant authority or contact the Hub."""
+    expected_preparation = {
+        "status": "candidate_prepared_not_published_or_admitted",
+        "output_id": OUTPUT_ID,
+        "parquet_sha256": PARQUET_SHA256,
+        "parquet_bytes": PARQUET_BYTES,
+        "source_member_sha256": MEMBER_SHA256,
+        "native_core_sha256": NATIVE_SHA256,
+        "candidate_retained": True,
+        "publication_performed": False,
+        "v4_admission_performed": False,
+    }
+    if any(
+        prepared.get(key) != value
+        for key, value in expected_preparation.items()
+    ):
+        raise ValueError("PBS preparation does not bind the exact candidate")
+    parent = PUBLIC_PARENT_REVISION
+    tree_sha256 = PUBLIC_TREE_SHA256
+    if hashlib.sha256(readback_bytes).hexdigest() != PUBLIC_READBACK_SHA256:
+        raise ValueError("PBS public-tree readback digest differs")
+    readback = json.loads(readback_bytes)
+    expected_readback: dict[str, Any] = {
+        "dataset": DATASET,
+        "revision": parent,
+        "tree_sha256": tree_sha256,
+        "entry_count": PUBLIC_TREE_ENTRY_COUNT,
+        "pagination_next": False,
+        "target_output_id": OUTPUT_ID,
+        "target_parquet_sha256": PARQUET_SHA256,
+        "matched_paths": [],
+    }
+    if hashlib.sha256(tree_bytes).hexdigest() != tree_sha256 or any(
+        readback.get(key) != value for key, value in expected_readback.items()
+    ):
+        raise ValueError(
+            "PBS public-tree readback differs from the frozen observation"
+        )
+    raw_entries: Any = json.loads(tree_bytes)
+    if not isinstance(raw_entries, list):
+        raise TypeError("PBS public-tree inventory is not a list")
+    entries = cast("list[Any]", raw_entries)
+    path = f"silver/pbs/v4/2026-04-01/{OUTPUT_ID}/values.parquet"
+    if (
+        len(entries) != PUBLIC_TREE_ENTRY_COUNT
+        or any(not isinstance(entry, dict) for entry in entries)
+        or any(entry.get("path") == path for entry in entries)
+        or PARQUET_SHA256 in json.dumps(entries, sort_keys=True)
+    ):
+        raise ValueError(
+            "PBS target already exists or public-tree inventory differs"
+        )
+    return {
+        "schema_id": "global-medicines-atlas.pbs-reproduced-publication-plan",
+        "schema_version": 1,
+        "status": "dry_run_not_authorized_or_published",
+        "dataset": DATASET,
+        "expected_parent_revision": parent,
+        "public_tree_sha256": tree_sha256,
+        "output_id": OUTPUT_ID,
+        "remote_path": path,
+        "parquet_sha256": PARQUET_SHA256,
+        "parquet_bytes": PARQUET_BYTES,
+        "workflow_commit": prepared["workflow_commit"],
+        "run_id": prepared["run_id"],
+        "run_attempt": prepared["run_attempt"],
+        "maintainer_publication_approved": False,
+        "publication_performed": False,
+        "v4_admission_performed": False,
+        "required_before_mutation": [
+            "Record exact publication authority separately from the rights attestation.",
+            "Recheck the public parent revision and destination inventory; use parent-commit CAS.",
+            "Retain the exact intent artifact before any external mutation.",
+            "Rehash staged bytes immediately before mutation and verify them anonymously afterward.",
+        ],
     }
 
 
