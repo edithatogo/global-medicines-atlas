@@ -10,7 +10,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from scripts import pbs_publication_intent as intent
 from scripts import prepare_pbs_reproduced_delivery as preparation
@@ -105,6 +105,84 @@ def append_once(root: Path, sdk: Any) -> dict[str, Any]:  # ruff: ignore[too-man
         json.dump(acknowledgement, output, sort_keys=True)
         output.write("\n")
     return acknowledgement
+
+
+def verify_append(root: Path, transport: Any) -> dict[str, Any]:  # ruff: ignore[too-many-locals]
+    """Verify the acknowledged revision and preserve the earlier file inventory."""
+    commit = os.environ.get("GITHUB_SHA", "")
+    context = preparation.hosted._context(commit)  # pyright: ignore[reportPrivateUsage] -- protected-run guard
+    if os.environ.get("GITHUB_EVENT_NAME") != "workflow_dispatch":
+        raise ValueError("PBS verification requires explicit workflow dispatch")
+    runner_temp = Path(os.environ["RUNNER_TEMP"]).resolve(strict=True)
+    root = root.resolve(strict=True)
+    if not root.is_relative_to(runner_temp):
+        raise ValueError("PBS transaction directory must be inside RUNNER_TEMP")
+    plan = json.loads((root / "intent.json").read_text(encoding="utf-8"))
+    if intent.build_intent(plan) != plan:
+        raise ValueError("PBS publication intent does not match this run")
+    acknowledgement = json.loads(
+        (root / "cas-acknowledgement.json").read_text(encoding="utf-8")
+    )
+    expected = {
+        "schema_id": "global-medicines-atlas.pbs-silver-cas-acknowledgement",
+        "status": "cas_acknowledged_not_yet_verified",
+        "dataset": preparation.DATASET,
+        "parent_revision": preparation.PUBLIC_PARENT_REVISION,
+        "remote_path": plan["remote_path"],
+        "parquet_sha256": preparation.PARQUET_SHA256,
+        **context,
+    }
+    if any(
+        acknowledgement.get(key) != value for key, value in expected.items()
+    ):
+        raise ValueError("PBS acknowledgement does not match this transaction")
+    revision = acknowledgement.get("revision")
+    if not isinstance(revision, str):
+        raise TypeError("PBS acknowledgement has no immutable revision")
+    tree_path = (
+        preparation.ROOT
+        / "quality/qualifications/pbs-reproduced-public-tree-readback-20261029/tree.json"
+    )
+    tree_bytes = tree_path.read_bytes()
+    if hashlib.sha256(tree_bytes).hexdigest() != preparation.PUBLIC_TREE_SHA256:
+        raise ValueError("PBS parent inventory digest differs")
+    tree: list[dict[str, Any]] = json.loads(tree_bytes)
+    prior_files = {
+        entry["path"]: entry["oid"] for entry in tree if entry["type"] == "file"
+    }
+    info = transport.public.dataset_info(
+        preparation.DATASET, revision=revision, files_metadata=True, timeout=30
+    )
+    if (
+        info.sha != revision
+        or info.private is not False
+        or info.gated is not False
+    ):
+        raise ValueError("PBS acknowledged revision is not public")
+    siblings = cast("list[Any]", info.siblings or [])
+    files = {item.rfilename: item.blob_id for item in siblings}
+    if set(files) != set(prior_files) | {plan["remote_path"]} or any(
+        files[path] != oid for path, oid in prior_files.items()
+    ):
+        raise ValueError("PBS append did not preserve the prior file inventory")
+    verified = preparation.verify_anonymous_published_candidate(
+        transport, revision
+    )
+    receipt = {
+        "schema_id": "global-medicines-atlas.pbs-silver-publication-receipt",
+        "status": "anonymous_verification_passed_not_admitted",
+        "parent_revision": preparation.PUBLIC_PARENT_REVISION,
+        "prior_file_count": len(prior_files),
+        "prior_file_blobs_preserved": True,
+        "v4_admission_performed": False,
+        **context,
+        **verified,
+    }
+    receipt_path = root / "hosted-receipt.json"
+    with receipt_path.open("x", encoding="utf-8") as output:
+        json.dump(receipt, output, sort_keys=True)
+        output.write("\n")
+    return receipt
 
 
 def main() -> int:

@@ -2022,7 +2022,7 @@ def intent_repository():
     return "edithatogo/global-medicines-atlas"
 
 
-def test_pbs_append_binds_intent_parent_bytes_and_one_attempt(
+def test_pbs_append_binds_intent_parent_bytes_and_one_attempt(  # ruff: ignore[too-many-locals]
     monkeypatch, tmp_path
 ):
     from scripts import pbs_publication_intent as intent  # ruff: ignore[import-outside-top-level]
@@ -2100,3 +2100,28 @@ def test_pbs_append_binds_intent_parent_bytes_and_one_attempt(
     with pytest.raises(ValueError, match="already been attempted"):
         publisher.append_once(tmp_path, sdk)
     assert len(calls) == 1
+    prior = [entry for entry in json.loads(tree) if entry["type"] == "file"]
+    info.sha = "b" * 40
+    info.siblings = [
+        SimpleNamespace(rfilename=entry["path"], blob_id=entry["oid"])
+        for entry in prior
+    ]
+    info.siblings.append(
+        SimpleNamespace(rfilename=plan["remote_path"], blob_id="new")
+    )
+    transport = SimpleNamespace(public=API())
+    monkeypatch.setattr(
+        delivery,
+        "verify_anonymous_published_candidate",
+        lambda *_args: {
+            "dataset": delivery.DATASET,
+            "revision": "b" * 40,
+            "anonymous_digest_verification": "passed",
+        },
+    )
+    receipt = publisher.verify_append(tmp_path, transport)
+    assert receipt["prior_file_blobs_preserved"] is True
+    assert receipt["v4_admission_performed"] is False
+    info.siblings[0].blob_id = "changed"
+    with pytest.raises(ValueError, match="prior file inventory"):
+        publisher.verify_append(tmp_path, transport)
