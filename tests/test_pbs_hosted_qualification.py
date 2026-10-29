@@ -1986,3 +1986,37 @@ def test_pbs_publication_intent_binds_preparation_and_run(monkeypatch):
     plan["run_id"] = "124"
     with pytest.raises(ValueError, match="prepared candidate"):
         intent.build_intent(plan)
+
+
+def test_pbs_hosted_intent_stages_after_parent_readback(monkeypatch, tmp_path):
+    from scripts import prepare_pbs_publication_intent as staged  # ruff: ignore[import-outside-top-level]
+
+    candidate, _, _ = _publication_plan_inputs()
+    for name, value in {
+        "GITHUB_ACTIONS": "true",
+        "GITHUB_REPOSITORY": intent_repository(),
+        "GITHUB_REF": "refs/heads/main",
+        "GITHUB_SHA": SHA,
+        "GITHUB_RUN_ID": "123",
+        "GITHUB_RUN_ATTEMPT": "1",
+        "GITHUB_EVENT_NAME": "workflow_dispatch",
+        "RUNNER_TEMP": str(tmp_path),
+    }.items():
+        monkeypatch.setenv(name, value)
+    monkeypatch.setattr(staged.preparation, "prepare", lambda *_args: candidate)
+    info = SimpleNamespace(
+        sha=delivery.PUBLIC_PARENT_REVISION,
+        private=False,
+        gated=False,
+        siblings=[SimpleNamespace(rfilename="existing")],
+    )
+    public = SimpleNamespace(dataset_info=lambda *_args, **_kwargs: info)
+    result = staged.prepare_intent(SHA, tmp_path, public)
+    assert json.loads((tmp_path / "intent.json").read_text()) == result
+    assert result["publication_performed"] is False
+    with pytest.raises(ValueError, match="already exists"):
+        staged.prepare_intent(SHA, tmp_path, public)
+
+
+def intent_repository():
+    return "edithatogo/global-medicines-atlas"
