@@ -16,6 +16,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
 from fastapi.testclient import TestClient
+from test_pbs_value_package import inputs
 from test_support.federation import admission_record
 from typer.testing import CliRunner
 
@@ -25,6 +26,9 @@ from global_medicines_atlas.federation_distribution import (
     DistributionBinding,
     ProducedObject,
     reconcile_distribution,
+)
+from global_medicines_atlas.pbs_direct_values import (
+    iter_direct_historical_value_batches,
 )
 from global_medicines_atlas.platinum_query import (
     DuckDBQueryAdapter,
@@ -771,6 +775,36 @@ def native_field_collection_payload() -> bytes:
         sink,
     )
     return sink.getvalue()
+
+
+def test_query_reads_pipeline_produced_pbs_native_structure():
+    table = pa.Table.from_batches(
+        list(iter_direct_historical_value_batches(*inputs()))
+    )
+    sink = io.BytesIO()
+    pq.write_table(table, sink)
+    with resolver(
+        sink.getvalue(), semantic_dimension="source_structure"
+    ) as client:
+        records = PlatinumQueryService(client).query(
+            "au.mbs.service-items",
+            engine="polars",
+            spec=QuerySpec(columns=("entity_id", "native_name"), limit=2),
+        )
+        fields = PlatinumQueryService(client).query(
+            "au.mbs.service-items",
+            engine="polars",
+            spec=QuerySpec(
+                columns=("source_field_id", "value", "state"),
+                field_collection="native_fields",
+                limit=2,
+            ),
+        )
+    assert len(records.rows) == 2
+    assert all(row["entity_id"] for row in records.rows)
+    assert len(fields.rows) == 2
+    assert all(row["source_field_id"] for row in fields.rows)
+    assert fields.evidence.comparison_validity == "not_evaluated"
 
 
 @pytest.mark.parametrize("engine", ["duckdb", "polars"])
