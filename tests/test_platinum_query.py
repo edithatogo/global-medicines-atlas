@@ -21,6 +21,9 @@ from test_support.federation import admission_record
 from typer.testing import CliRunner
 
 from global_medicines_atlas import cli, platinum_query
+from global_medicines_atlas import (
+    platinum_structure_qualification as qualification,
+)
 from global_medicines_atlas.atlas import AtlasQueryService, create_atlas_app
 from global_medicines_atlas.federation_distribution import (
     DistributionBinding,
@@ -1111,3 +1114,33 @@ def test_flat_source_records_are_reachable_on_later_pages(engine):
     assert (
         original.query_receipt.query_sha256 != later.query_receipt.query_sha256
     )
+
+
+def test_source_structure_qualification_exercises_actual_consumers(
+    monkeypatch, tmp_path
+):
+    def loader(**_kwargs):
+        return resolver(
+            native_field_collection_payload(),
+            semantic_dimension="source_structure",
+        )
+
+    monkeypatch.setattr(qualification, "load_benefits_resolver", loader)
+    monkeypatch.setattr(cli, "_dataset_resolver_loader", lambda: loader)
+    trust_file = tmp_path / "trust.json"
+    schema_file = tmp_path / "schema.json"
+    trust_file.write_text("{}")
+    schema_file.write_text("{}")
+    receipt = qualification.qualify_structure_consumers(
+        trust_file=trust_file,
+        metadata_root=tmp_path,
+        schema_file=schema_file,
+        resource_id="au.mbs.service-items",
+        columns=("source_field_id", "value"),
+        view="fields",
+        limit=2,
+    )
+    assert receipt["status"] == "passed"
+    assert receipt["consumers"] == ["api_v2", "cli", "atlas"]
+    assert receipt["row_count"] == 2
+    assert "a/text" not in json.dumps(receipt)
