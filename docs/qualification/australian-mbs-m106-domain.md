@@ -204,19 +204,21 @@ overlapping patient groups.
 
 ## Annual workbook transport readback, 2026-10-19
 
-The [current official page](https://www.health.gov.au/resources/publications/medicare-annual-statistics-state-and-territory-2009-10-to-2025-26?language=en)
-still describes coverage through 2025-26 and says the resource contains
-patient, all-service, out-of-hospital, and broad-service-type measures. Its
-linked filename remains
+The historical observation of the [official page](https://www.health.gov.au/resources/publications/medicare-annual-statistics-state-and-territory-2009-10-to-2025-26?language=en)
+recorded coverage through 2025-26 and patient, all-service, out-of-hospital,
+and broad-service-type measures. These page fields are unverified: the original
+response is unavailable, so its digest cannot substantiate them. The recorded
+attachment filename was
 `medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx`,
-which conflicts with the page's period. A bounded local `HEAD` request now
-returns HTTP 200, XLSX content type, and 1,058,479 bytes of declared length;
+which appears to conflict with the recorded page period; that conflict is
+also unverified. A bounded local `HEAD` request was recorded as returning
+HTTP 200, XLSX content type, and 1,058,479 bytes of declared length;
 no workbook response body was requested. The exact page and attachment
 metadata, validators, and boundaries are recorded in
 [`australian-mbs-m106-annual-workbook-head-readback-20261019.json`](../../quality/qualifications/australian-mbs-m106-annual-workbook-head-readback-20261019.json).
 
 This local route differs from the earlier hosted workbook GETs that timed out
-with zero bytes. The successful HEAD establishes reachability only: it does
+with zero bytes. The recorded HEAD observation concerns reachability only: it does
 not verify the workbook's internal period, denominator semantics, suppression,
 or reuse terms. The latest recorded owner contact was receipt-only. Keep the
 workbook body unrequested until the source-owner and applicable rights

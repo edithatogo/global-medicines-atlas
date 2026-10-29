@@ -20,7 +20,10 @@ SCHEMA = (
 
 
 def validate_receipt(receipt: dict[str, Any], schema: dict[str, Any]) -> None:
-    """Validate schema and bind both HEAD URLs to the exact linked workbook."""
+    """Validate observation shape and bind HEAD URLs to the recorded URL.
+
+    This does not verify the unavailable page response or its extracted fields.
+    """
     Draft202012Validator.check_schema(schema)
     Draft202012Validator(schema, format_checker=FormatChecker()).validate(  # pyright: ignore[reportUnknownMemberType]
         receipt

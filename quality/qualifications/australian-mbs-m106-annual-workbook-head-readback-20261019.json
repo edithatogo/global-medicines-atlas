@@ -15,11 +15,12 @@
     "copyright_terms_url": "https://www.health.gov.au/using-our-websites/copyright?language=en",
     "last_modified": "Fri, 16 Oct 2026 16:23:25 GMT",
     "etag": "\"1792167805\"",
-    "title": "Medicare annual statistics – State and territory (2009-10 to 2025-26)",
+    "title": "Medicare annual statistics \u2013 State and territory (2009-10 to 2025-26)",
     "publication_date": "2026-08-10",
     "described_period": "2009-10 through 2025-26",
     "attachment_url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx",
-    "attachment_filename_period": "2009-10 through 2024-25"
+    "attachment_filename_period": "2009-10 through 2024-25",
+    "verification_status": "unverified_observation_original_response_unavailable"
   },
   "attachment_head": {
     "method": "HEAD",
@@ -38,7 +39,7 @@
     "substantive_response_received": false,
     "auto_replies_are_receipt_only": true
   },
-  "interpretation": "The published page advertises 2025-26 coverage, but its linked attachment filename identifies 2024-25. A local metadata-only HEAD confirms that the attachment is reachable and returns an XLSX content type and length; it does not establish the workbook's internal period, patient-count semantics, or reuse terms. Earlier hosted GETs timed out with zero bytes. Do not request the workbook body before substantive source-owner clarification and the applicable source-rights gate.",
+  "interpretation": "The page fields are historical unverified observations: the original response body is unavailable, so the digest cannot independently establish the title, date, period or attachment link. The recorded local metadata-only HEAD is an observation of reachability for the requested URL, not proof of workbook content, source semantics, reuse terms or page linkage. M-106 remains blocked.",
   "boundaries": {
     "workbook_body_requested": false,
     "workbook_payload_bytes_read": 0,

@@ -1448,3 +1448,11 @@ coverage, new sources/terminology, and optional experiments remain deferred.
 This scheduling direction changes no acceptance criterion, current M-105/M-107
 disposition, or conditional release approval; current states come from the
 authoritative contract, reconciliation, and bound receipts.
+
+### PR #1172 page observation review disposition (2026-10-29)
+
+- [x] Treat the page title, date, period and attachment link as unverified
+  historical observations. The original body is unavailable; its digest cannot
+  validate extracted fields. The receipt schema prevents a verified claim and
+  the validator checks only the recorded shape and HEAD URL consistency. No
+  independent page evidence, M-106 acceptance, rights or acquisition is claimed.

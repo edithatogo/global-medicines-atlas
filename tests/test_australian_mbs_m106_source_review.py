@@ -267,6 +267,10 @@ def test_annual_workbook_transport_readback_keeps_identity_and_rights_gates() ->
     assert page["response_bytes"] == 34921
     assert len(page["response_sha256"]) == 64
     assert page["response_body_retained"] is False
+    assert page["verification_status"] == (
+        "unverified_observation_original_response_unavailable"
+    )
+    assert "cannot independently establish" in receipt["interpretation"]
     assert page["copyright_terms_url"].startswith("https://www.health.gov.au/")
     assert head["method"] == "HEAD"
     assert head["requested_url"] == page["attachment_url"]
@@ -304,3 +308,11 @@ def test_annual_workbook_transport_readback_keeps_identity_and_rights_gates() ->
     mismatched_request["attachment_head"] = mismatched_head
     with pytest.raises(ValueError, match="request URL"):
         validate_m106_head_readback(mismatched_request, schema)
+
+
+def test_annual_workbook_rejects_claim_of_verified_page_fields() -> None:
+    receipt = json.loads(ANNUAL_WORKBOOK_HEAD.read_text())
+    schema = json.loads(ANNUAL_WORKBOOK_HEAD_SCHEMA.read_text())
+    receipt["official_page"]["verification_status"] = "verified"
+    with pytest.raises(ValidationError):
+        validate_m106_head_readback(receipt, schema)
