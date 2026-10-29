@@ -1,0 +1,10 @@
+{
+  "licence": "Open Government Licence – Nova Scotia",
+  "licence_url": "https://novascotia.ca/opendata/licence.asp",
+  "sources": {
+    "ca-nova-scotia-pharmacare": "https://data.novascotia.ca/api/views/wyjy-2gt4/rows.csv?accessType=DOWNLOAD"
+  },
+  "scope": "Unmodified public bulk tables only; no linked documents, third-party content, logos or clinical interpretations",
+  "evidence": "Official Open Canada package e49db542-48db-8656-c4d5-f1f32516ddad explicitly labels licence; Nova Scotia government data-discovery guidance confirms reuse with attribution",
+  "attribution": "Contains information licensed under the Open Government Licence – Nova Scotia. Source: Government of Nova Scotia."
+}

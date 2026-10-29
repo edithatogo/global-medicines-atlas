@@ -1,0 +1,82 @@
+[
+  {
+    "source_id": "ca-nova-scotia-pharmacare",
+    "surface": "download",
+    "expected_url": "https://data.novascotia.ca/api/views/wyjy-2gt4/rows.csv?accessType=DOWNLOAD",
+    "retention_authority_reference": "quality/source-batches/nova-scotia-20261030/rights.json",
+    "reuse_decision": {
+      "source_id": "ca-nova-scotia-pharmacare",
+      "disposition": "acquire-new",
+      "searched_surfaces": [
+        "local_clones",
+        "github",
+        "hugging_face",
+        "source_registry"
+      ],
+      "candidates": [
+        {
+          "surface": "source_registry",
+          "locator": "https://data.novascotia.ca/api/views/wyjy-2gt4/rows.csv?accessType=DOWNLOAD",
+          "source_id": "ca-nova-scotia-pharmacare",
+          "kind": "registry",
+          "digest": null,
+          "query": null,
+          "revision": null
+        }
+      ],
+      "rationale": "No corresponding native bulk archive in checked authorities. Existing EMA HTML and synthetic fixtures are related evidence, not the requested spreadsheets.",
+      "catalogue_revision": "760723adc9c2f8e8946eebe9bcada7aff212095e",
+      "discovery_snapshot": {
+        "schema_id": "global-medicines-atlas.reuse-discovery",
+        "schema_version": 1,
+        "snapshot_id": "sha256:d93a5fe7fdc1fde930837ae20b6545a25f3dc5868f0f2a1715c5cb48ac3b5676",
+        "source_id": "ca-nova-scotia-pharmacare",
+        "generated_at": "2026-10-29T18:19:59.061221Z",
+        "freshness_seconds": 86400,
+        "expires_at": "2026-10-30T18:19:59.061221Z",
+        "tool_version": "bounded-source-batch-reuse-v1",
+        "surfaces": [
+          {
+            "name": "local_clones",
+            "state": "success",
+            "query": "ca-nova-scotia-pharmacare exact source ID and native bulk filename search",
+            "candidates": [],
+            "detail": "Pinned live tree listings reused from same-day successful read; matched archive classified from metadata and HTML prefix"
+          },
+          {
+            "name": "github",
+            "state": "success",
+            "query": "ca-nova-scotia-pharmacare exact source ID and native bulk filename search",
+            "candidates": [],
+            "detail": "Pinned live tree listings reused from same-day successful read; matched archive classified from metadata and HTML prefix"
+          },
+          {
+            "name": "hugging_face",
+            "state": "success",
+            "query": "ca-nova-scotia-pharmacare exact source ID and native bulk filename search",
+            "candidates": [],
+            "detail": "Pinned live tree listings reused from same-day successful read; matched archive classified from metadata and HTML prefix"
+          },
+          {
+            "name": "source_registry",
+            "state": "success",
+            "query": "ca-nova-scotia-pharmacare exact source ID and native bulk filename search",
+            "candidates": [
+              {
+                "surface": "source_registry",
+                "locator": "https://data.novascotia.ca/api/views/wyjy-2gt4/rows.csv?accessType=DOWNLOAD",
+                "source_id": "ca-nova-scotia-pharmacare",
+                "kind": "registry",
+                "digest": null,
+                "query": null,
+                "revision": null
+              }
+            ],
+            "detail": "Pinned live tree listings reused from same-day successful read; matched archive classified from metadata and HTML prefix"
+          }
+        ]
+      }
+    },
+    "max_bytes": 67108864
+  }
+]

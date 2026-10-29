@@ -83,6 +83,7 @@ class AcquisitionPolicy:
         "application/json",
         "application/octet-stream",
         "application/zip",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         "text/csv",
         "text/plain",
         "text/xml",

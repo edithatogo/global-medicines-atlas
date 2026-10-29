@@ -35,11 +35,14 @@ PAYLOAD = "payloads/eu-ema-json/medicines-output-medicines_json-report_en.json"
 class SnapshotUploader:
     """One new public dataset and one content-bound commit; no upload retries."""
 
+    def __init__(self, repository: str = DATASET) -> None:
+        self.repository = repository
+
     def upload_folder(
         self, *, repository: str, folder: Path, commit_message: str
     ) -> str:
         require_hosted_main(os.environ.get("GITHUB_SHA", ""))
-        if repository != DATASET:
+        if repository != self.repository:
             raise ValueError("EMA publication target differs")
         hub = cast("Any", import_module("huggingface_hub"))
         api = hub.HfApi(token=os.environ["HF_TOKEN"])

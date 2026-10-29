@@ -1551,3 +1551,17 @@ publication decision; no other live sources, schedules or deferred milestones.
 
 Stop after these results. Swiss remains unresolved; federation remains deferred.
 The report is `docs/qualification/ema-canada-bronze-20261030.md`.
+
+## Archive-all execution — 30 October 2026
+
+- [x] EMA prior publication verified at `3aaa509d4b8d5b3f594caaeb0fab2ad99fec3c61`; PR #1380 merged as `a83c34a3`, all 29 required checks passed.
+- [x] Extend shared runner to account for all 176 source IDs, resume verified
+  local batches and retain explicit review/blocker outcomes.
+- [x] Prepare reusable hosted publisher and three exact batch inventories,
+  reusing existing acquisition, transport and verification machinery.
+- [~] Integrate protected CI, publish approved Canada first, then execute and
+  publish the named clear-rights EMA and Nova Scotia batches.
+- [ ] Record final complete inventory outcomes and exact public revisions.
+
+Archive-all does not waive rights, imply every historical version is retained,
+or mark unconfigured/blocked sources archived. No federation work or schedule.

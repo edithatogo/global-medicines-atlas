@@ -6,6 +6,7 @@ import argparse
 import csv
 import io
 import json
+from hashlib import sha256
 from pathlib import Path
 from typing import Literal
 
@@ -195,21 +196,134 @@ def run_batch(
     return results
 
 
+def run_archive_all(
+    manifest: Path, *, output: Path, execute: bool = False
+) -> list[dict[str, str]]:
+    """Account for every catalogue source and execute eligible finite batches."""
+    config = json.loads(manifest.read_text(encoding="utf-8"))
+    sources = load_source_catalog()
+    queue = json.loads(
+        (
+            ROOT / "quality/qualifications/bronze-source-landing-queue.json"
+        ).read_text()
+    )
+    outcomes = {
+        row["source_id"]: {
+            "source_id": row["source_id"],
+            "state": {
+                "credentialed_and_excluded": "excluded_auth",
+                "rights_blocked": "blocked_rights",
+                "temporarily_unavailable": "blocked_endpoint",
+                "manual_only_documented_acquisition": "needs_source_recipe",
+            }.get(row.get("state"), "needs_source_review"),
+            "reason": row["reason"],
+            "next_action": row["next_action"],
+        }
+        for row in queue["items"]
+    }
+    if set(outcomes) != {source.source_id for source in sources}:
+        raise ValueError("archive-all queue does not cover exact catalogue")
+    for row in config["reuse"]:
+        if row["source_id"] not in outcomes or not row["evidence_reference"]:
+            raise ValueError("invalid existing-archive reference")
+        outcomes[row["source_id"]] = dict(row, state="reused_verified_archive")
+    for row in config.get("blockers", []):
+        if row["source_id"] not in outcomes:
+            raise ValueError("unknown blocked source")
+        outcomes[row["source_id"]] = row
+    selected: set[str] = set()
+    for batch in config["batches"]:
+        selections = tuple(
+            DownloadSelection.model_validate(row)
+            for row in json.loads((ROOT / batch).read_text())
+        )
+        if selected.intersection(row.source_id for row in selections):
+            raise ValueError("source selected in multiple batches")
+        selected.update(row.source_id for row in selections)
+        selections = tuple(
+            row
+            for row in selections
+            if outcomes[row.source_id]["state"] != "reused_verified_archive"
+        )
+        if not selections:
+            continue
+        directory = output / Path(batch).parent.name
+        if execute and directory.exists():
+            results = resume_batch(selections, directory)
+        else:
+            results = run_batch(
+                selections,
+                sources=sources,
+                output=directory,
+                repository_root=ROOT,
+                execute=execute,
+            )
+        for row in results:
+            outcomes[row["source_id"]] = row
+    results = [outcomes[key] for key in sorted(outcomes)]
+    if execute:
+        output.mkdir(parents=True, exist_ok=True)
+        (output / "archive-all-results.json").write_text(
+            json.dumps(results, indent=2) + "\n"
+        )
+    return results
+
+
+def resume_batch(
+    selections: tuple[DownloadSelection, ...], directory: Path
+) -> list[dict[str, str]]:
+    """Reuse exact local successful receipts; never retry failures implicitly."""
+    results = json.loads((directory / "results.json").read_text())
+    if {row["source_id"] for row in results} != {
+        row.source_id for row in selections
+    }:
+        raise ValueError("existing batch inventory differs")
+    for selection in selections:
+        saved = directory / selection.source_id
+        row = next(
+            item for item in results if item["source_id"] == selection.source_id
+        )
+        if row["state"] != "acquired_local":
+            continue
+        if json.loads(
+            (saved / "selection.json").read_text()
+        ) != selection.model_dump(mode="json"):
+            raise ValueError("existing batch selection differs")
+        receipt = json.loads((saved / "receipt.json").read_text())
+        if (
+            sha256((saved / "payload.bin").read_bytes()).hexdigest()
+            != receipt["payload"]["sha256"]
+        ):
+            raise ValueError("existing payload digest differs")
+    return results
+
+
 def main(argv: list[str] | None = None) -> int:
     """Default to offline inventory or preview; execution requires a batch file."""
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--urls-output", type=Path)
     parser.add_argument("--batch", type=Path)
+    parser.add_argument("--archive-all", type=Path)
     parser.add_argument(
         "--output", type=Path, default=ROOT / "build/source-batch"
     )
     parser.add_argument("--execute", action="store_true")
     args = parser.parse_args(argv)
-    if args.execute and args.batch is None:
-        parser.error(
-            "--execute requires --batch; there is no download-all mode"
+    if args.archive_all:
+        if args.batch:
+            parser.error("choose --archive-all or --batch")
+        if not args.output.resolve().is_relative_to((ROOT / "build").resolve()):
+            parser.error("archive-all output must be under build/")
+        results = run_archive_all(
+            args.archive_all, output=args.output, execute=args.execute
         )
+        print(json.dumps(results, indent=2))
+        return int(
+            any(row["state"] in {"failed", "blocked"} for row in results)
+        )
+    if args.execute and args.batch is None:
+        parser.error("--execute requires --batch or --archive-all")
     sources = load_source_catalog()
     if args.urls_output:
         args.urls_output.parent.mkdir(parents=True, exist_ok=True)

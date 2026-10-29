@@ -1,0 +1,210 @@
+{
+  "scope": "All 176 catalogued source IDs; execute qualified batches, preserve unresolved rows",
+  "reuse": [
+    {
+      "source_id": "eu-union-register",
+      "evidence_reference": "quality/qualifications/international-public-huggingface-20260821.json",
+      "revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage"
+    },
+    {
+      "source_id": "fr-bdpm",
+      "evidence_reference": "quality/qualifications/international-public-huggingface-20260821.json",
+      "revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage"
+    },
+    {
+      "source_id": "fr-bdpm-smr-asmr",
+      "evidence_reference": "quality/qualifications/international-public-huggingface-20260821.json",
+      "revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage"
+    },
+    {
+      "source_id": "gb-emit",
+      "evidence_reference": "quality/qualifications/international-public-huggingface-20260821.json",
+      "revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage"
+    },
+    {
+      "source_id": "gb-nhs-drug-tariff",
+      "evidence_reference": "quality/qualifications/international-public-huggingface-20260821.json",
+      "revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage"
+    },
+    {
+      "source_id": "global-rxnorm",
+      "evidence_reference": "quality/qualifications/international-public-huggingface-20260821.json",
+      "revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage"
+    },
+    {
+      "source_id": "nz-pharmac-hml",
+      "evidence_reference": "quality/qualifications/international-public-huggingface-20260821.json",
+      "revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage"
+    },
+    {
+      "source_id": "nz-pharmac-schedule",
+      "evidence_reference": "quality/qualifications/international-public-huggingface-20260821.json",
+      "revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage"
+    },
+    {
+      "source_id": "nz-pharmac-schedule-xml",
+      "evidence_reference": "quality/qualifications/international-public-huggingface-20260821.json",
+      "revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage"
+    },
+    {
+      "source_id": "us-rxnorm-api",
+      "evidence_reference": "quality/qualifications/international-public-huggingface-20260821.json",
+      "revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage"
+    },
+    {
+      "source_id": "us-drugsfda",
+      "evidence_reference": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage"
+    },
+    {
+      "source_id": "us-fda-drug-shortages",
+      "evidence_reference": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage"
+    },
+    {
+      "source_id": "us-fda-faers",
+      "evidence_reference": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage"
+    },
+    {
+      "source_id": "us-fda-ndc-directory",
+      "evidence_reference": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage"
+    },
+    {
+      "source_id": "us-fda-nsde",
+      "evidence_reference": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage"
+    },
+    {
+      "source_id": "us-fda-orange-book",
+      "evidence_reference": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage"
+    },
+    {
+      "source_id": "us-fda-recalls-notices",
+      "evidence_reference": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage"
+    },
+    {
+      "source_id": "us-fda-rems",
+      "evidence_reference": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage"
+    },
+    {
+      "source_id": "us-openfda-drugsfda",
+      "evidence_reference": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage"
+    },
+    {
+      "source_id": "us-openfda-enforcement",
+      "evidence_reference": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage"
+    },
+    {
+      "source_id": "us-openfda-faers",
+      "evidence_reference": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage"
+    },
+    {
+      "source_id": "us-openfda-ndc",
+      "evidence_reference": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage"
+    },
+    {
+      "source_id": "us-openfda-nsde",
+      "evidence_reference": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage"
+    },
+    {
+      "source_id": "eu-ema-json",
+      "evidence_reference": "quality/qualifications/ema-publication-20261030/verified.json",
+      "revision": "3aaa509d4b8d5b3f594caaeb0fab2ad99fec3c61",
+      "coverage_scope": "Exact 2026-10-29 JSON snapshot"
+    },
+    {
+      "source_id": "fr-open-medic",
+      "evidence_reference": "quality/qualifications/open-medic-public-huggingface-20260821.json",
+      "revision": "d19f7a66e35c58c557615bffa456856b485b7edc",
+      "coverage_scope": "Exact historical approved inventory and existing anonymous digest receipts only; no currentness or federation acceptance claim"
+    },
+    {
+      "source_id": "nl-gipdatabank",
+      "evidence_reference": "quality/qualifications/gip-public-huggingface-20260826.json",
+      "revision": "4e6395ee5217b0fb140dd7942f67b032039e7bbf",
+      "coverage_scope": "Exact historical approved inventory and existing anonymous digest receipts only; no currentness or federation acceptance claim"
+    },
+    {
+      "source_id": "us-cms-partd-formulary",
+      "evidence_reference": "quality/qualifications/cms-partd-public-huggingface-20260829.json",
+      "revision": "abcff8ebd1f624c4bbb0a87d903b184388c98254",
+      "coverage_scope": "Exact historical approved inventory and existing anonymous digest receipts only; no currentness or federation acceptance claim"
+    },
+    {
+      "source_id": "us-cms-partd-spending",
+      "evidence_reference": "quality/qualifications/cms-partd-public-huggingface-20260829.json",
+      "revision": "abcff8ebd1f624c4bbb0a87d903b184388c98254",
+      "coverage_scope": "Exact historical approved inventory and existing anonymous digest receipts only; no currentness or federation acceptance claim"
+    },
+    {
+      "source_id": "au-mbs",
+      "evidence_reference": "quality/qualifications/australian-mbs-public-huggingface-20260829.json",
+      "revision": "4d1dae488ac43522f20e8320a8b2a56bf9138341",
+      "coverage_scope": "Exact historical approved inventory and existing anonymous digest receipts only; no currentness or federation acceptance claim"
+    },
+    {
+      "source_id": "au-mbs-p7-legacy-workbook",
+      "evidence_reference": "quality/qualifications/australian-mbs-public-huggingface-20260829.json",
+      "revision": "4d1dae488ac43522f20e8320a8b2a56bf9138341",
+      "coverage_scope": "Exact historical approved inventory and existing anonymous digest receipts only; no currentness or federation acceptance claim"
+    }
+  ],
+  "batches": [
+    "quality/source-batches/canada-20261030/batch.json",
+    "quality/source-batches/ema-tables-20261030/batch.json",
+    "quality/source-batches/nova-scotia-20261030/batch.json"
+  ],
+  "blockers": [
+    {
+      "source_id": "ca-canada-vigilance",
+      "state": "blocked_transport",
+      "reason": "Official ZIP HEAD reports 313578432 bytes, exceeding the shared runner 256 MiB limit; redirect contains an ephemeral signed URL requiring receipt query redaction before retention",
+      "next_action": "Qualify bounded larger-file transport and redact signed redirect query before acquisition; official Open Canada metadata declares OGL Canada"
+    },
+    {
+      "source_id": "ch-foph-specialities",
+      "state": "blocked_endpoint_and_rights",
+      "reason": "Official Swiss current resources API returns null fileUrl and lastUpdated; exact dataset reuse basis unresolved",
+      "next_action": "Bind official export and applicable terms; do not infer from candidate static URL"
+    },
+    {
+      "source_id": "ch-foph-sl-fhir",
+      "state": "blocked_endpoint_and_rights",
+      "reason": "Official Swiss current resources API returns null fileUrl and lastUpdated; exact dataset reuse basis unresolved",
+      "next_action": "Bind official export and applicable terms; do not infer from candidate static URL"
+    }
+  ]
+}

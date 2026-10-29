@@ -185,3 +185,17 @@ files after rights and reuse checks; no next-batch public write or schedule.
 Swiss and federation are read-only blocker assessments. Other writers and native
 scopes remain unchanged. Next operation: prepare the hosted exact-snapshot
 publication and execute the shared download command for the bounded next batch.
+
+### Archive-all execution — 30 October 2026
+
+The same chat/worktree owns `codex/archive-all-execution`, based on merged
+`a83c34a3`. EMA is public at `3aaa509d4b8d5b3f594caaeb0fab2ad99fec3c61`
+(Actions `40927685330`, three anonymous digests verified). The maintainer now
+requests archive-all execution, expressly approves the two Canadian files for
+publication, and authorizes remaining straightforward-source batches. This lane
+owns the shared batch runner, finite batch manifests, archive-all outcome ledger,
+and hosted batch publisher. Native writes remain Actions-to-HF only, exact
+approved inventories; no schedules, credentials, federation, Silver/Gold or
+other writer's objects. Next: integrate reusable batch publication and publish
+Canada first, then execute eligible remaining batches. Every catalogue ID must
+receive an explicit outcome; blocked entries cannot count as archived.

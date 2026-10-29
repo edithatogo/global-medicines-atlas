@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import gzip
 import io
+import json
 from collections.abc import Callable
 from datetime import UTC, datetime
 from itertools import permutations
@@ -1191,3 +1192,65 @@ def test_download_batch_cli_is_offline_by_default(tmp_path, capsys):
     assert capsys.readouterr().out == output.read_text()
     with pytest.raises(SystemExit, match="2"):
         batch.main(["--execute"])
+
+
+@pytest.mark.unit
+def test_archive_all_accounts_for_unselected_sources(tmp_path, monkeypatch):
+    """Running ready batches must not erase unconfigured sources."""
+    first = catalog_source()
+    second = first.model_copy(update={"source_id": "other-source"})
+    monkeypatch.setattr(batch, "ROOT", tmp_path)
+    monkeypatch.setattr(batch, "load_source_catalog", lambda: (first, second))
+    queue = tmp_path / "quality/qualifications/bronze-source-landing-queue.json"
+    queue.parent.mkdir(parents=True)
+    queue.write_text(
+        json.dumps({
+            "items": [
+                {
+                    "source_id": s.source_id,
+                    "reason": "needs rights",
+                    "next_action": "review",
+                }
+                for s in (first, second)
+            ]
+        })
+    )
+    manifest = tmp_path / "all.json"
+    manifest.write_text(
+        json.dumps({
+            "reuse": [
+                {
+                    "source_id": first.source_id,
+                    "evidence_reference": "existing verified receipt",
+                }
+            ],
+            "batches": [],
+        })
+    )
+    rows = batch.run_archive_all(manifest, output=tmp_path / "build/run")
+    assert len(rows) == 2
+    assert {r["state"] for r in rows} == {
+        "reused_verified_archive",
+        "needs_source_review",
+    }
+    assert not (tmp_path / "build/run").exists()
+
+
+@pytest.mark.unit
+def test_batch_resume_rejects_changed_payload(tmp_path):
+    """A checkpoint cannot turn corrupted bytes into a completed source."""
+    selection = batch.DownloadSelection(
+        source_id="test-source", expected_url="https://example.test/file"
+    )
+    folder = tmp_path / "test-source"
+    folder.mkdir()
+    (tmp_path / "results.json").write_text(
+        json.dumps([{"source_id": "test-source", "state": "acquired_local"}])
+    )
+    (folder / "selection.json").write_text(selection.model_dump_json())
+    (folder / "receipt.json").write_text(
+        json.dumps({"payload": {"sha256": "0" * 64}})
+    )
+    (folder / "payload.bin").write_bytes(b"corrupt")
+    with pytest.raises(ValueError, match="digest differs"):
+        batch.resume_batch((selection,), tmp_path)
