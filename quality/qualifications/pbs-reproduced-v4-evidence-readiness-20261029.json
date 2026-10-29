@@ -8,7 +8,9 @@
     "v4_admitted": false
   },
   "evidence": {
+    "field_state_identity_limit": "Field-state receipt names the earlier Parquet output; matching source and native-core digests do not establish that the new output has been admitted or that all domain semantics are qualified.",
     "field_state_source_member_and_native_core_match": true,
+    "independent_builds_use_same_algorithm": true,
     "interpreted": 3096735,
     "native_unresolved": 15112023,
     "prior_field_state_receipt_names_prior_output": true,
