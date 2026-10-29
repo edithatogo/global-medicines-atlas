@@ -180,20 +180,57 @@
       "evidence_reference": "quality/qualifications/australian-mbs-public-huggingface-20260829.json",
       "revision": "4d1dae488ac43522f20e8320a8b2a56bf9138341",
       "coverage_scope": "Exact historical approved inventory and existing anonymous digest receipts only; no currentness or federation acceptance claim"
+    },
+    {
+      "source_id": "ca-dpd",
+      "evidence_reference": "quality/source-batches/canada-20261030/verified.json",
+      "revision": "76183e4d8298a582e21d084e0cd895ef7e8ec22e",
+      "coverage_scope": "Exact newly published native bulk snapshot only",
+      "archive_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-canada-bronze-20261030/tree/76183e4d8298a582e21d084e0cd895ef7e8ec22e"
+    },
+    {
+      "source_id": "ca-noc",
+      "evidence_reference": "quality/source-batches/canada-20261030/verified.json",
+      "revision": "76183e4d8298a582e21d084e0cd895ef7e8ec22e",
+      "coverage_scope": "Exact newly published native bulk snapshot only",
+      "archive_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-canada-bronze-20261030/tree/76183e4d8298a582e21d084e0cd895ef7e8ec22e"
+    },
+    {
+      "source_id": "eu-ema-medicines",
+      "evidence_reference": "quality/source-batches/ema-tables-20261030/verified.json",
+      "revision": "cd49b21eb14e6549c563b56371bc320b25c58d41",
+      "coverage_scope": "Exact newly published native bulk snapshot only",
+      "archive_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-tables-20261030/tree/cd49b21eb14e6549c563b56371bc320b25c58d41"
+    },
+    {
+      "source_id": "eu-ema-orphan",
+      "evidence_reference": "quality/source-batches/ema-tables-20261030/verified.json",
+      "revision": "cd49b21eb14e6549c563b56371bc320b25c58d41",
+      "coverage_scope": "Exact newly published native bulk snapshot only",
+      "archive_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-tables-20261030/tree/cd49b21eb14e6549c563b56371bc320b25c58d41"
+    },
+    {
+      "source_id": "eu-ema-referrals",
+      "evidence_reference": "quality/source-batches/ema-tables-20261030/verified.json",
+      "revision": "cd49b21eb14e6549c563b56371bc320b25c58d41",
+      "coverage_scope": "Exact newly published native bulk snapshot only",
+      "archive_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-tables-20261030/tree/cd49b21eb14e6549c563b56371bc320b25c58d41"
+    },
+    {
+      "source_id": "ca-nova-scotia-pharmacare",
+      "evidence_reference": "quality/source-batches/nova-scotia-20261030/verified.json",
+      "revision": "3d01119e73fa098c62f72505c23782505ca3cf8f",
+      "coverage_scope": "Exact newly published native bulk snapshot only",
+      "archive_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-nova-scotia-20261030/tree/3d01119e73fa098c62f72505c23782505ca3cf8f"
     }
   ],
   "batches": [
     "quality/source-batches/canada-20261030/batch.json",
     "quality/source-batches/ema-tables-20261030/batch.json",
-    "quality/source-batches/nova-scotia-20261030/batch.json"
+    "quality/source-batches/nova-scotia-20261030/batch.json",
+    "quality/source-batches/canada-vigilance-20261030/batch.json"
   ],
   "blockers": [
-    {
-      "source_id": "ca-canada-vigilance",
-      "state": "blocked_transport",
-      "reason": "Official ZIP HEAD reports 313578432 bytes, exceeding the shared runner 256 MiB limit; redirect contains an ephemeral signed URL requiring receipt query redaction before retention",
-      "next_action": "Qualify bounded larger-file transport and redact signed redirect query before acquisition; official Open Canada metadata declares OGL Canada"
-    },
     {
       "source_id": "ch-foph-specialities",
       "state": "blocked_endpoint_and_rights",

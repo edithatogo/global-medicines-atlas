@@ -29,6 +29,7 @@ from global_medicines_atlas.receipts import (
     EvidenceClass,
     FailureReceipt,
     SourceReceipt,
+    http_retrieval_from_response,
 )
 from global_medicines_atlas.reuse_gate import (
     ReuseGateRequiredError,
@@ -1254,3 +1255,40 @@ def test_batch_resume_rejects_changed_payload(tmp_path):
     (folder / "payload.bin").write_bytes(b"corrupt")
     with pytest.raises(ValueError, match="digest differs"):
         batch.resume_batch((selection,), tmp_path)
+
+
+@pytest.mark.unit
+def test_batch_redirect_allowlist_rejects_wildcards() -> None:
+    selection = batch.DownloadSelection(
+        source_id="test-regulator",
+        expected_url="https://example.test/file",
+        redirect_hosts=("*.example.test",),
+    )
+    with pytest.raises(ValueError, match="exact public hostnames"):
+        batch.selected_source(selection, (catalog_source(),))
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "parameter", ["sig", "X-Amz-Signature", "access_token", "api_key"]
+)
+def test_batch_signed_redirect_credentials_are_not_retained(
+    parameter: str,
+) -> None:
+    signed = f"https://cdn.example.test/archive.zip?{parameter}=secret-signature&version=2026"
+    intermediate = httpx.Response(302, request=httpx.Request("GET", signed))
+    response = httpx.Response(
+        200, request=httpx.Request("GET", signed), history=[intermediate]
+    )
+    evidence = batch.redact_batch_http(
+        http_retrieval_from_response(
+            response,
+            original_uri=signed,
+            observed_byte_length=3,
+            agent_version="test",
+        )
+    )
+    encoded = evidence.model_dump_json()
+    assert "secret-signature" not in encoded
+    assert "REDACTED" in encoded
+    assert "version=2026" in str(evidence.final_uri)

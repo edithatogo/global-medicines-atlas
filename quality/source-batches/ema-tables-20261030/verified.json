@@ -1,0 +1,75 @@
+{
+  "receipt_version": "1",
+  "plan_sha256": "34cff8478e156de3553a5127ba06a258fc62844dd33eaa8943d0c9d473ca5545",
+  "artifact_sha256": [
+    "7e924cff366df40d9fc9c304fe8af78ccafce7a3f0e91c339c4f728a5f3c885d",
+    "159a4c86de848450e992fbdf6c454d914cea70fc2af17e0aa1e46edec8c0f6d6",
+    "b54fc81ac9be1ab32cc7dca35e6506718c7d3b8ec66a1f5144decb5c015c4d95",
+    "d6ba7b81647de83364596ca8c0c107acf19071396219e16a987d0f4aa62a6235",
+    "8ffdc29b4cd7983f31c991177cb96840ea04b9136c3f050908a419d76d0bddd7",
+    "29493767d251004fc7c39e317717a69c8e243e17b3de0cf0d0e32fd5e6ddad5a",
+    "26c936a7d5ca75fdd12ae18d5d7d80838793a276af51e8d5f2c5f8827ecd312a",
+    "715a04fe53621ad4c11040ca160756e2271843d85d205524aaf8c6192732d3e1"
+  ],
+  "target": {
+    "destination": "hugging_face",
+    "repository": "edithatogo/global-medicines-atlas-ema-tables-20261030",
+    "revision": "main",
+    "public_base_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-tables-20261030"
+  },
+  "state": "public",
+  "recorded_at": "2026-10-29T18:37:29.854001Z",
+  "remote_revision": "cd49b21eb14e6549c563b56371bc320b25c58d41",
+  "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-tables-20261030/tree/cd49b21eb14e6549c563b56371bc320b25c58d41",
+  "failure_reason": null,
+  "verified_artifacts": [
+    {
+      "relative_path": "README.md",
+      "sha256": "7e924cff366df40d9fc9c304fe8af78ccafce7a3f0e91c339c4f728a5f3c885d",
+      "size": 253,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-tables-20261030/resolve/cd49b21eb14e6549c563b56371bc320b25c58d41/README.md"
+    },
+    {
+      "relative_path": "eu-ema-medicines/payload.bin",
+      "sha256": "159a4c86de848450e992fbdf6c454d914cea70fc2af17e0aa1e46edec8c0f6d6",
+      "size": 904579,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-tables-20261030/resolve/cd49b21eb14e6549c563b56371bc320b25c58d41/eu-ema-medicines/payload.bin"
+    },
+    {
+      "relative_path": "eu-ema-medicines/receipt.json",
+      "sha256": "b54fc81ac9be1ab32cc7dca35e6506718c7d3b8ec66a1f5144decb5c015c4d95",
+      "size": 8772,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-tables-20261030/resolve/cd49b21eb14e6549c563b56371bc320b25c58d41/eu-ema-medicines/receipt.json"
+    },
+    {
+      "relative_path": "eu-ema-orphan/payload.bin",
+      "sha256": "d6ba7b81647de83364596ca8c0c107acf19071396219e16a987d0f4aa62a6235",
+      "size": 350507,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-tables-20261030/resolve/cd49b21eb14e6549c563b56371bc320b25c58d41/eu-ema-orphan/payload.bin"
+    },
+    {
+      "relative_path": "eu-ema-orphan/receipt.json",
+      "sha256": "8ffdc29b4cd7983f31c991177cb96840ea04b9136c3f050908a419d76d0bddd7",
+      "size": 5421,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-tables-20261030/resolve/cd49b21eb14e6549c563b56371bc320b25c58d41/eu-ema-orphan/receipt.json"
+    },
+    {
+      "relative_path": "eu-ema-referrals/payload.bin",
+      "sha256": "29493767d251004fc7c39e317717a69c8e243e17b3de0cf0d0e32fd5e6ddad5a",
+      "size": 158658,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-tables-20261030/resolve/cd49b21eb14e6549c563b56371bc320b25c58d41/eu-ema-referrals/payload.bin"
+    },
+    {
+      "relative_path": "eu-ema-referrals/receipt.json",
+      "sha256": "26c936a7d5ca75fdd12ae18d5d7d80838793a276af51e8d5f2c5f8827ecd312a",
+      "size": 5386,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-tables-20261030/resolve/cd49b21eb14e6549c563b56371bc320b25c58d41/eu-ema-referrals/receipt.json"
+    },
+    {
+      "relative_path": "rights.json",
+      "sha256": "715a04fe53621ad4c11040ca160756e2271843d85d205524aaf8c6192732d3e1",
+      "size": 744,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-tables-20261030/resolve/cd49b21eb14e6549c563b56371bc320b25c58d41/rights.json"
+    }
+  ]
+}

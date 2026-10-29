@@ -61,7 +61,7 @@ uv run --no-sync python scripts/source_download_batch.py --batch build/selected-
 ```
 
 Each attempt uses existing `acquire_source`: HTTPS destination validation,
-64 MiB default per payload (explicit `max_bytes` may set up to 256 MiB),
+64 MiB default per payload (explicit `max_bytes` may set up to 512 MiB),
 30-second timeout, one attempt and existing response
 checks. The batch runs sequentially. Blocked rows do not prevent eligible rows
 from running; blocked or failed rows produce a nonzero exit status. Each acquired
@@ -114,3 +114,10 @@ followed, and no schedule is installed. Swiss remains unresolved. Australian
 federation, Silver/Gold expansion and Stable v1 remain deferred. This source
 archive execution is a new explicit user-authorized scope, not reopening those
 milestones. See `quality/source-batches/` for the exact source URLs and rights.
+
+For an explicitly qualified large file, `max_bytes` can raise the bounded limit
+without changing the 64 MiB default. Canada Vigilance selects 384 MiB for its
+313,578,432-byte ZIP. `redirect_hosts` admits only explicitly named destination
+hosts alongside the original source host; HTTPS, DNS and private-network checks
+remain active. Temporary signed-query credentials are redacted in HTTP receipts.
+The original public source URI, destination path and content digest are retained.

@@ -1565,3 +1565,13 @@ The report is `docs/qualification/ema-canada-bronze-20261030.md`.
 
 Archive-all does not waive rights, imply every historical version is retained,
 or mark unconfigured/blocked sources archived. No federation work or schedule.
+
+## Clear-rights large-file batch — 30 October 2026
+
+- [x] Canada, EMA tables and Nova Scotia published and anonymously verified;
+  their six exact revisions now populate the canonical archive-all reuse ledger.
+- [x] Resolve the Canada Vigilance size/redirect prerequisites through explicit
+  bounded settings and secret-free HTTP receipt projection.
+- [~] Integrate focused changes and publish this one additional bulk source.
+
+No other source rights or federation acceptance state changes.

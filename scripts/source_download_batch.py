@@ -6,15 +6,22 @@ import argparse
 import csv
 import io
 import json
+import re
 from hashlib import sha256
 from pathlib import Path
 from typing import Literal
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from pydantic import Field
 
 from global_medicines_atlas.acquisition import AcquisitionPolicy, acquire_source
 from global_medicines_atlas.models import FrozenModel
-from global_medicines_atlas.receipts import EvidenceClass, FailureReceipt
+from global_medicines_atlas.receipts import (
+    EvidenceClass,
+    FailureReceipt,
+    HttpRetrievalEvidence,
+    SourceReceipt,
+)
 from global_medicines_atlas.reuse_gate import (
     ReuseDisposition,
     ReuseGateDecision,
@@ -43,7 +50,8 @@ class DownloadSelection(FrozenModel):
     expected_url: str = Field(min_length=1)
     retention_authority_reference: str = ""
     reuse_decision: ReuseGateDecision | None = None
-    max_bytes: int = Field(default=64 * 1024 * 1024, ge=1, le=256 * 1024 * 1024)
+    redirect_hosts: tuple[str, ...] = ()
+    max_bytes: int = Field(default=64 * 1024 * 1024, ge=1, le=512 * 1024 * 1024)
 
 
 def url_inventory(sources: tuple[MedicineDataSource, ...]) -> str:
@@ -86,6 +94,11 @@ def selected_source(
 ) -> MedicineDataSource:
     """Validate the exact endpoint and reuse gate before any network access."""
 
+    if any(
+        not re.fullmatch(r"[a-z0-9]+(?:[.-][a-z0-9]+)*", host)
+        for host in selection.redirect_hosts
+    ):
+        raise ValueError("redirect hosts must be exact public hostnames")
     source = next(s for s in sources if s.source_id == selection.source_id)
     override = next(
         (
@@ -136,6 +149,51 @@ def selected_source(
     )
 
 
+def redact_retrieval_uri(uri: str) -> str:
+    """Retain source identity while removing temporary signed-query credentials."""
+    parsed = urlsplit(uri)
+    sensitive = {
+        "sig",
+        "signature",
+        "token",
+        "access_token",
+        "api_key",
+        "apikey",
+        "key",
+        "x-amz-signature",
+        "x-amz-credential",
+        "x-amz-security-token",
+        "x-goog-signature",
+        "x-goog-credential",
+    }
+    pairs = parse_qsl(parsed.query, keep_blank_values=True)
+    if not any(key.lower() in sensitive for key, _ in pairs):
+        return uri
+    query = urlencode([
+        (key, "REDACTED" if key.lower() in sensitive else value)
+        for key, value in pairs
+    ])
+    return urlunsplit((
+        parsed.scheme,
+        parsed.netloc,
+        parsed.path,
+        query,
+        parsed.fragment,
+    ))
+
+
+def redact_batch_http(http: HttpRetrievalEvidence) -> HttpRetrievalEvidence:
+    """Remove signed-query credentials at the batch receipt write boundary."""
+    document = http.model_dump(mode="json")
+    for key in ("original_uri", "final_uri"):
+        if document[key] is not None:
+            document[key] = redact_retrieval_uri(document[key])
+    document["redirect_history"] = [
+        redact_retrieval_uri(uri) for uri in document["redirect_history"]
+    ]
+    return HttpRetrievalEvidence.model_validate(document)
+
+
 def run_batch(
     selections: tuple[DownloadSelection, ...],
     *,
@@ -174,8 +232,29 @@ def run_batch(
                     catalog=(source,),
                     evidence_class=EvidenceClass.LIVE,
                     reuse_decision=selection.reuse_decision,
-                    policy=AcquisitionPolicy(max_bytes=selection.max_bytes),
+                    policy=AcquisitionPolicy(
+                        max_bytes=selection.max_bytes,
+                        allowed_hosts=(
+                            urlsplit(selection.expected_url).hostname or "",
+                            *selection.redirect_hosts,
+                        ),
+                    ),
                 )
+                if (
+                    isinstance(receipt, SourceReceipt)
+                    and receipt.retrieval.http is not None
+                ):
+                    receipt = receipt.model_copy(
+                        update={
+                            "retrieval": receipt.retrieval.model_copy(
+                                update={
+                                    "http": redact_batch_http(
+                                        receipt.retrieval.http
+                                    )
+                                }
+                            )
+                        }
+                    )
                 directory.mkdir(parents=True, exist_ok=True)
                 (directory / "receipt.json").write_text(
                     receipt.model_dump_json(indent=2) + "\n", encoding="utf-8"
@@ -285,9 +364,12 @@ def resume_batch(
         )
         if row["state"] != "acquired_local":
             continue
-        if json.loads(
-            (saved / "selection.json").read_text()
-        ) != selection.model_dump(mode="json"):
+        if (
+            DownloadSelection.model_validate_json(
+                (saved / "selection.json").read_bytes()
+            )
+            != selection
+        ):
             raise ValueError("existing batch selection differs")
         receipt = json.loads((saved / "receipt.json").read_text())
         if (
