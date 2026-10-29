@@ -1921,3 +1921,44 @@ def test_pbs_live_parent_rejects_drift_and_collision():
     plan["parquet_sha256"] = "0" * 64
     with pytest.raises(ValueError, match="exact candidate"):
         delivery.verify_live_publication_parent(public, plan)
+
+
+def test_pbs_publication_intent_requires_exact_retained_artifact(
+    monkeypatch, tmp_path
+):
+    import io  # ruff: ignore[import-outside-top-level]
+    import zipfile  # ruff: ignore[import-outside-top-level]
+
+    from scripts import pbs_publication_intent as intent  # ruff: ignore[import-outside-top-level]
+
+    monkeypatch.setenv("PUBLICATION_INTENT_ARTIFACT_ID", "99")
+    monkeypatch.setenv("GITHUB_REPOSITORY", intent.REPOSITORY)
+    monkeypatch.setenv("GITHUB_RUN_ID", "123")
+    monkeypatch.setenv("GITHUB_RUN_ATTEMPT", "1")
+    path = tmp_path / "intent.json"
+    path.write_bytes(b'{"candidate":true}\n')
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w") as archive:
+        archive.writestr("intent.json", path.read_bytes())
+    metadata = {
+        "id": 99,
+        "name": "pbs-silver-publication-intent-123-1",
+        "expired": False,
+        "size_in_bytes": len(buffer.getvalue()),
+        "workflow_run": {"id": 123, "head_sha": SHA},
+    }
+
+    def run(command, **_kwargs):
+        if command[-1].endswith("/zip"):
+            return SimpleNamespace(stdout=buffer.getvalue())
+        return SimpleNamespace(stdout=json.dumps(metadata))
+
+    monkeypatch.setattr(intent.subprocess, "run", run)
+    intent.verify_retained_intent(SHA, path)
+    metadata["workflow_run"]["head_sha"] = "b" * 40
+    with pytest.raises(ValueError, match="differs from this run"):
+        intent.verify_retained_intent(SHA, path)
+    metadata["workflow_run"]["head_sha"] = SHA
+    path.write_bytes(b"changed")
+    with pytest.raises(ValueError, match="intent bytes differ"):
+        intent.verify_retained_intent(SHA, path)
