@@ -41,7 +41,7 @@ def test_checked_in_matrix_is_complete_bounded_and_inert() -> None:
 def test_checked_in_dispositions_match_the_review_receipt() -> None:
     matrix = FrontierExperimentMatrix.model_validate(document())
     receipt_path = ROOT / (
-        "quality/qualifications/frontier-experiment-disposition-20261024-2.json"
+        "quality/qualifications/frontier-experiment-disposition-20261029-demo.json"
     )
     receipt = json.loads(receipt_path.read_text())
     receipt_rows = {
