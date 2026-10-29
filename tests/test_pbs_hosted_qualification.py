@@ -2020,3 +2020,83 @@ def test_pbs_hosted_intent_stages_after_parent_readback(monkeypatch, tmp_path):
 
 def intent_repository():
     return "edithatogo/global-medicines-atlas"
+
+
+def test_pbs_append_binds_intent_parent_bytes_and_one_attempt(
+    monkeypatch, tmp_path
+):
+    from scripts import pbs_publication_intent as intent  # ruff: ignore[import-outside-top-level]
+    from scripts import publish_pbs_reproduced as publisher  # ruff: ignore[import-outside-top-level]
+
+    for name, value in {
+        "GITHUB_ACTIONS": "true",
+        "GITHUB_REPOSITORY": intent.REPOSITORY,
+        "GITHUB_REF": "refs/heads/main",
+        "GITHUB_SHA": SHA,
+        "GITHUB_RUN_ID": "123",
+        "GITHUB_RUN_ATTEMPT": "1",
+        "GITHUB_EVENT_NAME": "workflow_dispatch",
+        "RUNNER_TEMP": str(tmp_path),
+        "HF_TOKEN": "synthetic-token",
+    }.items():
+        monkeypatch.setenv(name, value)
+    payload = b"synthetic parquet"
+    monkeypatch.setattr(delivery, "PARQUET_BYTES", len(payload))
+    monkeypatch.setattr(
+        delivery, "PARQUET_SHA256", hashlib.sha256(payload).hexdigest()
+    )
+    candidate, readback, tree = _publication_plan_inputs()
+    observation = json.loads(readback)
+    observation["target_parquet_sha256"] = delivery.PARQUET_SHA256
+    readback = json.dumps(observation).encode()
+    monkeypatch.setattr(
+        delivery, "PUBLIC_READBACK_SHA256", hashlib.sha256(readback).hexdigest()
+    )
+    plan = delivery.build_publication_plan(candidate, readback, tree)
+    document = intent.build_intent(plan)
+    (tmp_path / "intent.json").write_text(json.dumps(document))
+    staged = tmp_path / "candidate/first/values.parquet"
+    staged.parent.mkdir(parents=True)
+    staged.write_bytes(payload)
+    authority = tmp_path / "authority.json"
+    authority.write_text(
+        json.dumps({
+            "schema_id": "global-medicines-atlas.pbs-reproduced-publication-authority",
+            "publication_approved": True,
+            "dataset": delivery.DATASET,
+            "output_id": delivery.OUTPUT_ID,
+            "parquet_sha256": delivery.PARQUET_SHA256,
+            "parquet_bytes": delivery.PARQUET_BYTES,
+            "remote_path": plan["remote_path"],
+        })
+    )
+    monkeypatch.setattr(publisher, "AUTHORITY", authority)
+    monkeypatch.setattr(delivery, "verify_checkout", lambda *_args: None)
+    monkeypatch.setattr(intent, "verify_retained_intent", lambda *_args: None)
+    info = SimpleNamespace(
+        sha=delivery.PUBLIC_PARENT_REVISION,
+        private=False,
+        gated=False,
+        siblings=[SimpleNamespace(rfilename="existing")],
+    )
+    calls = []
+
+    class API:
+        def dataset_info(self, *_args, **_kwargs):
+            return info
+
+        def create_commit(self, **kwargs):
+            calls.append(kwargs)
+            return SimpleNamespace(oid="b" * 40)
+
+    sdk = SimpleNamespace(
+        HfApi=lambda **_kwargs: API(),
+        CommitOperationAdd=lambda **kwargs: kwargs,
+    )
+    ack = publisher.append_once(tmp_path, sdk)
+    assert ack["status"] == "cas_acknowledged_not_yet_verified"
+    assert calls[0]["parent_commit"] == delivery.PUBLIC_PARENT_REVISION
+    assert (tmp_path / "append-attempt.json").is_file()
+    with pytest.raises(ValueError, match="already been attempted"):
+        publisher.append_once(tmp_path, sdk)
+    assert len(calls) == 1
