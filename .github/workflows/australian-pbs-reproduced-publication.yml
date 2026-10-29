@@ -21,7 +21,7 @@ jobs:
     timeout-minutes: 180
     permissions:
       contents: read
-      actions: read
+      actions: read # Authenticate the retained intent and attempt artifacts before append.
     env:
       HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
     steps:
