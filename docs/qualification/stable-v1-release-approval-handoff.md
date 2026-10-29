@@ -199,3 +199,14 @@ approved inventories; no schedules, credentials, federation, Silver/Gold or
 other writer's objects. Next: integrate reusable batch publication and publish
 Canada first, then execute eligible remaining batches. Every catalogue ID must
 receive an explicit outcome; blocked entries cannot count as archived.
+
+### Straightforward large-file follow-up — 30 October 2026
+
+The same chat/worktree now owns `codex/archive-large-public-source`, based on
+`232f0b5c`. All three earlier batches have terminal public receipts (Canada
+`40932305371`, EMA tables `40932493613`, Nova Scotia `40932680599`). Their six
+source outcomes are folded into the canonical reuse manifest here. Scope is
+one remaining clear-rights source, Canada Vigilance: explicit bounded larger-file
+limit and exact official redirect host, signed-query redaction in HTTP receipts,
+and the existing hosted batch publication. No credentials are created, no
+unrestricted redirect policy is enabled, and federation remains deferred.

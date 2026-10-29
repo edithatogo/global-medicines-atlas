@@ -1254,3 +1254,14 @@ def test_batch_resume_rejects_changed_payload(tmp_path):
     (folder / "payload.bin").write_bytes(b"corrupt")
     with pytest.raises(ValueError, match="digest differs"):
         batch.resume_batch((selection,), tmp_path)
+
+
+@pytest.mark.unit
+def test_batch_redirect_allowlist_rejects_wildcards() -> None:
+    selection = batch.DownloadSelection(
+        source_id="test-regulator",
+        expected_url="https://example.test/file",
+        redirect_hosts=("*.example.test",),
+    )
+    with pytest.raises(ValueError, match="exact public hostnames"):
+        batch.selected_source(selection, (catalog_source(),))

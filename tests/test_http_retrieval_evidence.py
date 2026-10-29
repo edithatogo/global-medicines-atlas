@@ -216,3 +216,25 @@ def test_authorization_values_never_enter_retrieval_json(secret: str) -> None:
     assert "Authorization" not in dumped
     evidence = retrieval()
     assert evidence.http is None
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "parameter", ["sig", "X-Amz-Signature", "access_token", "api_key"]
+)
+def test_signed_redirect_credentials_are_not_retained(parameter: str) -> None:
+    signed = f"https://cdn.example.test/archive.zip?{parameter}=secret-signature&version=2026"
+    intermediate = httpx.Response(302, request=httpx.Request("GET", signed))
+    response = httpx.Response(
+        200, request=httpx.Request("GET", signed), history=[intermediate]
+    )
+    evidence = http_retrieval_from_response(
+        response,
+        original_uri=signed,
+        observed_byte_length=3,
+        agent_version="test",
+    )
+    encoded = evidence.model_dump_json()
+    assert "secret-signature" not in encoded
+    assert "REDACTED" in encoded
+    assert "version=2026" in str(evidence.final_uri)

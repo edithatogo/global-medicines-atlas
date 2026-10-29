@@ -1,0 +1,85 @@
+[
+  {
+    "source_id": "ca-canada-vigilance",
+    "surface": "download",
+    "expected_url": "https://open.canada.ca/data/dataset/9cbaef00-b52c-4a70-9fed-d9aa8263ab74/resource/2e736909-ef1f-4d60-bfb6-f15b3be3b1fa/download/extract_extrait.zip",
+    "retention_authority_reference": "quality/source-batches/canada-vigilance-20261030/rights.json",
+    "reuse_decision": {
+      "source_id": "ca-canada-vigilance",
+      "disposition": "acquire-new",
+      "searched_surfaces": [
+        "local_clones",
+        "github",
+        "hugging_face",
+        "source_registry"
+      ],
+      "candidates": [
+        {
+          "surface": "source_registry",
+          "locator": "https://open.canada.ca/data/dataset/9cbaef00-b52c-4a70-9fed-d9aa8263ab74/resource/2e736909-ef1f-4d60-bfb6-f15b3be3b1fa/download/extract_extrait.zip",
+          "source_id": "ca-canada-vigilance",
+          "kind": "registry",
+          "digest": null,
+          "query": null,
+          "revision": null
+        }
+      ],
+      "rationale": "No matching live bulk archive in the checked authorities.",
+      "catalogue_revision": "760723adc9c2f8e8946eebe9bcada7aff212095e",
+      "discovery_snapshot": {
+        "schema_id": "global-medicines-atlas.reuse-discovery",
+        "schema_version": 1,
+        "snapshot_id": "sha256:c20e20205391cf8bd8aae1f3a513e0ab10d862e5404c4f7a94d7d191c31bc2d5",
+        "source_id": "ca-canada-vigilance",
+        "generated_at": "2026-10-29T18:46:12.503098Z",
+        "freshness_seconds": 86400,
+        "expires_at": "2026-10-30T18:46:12.503098Z",
+        "tool_version": "bounded-source-batch-reuse-v1",
+        "surfaces": [
+          {
+            "name": "local_clones",
+            "state": "success",
+            "query": "ca-canada-vigilance, vigilance, extract_extrait.zip",
+            "candidates": [],
+            "detail": "Same-day successful declared repository/dataset tree observations inspected for exact source and bulk filename"
+          },
+          {
+            "name": "github",
+            "state": "success",
+            "query": "ca-canada-vigilance, vigilance, extract_extrait.zip",
+            "candidates": [],
+            "detail": "Same-day successful declared repository/dataset tree observations inspected for exact source and bulk filename"
+          },
+          {
+            "name": "hugging_face",
+            "state": "success",
+            "query": "ca-canada-vigilance, vigilance, extract_extrait.zip",
+            "candidates": [],
+            "detail": "Same-day successful declared repository/dataset tree observations inspected for exact source and bulk filename"
+          },
+          {
+            "name": "source_registry",
+            "state": "success",
+            "query": "ca-canada-vigilance, vigilance, extract_extrait.zip",
+            "candidates": [
+              {
+                "surface": "source_registry",
+                "locator": "https://open.canada.ca/data/dataset/9cbaef00-b52c-4a70-9fed-d9aa8263ab74/resource/2e736909-ef1f-4d60-bfb6-f15b3be3b1fa/download/extract_extrait.zip",
+                "source_id": "ca-canada-vigilance",
+                "kind": "registry",
+                "digest": null,
+                "query": null,
+                "revision": null
+              }
+            ],
+            "detail": "Same-day successful declared repository/dataset tree observations inspected for exact source and bulk filename"
+          }
+        ]
+      }
+    },
+    "redirect_hosts": [
+      "opencanada.blob.core.windows.net"
+    ],
+    "max_bytes": 402653184
+  }
+]

@@ -1,0 +1,61 @@
+{
+  "receipt_version": "1",
+  "plan_sha256": "f5b23144e4efdcc9d8b5fcf107dbbaf5ee908520df6278f0f0b0b606cd943c76",
+  "artifact_sha256": [
+    "729eebea70b51f7db1d4d348f1341427414cebff11d4ffecdbaa34a10a365214",
+    "d8bb108003233435a2fb7c9cfb3a15b8f26962cf1758b80082ad0e4d2203ee98",
+    "f5e4f151a619259bbf9c9f0239f917f36c38935c140aa5b19297ce03b26bfef0",
+    "578b60e0cb0935172548be8bd24ce9f06739697a24008789894b6ba04b170cae",
+    "75f6c448732c6b5e4f19a9f7656d0ebbab3ee509cbd5c3f0a993ddf1f5a01160",
+    "818d63031aee37045079e05baa963f9efd408a76f5aa40aca5ae8364ad6f3e61"
+  ],
+  "target": {
+    "destination": "hugging_face",
+    "repository": "edithatogo/global-medicines-atlas-canada-bronze-20261030",
+    "revision": "main",
+    "public_base_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-canada-bronze-20261030"
+  },
+  "state": "public",
+  "recorded_at": "2026-10-29T18:36:35.864806Z",
+  "remote_revision": "76183e4d8298a582e21d084e0cd895ef7e8ec22e",
+  "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-canada-bronze-20261030/tree/76183e4d8298a582e21d084e0cd895ef7e8ec22e",
+  "failure_reason": null,
+  "verified_artifacts": [
+    {
+      "relative_path": "README.md",
+      "sha256": "729eebea70b51f7db1d4d348f1341427414cebff11d4ffecdbaa34a10a365214",
+      "size": 431,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-canada-bronze-20261030/resolve/76183e4d8298a582e21d084e0cd895ef7e8ec22e/README.md"
+    },
+    {
+      "relative_path": "ca-dpd/payload.bin",
+      "sha256": "d8bb108003233435a2fb7c9cfb3a15b8f26962cf1758b80082ad0e4d2203ee98",
+      "size": 1513654,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-canada-bronze-20261030/resolve/76183e4d8298a582e21d084e0cd895ef7e8ec22e/ca-dpd/payload.bin"
+    },
+    {
+      "relative_path": "ca-dpd/receipt.json",
+      "sha256": "f5e4f151a619259bbf9c9f0239f917f36c38935c140aa5b19297ce03b26bfef0",
+      "size": 9296,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-canada-bronze-20261030/resolve/76183e4d8298a582e21d084e0cd895ef7e8ec22e/ca-dpd/receipt.json"
+    },
+    {
+      "relative_path": "ca-noc/payload.bin",
+      "sha256": "578b60e0cb0935172548be8bd24ce9f06739697a24008789894b6ba04b170cae",
+      "size": 4621340,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-canada-bronze-20261030/resolve/76183e4d8298a582e21d084e0cd895ef7e8ec22e/ca-noc/payload.bin"
+    },
+    {
+      "relative_path": "ca-noc/receipt.json",
+      "sha256": "75f6c448732c6b5e4f19a9f7656d0ebbab3ee509cbd5c3f0a993ddf1f5a01160",
+      "size": 7584,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-canada-bronze-20261030/resolve/76183e4d8298a582e21d084e0cd895ef7e8ec22e/ca-noc/receipt.json"
+    },
+    {
+      "relative_path": "rights.json",
+      "sha256": "818d63031aee37045079e05baa963f9efd408a76f5aa40aca5ae8364ad6f3e61",
+      "size": 1117,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-canada-bronze-20261030/resolve/76183e4d8298a582e21d084e0cd895ef7e8ec22e/rights.json"
+    }
+  ]
+}

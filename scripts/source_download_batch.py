@@ -6,9 +6,11 @@ import argparse
 import csv
 import io
 import json
+import re
 from hashlib import sha256
 from pathlib import Path
 from typing import Literal
+from urllib.parse import urlsplit
 
 from pydantic import Field
 
@@ -43,7 +45,8 @@ class DownloadSelection(FrozenModel):
     expected_url: str = Field(min_length=1)
     retention_authority_reference: str = ""
     reuse_decision: ReuseGateDecision | None = None
-    max_bytes: int = Field(default=64 * 1024 * 1024, ge=1, le=256 * 1024 * 1024)
+    redirect_hosts: tuple[str, ...] = ()
+    max_bytes: int = Field(default=64 * 1024 * 1024, ge=1, le=512 * 1024 * 1024)
 
 
 def url_inventory(sources: tuple[MedicineDataSource, ...]) -> str:
@@ -86,6 +89,11 @@ def selected_source(
 ) -> MedicineDataSource:
     """Validate the exact endpoint and reuse gate before any network access."""
 
+    if any(
+        not re.fullmatch(r"[a-z0-9]+(?:[.-][a-z0-9]+)*", host)
+        for host in selection.redirect_hosts
+    ):
+        raise ValueError("redirect hosts must be exact public hostnames")
     source = next(s for s in sources if s.source_id == selection.source_id)
     override = next(
         (
@@ -174,7 +182,13 @@ def run_batch(
                     catalog=(source,),
                     evidence_class=EvidenceClass.LIVE,
                     reuse_decision=selection.reuse_decision,
-                    policy=AcquisitionPolicy(max_bytes=selection.max_bytes),
+                    policy=AcquisitionPolicy(
+                        max_bytes=selection.max_bytes,
+                        allowed_hosts=(
+                            urlsplit(selection.expected_url).hostname or "",
+                            *selection.redirect_hosts,
+                        ),
+                    ),
                 )
                 directory.mkdir(parents=True, exist_ok=True)
                 (directory / "receipt.json").write_text(
@@ -285,9 +299,12 @@ def resume_batch(
         )
         if row["state"] != "acquired_local":
             continue
-        if json.loads(
-            (saved / "selection.json").read_text()
-        ) != selection.model_dump(mode="json"):
+        if (
+            DownloadSelection.model_validate_json(
+                (saved / "selection.json").read_bytes()
+            )
+            != selection
+        ):
             raise ValueError("existing batch selection differs")
         receipt = json.loads((saved / "receipt.json").read_text())
         if (
