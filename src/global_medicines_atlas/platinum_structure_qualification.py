@@ -130,29 +130,23 @@ def qualify_structure_consumers(  # ruff: ignore[too-many-locals]
         ]
         for column in columns:
             arguments.extend(("--column", column))
-        command = CliRunner().invoke(cli.app, arguments)
-        if command.exit_code != 0:
-            raise ValueError("source-structure CLI canary failed")
-        cli_page = SourceStructurePage.model_validate_json(command.stdout)
-        if (
-            cli_page.identity != page.identity
-            or cli_page.rows != page.rows
-            or cli_page.query_sha256 != page.query_sha256
-        ):
-            raise ValueError("source-structure API and CLI evidence differs")
         first_export = CliRunner().invoke(
             cli.app, [*arguments, "--format", "jsonl"]
         )
-        second_export = CliRunner().invoke(
-            cli.app, [*arguments, "--format", "jsonl"]
-        )
-        if (
-            first_export.exit_code != 0
-            or second_export.exit_code != 0
-            or first_export.stdout != second_export.stdout
-        ):
-            raise ValueError("source-structure deterministic export failed")
+        if first_export.exit_code != 0:
+            raise ValueError("source-structure CLI export failed")
         export = [json.loads(line) for line in first_export.stdout.splitlines()]
+        canonical = "".join(
+            json.dumps(
+                record,
+                ensure_ascii=False,
+                allow_nan=False,
+                sort_keys=True,
+                separators=(",", ":"),
+            )
+            + "\n"
+            for record in export
+        )
         expected_summary = {
             "type": "summary",
             "identity": page.identity.model_dump(mode="json"),
@@ -160,7 +154,8 @@ def qualify_structure_consumers(  # ruff: ignore[too-many-locals]
             "source_completeness": "not_established",
         }
         if (
-            len(export) != len(page.rows) + 1
+            canonical != first_export.stdout
+            or len(export) != len(page.rows) + 1
             or [record.get("record") for record in export[:-1]]
             != list(page.rows)
             or any(

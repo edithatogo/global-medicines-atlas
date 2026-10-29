@@ -1144,3 +1144,13 @@ def test_source_structure_qualification_exercises_actual_consumers(
     assert receipt["consumers"] == ["api_v2", "cli", "atlas"]
     assert receipt["row_count"] == 2
     assert "a/text" not in json.dumps(receipt)
+    repeated = qualification.qualify_structure_consumers(
+        trust_file=trust_file,
+        metadata_root=tmp_path,
+        schema_file=schema_file,
+        resource_id="au.mbs.service-items",
+        columns=("source_field_id", "value"),
+        view="fields",
+        limit=2,
+    )
+    assert repeated["export_sha256"] == receipt["export_sha256"]
