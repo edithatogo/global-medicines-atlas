@@ -9,6 +9,7 @@ from pathlib import Path
 
 import pytest
 from pydantic import ValidationError
+from scripts import publish_ema_snapshot as ema_snapshot
 
 from global_medicines_atlas.publication_transport import (
     APPROVAL_VALUE,
@@ -794,3 +795,52 @@ def test_preparation_script_emits_local_dry_run_only(tmp_path: Path) -> None:
     assert output["plan"]["maintainer_approved"] is False
     assert output["receipt"]["state"] == "prepared"
     assert "token" not in result.stdout.casefold()
+
+
+def test_ema_snapshot_rejects_local_publication(tmp_path: Path) -> None:
+    """The approved snapshot runner rejects local writes before reading bytes."""
+
+    with pytest.MonkeyPatch.context() as patch:
+        patch.delenv("GITHUB_ACTIONS", raising=False)
+        with pytest.raises(ValueError, match="Actions dispatch"):
+            ema_snapshot.main([
+                "--artifact",
+                str(tmp_path / "missing"),
+                "--output",
+                str(tmp_path / "output"),
+                "--publish",
+            ])
+    assert not (tmp_path / "output").exists()
+
+
+def test_ema_snapshot_binds_restored_payload(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A changed source artifact cannot enter the approved upload package."""
+    evidence = tmp_path / "evidence"
+    evidence.mkdir()
+    artifact_root = tmp_path / "artifact"
+    source = artifact_root / ema_snapshot.PAYLOAD
+    source.parent.mkdir(parents=True)
+    source.write_bytes(b"approved")
+    for name in ("README.md", "retrieval.json"):
+        (evidence / name).write_bytes(name.encode())
+    (evidence / "medicines.json").write_bytes(b"approved")
+    approved = PublicationPlan(
+        release_version="test",
+        target=target(),
+        artifacts=bind_artifacts(
+            evidence, ("README.md", "medicines.json", "retrieval.json")
+        ),
+    )
+    (evidence / "publication-plan.json").write_text(
+        approved.model_dump_json(), encoding="utf-8"
+    )
+    monkeypatch.setattr(ema_snapshot, "EVIDENCE", evidence)
+    assert (
+        ema_snapshot.prepare_snapshot(artifact_root, tmp_path / "valid")
+        == approved
+    )
+    source.write_bytes(b"changed")
+    with pytest.raises(ValueError, match="approved snapshot"):
+        ema_snapshot.prepare_snapshot(artifact_root, tmp_path / "invalid")

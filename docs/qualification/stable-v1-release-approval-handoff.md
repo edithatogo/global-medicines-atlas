@@ -170,3 +170,18 @@ other writer remain untouched. Native scope is offline generation and synthetic
 network tests; no additional live source acquisition, publication or schedule.
 Next operation: finish the updated PR's protected CI and integrate this bounded
 packet. Existing Swiss and EMA publication blockers retain their dispositions.
+
+### EMA publication and next small batch — 30 October 2026
+
+Chat `01a18773-f302-7e83-ba8c-816fcea9d3f1` owns the same managed worktree on
+`codex/ema-publication-next-batch`, based on merged main `b84fabae`.
+The maintainer now explicitly authorizes EMA publication and another small
+straightforward source batch. Native write scope is only public dataset
+`edithatogo/global-medicines-atlas-ema-bronze-20261029`, through Actions, with
+unchanged approved EMA source bytes and exact three-file readback. The approved
+payload is already retained in Actions run `40873191471`; its digest matches the
+local candidate. Next-source acquisition is bounded to two Health Canada bulk
+files after rights and reuse checks; no next-batch public write or schedule.
+Swiss and federation are read-only blocker assessments. Other writers and native
+scopes remain unchanged. Next operation: prepare the hosted exact-snapshot
+publication and execute the shared download command for the bounded next batch.
