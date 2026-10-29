@@ -4,13 +4,22 @@ from __future__ import annotations
 
 import json
 import os
+from pathlib import Path
 
 import httpx
 import pytest
 from pydantic import ValidationError
 from test_platinum_configuration import configuration
-from test_platinum_query import parquet_payload
+from test_platinum_query import (
+    native_field_collection_payload,
+    parquet_payload,
+    resolver,
+)
 
+from global_medicines_atlas import cli
+from global_medicines_atlas import (
+    platinum_structure_qualification as qualification,
+)
 from global_medicines_atlas.platinum_delivery_qualification import (
     DeliveryQualificationError,
     DeliveryRequest,
@@ -192,3 +201,45 @@ def test_cli_and_http_resolvers_close_on_success_unavailable_and_query_failure(
     else:
         run(tmp_path, (request,))
     assert closed == [0] * closed_count
+
+
+def test_source_structure_qualification_renders_in_chromium(
+    monkeypatch, tmp_path
+):
+    from playwright.sync_api import BrowserType  # ruff: ignore[import-outside-top-level]
+
+    browser_path = Path(
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+    )
+    if browser_path.is_file():
+        original = BrowserType.launch
+
+        def launch(self, **kwargs):
+            return original(self, executable_path=browser_path, **kwargs)
+
+        monkeypatch.setattr(BrowserType, "launch", launch)
+
+    def loader(**_kwargs):
+        return resolver(
+            native_field_collection_payload(),
+            semantic_dimension="source_structure",
+        )
+
+    monkeypatch.setattr(qualification, "load_benefits_resolver", loader)
+    monkeypatch.setattr(cli, "_dataset_resolver_loader", lambda: loader)
+    trust_file = tmp_path / "trust.json"
+    schema_file = tmp_path / "schema.json"
+    trust_file.write_text("{}")
+    schema_file.write_text("{}")
+    receipt = qualification.qualify_structure_consumers(
+        trust_file=trust_file,
+        metadata_root=tmp_path,
+        schema_file=schema_file,
+        resource_id="au.mbs.service-items",
+        columns=("source_field_id", "value"),
+        view="fields",
+        limit=2,
+        browser=True,
+    )
+    assert receipt["browser_qualification"] == "passed"
+    assert receipt["browser_evidence"][0]["row_count"] == 2
