@@ -2030,7 +2030,7 @@ def intent_repository():
     return "edithatogo/global-medicines-atlas"
 
 
-def test_pbs_append_binds_intent_parent_bytes_and_one_attempt(  # ruff: ignore[too-many-locals]
+def test_pbs_append_binds_intent_parent_bytes_and_one_attempt(  # ruff: ignore[too-many-locals, too-many-statements]
     monkeypatch, tmp_path
 ):
     from scripts import pbs_publication_intent as intent  # ruff: ignore[import-outside-top-level]
@@ -2104,6 +2104,14 @@ def test_pbs_append_binds_intent_parent_bytes_and_one_attempt(  # ruff: ignore[t
         CommitOperationAdd=lambda **kwargs: kwargs,
     )
     publisher.prepare_attempt(tmp_path)
+    approved = json.loads(authority.read_text())
+    denied = {**approved, "publication_approved": False}
+    authority.write_text(json.dumps(denied))
+    with pytest.raises(ValueError, match="publication authority"):
+        publisher.append_once(tmp_path, sdk)
+    assert calls == []
+    assert not (tmp_path / "append-started.json").exists()
+    authority.write_text(json.dumps(approved))
     ack = publisher.append_once(tmp_path, sdk)
     assert ack["status"] == "cas_acknowledged_not_yet_verified"
     assert calls[0]["parent_commit"] == delivery.PUBLIC_PARENT_REVISION
