@@ -31,8 +31,8 @@
   },
   "schema_id": "global-medicines-atlas.b0-source-index",
   "schema_version": 1,
-  "snapshot_id": "sha256:798fe76e7a92e19f825c10b32af504408751c89815690ac006c8e53e327f42cb",
-  "snapshot_sha256": "798fe76e7a92e19f825c10b32af504408751c89815690ac006c8e53e327f42cb",
+  "snapshot_id": "sha256:ceed95616db6360f715ed6f291404d6d2cc17047901ad92ed29eff8daaaa46e0",
+  "snapshot_sha256": "ceed95616db6360f715ed6f291404d6d2cc17047901ad92ed29eff8daaaa46e0",
   "source_count": 176,
   "sources": [
     {
@@ -1048,7 +1048,7 @@
       "current_landing_disposition": "rights_blocked",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://open.canada.ca/data/en/dataset/e49db542-48db-8656-c4d5-f1f32516ddad",
-      "download_url": "https://open.canada.ca/data/en/dataset/e49db542-48db-8656-c4d5-f1f32516ddad",
+      "download_url": "https://data.novascotia.ca/api/views/wyjy-2gt4/rows.csv?accessType=DOWNLOAD",
       "evidence_scope": "none",
       "expected_formats": [
         "csv",
@@ -1779,7 +1779,7 @@
       "current_landing_disposition": "landed_and_evidenced",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.ema.europa.eu/en/medicines",
-      "download_url": "https://www.ema.europa.eu/en/medicines/download-medicine-data",
+      "download_url": "https://www.ema.europa.eu/en/documents/report/medicines-output-medicines-report_en.xlsx",
       "evidence_scope": "governed_fixture",
       "expected_formats": [
         "source_native"
@@ -1821,7 +1821,7 @@
       "current_landing_disposition": "rights_blocked",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.ema.europa.eu/en/human-regulatory-overview/orphan-designation-overview",
-      "download_url": "https://www.ema.europa.eu/en/medicines/download-medicine-data",
+      "download_url": "https://www.ema.europa.eu/en/documents/report/medicines-output-orphan_designations-report_en.xlsx",
       "evidence_scope": "none",
       "expected_formats": [
         "xlsx",
@@ -1903,7 +1903,7 @@
       "current_landing_disposition": "rights_blocked",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.ema.europa.eu/en/medicines/download-medicine-data",
-      "download_url": "https://www.ema.europa.eu/en/medicines/download-medicine-data",
+      "download_url": "https://www.ema.europa.eu/en/documents/report/medicines-output-referrals-report_en.xlsx",
       "evidence_scope": "none",
       "expected_formats": [
         "xlsx",

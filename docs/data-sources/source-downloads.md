@@ -80,13 +80,37 @@ uv run --no-sync python scripts/qualify_bronze_receipt_cohort.py
 uv run --no-sync python scripts/qualify_stable_v1_measured_coverage.py
 ```
 
-## Completion boundary for this change
+## Archive-all execution
 
-Done means the all-source URL table regenerates, selected sources use the shared
-acquirer, blocked and failed rows remain explicit, and focused tests and protected
-CI pass. It does not mean all sources have been acquired or all APIs enabled.
-Swiss/EMA remains the only authorized live acquisition batch. The existing EMA
-local candidate is reused; this implementation does not fetch it again. Swiss
-still needs a reliable official export identity and applicable data rights.
-The exact EMA publication decision remains separate; the batch command cannot
-publish. Australian federation, Silver/Gold expansion and Stable v1 stay deferred.
+The maintainer authorized archive-all execution on 30 October 2026. Run the
+finite shared manifest across the complete current catalogue:
+
+```sh
+.venv/bin/python scripts/source_download_batch.py \
+  --archive-all quality/source-batches/archive-all.json \
+  --output build/archive-all-20261030/acquisition --execute
+```
+
+Every catalogue ID appears in `archive-all-results.json`. Configured eligible
+batches execute; exact historical archives are reused with their original scope;
+unconfigured sources retain `needs_source_review` and the existing reason/action.
+Neither fixtures nor HTML landing pages qualify as bulk dataset archives.
+`acquired_local` is distinct from public publication, and a completed inventory
+scan is not an all-sources-archived claim. Existing successful batch folders are
+resumed only after selection and payload hashes match; failures are retained
+without implicit retries. Use a fresh explicit batch for a justified recovery.
+
+Approved finite batches publish through `source-batch-publication.yml` on exact
+main, using existing acquisition and publication machinery. Canadian payload
+hashes are pinned to the already approved snapshots. New public bulk captures
+are limited to the explicit batch inventories and documented rights. A dataset
+already existing at the target causes failure rather than replacement. Inspect
+intent, target revision and receipts before any recovery; never blindly rerun a
+publication. Anonymous digest verification at the resulting revision is required.
+
+The first order is Canada (DPD marketed and NOC), EMA spreadsheets, then Nova
+Scotia formulary CSV. No API pagination is inferred, no linked documents are
+followed, and no schedule is installed. Swiss remains unresolved. Australian
+federation, Silver/Gold expansion and Stable v1 remain deferred. This source
+archive execution is a new explicit user-authorized scope, not reopening those
+milestones. See `quality/source-batches/` for the exact source URLs and rights.

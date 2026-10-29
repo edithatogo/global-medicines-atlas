@@ -676,7 +676,7 @@
         "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
         "acquisition_profile": "public-bulk",
         "credentials_persisted": false,
-        "endpoint": "https://open.canada.ca/data/en/dataset/e49db542-48db-8656-c4d5-f1f32516ddad",
+        "endpoint": "https://data.novascotia.ca/api/views/wyjy-2gt4/rows.csv?accessType=DOWNLOAD",
         "family": "static_file_download",
         "formats": [
           "csv",
@@ -1151,7 +1151,7 @@
         "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
         "acquisition_profile": "public-bulk",
         "credentials_persisted": false,
-        "endpoint": "https://www.ema.europa.eu/en/medicines/download-medicine-data",
+        "endpoint": "https://www.ema.europa.eu/en/documents/report/medicines-output-medicines-report_en.xlsx",
         "family": "static_file_download",
         "formats": [
           "source_native"
@@ -1179,7 +1179,7 @@
         "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
         "acquisition_profile": "public-bulk",
         "credentials_persisted": false,
-        "endpoint": "https://www.ema.europa.eu/en/medicines/download-medicine-data",
+        "endpoint": "https://www.ema.europa.eu/en/documents/report/medicines-output-orphan_designations-report_en.xlsx",
         "family": "static_file_download",
         "formats": [
           "xlsx",
@@ -1233,7 +1233,7 @@
         "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
         "acquisition_profile": "public-bulk",
         "credentials_persisted": false,
-        "endpoint": "https://www.ema.europa.eu/en/medicines/download-medicine-data",
+        "endpoint": "https://www.ema.europa.eu/en/documents/report/medicines-output-referrals-report_en.xlsx",
         "family": "static_file_download",
         "formats": [
           "xlsx",

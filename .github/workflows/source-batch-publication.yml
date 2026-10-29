@@ -1,0 +1,61 @@
+name: Publish approved source batch
+
+on:
+  workflow_dispatch:
+    inputs:
+      batch_id:
+        description: Committed approved batch directory name
+        required: true
+        type: string
+      exact_commit:
+        description: Exact main commit
+        required: true
+        type: string
+      confirmation:
+        description: Enter publish-approved-source-batch
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: source-batch-publication
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Acquire publish and verify approved batch
+    if: github.ref == 'refs/heads/main' && inputs.confirmation == 'publish-approved-source-batch'
+    environment: production
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Execute exact committed batch
+        env:
+          BATCH_ID: ${{ inputs.batch_id }}
+          EXACT_COMMIT: ${{ inputs.exact_commit }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          GMA_PUBLICATION_ENVIRONMENT: production
+          GMA_MAINTAINER_PUBLICATION_APPROVED: yes-i-approve-publication
+        run: |
+          [[ "$BATCH_ID" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]] || exit 1
+          uv run --locked --python 3.15.1 --with huggingface-hub==1.19.0 \
+            python -m scripts.publish_source_batch \
+            --manifest "quality/source-batches/$BATCH_ID/manifest.json" \
+            --output "build/source-publication/$BATCH_ID" \
+            --exact-commit "$EXACT_COMMIT"
+      - name: Preserve acquisition and publication receipts
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: source-batch-receipts
+          path: |
+            build/source-publication/**/publication-receipts/*.json
+            build/source-publication/**/acquisition/**/*.json
+          if-no-files-found: warn
+          retention-days: 90

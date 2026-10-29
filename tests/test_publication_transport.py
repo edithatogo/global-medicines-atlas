@@ -8,6 +8,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
+import scripts.publish_source_batch as source_publisher
 from pydantic import ValidationError
 from scripts import publish_ema_snapshot as ema_snapshot
 
@@ -844,3 +845,50 @@ def test_ema_snapshot_binds_restored_payload(
     source.write_bytes(b"changed")
     with pytest.raises(ValueError, match="approved snapshot"):
         ema_snapshot.prepare_snapshot(artifact_root, tmp_path / "invalid")
+
+
+def test_shared_publisher_rejects_local_execution(tmp_path, monkeypatch):
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    with pytest.raises(ValueError, match="Actions dispatch"):
+        source_publisher.publish_batch(
+            tmp_path / "missing.json", tmp_path / "out", "a" * 40
+        )
+    assert not (tmp_path / "out").exists()
+
+
+def test_shared_publisher_rejects_snapshot_drift(tmp_path, monkeypatch):
+    monkeypatch.setattr(source_publisher, "ROOT", tmp_path)
+    monkeypatch.setattr(source_publisher, "require_hosted_main", lambda _: None)
+    evidence = tmp_path / "quality/source-batches/example"
+    evidence.mkdir(parents=True)
+    manifest = evidence / "manifest.json"
+    manifest.write_text(
+        json.dumps({
+            "publication_approved": True,
+            "expected_payloads": {
+                "test-source": {"sha256": "a" * 64, "byte_count": 1}
+            },
+        })
+    )
+    (evidence / "batch.json").write_text(
+        json.dumps([
+            {
+                "source_id": "test-source",
+                "expected_url": "https://example.test/file",
+            }
+        ])
+    )
+    output = tmp_path / "build/run"
+
+    def acquired(*_args, **_kwargs):
+        folder = output / "acquisition/test-source"
+        folder.mkdir(parents=True)
+        (folder / "receipt.json").write_text(
+            json.dumps({"payload": {"sha256": "b" * 64, "byte_count": 1}})
+        )
+        return [{"source_id": "test-source", "state": "acquired_local"}]
+
+    monkeypatch.setattr(source_publisher, "run_batch", acquired)
+    with pytest.raises(ValueError, match="approved snapshot changed"):
+        source_publisher.publish_batch(manifest, output, "a" * 40)
+    assert not (output / "publication-receipts/intent.json").exists()

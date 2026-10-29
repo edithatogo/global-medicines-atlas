@@ -2120,7 +2120,7 @@
       "discovery_status": "declaration_verified",
       "implemented_ingestion": false,
       "evidence_limit": "Source semantics, rights, currency and completeness require receipt-backed qualification.",
-      "download_url": "https://open.canada.ca/data/en/dataset/e49db542-48db-8656-c4d5-f1f32516ddad",
+      "download_url": "https://data.novascotia.ca/api/views/wyjy-2gt4/rows.csv?accessType=DOWNLOAD",
       "interface_status": "documented_download",
       "formats": [
         "csv",
@@ -3111,7 +3111,7 @@
       "dimension": "regulatory",
       "access_mode": "download",
       "landing_page": "https://www.ema.europa.eu/en/medicines",
-      "download_url": "https://www.ema.europa.eu/en/medicines/download-medicine-data",
+      "download_url": "https://www.ema.europa.eu/en/documents/report/medicines-output-medicines-report_en.xlsx",
       "update_cadence": "periodic",
       "rights_status": "review_required",
       "readiness": "implemented",
@@ -3210,7 +3210,7 @@
       ],
       "qualification_state": "declared",
       "qualification_references": [],
-      "download_url": "https://www.ema.europa.eu/en/medicines/download-medicine-data",
+      "download_url": "https://www.ema.europa.eu/en/documents/report/medicines-output-orphan_designations-report_en.xlsx",
       "acquisition_profile": "public-bulk"
     },
     {
@@ -3321,7 +3321,7 @@
       ],
       "qualification_state": "declared",
       "qualification_references": [],
-      "download_url": "https://www.ema.europa.eu/en/medicines/download-medicine-data",
+      "download_url": "https://www.ema.europa.eu/en/documents/report/medicines-output-referrals-report_en.xlsx",
       "acquisition_profile": "public-bulk"
     },
     {
