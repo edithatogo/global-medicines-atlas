@@ -22,7 +22,7 @@ SCHEMA = (
 def validate_receipt(receipt: dict[str, Any], schema: dict[str, Any]) -> None:
     """Validate schema and bind both HEAD URLs to the exact linked workbook."""
     Draft202012Validator.check_schema(schema)
-    Draft202012Validator(schema, format_checker=FormatChecker()).validate(
+    Draft202012Validator(schema, format_checker=FormatChecker()).validate(  # pyright: ignore[reportUnknownMemberType]
         receipt
     )
     page = receipt["official_page"]
