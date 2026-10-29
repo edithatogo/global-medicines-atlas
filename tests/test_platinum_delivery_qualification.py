@@ -271,6 +271,14 @@ def test_source_structure_qualification_checks_bounds_and_consumer_agreement(
     assert result["consumers"] == ["api_v2", "cli", "atlas"]
     assert result["browser_qualification"] == "not_run"
     assert result["row_count"] == 2
+    monkeypatch.setattr(
+        qualification, "_qualify_browser_pages", lambda *_a, **_k: []
+    )
+    with pytest.raises(ValueError, match="browser evidence is incomplete"):
+        qualification.qualify_structure_consumers(**{
+            **options,
+            "browser": True,
+        })
     with pytest.raises(ValueError, match="outside its bounds"):
         qualification.qualify_structure_consumers(**{**options, "limit": 0})
     with pytest.raises(ValueError, match="API canary failed"):
