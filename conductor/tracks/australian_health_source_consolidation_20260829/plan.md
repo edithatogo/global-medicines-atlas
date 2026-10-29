@@ -1352,9 +1352,37 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
 - [x] Rebuild the M-107 crosswalk from its pinned inputs; 19 focused and 89
   broader affected tests pass, as do BasedPyright on the validator, Ruff,
   formatting, and `git diff --check`.
-- [~] PR #1170 exact-head hosted checks and review-thread resolution remain
-  pending. M-107 remains blocked by unresolved schedule identities, source
-  rights, and historical denominator requirements.
+- [x] PR #1170 exact-head hosted checks passed on
+  `3be86de7385e92c6a88ca15ea579f119a78a6c92`; automated review thread
+  #4307293512 is resolved and squash merge
+  `c34de556925b964e64b647010d0c399967790d62` is on `main`.
+- [~] M-107 remains blocked by unresolved schedule identities, source rights,
+  and historical denominator requirements.
+
+## M-106 annual workbook local transport readback (2026-10-19)
+
+- [x] Re-read the current official annual statistics page and its linked
+  attachment metadata. The page describes 2009-10 through 2025-26, but its
+  attachment filename identifies 2009-10 through 2024-25. Preserve the exact
+  page response digest, HTTP validators, attachment URL, and HEAD metadata in
+  `quality/qualifications/australian-mbs-m106-annual-workbook-head-readback-20261019.json`.
+- [x] Verify that local-shell transport returns HTTP 200 and an XLSX content
+  length after earlier hosted GET timeouts. No workbook body was requested or
+  read; the filename/page mismatch and prior owner receipt-only state remain
+  explicit.
+- [x] Add a strict JSON Schema and regression that reject any receipt claiming
+  workbook-body bytes, acquisition, a source-rights change, patient denominator
+  qualification, or M-106 acceptance. Run focused, broader, and routine checks.
+- [~] Keep the workbook unacquired until substantive owner clarification and
+  applicable rights preconditions are satisfied. HEAD reachability does not
+  resolve the workbook period, patient-count semantics, suppression, or reuse
+  terms; M-106 remains blocked.
+- [~] PR #1172 review correction binds the recorded HEAD request and final URL
+  to the exact page attachment, with mismatched-target negative controls. The
+  requested page-body capture is held: the Department's posted website terms
+  restrict reproduction on another website without express written permission,
+  and the targeted copyright inquiry has only a receipt acknowledgement.
+  M-106 remains blocked; no page body or workbook payload is published.
 
 ## M-112 July refresh source-report binding review correction (2026-10-18)
 
@@ -1420,3 +1448,11 @@ coverage, new sources/terminology, and optional experiments remain deferred.
 This scheduling direction changes no acceptance criterion, current M-105/M-107
 disposition, or conditional release approval; current states come from the
 authoritative contract, reconciliation, and bound receipts.
+
+### PR #1172 page observation review disposition (2026-10-29)
+
+- [x] Treat the page title, date, period and attachment link as unverified
+  historical observations. The original body is unavailable; its digest cannot
+  validate extracted fields. The receipt schema prevents a verified claim and
+  the validator checks only the recorded shape and HEAD URL consistency. No
+  independent page evidence, M-106 acceptance, rights or acquisition is claimed.
