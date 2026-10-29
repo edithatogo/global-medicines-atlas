@@ -11,6 +11,7 @@ import argparse
 import hashlib
 import json
 import os
+import subprocess  # ruff: ignore[suspicious-subprocess-import]
 import sys
 from pathlib import Path
 from typing import Any
@@ -60,9 +61,24 @@ def validate_candidate_identity(package: dict[str, Any]) -> None:
         raise ValueError("PBS candidate differs from the attested exact output")
 
 
+def verify_checkout(exact_commit: str) -> None:
+    """Reject a checkout that differs from the declared Actions commit."""
+    result = subprocess.run(
+        ["git", "rev-parse", "HEAD"],  # ruff: ignore[start-process-with-partial-path] -- trusted Git executable
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+        timeout=10,
+    )
+    if result.stdout.strip() != exact_commit:
+        raise ValueError("PBS checkout does not match the Actions commit")
+
+
 def prepare(exact_commit: str, output: Path) -> dict[str, Any]:
     """Rebuild and retain the exact candidate without publication or admission."""
     context = hosted._context(exact_commit)  # pyright: ignore[reportPrivateUsage] -- reuse the exact hosted guard
+    verify_checkout(exact_commit)
     runner_temp = os.environ.get("RUNNER_TEMP")
     if not runner_temp:
         raise ValueError("RUNNER_TEMP is required")

@@ -1643,6 +1643,7 @@ def _stub_delivery_preparation(monkeypatch, tmp_path, *, tamper=False):
     monkeypatch.setenv("GITHUB_RUN_ID", "1")
     monkeypatch.setenv("GITHUB_RUN_ATTEMPT", "1")
     monkeypatch.setenv("RUNNER_TEMP", str(tmp_path))
+    monkeypatch.setattr(delivery, "verify_checkout", lambda _commit: None)
     attestation = tmp_path / "rights.json"
     attestation.write_text(
         json.dumps({
@@ -1754,3 +1755,13 @@ def test_reproduced_delivery_rejects_wrong_attestation(monkeypatch, tmp_path):
     with pytest.raises(ValueError, match="rights attestation"):
         delivery.prepare(SHA, tmp_path / "candidate")
     assert not (tmp_path / "candidate").exists()
+
+
+def test_reproduced_delivery_rejects_checkout_mismatch(monkeypatch):
+    monkeypatch.setattr(
+        delivery.subprocess,
+        "run",
+        lambda *_args, **_kwargs: SimpleNamespace(stdout="b" * 40),
+    )
+    with pytest.raises(ValueError, match="checkout does not match"):
+        delivery.verify_checkout(SHA)
