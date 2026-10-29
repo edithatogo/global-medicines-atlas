@@ -1499,3 +1499,20 @@ coverage, new sources/terminology, and optional experiments remain deferred.
 This scheduling direction changes no acceptance criterion, current M-105/M-107
 disposition, or conditional release approval; current states come from the
 authoritative contract, reconciliation, and bound receipts.
+
+## Bounded Swiss/EMA direct-download batch — 29 October 2026
+
+- [x] Inspect exactly `ch-foph-specialities` and `eu-ema-json`; record official
+  URLs, rights findings and explicit bounds in
+  `docs/qualification/swiss-ema-direct-download-batch.md`.
+- [x] Retrieve one unchanged EMA medicines index using existing machinery,
+  parse JSON, verify written bytes and bind the exact publication plan.
+  117 existing retrieval/publication tests and context validation passed.
+- [x] Record Swiss HEAD 200 with missing official index links and unresolved
+  data-specific rights; no Swiss payload retained or source admission claimed.
+- [ ] Obtain exact EMA publication decision, execute through hosted Actions and
+  verify anonymous remote digests. Stop after that result; do not enable a
+  schedule, fetch linked documents or start backfills/Silver/Gold/federation.
+
+This bounded preparation does not close the overall source landing track or
+change its qualified/deferred denominators.

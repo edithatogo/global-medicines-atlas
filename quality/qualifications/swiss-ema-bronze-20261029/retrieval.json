@@ -1,0 +1,15 @@
+{
+  "source_id": "eu-ema-json",
+  "uri": "https://www.ema.europa.eu/en/documents/report/medicines-output-medicines_json-report_en.json",
+  "retrieved_at": "2026-10-29T12:09:08.188348+00:00",
+  "sha256": "fe0bc6f7dea44ef112d7dac1ad63797132c674a1baeadc93f5775c68897ac76f",
+  "byte_count": 6795698,
+  "content_type": "application/json",
+  "attempts": 1,
+  "top_level_type": "dict",
+  "top_level_count": 2,
+  "byte_readback_verified": true,
+  "publication_state": "not_uploaded",
+  "rights_assessment": "proposed EMA attribution terms; maintainer publication decision pending",
+  "linked_documents_downloaded": 0
+}
