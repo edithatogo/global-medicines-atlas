@@ -31,6 +31,15 @@ from global_medicines_atlas.source_catalog import load_source_catalog
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def copy_source_objects(source: Path, target: Path, count: int) -> None:
+    """Preserve every selected native object and its own receipt."""
+    for index in range(count):
+        relative = Path() if index == 0 else Path("objects") / f"{index:04d}"
+        (target / relative).mkdir(parents=True, exist_ok=True)
+        for name in ("payload.bin", "receipt.json"):
+            shutil.copyfile(source / relative / name, target / relative / name)
+
+
 def publish_batch(manifest_path: Path, output: Path, exact_commit: str) -> int:
     """Publish only a committed, approved batch; stop before writes on drift."""
     require_hosted_main(exact_commit)
@@ -69,8 +78,9 @@ def publish_batch(manifest_path: Path, output: Path, exact_commit: str) -> int:
             )
         target = package / selection.source_id
         target.mkdir()
-        for name in ("payload.bin", "receipt.json"):
-            shutil.copyfile(source / name, target / name)
+        copy_source_objects(
+            source, target, 1 + len(selection.additional_download_urls)
+        )
     for name in ("README.md", "rights.json"):
         shutil.copyfile(manifest_path.parent / name, package / name)
     paths = tuple(

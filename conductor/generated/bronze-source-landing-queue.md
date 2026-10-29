@@ -9,9 +9,9 @@ Silver transformations included: **no**.
 
 - `landed_and_evidenced`: 42
 - `temporarily_unavailable`: 1
-- `rights_blocked`: 27
+- `rights_blocked`: 35
 - `credentialed_and_excluded`: 15
-- `manual_only_documented_acquisition`: 91
+- `manual_only_documented_acquisition`: 83
 - `superseded_by_reused_source`: 0
 - `not_yet_implemented`: 0
 
@@ -22,6 +22,7 @@ Silver transformations included: **no**.
 - [x] `au-mbs-p7-legacy-workbook` — `landed_and_evidenced`; Keep the workbook deferred until a source-origin retrieval from the pinned donor Git commit is recorded under the rights and reuse gates with a typed B1 receipt, acquisition event, chronological landed-to-accepted admission, and exact B2 reference or retained bytes. Re-evaluate the direct receipt cohort after that evidence exists. Keep the legacy date profile unset and M-112 federation acceptance separate..
 - [x] `au-pbs-historical-xml` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `au-tga-regulatory-events` — `rights_blocked`; record source-specific retention and transformation rights.
+- [ ] `br-anvisa-medicines` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `br-cmed-prices` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `ca-noc` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `ca-nova-scotia-pharmacare` — `rights_blocked`; record source-specific retention and transformation rights.
@@ -30,6 +31,7 @@ Silver transformations included: **no**.
 - [ ] `ch-swissmedic-aips` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `ch-swissmedic-authorised` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `co-invima-cum` — `rights_blocked`; record source-specific retention and transformation rights.
+- [ ] `co-invima-register` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `eu-ema-article57` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `eu-ema-json` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `eu-ema-medicines` — `landed_and_evidenced`; verify receipt freshness on schedule.
@@ -42,6 +44,7 @@ Silver transformations included: **no**.
 - [x] `gb-nhs-drug-tariff` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `global-who-wla` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `in-nlem` — `rights_blocked`; record source-specific retention and transformation rights.
+- [ ] `jp-mhlw-ndb-utilisation` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `jp-mhlw-nhi-price` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `kr-hira-atc` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `kr-hira-standard-code` — `rights_blocked`; record source-specific retention and transformation rights.
@@ -51,6 +54,9 @@ Silver transformations included: **no**.
 - [x] `nz-pharmac-schedule-xml` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `se-npl-nsl` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `se-socialstyrelsen-utilisation` — `landed_and_evidenced`; Characterize the exact source result schema and broader period/geography coverage only under applicable authorization; do not infer OTC or hospital-administered use, complete Swedish utilisation, public release, or project licence approval..
+- [ ] `se-tlv-subsidies` — `rights_blocked`; record source-specific retention and transformation rights.
+- [ ] `us-cms-mdrp` — `rights_blocked`; record source-specific retention and transformation rights.
+- [ ] `us-cms-nadac` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `us-cms-partd-formulary` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `us-cms-partd-spending` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `za-national-eml` — `rights_blocked`; record source-specific retention and transformation rights.
@@ -58,6 +64,7 @@ Silver transformations included: **no**.
 
 ## `archive_release`
 
+- [ ] `br-conitec-decisions` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `ca-canada-vigilance` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `ca-cihi-nhex-medicines` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `fr-open-medic` — `landed_and_evidenced`; verify receipt freshness on schedule.
@@ -75,6 +82,7 @@ Silver transformations included: **no**.
 - [x] `eu-ema-pms-fhir` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
 - [ ] `gb-openprescribing` — `temporarily_unavailable`; wait for a provider-supported automated route or material access-control change before one bounded retry; do not bypass challenges, crawl unboundedly, or substitute upstream files.
 - [x] `nz-nzhts-fhir` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
+- [ ] `sg-hsa-register` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `us-dailymed-spl` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `us-drugsfda` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `us-openfda-drugsfda` — `landed_and_evidenced`; verify receipt freshness on schedule.
@@ -90,12 +98,9 @@ Silver transformations included: **no**.
 - [x] `au-artg` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `au-tga-daen` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `bh-moh-drug-prices` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
-- [ ] `br-anvisa-medicines` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
-- [ ] `br-conitec-decisions` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `ca-cda-recommendations` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `ch-foph-specialities` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `cl-isp-register` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
-- [ ] `co-invima-register` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `de-bfarm-amice` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `dk-medicinpriser` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `dk-medstat-utilisation` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
@@ -116,7 +121,6 @@ Silver transformations included: **no**.
 - [ ] `in-cdsco-products` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `in-procurement-availability` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [x] `in-pvpi-safety` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
-- [ ] `jp-mhlw-ndb-utilisation` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [x] `jp-pmda-approvals` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `jp-pmda-package-inserts` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `ke-ppb-register` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
@@ -144,9 +148,7 @@ Silver transformations included: **no**.
 - [ ] `rw-rwandafda-safety` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `sa-chi-formulary` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [x] `sa-sfda-drug-list` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
-- [ ] `se-tlv-subsidies` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `sg-hsa-approval-deltas` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
-- [ ] `sg-hsa-register` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `sg-moh-drug-list` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `sn-dpm-register` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `sn-dpm-safety` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
@@ -155,8 +157,6 @@ Silver transformations included: **no**.
 - [ ] `tz-tmda-safety` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `ug-nda-register` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `ug-nda-safety` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
-- [ ] `us-cms-mdrp` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
-- [ ] `us-cms-nadac` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [x] `us-fda-drug-shortages` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `us-fda-recalls-notices` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `us-gsrs-unii` — `landed_and_evidenced`; verify receipt freshness on schedule.

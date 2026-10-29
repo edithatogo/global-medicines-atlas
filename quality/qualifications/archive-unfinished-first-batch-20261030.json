@@ -1,0 +1,242 @@
+{
+  "scope": "Nine sources; exact selected inventories only",
+  "publication_verified": false,
+  "federation_resumed": false,
+  "objects": [
+    {
+      "path": "build/archive-unfinished-20261030/cms-medicaid/us-cms-nadac/payload.bin",
+      "sha256": "252ec94cae41bfbfa30ad5523aeb352cbf84e35e0720bf631e1ef95d1edca2e9",
+      "bytes": 112571995,
+      "format": "delimited-text",
+      "lines": 1298477,
+      "header": "NDC Description,NDC,NADAC Per Unit,Effective Date,Pricing Unit,Pharmacy Type Indicator,OTC,Explanation Code,Classification for Rate Setting,Corresponding Generic Drug NADAC Per Unit,Corresponding Generic Drug Effective Date,As of Date"
+    },
+    {
+      "path": "build/archive-unfinished-20261030/cms-medicaid-qualified/us-cms-mdrp/payload.bin",
+      "sha256": "ee27186251b4656a92cfd4e29ebb9a245a4210e0c4bd2feb669c79382a0fbea8",
+      "bytes": 329796376,
+      "format": "delimited-text",
+      "lines": 2002509,
+      "header": "Year,Quarter,Labeler Name,NDC,Labeler Code,Product Code,Package Size Code,Drug Category,Drug Type Indicator,Termination Date,Unit Type,Units Per Pkg Size,FDA Approval Date,Market Date,FDA Therapeutic Equivalence Code,FDA Product Name,Clotting Factor Indicator,Pediatric Indicator,Package Size Intro D"
+    },
+    {
+      "path": "build/archive-unfinished-20261030/singapore-register/sg-hsa-register/payload.bin",
+      "sha256": "49aed018b2fcd02dad40fa48f4ebefb35e64df6d627e8dbd3e96a7e1f7ac1ead",
+      "bytes": 2604008,
+      "format": "json",
+      "records": 5511
+    },
+    {
+      "path": "build/archive-unfinished-20261030/colombia-register-qualified/co-invima-register/payload.bin",
+      "sha256": "bea0f5b2c31e609e802f3ca21007879d9a47baafd3e553cbdc8365ebfea48c4b",
+      "bytes": 68014232,
+      "format": "delimited-text",
+      "lines": 156914,
+      "header": "expediente,producto,titular,registrosanitario,fechaexpedicion,fechavencimiento,estadoregistro,expedientecum,consecutivocum,cantidadcum,descripcioncomercial,estadocum,fechaactivo,fechainactivo,muestramedica,unidad,atc,descripcionatc,viaadministracion,concentracion,principioactivo,unidadmedida,cantida"
+    },
+    {
+      "path": "build/archive-unfinished-20261030/brazil-register/br-anvisa-medicines/payload.bin",
+      "sha256": "f0b546e2d3a737a90fbc866348356cd766344bd2f4b8f488a43d66a0d7a30877",
+      "bytes": 45920138,
+      "format": "delimited-text",
+      "lines": 228871,
+      "header": "TIPO_PRODUTO;NOME_PRODUTO;DATA_FINALIZACAO_PROCESSO;CATEGORIA_REGULATORIA;NUMERO_REGISTRO_PRODUTO;DATA_VENCIMENTO_REGISTRO;NUMERO_PROCESSO;CLASSE_TERAPEUTICA;EMPRESA_DETENTORA_REGISTRO;SITUACAO_REGISTRO;PRINCIPIO_ATIVO"
+    },
+    {
+      "path": "build/archive-unfinished-20261030/brazil-conitec-qualified/br-conitec-decisions/payload.bin",
+      "sha256": "bc960610d411c374adddd2b8ac10a0953cd33201cb58c80bd573978aa0fd81ff",
+      "bytes": 52856,
+      "format": "zip",
+      "members": 1
+    },
+    {
+      "path": "build/archive-unfinished-20261030/japan-mhlw-qualified/jp-mhlw-nhi-price/payload.bin",
+      "sha256": "21bb77b08fb9dd5fabf8776b89cfcb8db5ac3ee5316424e9b6418546e8888628",
+      "bytes": 727243,
+      "format": "zip",
+      "members": 23
+    },
+    {
+      "path": "build/archive-unfinished-20261030/japan-mhlw-qualified/jp-mhlw-ndb-utilisation/payload.bin",
+      "sha256": "d02e3679aec449cc5cb1b762811e1941dc1ac964be443cb7274a0525e2cc7e0a",
+      "bytes": 2626603,
+      "format": "zip",
+      "members": 20
+    },
+    {
+      "path": "build/archive-unfinished-20261030/japan-mhlw-qualified/jp-mhlw-ndb-utilisation/objects/0003/payload.bin",
+      "sha256": "0050d5c1149939addc0e8f0778dea7678de58b564326e761b3f3c7bb5e0eea8a",
+      "bytes": 2308687,
+      "format": "zip",
+      "members": 20
+    },
+    {
+      "path": "build/archive-unfinished-20261030/japan-mhlw-qualified/jp-mhlw-ndb-utilisation/objects/0004/payload.bin",
+      "sha256": "b4c2c13ee330ee31bbe5dcfcae428af516411482ff417b8d1039eb6c4b898004",
+      "bytes": 2508493,
+      "format": "zip",
+      "members": 20
+    },
+    {
+      "path": "build/archive-unfinished-20261030/japan-mhlw-qualified/jp-mhlw-ndb-utilisation/objects/0005/payload.bin",
+      "sha256": "cccc874fcb8c5f3dc09cb02f1887a64c8848a03bedcccfeac950ab1ea0a51aa2",
+      "bytes": 1135264,
+      "format": "zip",
+      "members": 20
+    },
+    {
+      "path": "build/archive-unfinished-20261030/japan-mhlw-qualified/jp-mhlw-ndb-utilisation/objects/0002/payload.bin",
+      "sha256": "df4e980d8d7056d80ae7a8ba21d5fdbc5d6945bfe3993159c27e13d8811b53bf",
+      "bytes": 1245964,
+      "format": "zip",
+      "members": 20
+    },
+    {
+      "path": "build/archive-unfinished-20261030/japan-mhlw-qualified/jp-mhlw-ndb-utilisation/objects/0020/payload.bin",
+      "sha256": "cfa39bcc5c0b566b893f66a839bcdf9aa6d0ee5feb51dc256c5ad103811a34ab",
+      "bytes": 34808,
+      "format": "zip",
+      "members": 22
+    },
+    {
+      "path": "build/archive-unfinished-20261030/japan-mhlw-qualified/jp-mhlw-ndb-utilisation/objects/0018/payload.bin",
+      "sha256": "62890e8b8423b3a589f077a59de2ec1164d53c5ae088fc07a879bcfc52f5973b",
+      "bytes": 37712,
+      "format": "zip",
+      "members": 20
+    },
+    {
+      "path": "build/archive-unfinished-20261030/japan-mhlw-qualified/jp-mhlw-ndb-utilisation/objects/0011/payload.bin",
+      "sha256": "a5188111a4cc3868e17e83c8232dc5ef7a96b0bd946f0d7f3f694c84da602f48",
+      "bytes": 922275,
+      "format": "zip",
+      "members": 22
+    },
+    {
+      "path": "build/archive-unfinished-20261030/japan-mhlw-qualified/jp-mhlw-ndb-utilisation/objects/0016/payload.bin",
+      "sha256": "30a12b2be79c88f9b991e30d4f7778bc1e4bee6ad3fa4c8c1b79c059d9c46982",
+      "bytes": 44484,
+      "format": "zip",
+      "members": 20
+    },
+    {
+      "path": "build/archive-unfinished-20261030/japan-mhlw-qualified/jp-mhlw-ndb-utilisation/objects/0017/payload.bin",
+      "sha256": "83b3ed203618bc5ec1cf8084e3164a36664cd2b5c52dc0eaf7d0ec53abe4b752",
+      "bytes": 35272,
+      "format": "zip",
+      "members": 20
+    },
+    {
+      "path": "build/archive-unfinished-20261030/japan-mhlw-qualified/jp-mhlw-ndb-utilisation/objects/0010/payload.bin",
+      "sha256": "76a6edc9a9071c1db97ef84cd2bc5b4a1898a52926f97a8e39e48f2a6ac58f72",
+      "bytes": 1958285,
+      "format": "zip",
+      "members": 22
+    },
+    {
+      "path": "build/archive-unfinished-20261030/japan-mhlw-qualified/jp-mhlw-ndb-utilisation/objects/0019/payload.bin",
+      "sha256": "b12c27df35d4b490499f3060349010082a2fbb2fd0ed807a272d6ef6fb6b221b",
+      "bytes": 33443,
+      "format": "zip",
+      "members": 22
+    },
+    {
+      "path": "build/archive-unfinished-20261030/japan-mhlw-qualified/jp-mhlw-ndb-utilisation/objects/0007/payload.bin",
+      "sha256": "07eac61c368b6295759685033615f87b36809b43b0c5ade2c33aaf557b33ab4f",
+      "bytes": 2131133,
+      "format": "zip",
+      "members": 20
+    },
+    {
+      "path": "build/archive-unfinished-20261030/japan-mhlw-qualified/jp-mhlw-ndb-utilisation/objects/0009/payload.bin",
+      "sha256": "4f0d0b51192fc1910e177131e03d4132e15cd140aa4ddf72463428256501db0b",
+      "bytes": 1902813,
+      "format": "zip",
+      "members": 22
+    },
+    {
+      "path": "build/archive-unfinished-20261030/japan-mhlw-qualified/jp-mhlw-ndb-utilisation/objects/0008/payload.bin",
+      "sha256": "9d73da4521eac94958530fdf9602eae91a9f8c3657e7dcd8782a9e51dd689624",
+      "bytes": 1024628,
+      "format": "zip",
+      "members": 20
+    },
+    {
+      "path": "build/archive-unfinished-20261030/japan-mhlw-qualified/jp-mhlw-ndb-utilisation/objects/0001/payload.bin",
+      "sha256": "e1d777475920b434e5f9bdce85cb939b9144dd28b16176d50f8b01183520e66d",
+      "bytes": 2939535,
+      "format": "zip",
+      "members": 20
+    },
+    {
+      "path": "build/archive-unfinished-20261030/japan-mhlw-qualified/jp-mhlw-ndb-utilisation/objects/0006/payload.bin",
+      "sha256": "689c3fa2d596ab480bb3bd56abb830000b96bb562c23dcb3d458182081d3def1",
+      "bytes": 1948691,
+      "format": "zip",
+      "members": 20
+    },
+    {
+      "path": "build/archive-unfinished-20261030/japan-mhlw-qualified/jp-mhlw-ndb-utilisation/objects/0015/payload.bin",
+      "sha256": "4de4e435b584cc0ac610de4a536376d1d495c026b050c12dd9713256112fbb61",
+      "bytes": 40763,
+      "format": "zip",
+      "members": 20
+    },
+    {
+      "path": "build/archive-unfinished-20261030/japan-mhlw-qualified/jp-mhlw-ndb-utilisation/objects/0012/payload.bin",
+      "sha256": "f0f4fdec17db308352254072d4f8b49b5f6d948434b03e96f8cc87ffa32fd058",
+      "bytes": 2110258,
+      "format": "zip",
+      "members": 22
+    },
+    {
+      "path": "build/archive-unfinished-20261030/japan-mhlw-qualified/jp-mhlw-ndb-utilisation/objects/0013/payload.bin",
+      "sha256": "be5ed7426d96d09e13e7a9aa7d29b20b15df1be8b206bb5796aa8526bd1936d3",
+      "bytes": 2227852,
+      "format": "zip",
+      "members": 22
+    },
+    {
+      "path": "build/archive-unfinished-20261030/japan-mhlw-qualified/jp-mhlw-ndb-utilisation/objects/0014/payload.bin",
+      "sha256": "4e7c74380bf9789cf8d2695939141436bf2dc7e8d838543d4913fec9b097505a",
+      "bytes": 1094539,
+      "format": "zip",
+      "members": 22
+    },
+    {
+      "path": "build/archive-unfinished-20261030/japan-mhlw-qualified/jp-mhlw-nhi-price/objects/0003/payload.bin",
+      "sha256": "1f523b83fd121cec341caba4efdf8acd9d001b547a6a94c03c8c21068e126f66",
+      "bytes": 24492,
+      "format": "zip",
+      "members": 23
+    },
+    {
+      "path": "build/archive-unfinished-20261030/japan-mhlw-qualified/jp-mhlw-nhi-price/objects/0004/payload.bin",
+      "sha256": "4e9c75a80d74a2d103732dc2b5d956a3ab735df5fdf4ee89decf0e7f23cf0f5a",
+      "bytes": 738415,
+      "format": "zip",
+      "members": 23
+    },
+    {
+      "path": "build/archive-unfinished-20261030/japan-mhlw-qualified/jp-mhlw-nhi-price/objects/0002/payload.bin",
+      "sha256": "91b30234eafc4fa60f3af8eb9363be926608bebc8b7754a5b5973dba7b856cd6",
+      "bytes": 215907,
+      "format": "zip",
+      "members": 23
+    },
+    {
+      "path": "build/archive-unfinished-20261030/japan-mhlw-qualified/jp-mhlw-nhi-price/objects/0001/payload.bin",
+      "sha256": "161d801b4c94314c725eb19daf06af8834d7fc66c8aa4c503566ac818363a4bb",
+      "bytes": 386582,
+      "format": "zip",
+      "members": 23
+    },
+    {
+      "path": "build/archive-unfinished-20261030/sweden-tlv/se-tlv-subsidies/payload.bin",
+      "sha256": "d865e912b5ffae496f03ab9b1235f6632cfb5e84875ed6365a3745c862dc7c3b",
+      "bytes": 1284211,
+      "format": "zip",
+      "members": 11
+    }
+  ]
+}

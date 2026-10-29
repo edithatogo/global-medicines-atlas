@@ -1,0 +1,24 @@
+{
+  "sources": [
+    {
+      "source_id": "us-cms-mdrp",
+      "url": "https://download.medicaid.gov/data/drugproducts-q2-2026.csv",
+      "terms": "https://data.medicaid.gov/data.json",
+      "licence": "US government works; explicit dataset licence",
+      "scope": "Q2 2026 MDRP product snapshot",
+      "surface": "download",
+      "max_bytes": 67108864
+    },
+    {
+      "source_id": "us-cms-nadac",
+      "url": "https://download.medicaid.gov/data/nadac-national-average-drug-acquisition-cost-10-28-2026.csv",
+      "terms": "https://data.medicaid.gov/data.json",
+      "licence": "US government works; explicit dataset licence",
+      "scope": "2026 NADAC snapshot dated 28 October; earlier years not included",
+      "surface": "download",
+      "max_bytes": 536870912
+    }
+  ],
+  "authority": "Maintainer directs remaining straightforward acquisition and publication with clear rights; exact unmodified source inventories only",
+  "exclusions": "No third-party documents, logos, personal data or clinical interpretations"
+}

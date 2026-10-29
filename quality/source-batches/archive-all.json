@@ -222,13 +222,27 @@
       "revision": "3d01119e73fa098c62f72505c23782505ca3cf8f",
       "coverage_scope": "Exact newly published native bulk snapshot only",
       "archive_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-nova-scotia-20261030/tree/3d01119e73fa098c62f72505c23782505ca3cf8f"
+    },
+    {
+      "source_id": "ca-canada-vigilance",
+      "evidence_reference": "quality/source-batches/canada-vigilance-20261030/verified.json",
+      "revision": "3be09c44f7355aeebfc85fc30de3a0ecca1da45a",
+      "coverage_scope": "Exact public bulk extract",
+      "archive_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-canada-vigilance-20261030/tree/3be09c44f7355aeebfc85fc30de3a0ecca1da45a"
     }
   ],
   "batches": [
     "quality/source-batches/canada-20261030/batch.json",
     "quality/source-batches/ema-tables-20261030/batch.json",
     "quality/source-batches/nova-scotia-20261030/batch.json",
-    "quality/source-batches/canada-vigilance-20261030/batch.json"
+    "quality/source-batches/canada-vigilance-20261030/batch.json",
+    "quality/source-batches/cms-medicaid-20261030/batch.json",
+    "quality/source-batches/singapore-register-20261030/batch.json",
+    "quality/source-batches/colombia-register-20261030/batch.json",
+    "quality/source-batches/brazil-register-20261030/batch.json",
+    "quality/source-batches/brazil-conitec-20261030/batch.json",
+    "quality/source-batches/japan-mhlw-20261030/batch.json",
+    "quality/source-batches/sweden-tlv-20261030/batch.json"
   ],
   "blockers": [
     {

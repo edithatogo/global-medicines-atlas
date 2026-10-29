@@ -892,3 +892,32 @@ def test_shared_publisher_rejects_snapshot_drift(tmp_path, monkeypatch):
     with pytest.raises(ValueError, match="approved snapshot changed"):
         source_publisher.publish_batch(manifest, output, "a" * 40)
     assert not (output / "publication-receipts/intent.json").exists()
+
+
+def test_source_batch_package_preserves_every_selected_object(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "source"
+    target_path = tmp_path / "package"
+    for relative in (Path(), Path("objects/0001")):
+        folder = source / relative
+        folder.mkdir(parents=True)
+        (folder / "payload.bin").write_bytes(str(relative).encode())
+        (folder / "receipt.json").write_text(
+            '{"object": "' + str(relative) + '"}'
+        )
+    source_publisher.copy_source_objects(source, target_path, 2)
+    expected = {
+        str(p.relative_to(source)): p.read_bytes()
+        for p in source.rglob("*")
+        if p.is_file()
+    }
+    actual = {
+        str(p.relative_to(target_path)): p.read_bytes()
+        for p in target_path.rglob("*")
+        if p.is_file()
+    }
+    assert actual == expected
+    (source / "objects/0001/receipt.json").unlink()
+    with pytest.raises(FileNotFoundError):
+        source_publisher.copy_source_objects(source, tmp_path / "incomplete", 2)

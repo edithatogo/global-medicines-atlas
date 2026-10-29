@@ -18,8 +18,8 @@
   "landing_disposition_counts": {
     "credentialed_and_excluded": 15,
     "landed_and_evidenced": 42,
-    "manual_only_documented_acquisition": 91,
-    "rights_blocked": 27,
+    "manual_only_documented_acquisition": 83,
+    "rights_blocked": 35,
     "temporarily_unavailable": 1
   },
   "missing_source_is_negative_evidence": false,
@@ -31,8 +31,8 @@
   },
   "schema_id": "global-medicines-atlas.b0-source-index",
   "schema_version": 1,
-  "snapshot_id": "sha256:ceed95616db6360f715ed6f291404d6d2cc17047901ad92ed29eff8daaaa46e0",
-  "snapshot_sha256": "ceed95616db6360f715ed6f291404d6d2cc17047901ad92ed29eff8daaaa46e0",
+  "snapshot_id": "sha256:5cac39168cf2b4289d93fe5221c506eb4ce453e79a2c96fa58a09b82b915a98d",
+  "snapshot_sha256": "5cac39168cf2b4289d93fe5221c506eb4ce453e79a2c96fa58a09b82b915a98d",
   "source_count": 176,
   "sources": [
     {
@@ -706,18 +706,18 @@
       "update_cadence": "source-declared"
     },
     {
-      "access_mode": "web_search",
-      "acquisition_family": "regulator_search_export",
+      "access_mode": "download",
+      "acquisition_family": "static_file_download",
       "api_url": "",
       "authentication": "none",
       "authority": "Agencia Nacional de Vigilancia Sanitaria",
-      "current_landing_disposition": "manual_only_documented_acquisition",
+      "current_landing_disposition": "rights_blocked",
       "discovery_state": "discovery_only",
       "documentation_url": "https://consultas.anvisa.gov.br/#/medicamentos/",
-      "download_url": "",
+      "download_url": "https://dados.anvisa.gov.br/dados/DADOS_ABERTOS_MEDICAMENTOS.csv",
       "evidence_scope": "none",
       "expected_formats": [
-        "html"
+        "csv"
       ],
       "index_presence_implies_coverage": false,
       "indexed": true,
@@ -787,18 +787,18 @@
       "update_cadence": "source-declared"
     },
     {
-      "access_mode": "web_search",
-      "acquisition_family": "regulator_search_export",
+      "access_mode": "download",
+      "acquisition_family": "archive_release",
       "api_url": "",
       "authentication": "none",
       "authority": "Comissao Nacional de Incorporacao de Tecnologias no Sistema Unico de Saude",
-      "current_landing_disposition": "manual_only_documented_acquisition",
+      "current_landing_disposition": "rights_blocked",
       "discovery_state": "discovery_only",
       "documentation_url": "https://www.gov.br/conitec/pt-br",
-      "download_url": "",
+      "download_url": "https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/CONITEC/csv/Controle_de_Demandas_da_Conitec.csv.zip",
       "evidence_scope": "none",
       "expected_formats": [
-        "html"
+        "zip"
       ],
       "index_presence_implies_coverage": false,
       "indexed": true,
@@ -1366,18 +1366,18 @@
       "update_cadence": "source-declared"
     },
     {
-      "access_mode": "web_search",
-      "acquisition_family": "regulator_search_export",
+      "access_mode": "download",
+      "acquisition_family": "static_file_download",
       "api_url": "",
       "authentication": "none",
       "authority": "INVIMA",
-      "current_landing_disposition": "manual_only_documented_acquisition",
+      "current_landing_disposition": "rights_blocked",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.invima.gov.co/consulta-registros-sanitarios",
-      "download_url": "",
+      "download_url": "https://www.datos.gov.co/api/views/i7cb-raxc/rows.csv?accessType=DOWNLOAD",
       "evidence_scope": "none",
       "expected_formats": [
-        "html"
+        "csv"
       ],
       "index_presence_implies_coverage": false,
       "indexed": true,
@@ -3649,18 +3649,18 @@
       "update_cadence": "source-declared"
     },
     {
-      "access_mode": "web_search",
-      "acquisition_family": "regulator_search_export",
+      "access_mode": "download",
+      "acquisition_family": "static_file_download",
       "api_url": "",
       "authentication": "none",
       "authority": "Ministry of Health, Labour and Welfare",
-      "current_landing_disposition": "manual_only_documented_acquisition",
+      "current_landing_disposition": "rights_blocked",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.mhlw.go.jp/ndb/opendatasite/",
-      "download_url": "https://www.mhlw.go.jp/ndb/opendatasite/",
+      "download_url": "https://www.mhlw.go.jp/content/12400000/001495390.xlsx",
       "evidence_scope": "none",
       "expected_formats": [
-        "html"
+        "xlsx"
       ],
       "index_presence_implies_coverage": false,
       "indexed": true,
@@ -3697,10 +3697,10 @@
       "current_landing_disposition": "landed_and_evidenced",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.mhlw.go.jp/topics/2025/04/tp20250401-01.html",
-      "download_url": "https://www.mhlw.go.jp/topics/2025/04/tp20250401-01.html",
+      "download_url": "https://www.mhlw.go.jp/topics/2026/04/xls/tp20261014-01_01.xlsx",
       "evidence_scope": "governed_fixture",
       "expected_formats": [
-        "source_native"
+        "xlsx"
       ],
       "index_presence_implies_coverage": false,
       "indexed": true,
@@ -5612,18 +5612,18 @@
       "update_cadence": "source-declared"
     },
     {
-      "access_mode": "web_search",
-      "acquisition_family": "regulator_search_export",
+      "access_mode": "download",
+      "acquisition_family": "static_file_download",
       "api_url": "",
       "authentication": "none",
       "authority": "Dental and Pharmaceutical Benefits Agency",
-      "current_landing_disposition": "manual_only_documented_acquisition",
+      "current_landing_disposition": "rights_blocked",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.tlv.se/lakemedelsforetag/pris-och-subvention-av-lakemedel/subventionerade-lakemedel.html",
-      "download_url": "",
+      "download_url": "https://www.tlv.se/file/medprice",
       "evidence_scope": "none",
       "expected_formats": [
-        "html"
+        "xlsx"
       ],
       "index_presence_implies_coverage": false,
       "indexed": true,
@@ -5693,18 +5693,18 @@
       "update_cadence": "source-declared"
     },
     {
-      "access_mode": "web_search",
-      "acquisition_family": "regulator_search_export",
-      "api_url": "",
+      "access_mode": "api",
+      "acquisition_family": "paginated_rest_api",
+      "api_url": "https://data.gov.sg/api/action/datastore_search?resource_id=d_767279312753558cbf19d48344577084&limit=10000",
       "authentication": "none",
       "authority": "Health Sciences Authority",
-      "current_landing_disposition": "manual_only_documented_acquisition",
+      "current_landing_disposition": "rights_blocked",
       "discovery_state": "discovery_only",
       "documentation_url": "https://www.hsa.gov.sg/therapeutic-products/register",
       "download_url": "",
       "evidence_scope": "none",
       "expected_formats": [
-        "html"
+        "json"
       ],
       "index_presence_implies_coverage": false,
       "indexed": true,
@@ -6179,19 +6179,18 @@
       "update_cadence": "source-declared"
     },
     {
-      "access_mode": "web_search",
-      "acquisition_family": "regulator_search_export",
+      "access_mode": "download",
+      "acquisition_family": "static_file_download",
       "api_url": "",
       "authentication": "none",
       "authority": "Centers for Medicare and Medicaid Services",
-      "current_landing_disposition": "manual_only_documented_acquisition",
+      "current_landing_disposition": "rights_blocked",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://data.medicaid.gov/datasets",
-      "download_url": "",
+      "download_url": "https://download.medicaid.gov/data/drugproducts-q2-2026.csv",
       "evidence_scope": "none",
       "expected_formats": [
-        "csv",
-        "json"
+        "csv"
       ],
       "index_presence_implies_coverage": false,
       "indexed": true,
@@ -6220,19 +6219,18 @@
       "update_cadence": "source-declared"
     },
     {
-      "access_mode": "web_search",
-      "acquisition_family": "regulator_search_export",
+      "access_mode": "download",
+      "acquisition_family": "static_file_download",
       "api_url": "",
       "authentication": "none",
       "authority": "Centers for Medicare and Medicaid Services",
-      "current_landing_disposition": "manual_only_documented_acquisition",
+      "current_landing_disposition": "rights_blocked",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://data.medicaid.gov/datasets",
-      "download_url": "",
+      "download_url": "https://download.medicaid.gov/data/nadac-national-average-drug-acquisition-cost-10-28-2026.csv",
       "evidence_scope": "none",
       "expected_formats": [
-        "csv",
-        "json"
+        "csv"
       ],
       "index_presence_implies_coverage": false,
       "indexed": true,

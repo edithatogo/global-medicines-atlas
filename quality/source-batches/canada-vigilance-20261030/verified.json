@@ -1,0 +1,47 @@
+{
+  "receipt_version": "1",
+  "plan_sha256": "3563d820502c09383b4f7fcbc86644e43d007eab1382137a6657d51f263ac422",
+  "artifact_sha256": [
+    "ba39ebbf63f54f270410ad93ec20abb7b8e9b0504db7ba30ccda78ba95bbb7c6",
+    "abff0c61ae34316944c1258abe859144a5c9bcb05295350cebb017e5832e596c",
+    "8f0a11b22a2c482352755163648d50010ee9c1b75dba442878ac1423fb8b3ba1",
+    "f0cd7ef90aeb8ef0faf60aab352e5cdaf20e2b413bb7a981de63517d7ad76362"
+  ],
+  "target": {
+    "destination": "hugging_face",
+    "repository": "edithatogo/global-medicines-atlas-canada-vigilance-20261030",
+    "revision": "main",
+    "public_base_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-canada-vigilance-20261030"
+  },
+  "state": "public",
+  "recorded_at": "2026-10-29T19:05:23.990319Z",
+  "remote_revision": "3be09c44f7355aeebfc85fc30de3a0ecca1da45a",
+  "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-canada-vigilance-20261030/tree/3be09c44f7355aeebfc85fc30de3a0ecca1da45a",
+  "failure_reason": null,
+  "verified_artifacts": [
+    {
+      "relative_path": "README.md",
+      "sha256": "ba39ebbf63f54f270410ad93ec20abb7b8e9b0504db7ba30ccda78ba95bbb7c6",
+      "size": 568,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-canada-vigilance-20261030/resolve/3be09c44f7355aeebfc85fc30de3a0ecca1da45a/README.md"
+    },
+    {
+      "relative_path": "ca-canada-vigilance/payload.bin",
+      "sha256": "abff0c61ae34316944c1258abe859144a5c9bcb05295350cebb017e5832e596c",
+      "size": 313578432,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-canada-vigilance-20261030/resolve/3be09c44f7355aeebfc85fc30de3a0ecca1da45a/ca-canada-vigilance/payload.bin"
+    },
+    {
+      "relative_path": "ca-canada-vigilance/receipt.json",
+      "sha256": "8f0a11b22a2c482352755163648d50010ee9c1b75dba442878ac1423fb8b3ba1",
+      "size": 5649,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-canada-vigilance-20261030/resolve/3be09c44f7355aeebfc85fc30de3a0ecca1da45a/ca-canada-vigilance/receipt.json"
+    },
+    {
+      "relative_path": "rights.json",
+      "sha256": "f0cd7ef90aeb8ef0faf60aab352e5cdaf20e2b413bb7a981de63517d7ad76362",
+      "size": 866,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-canada-vigilance-20261030/resolve/3be09c44f7355aeebfc85fc30de3a0ecca1da45a/rights.json"
+    }
+  ]
+}

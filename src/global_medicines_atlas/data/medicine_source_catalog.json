@@ -1651,15 +1651,15 @@
       "authority": "Agencia Nacional de Vigilancia Sanitaria",
       "title": "Anvisa medicines consultation and open-data surfaces",
       "dimension": "regulatory",
-      "access_mode": "web_search",
+      "access_mode": "download",
       "landing_page": "https://consultas.anvisa.gov.br/#/medicamentos/",
       "update_cadence": "unknown_pending_source_contract",
       "rights_status": "review_required",
       "readiness": "candidate",
       "evidence_limit": "Discovery-only declaration from the priority-census context; endpoint, scope, rights, and currency require a receipt.",
-      "interface_status": "interactive_only",
+      "interface_status": "documented_download",
       "formats": [
-        "html"
+        "csv"
       ],
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
@@ -1692,7 +1692,9 @@
         "status_dates"
       ],
       "qualification_state": "declared",
-      "qualification_references": []
+      "qualification_references": [],
+      "api_url": null,
+      "download_url": "https://dados.anvisa.gov.br/dados/DADOS_ABERTOS_MEDICAMENTOS.csv"
     },
     {
       "source_id": "br-cmed-prices",
@@ -1763,15 +1765,15 @@
       "authority": "Comissao Nacional de Incorporacao de Tecnologias no Sistema Unico de Saude",
       "title": "CONITEC recommendations and SUS incorporation decisions",
       "dimension": "funding",
-      "access_mode": "web_search",
+      "access_mode": "download",
       "landing_page": "https://www.gov.br/conitec/pt-br",
       "update_cadence": "unknown_pending_source_contract",
       "rights_status": "review_required",
       "readiness": "candidate",
       "evidence_limit": "Discovery only; recommendations and incorporation decisions are indication-specific and are not marketing authorisations.",
-      "interface_status": "interactive_only",
+      "interface_status": "documented_download",
       "formats": [
-        "html"
+        "zip"
       ],
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
@@ -1808,7 +1810,9 @@
         "eligibility_criteria"
       ],
       "qualification_state": "declared",
-      "qualification_references": []
+      "qualification_references": [],
+      "api_url": null,
+      "download_url": "https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/CONITEC/csv/Controle_de_Demandas_da_Conitec.csv.zip"
     },
     {
       "source_id": "ca-canada-vigilance",
@@ -2563,7 +2567,7 @@
       "authority": "INVIMA",
       "title": "Sanitary registration search",
       "dimension": "regulatory",
-      "access_mode": "web_search",
+      "access_mode": "download",
       "landing_page": "https://www.invima.gov.co/consulta-registros-sanitarios",
       "update_cadence": "source-declared",
       "rights_status": "review_required",
@@ -2571,9 +2575,9 @@
       "discovery_status": "declaration_verified",
       "implemented_ingestion": false,
       "evidence_limit": "Source semantics, rights, currency and completeness require receipt-backed qualification.",
-      "interface_status": "interactive_only",
+      "interface_status": "documented_download",
       "formats": [
-        "html"
+        "csv"
       ],
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
@@ -2607,7 +2611,9 @@
       "qualification_state": "documentation_verified",
       "qualification_references": [
         "https://www.invima.gov.co/consulta-registros-sanitarios"
-      ]
+      ],
+      "api_url": null,
+      "download_url": "https://www.datos.gov.co/api/views/i7cb-raxc/rows.csv?accessType=DOWNLOAD"
     },
     {
       "source_id": "de-bfarm-amice",
@@ -5609,15 +5615,15 @@
       "authority": "Ministry of Health, Labour and Welfare",
       "title": "NDB tabulated medicines utilisation",
       "dimension": "funding",
-      "access_mode": "web_search",
+      "access_mode": "download",
       "landing_page": "https://www.mhlw.go.jp/ndb/opendatasite/",
       "update_cadence": "source-declared",
       "rights_status": "review_required",
       "readiness": "candidate",
       "evidence_limit": "Public aggregate NDB open-data tables are distinct from credentialed microdata; neither is NHI price or PMDA approval.",
-      "interface_status": "interactive_only",
+      "interface_status": "documented_download",
       "formats": [
-        "html"
+        "xlsx"
       ],
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
@@ -5653,7 +5659,8 @@
       "qualification_references": [
         "quality/qualifications/additional-utilisation-rights-preflight-20260821.json"
       ],
-      "download_url": "https://www.mhlw.go.jp/ndb/opendatasite/"
+      "download_url": "https://www.mhlw.go.jp/content/12400000/001495390.xlsx",
+      "api_url": null
     },
     {
       "source_id": "jp-mhlw-nhi-price",
@@ -5665,14 +5672,14 @@
       "dimension": "funding",
       "access_mode": "download",
       "landing_page": "https://www.mhlw.go.jp/topics/2025/04/tp20250401-01.html",
-      "download_url": "https://www.mhlw.go.jp/topics/2025/04/tp20250401-01.html",
+      "download_url": "https://www.mhlw.go.jp/topics/2026/04/xls/tp20261014-01_01.xlsx",
       "update_cadence": "at price revisions",
       "rights_status": "review_required",
       "readiness": "implemented",
       "evidence_limit": "Price-list inclusion is distinct from PMDA marketing authorization.",
       "interface_status": "documented_download",
       "formats": [
-        "source_native"
+        "xlsx"
       ],
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
@@ -5716,7 +5723,8 @@
         "tests/test_bronze_fixture_landing.py",
         "tests/fixtures/native/jp/mhlw_nhi_prices.csv"
       ],
-      "discovery_status": "declaration_verified"
+      "discovery_status": "declaration_verified",
+      "api_url": null
     },
     {
       "source_id": "jp-pmda-approvals",
@@ -8248,7 +8256,7 @@
       "authority": "Dental and Pharmaceutical Benefits Agency",
       "title": "TLV price and subsidy database",
       "dimension": "funding",
-      "access_mode": "web_search",
+      "access_mode": "download",
       "landing_page": "https://www.tlv.se/lakemedelsforetag/pris-och-subvention-av-lakemedel/subventionerade-lakemedel.html",
       "update_cadence": "source-declared",
       "rights_status": "review_required",
@@ -8256,9 +8264,9 @@
       "discovery_status": "declaration_verified",
       "implemented_ingestion": false,
       "evidence_limit": "No supported bulk or API was verified.",
-      "interface_status": "interactive_only",
+      "interface_status": "documented_download",
       "formats": [
-        "html"
+        "xlsx"
       ],
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
@@ -8297,7 +8305,9 @@
       "qualification_state": "documentation_verified",
       "qualification_references": [
         "https://www.tlv.se/lakemedelsforetag/pris-och-subvention-av-lakemedel/subventionerade-lakemedel.html"
-      ]
+      ],
+      "api_url": null,
+      "download_url": "https://www.tlv.se/file/medprice"
     },
     {
       "source_id": "sg-hsa-approval-deltas",
@@ -8361,15 +8371,15 @@
       "authority": "Health Sciences Authority",
       "title": "Register of therapeutic products",
       "dimension": "regulatory",
-      "access_mode": "web_search",
+      "access_mode": "api",
       "landing_page": "https://www.hsa.gov.sg/therapeutic-products/register",
       "update_cadence": "unknown_pending_source_contract",
       "rights_status": "review_required",
       "readiness": "candidate",
       "evidence_limit": "Discovery-only declaration; query contract, rights, status semantics, and currency require a receipt.",
-      "interface_status": "interactive_only",
+      "interface_status": "supported",
       "formats": [
-        "html"
+        "json"
       ],
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
@@ -8402,7 +8412,9 @@
         "status_dates"
       ],
       "qualification_state": "declared",
-      "qualification_references": []
+      "qualification_references": [],
+      "api_url": "https://data.gov.sg/api/action/datastore_search?resource_id=d_767279312753558cbf19d48344577084&limit=10000",
+      "download_url": null
     },
     {
       "source_id": "sg-moh-drug-list",
@@ -8992,7 +9004,7 @@
       "authority": "Centers for Medicare and Medicaid Services",
       "title": "Medicaid Drug Rebate Program product data",
       "dimension": "funding",
-      "access_mode": "web_search",
+      "access_mode": "download",
       "landing_page": "https://data.medicaid.gov/datasets",
       "update_cadence": "source-declared",
       "rights_status": "review_required",
@@ -9000,10 +9012,9 @@
       "discovery_status": "declaration_verified",
       "implemented_ingestion": false,
       "evidence_limit": "Source semantics, rights, currency and completeness require receipt-backed qualification.",
-      "interface_status": "interactive_only",
+      "interface_status": "documented_download",
       "formats": [
-        "csv",
-        "json"
+        "csv"
       ],
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
@@ -9038,7 +9049,9 @@
       "qualification_state": "documentation_verified",
       "qualification_references": [
         "https://data.medicaid.gov/datasets"
-      ]
+      ],
+      "api_url": null,
+      "download_url": "https://download.medicaid.gov/data/drugproducts-q2-2026.csv"
     },
     {
       "source_id": "us-cms-nadac",
@@ -9048,7 +9061,7 @@
       "authority": "Centers for Medicare and Medicaid Services",
       "title": "National Average Drug Acquisition Cost",
       "dimension": "funding",
-      "access_mode": "web_search",
+      "access_mode": "download",
       "landing_page": "https://data.medicaid.gov/datasets",
       "update_cadence": "source-declared",
       "rights_status": "review_required",
@@ -9056,10 +9069,9 @@
       "discovery_status": "declaration_verified",
       "implemented_ingestion": false,
       "evidence_limit": "Acquisition cost is not reimbursement or coverage.",
-      "interface_status": "interactive_only",
+      "interface_status": "documented_download",
       "formats": [
-        "csv",
-        "json"
+        "csv"
       ],
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
@@ -9098,7 +9110,9 @@
       "qualification_state": "documentation_verified",
       "qualification_references": [
         "https://data.medicaid.gov/datasets"
-      ]
+      ],
+      "api_url": null,
+      "download_url": "https://download.medicaid.gov/data/nadac-national-average-drug-acquisition-cost-10-28-2026.csv"
     },
     {
       "source_id": "us-cms-partd-formulary",

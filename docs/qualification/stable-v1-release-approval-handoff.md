@@ -210,3 +210,15 @@ one remaining clear-rights source, Canada Vigilance: explicit bounded larger-fil
 limit and exact official redirect host, signed-query redaction in HTTP receipts,
 and the existing hosted batch publication. No credentials are created, no
 unrestricted redirect policy is enabled, and federation remains deferred.
+
+### Remaining 100-source execution — 30 October 2026
+
+Chat `01a18773-f302-7e83-ba8c-816fcea9d3f1` retains this worktree and now owns
+`codex/archive-unfinished-sources`, based on `2f632c16`. The maintainer explicitly
+expanded execution to the 100 unfinished catalogue sources, prioritising direct
+recipes and clear rights until concrete blockers remain. Owned paths: shared
+batch configurations, source endpoint corrections, scoped discovery/outcome
+receipts and this track append. Existing private archives remain private. Native
+writes are eligible approved source batches through Actions to public HF only;
+no credentials, schedules or federation work. Next: reconcile existing archives,
+inspect official endpoints and terms, implement and publish eligible batches.

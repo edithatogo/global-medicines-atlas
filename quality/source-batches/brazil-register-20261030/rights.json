@@ -1,0 +1,15 @@
+{
+  "sources": [
+    {
+      "source_id": "br-anvisa-medicines",
+      "url": "https://dados.anvisa.gov.br/dados/DADOS_ABERTOS_MEDICAMENTOS.csv",
+      "terms": "https://www.gov.br/anvisa/pt-br/acessoainformacao/dadosabertos/dadosabertos",
+      "licence": "ANVISA open data reuse statement; retain source attribution",
+      "scope": "Unmodified DATAVISA open medicines registration CSV",
+      "surface": "download",
+      "max_bytes": 67108864
+    }
+  ],
+  "authority": "Maintainer directs remaining straightforward acquisition and publication with clear rights; exact unmodified source inventories only",
+  "exclusions": "No third-party documents, logos, personal data or clinical interpretations"
+}

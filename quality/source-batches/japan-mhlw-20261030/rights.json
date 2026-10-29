@@ -1,0 +1,52 @@
+{
+  "sources": [
+    {
+      "source_id": "jp-mhlw-nhi-price",
+      "url": "https://www.mhlw.go.jp/topics/2026/04/xls/tp20261014-01_01.xlsx",
+      "additional_download_urls": [
+        "https://www.mhlw.go.jp/topics/2026/04/xls/tp20261014-01_02.xlsx",
+        "https://www.mhlw.go.jp/topics/2026/04/xls/tp20261014-01_03.xlsx",
+        "https://www.mhlw.go.jp/topics/2026/04/xls/tp20260401-01_04.xlsx",
+        "https://www.mhlw.go.jp/topics/2026/04/xls/tp20261014-01_05.xlsx"
+      ],
+      "terms": "https://www.mhlw.go.jp/chosakuken/",
+      "licence": "Public Data License 1.0; MHLW attribution",
+      "scope": "Five current official NHI medicines workbooks: oral, injection, external, dental and generic classification; October 2026 snapshot",
+      "surface": "download",
+      "max_bytes": 67108864
+    },
+    {
+      "source_id": "jp-mhlw-ndb-utilisation",
+      "url": "https://www.mhlw.go.jp/content/12400000/001495390.xlsx",
+      "additional_download_urls": [
+        "https://www.mhlw.go.jp/content/12400000/001495391.xlsx",
+        "https://www.mhlw.go.jp/content/12400000/001495392.xlsx",
+        "https://www.mhlw.go.jp/content/12400000/001495396.xlsx",
+        "https://www.mhlw.go.jp/content/12400000/001495397.xlsx",
+        "https://www.mhlw.go.jp/content/12400000/001495408.xlsx",
+        "https://www.mhlw.go.jp/content/12400000/001495419.xlsx",
+        "https://www.mhlw.go.jp/content/12400000/001495423.xlsx",
+        "https://www.mhlw.go.jp/content/12400000/001495426.xlsx",
+        "https://www.mhlw.go.jp/content/12400000/001495456.xlsx",
+        "https://www.mhlw.go.jp/content/12400000/001495457.xlsx",
+        "https://www.mhlw.go.jp/content/12400000/001495458.xlsx",
+        "https://www.mhlw.go.jp/content/12400000/001495461.xlsx",
+        "https://www.mhlw.go.jp/content/12400000/001495462.xlsx",
+        "https://www.mhlw.go.jp/content/12400000/001495481.xlsx",
+        "https://www.mhlw.go.jp/content/12400000/001495487.xlsx",
+        "https://www.mhlw.go.jp/content/12400000/001495488.xlsx",
+        "https://www.mhlw.go.jp/content/12400000/001495977.xlsx",
+        "https://www.mhlw.go.jp/content/12400000/001495980.xlsx",
+        "https://www.mhlw.go.jp/content/12400000/001495983.xlsx",
+        "https://www.mhlw.go.jp/content/12400000/001495984.xlsx"
+      ],
+      "terms": "https://www.mhlw.go.jp/chosakuken/",
+      "licence": "Public Data License 1.0; MHLW attribution",
+      "scope": "21 medicines quantity workbooks from the tenth NDB open data release; source-defined aggregation and suppression retained",
+      "surface": "download",
+      "max_bytes": 67108864
+    }
+  ],
+  "authority": "Maintainer directs remaining straightforward acquisition and publication with clear rights; exact unmodified source inventories only",
+  "exclusions": "No third-party documents, logos, personal data or clinical interpretations"
+}
