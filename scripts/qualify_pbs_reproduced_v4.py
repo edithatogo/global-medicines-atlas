@@ -83,7 +83,12 @@ def authenticate_publication_artifact(
 
     def read_api(path: str, *, binary: bool = False) -> Any:
         result = subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true]
-            ["gh", "api", f"repos/{repository}/{path}"],  # ruff: ignore[start-process-with-partial-path]
+            [  # ruff: ignore[start-process-with-partial-path]
+                "gh",
+                "api",
+                "--allow-escape-sequences",
+                f"repos/{repository}/{path}",
+            ],
             check=True,
             capture_output=True,
             timeout=30,

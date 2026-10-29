@@ -100,6 +100,7 @@ def verify_retained_intent(
         [  # ruff: ignore[start-process-with-partial-path]
             "gh",
             "api",
+            "--allow-escape-sequences",
             f"repos/{REPOSITORY}/actions/artifacts/{artifact_id}/zip",
         ],
         check=True,
