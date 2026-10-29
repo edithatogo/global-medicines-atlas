@@ -1,0 +1,23 @@
+{
+  "schema_id": "global-medicines-atlas.australian-donor-m105-current-disposition",
+  "schema_version": 1,
+  "recorded_at": "2026-10-23T11:31:34Z",
+  "requirement": "M-105",
+  "status": "blocked",
+  "decision_id": "D-006-12",
+  "reason": "The required pre-archive donor parity evidence cannot be established retroactively.",
+  "prior_chronology_waiver": {
+    "decision_id": "D-006-10",
+    "record_preserved": true,
+    "used_for_current_acceptance": false
+  },
+  "boundaries": {
+    "pre_archive_parity_proof_created": false,
+    "criterion_changed": false,
+    "donor_history_changed": false,
+    "new_sources_added": false,
+    "source_payloads_read": false,
+    "external_publication_performed": false,
+    "outbound_communication_performed": false
+  }
+}

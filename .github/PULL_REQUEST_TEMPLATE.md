@@ -8,6 +8,16 @@
 - Requirement IDs:
 - GitHub issue:
 
+## System completion
+
+<!-- Follow conductor/system-completion.md; use existing gates and frozen scope. -->
+
+- Shared capability and existing gate:
+- Concrete failure or missing proof:
+- Bounded change and expected completion evidence:
+- Stop condition and why any dataset-specific work is required:
+- Exact validation selectors and unchanged evidence reused:
+
 ## Evidence
 
 - [ ] Focused tests passed

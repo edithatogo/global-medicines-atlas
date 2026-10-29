@@ -186,12 +186,14 @@ def _resolve_release_uv(root: Path, expected: object) -> str:
     )
 
 
-def _verify_build_toolchain(root: Path) -> tuple[Path, str]:
+def _verify_build_toolchain(root: Path) -> tuple[Path, str, str]:
     raw: object = json.loads((root / _BUILD_TOOLCHAIN_PATH).read_text())
     if not isinstance(raw, dict):
         raise ReleaseCandidateError("build toolchain must be a JSON object")
     toolchain = cast("dict[str, object]", raw)
     expected_python = toolchain.get("python")
+    if not isinstance(expected_python, str):
+        raise ReleaseCandidateError("build Python runtime is not recorded")
     actual_python = platform.python_version()
     if expected_python != actual_python:
         raise ReleaseCandidateError(
@@ -205,7 +207,7 @@ def _verify_build_toolchain(root: Path) -> tuple[Path, str]:
     path = root / constraints
     if not path.is_file():
         raise ReleaseCandidateError("recorded build constraints do not exist")
-    return path, uv_executable
+    return path, uv_executable, expected_python
 
 
 def _remove_generated_version(root: Path) -> None:
@@ -352,7 +354,7 @@ def _build_once(
     source_date_epoch: str,
 ) -> tuple[str, tuple[Path, Path], Path]:
     destination.mkdir(parents=True)
-    constraints, uv_executable = _verify_build_toolchain(root)
+    constraints, uv_executable, _python_version = _verify_build_toolchain(root)
     environment = dict(os.environ)
     environment["SOURCE_DATE_EPOCH"] = source_date_epoch
     dist = destination / "dist"
@@ -496,7 +498,7 @@ def consume_candidate(
         raise ReleaseCandidateError(
             "consumer virtual environment must not already exist"
         )
-    _, uv_executable = _verify_build_toolchain(resolved_root)
+    _, uv_executable, python_version = _verify_build_toolchain(resolved_root)
     receipt = receipt_from_json(receipt_path.resolve(strict=True))
     verify_candidate_package(
         root=resolved_root,
@@ -520,7 +522,7 @@ def consume_candidate(
         uv_executable,
         "venv",
         "--python",
-        "3.14.6",
+        python_version,
         str(resolved_environment),
     )
     _run(
@@ -533,6 +535,20 @@ def consume_candidate(
         str(artifact_path),
     )
     python = portable_venv_python(resolved_environment)
+    observed_python = (
+        _run(
+            resolved_root,
+            str(python),
+            "-c",
+            "import platform; print(platform.python_version())",
+        )
+        .decode()
+        .strip()
+    )
+    if observed_python != python_version:
+        raise ReleaseCandidateError(
+            f"consumer requires Python {python_version}, got {observed_python}"
+        )
     first_probe = _parse_consumer_probe(
         _run(resolved_root, str(python), "-c", _CONSUMER_PROBE),
         receipt.package_version,
@@ -745,6 +761,12 @@ def verification_commands(
 ) -> tuple[VerificationCommand, ...]:
     stage = DEFAULT_STAGE.as_posix()
     receipt = DEFAULT_RECEIPT.as_posix()
+    toolchain: object = json.loads((ROOT / _BUILD_TOOLCHAIN_PATH).read_text())
+    if not isinstance(toolchain, dict):
+        raise ReleaseCandidateError("build toolchain must be a JSON object")
+    python_version = cast("dict[str, object]", toolchain).get("python")
+    if not isinstance(python_version, str):
+        raise ReleaseCandidateError("build Python runtime is not recorded")
     values = (
         VerificationCommand(
             command_id="verify-sdist-consumer",
@@ -752,7 +774,7 @@ def verification_commands(
                 "uv",
                 "run",
                 "--python",
-                "3.14.6",
+                python_version,
                 "python",
                 "-m",
                 "scripts.build_stable_v1_release_candidate",
@@ -779,7 +801,7 @@ def verification_commands(
                 "uv",
                 "run",
                 "--python",
-                "3.14.6",
+                python_version,
                 "python",
                 "-m",
                 "scripts.build_stable_v1_release_candidate",
@@ -806,7 +828,7 @@ def verification_commands(
                 "uv",
                 "run",
                 "--python",
-                "3.14.6",
+                python_version,
                 "python",
                 "-m",
                 "scripts.build_stable_v1_release_candidate",

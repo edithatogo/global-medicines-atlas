@@ -24,6 +24,21 @@ EXECUTION_POLICY = {
     "max_identical_failures": 3,
     "merge_policy": "required_checks_then_merge",
 }
+SYSTEM_COMPLETION_GUARDRAILS = {
+    "new_source_acquisition": False,
+    "expand_frozen_inventory": False,
+    "require_every_value_interpreted": False,
+    "waive_existing_acceptance": False,
+    "promote_optional_previews": False,
+    "full_local_suite_per_dataset": False,
+}
+SYSTEM_COMPLETION_STAGES = (
+    "silver-gold",
+    "admitted-delivery",
+    "consumers",
+    "recovery",
+    "release",
+)
 
 
 class ContextReceipt(TypedDict):
@@ -48,6 +63,14 @@ class TrackIndexes(NamedTuple):
     all: tuple[Path, ...]
     active: tuple[Path, ...]
     archived: tuple[Path, ...]
+
+
+class ReleaseGateReference(TypedDict):
+    gate_id: str
+
+
+class ReleaseGateInventory(TypedDict):
+    release_gates: list[ReleaseGateReference]
 
 
 def _read_context() -> dict[str, object]:
@@ -198,6 +221,96 @@ def _registered_track_indexes(
     )
 
 
+def validate_system_completion(track_indexes: tuple[Path, ...]) -> None:
+    """Validate execution focus without granting qualification or release."""
+    raw_plan = json.loads(
+        (PROJECT_ROOT / "conductor/system-completion.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    if not isinstance(raw_plan, dict):
+        raise TypeError("System completion plan must be an object")
+    plan = cast("dict[str, object]", raw_plan)
+    expected_keys = {
+        "schema_version",
+        "purpose",
+        "qualification_contract",
+        "guardrails",
+        "selected_stage",
+        "stages",
+    }
+    if set(plan) != expected_keys:
+        raise ValueError("System completion plan has unknown or missing keys")
+    if type(plan["schema_version"]) is not int or plan["schema_version"] != 1:
+        raise ValueError("Unknown system completion plan version")
+    if plan["purpose"] != "execution_priority_only":
+        raise ValueError("Scheduling policy cannot grant acceptance")
+    contract_path = "quality/qualifications/stable-v1-contract.json"
+    if plan["qualification_contract"] != contract_path:
+        raise ValueError("System completion must reuse the Stable v1 contract")
+    guards = plan["guardrails"]
+    if not isinstance(guards, dict):
+        raise TypeError("System completion guardrails are missing or unknown")
+    guard_map = cast("dict[str, object]", guards)
+    if set(guard_map) != set(SYSTEM_COMPLETION_GUARDRAILS):
+        raise ValueError("System completion guardrails are missing or unknown")
+    if any(
+        guard_map[key] is not expected
+        for key, expected in SYSTEM_COMPLETION_GUARDRAILS.items()
+    ):
+        raise ValueError(
+            "System completion scope or acceptance guardrail drift"
+        )
+    contract = cast(
+        "ReleaseGateInventory",
+        json.loads((PROJECT_ROOT / contract_path).read_text(encoding="utf-8")),
+    )
+    gate_ids = {gate["gate_id"] for gate in contract["release_gates"]}
+    tracks = {index.parent.name for index in track_indexes}
+    _validate_system_stages(plan, tracks, gate_ids)
+
+
+def _validate_system_stages(
+    plan: dict[str, object], tracks: set[str], gate_ids: set[str]
+) -> None:
+    """Require bounded system tasks that reference existing authority."""
+    raw_stages = plan["stages"]
+    if not isinstance(raw_stages, list):
+        raise TypeError("System completion stages must be a list")
+    stage_keys = {
+        "id",
+        "track",
+        "release_gate",
+        "capability",
+        "current_failure",
+        "next_action",
+        "completion_evidence",
+        "stop_condition",
+        "validation",
+    }
+    stage_ids: list[str] = []
+    for raw_stage in cast("list[object]", raw_stages):
+        if not isinstance(raw_stage, dict):
+            raise TypeError("System completion stage must be an object")
+        stage = cast("dict[str, object]", raw_stage)
+        if set(stage) != stage_keys or any(
+            not isinstance(value, str) or not value.strip()
+            for value in stage.values()
+        ):
+            raise ValueError(
+                "Each system task requires a complete bounded plan"
+            )
+        if stage["track"] not in tracks:
+            raise ValueError("System task must belong to a registered track")
+        if stage["release_gate"] not in gate_ids:
+            raise ValueError("System task must name an existing release gate")
+        stage_ids.append(cast("str", stage["id"]))
+    if tuple(stage_ids) != SYSTEM_COMPLETION_STAGES:
+        raise ValueError("System completion stage order or denominator drift")
+    if plan["selected_stage"] not in stage_ids:
+        raise ValueError("Selected system stage is not in the completion plan")
+
+
 def validate_context() -> ContextReceipt:
     """Return a bounded receipt or raise for context drift."""
     context = _read_context()
@@ -245,6 +358,7 @@ def validate_context() -> ContextReceipt:
         raise ValueError("Requirement identifiers must exist and be unique")
     _validate_track_requirements(track_indexes.all, set(requirement_ids))
     autonomous_track_count = _validate_execution_policies(track_indexes.active)
+    validate_system_completion(track_indexes.all)
 
     harness_text = (PROJECT_ROOT / "scripts" / "test_goblin.py").read_text(
         encoding="utf-8"

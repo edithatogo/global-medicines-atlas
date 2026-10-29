@@ -104,11 +104,11 @@ def _test_goblin_check_names(
 ) -> set[str]:
     names = {
         *(
-            f"Python 3.14 / {lane}"
+            f"Python 3.15 / {lane}"
             for lane in _matrix_values(jobs["tests"], "lane")
         ),
         *(
-            f"Python 3.14 / {profile}"
+            f"Python 3.15 / {profile}"
             for profile in _matrix_values(jobs["quality"], "profile")
         ),
     }
@@ -120,7 +120,7 @@ def _test_goblin_check_names(
         "list[dict[str, JsonValue]]", consumer_matrix["include"]
     )
     names.update(
-        f"Consumer / {row['platform']} / Python 3.14" for row in consumer_rows
+        f"Consumer / {row['platform']} / Python 3.15" for row in consumer_rows
     )
     names.update(
         cast("str", jobs[job]["name"])
@@ -158,7 +158,7 @@ def test_live_snapshot_is_exactly_available_and_point_in_time() -> None:
     )
     assert repository["default_branch"] == "main"
     assert repository["default_branch_sha"] == (
-        "0917a7d7f1de1b865ca2fc0a6d1a73d5b5aa3204"
+        "e95ad00d8a0553bd6edef28161d9bbfea637b412"
     )
 
 
@@ -212,6 +212,13 @@ def test_required_checks_match_harness_and_exact_hosted_protection() -> None:
         "codeql",
     }
     assert set(dependency_jobs) == {"dependency-review"}
+    assert test_jobs["hudi-comparison"]["if"] == (
+        "github.event_name == 'workflow_dispatch'"
+    )
+    assert (
+        "preview (manual)"
+        in cast("str", test_jobs["hudi-comparison"]["name"]).lower()
+    )
 
     expanded_test_goblin = _test_goblin_check_names(test_jobs)
     expanded_security = {
@@ -231,6 +238,8 @@ def test_required_checks_match_harness_and_exact_hosted_protection() -> None:
     assert "pytest -q -n 2 --dist worksteal" in workflow
     assert "Restore content-validated gremlins cache" in workflow
     assert "actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9" in workflow
+    assert "gremlins-${{ runner.os }}-py315-" in workflow
+    assert "matrix.profile == 'gremlins' && 180 || 45" in workflow
     assert "'scripts/test_goblin.py', 'src/**/*.py', 'tests/**/*'" in workflow
 
 
@@ -239,7 +248,7 @@ def test_coverage_upload_verifies_the_exact_pypi_attested_cli_first() -> None:
         (ROOT / ".github/workflows/test-goblin.yml").read_text(encoding="utf-8")
     )
     jobs = cast("dict[str, dict[str, object]]", workflow["jobs"])
-    uploader = "${{ github.workspace }}/.ci/codecov/.venv/bin/codecovcli"
+    uploader = "${{ runner.temp }}/codecov-cli/codecovcli"
 
     test_steps = cast("list[dict[str, object]]", jobs["tests"]["steps"])
     test_prepare_index = next(
@@ -293,21 +302,20 @@ def test_coverage_upload_verifies_the_exact_pypi_attested_cli_first() -> None:
     assert quality_config["fail_ci_if_error"] is True
     assert quality_config["use_oidc"] is True
 
-    isolated_project = (ROOT / ".ci/codecov/pyproject.toml").read_text(
-        encoding="utf-8"
-    )
     assert prepare_codecov_cli.CODECOV_CLI_VERSION == "11.3.1"
-    assert '"pypi-attestations==0.0.30"' in isolated_project
-    assert '"test-results-parser==0.6.1"' in isolated_project
+    assert prepare_codecov_cli.CODECOV_ASSET_NAME == "codecovcli_linux"
+    assert len(prepare_codecov_cli.CODECOV_ASSET_SHA256) == 64
 
 
 def test_free_threaded_canary_is_advisory_and_sha_pinned() -> None:
     workflow = (
         ROOT / ".github/workflows/python-free-threaded-canary.yml"
     ).read_text(encoding="utf-8")
-    assert "CPython 3.14t / advisory smoke" in workflow
+    assert "CPython 3.15.1t / advisory smoke" in workflow
     assert "continue-on-error: true" in workflow
-    assert "uv run --python 3.14t" in workflow
+    assert "uv run --python 3.15.1t" in workflow
+    assert "--with pydantic==2.14.1" in workflow
+    assert "pydantic==2.12.5" not in workflow
     assert "--no-project" in workflow
     assert 'PYTHON_GIL: "0"' in workflow
     assert (
@@ -324,13 +332,15 @@ def test_free_threaded_canary_is_advisory_and_sha_pinned() -> None:
     assert "group: python-free-threaded-canary\n" not in workflow
 
 
-def test_current_receipt_reports_all_hosted_controls_verified() -> None:
+def test_current_receipt_reports_live_repository_setting_drift() -> None:
     receipt = qualify_hosted_governance(_snapshot())
 
-    assert receipt.qualification_state is QualificationState.QUALIFIED
-    assert (
-        _control(receipt, "repository_identity").status
-        is ControlStatus.VERIFIED
+    assert receipt.qualification_state is QualificationState.PARTIAL
+    repository = _control(receipt, "repository_identity")
+    assert repository.status is ControlStatus.NONCONFORMING
+    assert repository.findings == (
+        "repository:allow_merge_commit:expected:False",
+        "repository:allow_rebase_merge:expected:False",
     )
     assert (
         _control(receipt, "security_features").status is ControlStatus.VERIFIED
@@ -504,11 +514,11 @@ def test_repository_and_branch_policy_mismatches_are_nonconforming() -> None:
 @pytest.mark.parametrize(
     "required_check",
     [
-        "Consumer / linux / Python 3.14",
-        "Consumer / macos / Python 3.14",
-        "Consumer / windows / Python 3.14",
-        "Python 3.14 / governed recovery rehearsal",
-        "Python 3.14 / operational exercises",
+        "Consumer / linux / Python 3.15",
+        "Consumer / macos / Python 3.15",
+        "Consumer / windows / Python 3.15",
+        "Python 3.15 / governed recovery rehearsal",
+        "Python 3.15 / operational exercises",
     ],
 )
 def test_each_hardening_lane_is_mandatory(required_check: str) -> None:
@@ -534,7 +544,7 @@ def test_each_hardening_lane_is_mandatory(required_check: str) -> None:
 
 
 def test_required_check_app_identity_mismatch_is_nonconforming() -> None:
-    required_check = "Python 3.14 / governed recovery rehearsal"
+    required_check = "Python 3.15 / governed recovery rehearsal"
 
     def spoof_app(data: object) -> None:
         protection = cast("dict[str, JsonValue]", data)
@@ -549,7 +559,7 @@ def test_required_check_app_identity_mismatch_is_nonconforming() -> None:
 
     assert control.status is ControlStatus.NONCONFORMING
     assert (
-        "required-check-app:mismatch:Python 3.14 / governed recovery rehearsal:"
+        "required-check-app:mismatch:Python 3.15 / governed recovery rehearsal:"
         f"expected:{GITHUB_ACTIONS_APP_ID}:observed:{CODECOV_APP_ID}"
         in control.findings
     )
@@ -804,6 +814,14 @@ def _fix_project_drift(data: object) -> None:
 
 def test_resolving_snapshot_drift_produces_a_fully_qualified_receipt() -> None:
     snapshot = _replace_data(_snapshot(), "project", _fix_project_drift)
+    snapshot = _replace_data(
+        snapshot,
+        "repository",
+        lambda data: cast("dict[str, JsonValue]", data).update({
+            "allow_merge_commit": False,
+            "allow_rebase_merge": False,
+        }),
+    )
 
     receipt = qualify_hosted_governance(snapshot)
 
@@ -828,7 +846,7 @@ def test_receipt_and_control_models_reject_forged_conclusions() -> None:
             evidence=("repository",),
         )
     payload = qualify_hosted_governance(_snapshot()).model_dump(mode="json")
-    payload["qualification_state"] = "partial"
+    payload["qualification_state"] = "qualified"
     with pytest.raises(ValidationError, match="does not match controls"):
         HostedGovernanceReceipt.model_validate(payload)
 

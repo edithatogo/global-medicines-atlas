@@ -1,0 +1,79 @@
+{
+  "content_id": "5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a",
+  "decision": "Accept the CMS public-use/public-domain rights basis for this exact July 2026 official HCPCS file and record the source rights state as permitted and rights review as approved. This decision is limited to the exact CMS-published file identity and does not establish permission for separately licensed ADA CDT material.",
+  "decision_authority": "sole maintainer",
+  "decision_by": "maintainer",
+  "decision_id": "ba77e8933ba160adada3e48d6c6d60fb6d1c795d1e3bd07b74a7a16ac7da3dbe",
+  "effective_state": {
+    "b2_state": "external_reference_only",
+    "consumer_canaries_authorized": false,
+    "derived_table_rights_concluded": false,
+    "external_publication_authorized": false,
+    "external_publication_performed": false,
+    "processing_or_v4_admission_authorized": false,
+    "reviewer_status": "approved",
+    "rights_state": "permitted"
+  },
+  "maintainer_approval": {
+    "approval_scope": "Exact July 2026 CMS HCPCS archive rights disposition only.",
+    "external_publication_approved": false,
+    "response": "Approve the bounded public-use rights record"
+  },
+  "official_evidence": [
+    {
+      "finding": "CMS labels the quarterly Alpha-Numeric HCPCS archive as an official public-use file and lists the exact July 2026 file.",
+      "observed_at": "2026-10-19T05:35:57Z",
+      "sha256": "09b45b705cbe3425a7f61222df4036f8afc692ca809cfff4ee03cb377e984396",
+      "url": "https://www.cms.gov/medicare/coding-billing/healthcare-common-procedure-system/quarterly-update"
+    },
+    {
+      "finding": "CMS identifies HCPCS Level II as CMS-maintained except D codes, which it attributes to ADA.",
+      "observed_at": "2026-10-19T05:35:57Z",
+      "sha256": "5c06487fef44ae89a4bb9971c5b98bbb61dec17557117b10e6a879204530ec80",
+      "url": "https://www.cms.gov/medicare-coverage-database/search.aspx"
+    },
+    {
+      "finding": "CMS distinguishes national HCPCS Level II from dental D codes and states CDT is published, copyrighted, and licensed by ADA.",
+      "observed_at": "2026-10-19T05:35:58Z",
+      "sha256": "57289fd4b5a45ae2384d3810a33f763605fd3004ad55b8fa29ea1d22e3d1e1b9",
+      "url": "https://www.cms.gov/Medicare/Coding/MedHCPCSGenInfo/Downloads/2018-11-30-HCPCS-Level2-Coding-Procedure.pdf"
+    },
+    {
+      "byte_count": 496246,
+      "finding": "CMS guide dated 2015 states national HCPCS Level II codes are public domain and says CMS has no agreement with ADA to include and publish CDT/D codes in the Level II code set. This is recorded as CMS rights documentation, not as an independently inspected inventory of the July 2026 archive.",
+      "observed_at": "2026-10-19T12:11:50Z",
+      "sha256": "25796c743dae0d181d8e9d7c123558446dc3a5781a92cc6b5941d349f967395d",
+      "url": "https://www.cms.gov/medicare/coverage/councilontechinnov/downloads/innovators-guide-master-7-23-15.pdf"
+    }
+  ],
+  "recorded_at": "2026-10-19T12:11:14Z",
+  "rights_basis": {
+    "attribution": "Identify the Centers for Medicare & Medicaid Services (CMS) as publisher and identify the July 2026 Alpha-Numeric HCPCS File and its exact revision/identity.",
+    "cms_dental_code_boundary": "CMS documentation identifies D codes/CDT as ADA-maintained, copyrighted, and licensed. The CMS 2015 guide states CMS has no agreement to include and publish them. This decision relies on the exact file\u2019s CMS public-use status and does not grant rights to separately licensed ADA materials; the 2026 archive contents and any code inventory were not inspected.",
+    "publish_source_bytes": "permitted under the CMS public-use/public-domain basis; project publication approval remains separate and is not granted here",
+    "redistribute": "permitted",
+    "transform": "permitted"
+  },
+  "schema_id": "global-medicines-atlas.bronze-source-rights-decision",
+  "schema_version": 1,
+  "scope": {
+    "b1_acquisition_id": "db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a",
+    "b1_acquisition_path": "quality/bronze/imported-acquisitions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a.json",
+    "b1_acquisition_sha256": "5d655e0f516bf1f5e3d1825c0dbeed5ec0e03c7c391c007f33f8ef010b5b1de1",
+    "b2_manifest_path": "quality/bronze/raw-evidence/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/manifest.json",
+    "b2_manifest_sha256": "4080df52b58d0dfaae89484c8285c588619192ef8c46be7f1a723bc51192a394",
+    "b2_state": "external_reference_only",
+    "byte_count": 2499217,
+    "exact_file_content_inspected": false,
+    "source_url": "https://www.cms.gov/files/zip/july-2026-alpha-numeric-hcpcs-file.zip"
+  },
+  "source_id": "us_cms_hcpcs_level_ii",
+  "source_version": "us_cms_hcpcs_level_ii_2026_07",
+  "supersedes_observation": {
+    "admission_path": "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/0ccd108d550a27271b170900660e42a90e6237f3a9beeb67249087008bee74c2.json",
+    "admission_sha256": "d08dd8d20fdca069eff922ae8f3cca04bd5acb7bc494196ffa9c613c99548784",
+    "note": "Original acquisition and landed admission are preserved as historical records; the current rights review supersedes their unresolved review status for this exact object.",
+    "reviewer_status": "unreviewed",
+    "rights_state": "unknown"
+  }
+}

@@ -6,7 +6,51 @@ review, pull-request, merge, archive, and next-track transitions do not require
 maintainer confirmation. Genuine decisions use the options, recommendation,
 and rationale contract in that policy.
 
+Select current work through the [System Completion Execution Charter](./system-completion.md)
+and its [validated scheduling plan](./system-completion.json). Prioritize the
+shared system against the frozen inventory with no new sources. Dataset work
+must close a named capability or gate prerequisite; broader coverage and
+optional experiments remain deferred. This execution order does not change
+track acceptance, rights, admission, recovery, conditional release approval, or
+the current M-105/M-107 dispositions. Read the authoritative Stable contract,
+readiness reconciliation, and bound track receipts for current gate states.
+
 ---
+
+## Current M-112 raw-object readback (2026-10-28)
+
+The [effective raw-delivery reconciliation](../quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261028.json)
+records **14 raw v4 admissions, 14 admitted-object reader canaries and 1,745
+deferred objects** across the unchanged frozen denominator of 1,759. This joins
+the previously retained eight MBS raw admissions to six exact PBS raw objects.
+All six PBS native runs passed once on exact main `10b104417ccb37da6ec20b8e7151c6486a787eec`,
+verified 191,047,619 bytes and left zero reader-cache bytes after close. Their
+[retained native cohort](../quality/qualifications/australian-m112-pbs-v4-admission-readers-20261028/manifest.json)
+is raw-byte delivery evidence, not PBS domain semantics or derived-table
+admission. The separately qualified six-table July 2025 MBS Silver cohort is
+not added to these raw-object counts. Independent recovery and federation
+acceptance remain open; no source, dataset publication or rights scope changed.
+
+## Historical M-112 readback (2026-10-21)
+
+The latest bound preflight records 1,759/1,759 frozen objects with resolved
+rights, 8 exact v4 admissions, 8 admitted-object consumer canaries, and 1,751
+deferred objects. The eighth object is the Q1 HR workbook: exact-main hosted
+run [39575404598](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39575404598)
+passed with remote and streamed digest matches and zero retained cache bytes.
+The frozen denominator is unchanged. Physical workbook layout is qualified;
+source-field and transformation semantics remain partial. No new source,
+public dataset mutation or external publication was performed.
+Use [preflight snapshot 20261021-15](../quality/qualifications/australian-m112-rights-release-preflight-20261021-15.json),
+[current rights reconciliation](../quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json),
+and the [current role qualification](../quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json)
+for the as-of-2026-10-21 counts. These reports reconcile retained hosted receipts; they
+perform no new admission or canary. Earlier preflights remain unchanged.
+The reviewed MBS path-lineage overlay also
+closes the July 2025 XML and P7 workbook B1/B2 joins. The exact July BSD
+sidecar readback separately verifies both sidecar B1/B2 bindings. Older count
+statements in dated plan sections remain
+historical snapshots and must not be read as today's totals.
 
 - [x] **Track: Migrate nzmedicines into the canonical atlas repository**
   *Archived: [archive/nzmedicines_migration_20260727/index.md](./archive/nzmedicines_migration_20260727/index.md).*
@@ -56,5 +100,5 @@ and rationale contract in that policy.
 - [~] **Track: Deliver federated medicines Platinum products**
   *Link: [tracks/federated_medicines_platinum_20260829/index.md](./tracks/federated_medicines_platinum_20260829/index.md); remote-first API, CLI, atlas, exports, provenance, coverage, and cross-repository compatibility.*
 
-- [~] **Track: Evaluate federated medallion frontier capabilities**
-  *Link: [tracks/federated_medallion_frontier_experiments_20260829/index.md](./tracks/federated_medallion_frontier_experiments_20260829/index.md); measured remote-query, Xet, Iceberg, attestation, graph, semantic, and streaming previews with no implicit promotion.*
+- [x] **Track: Evaluate federated medallion frontier capabilities**
+  *Link: [tracks/federated_medallion_frontier_experiments_20260829/index.md](./tracks/federated_medallion_frontier_experiments_20260829/index.md); every experiment is measured, retained as a non-authoritative preview, reused, or deferred with a fallback. Product-owned exhaustive screening and real matcher calibration remain open.*

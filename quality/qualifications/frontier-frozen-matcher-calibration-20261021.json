@@ -1,0 +1,132 @@
+{
+  "boundaries": {
+    "new_sources_added": false,
+    "production_matcher_behavior_changed": false,
+    "real_source_calibration_completed": false,
+    "source_payloads_accessed": false,
+    "synthetic_labels_promoted_to_real": false
+  },
+  "inputs": {
+    "quality/bronze/receipts/au-mbs-p7-legacy-workbook/78239433b8f6dcaa99efeee66ff6756718e6bc8dd9d561394137a29423ecdc94.json": "ba18c36737f9244b204c9d604dce9853e855ee9e9d6f6fd375618c052fdf0d52",
+    "quality/bronze/receipts/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d.json": "cbb89dde7e24e790440b7aa3ec70ff8a580801d49b5f0b8839290f63bd64819c",
+    "quality/bronze/receipts/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1.json": "ff916b49a4993b523da2f41952805b4e1e2064e0ce21edc8bd6643c1acda77a8",
+    "quality/bronze/receipts/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd.json": "14fb98f49eb4e92dc467c0781a1cbd8a3409994b28059922783558235e97b21a",
+    "quality/bronze/receipts/historical_imports/au-data-gov-mbs-demographics/0025afb8078fe15f4cc762d6e2671a0c14816f16e3a0888f8d76ae5b49366e9c.json": "c8f416ed16778170b06f71acbb239235b5406426cede7bf183a2ffbc3cd6a100",
+    "quality/bronze/receipts/historical_imports/au-data-gov-mbs-demographics/071f7c259fe7e6e1527c059801528a743501a289a5aad780ed6a1ee012f2afef.json": "cc4e3895382b991aa50178ada66fb5fefdac088a76a561aa312ccf24fec174a6",
+    "quality/bronze/receipts/historical_imports/au-data-gov-mbs-demographics/12b441d8cc53434651511e110d6060bd62776f3ea6aee1c639e5fcbb5f63c521.json": "9e0d889a4fd5fd6ec240df1412ecb16f3641189873749184c3b450e47022ef4e",
+    "quality/bronze/receipts/historical_imports/au-data-gov-mbs-demographics/29e8aad2a8a564b75d6a7edf34fc76a2b622830589d5e2cd479b5ef2fa4eaebf.json": "76bf7d30aa9c5b5aec0f6a559b90875f61bcc441baf5823032b96144841d92a5",
+    "quality/bronze/receipts/historical_imports/au-data-gov-mbs-demographics/4546f1d31d7e46f5b91df63eb71ccc1785f4d6d7905e654a7723f6c123ee57fc.json": "d00fea25581452ef75616a01779ade4619714736cac3f7b274dbbebb105f51a8",
+    "quality/bronze/receipts/historical_imports/au-data-gov-mbs-demographics/4aea2c1c3c0895281a3f18f206316e61ea5e83b77f11c3af1fa04edc51dc3e22.json": "0c8f05f96936f183cfba44471382fdd00b119cca65adcbd50b760e52f8a3e616",
+    "quality/bronze/receipts/historical_imports/au-data-gov-mbs-demographics/75807b1ebadafa0a0566463b0cf4f28cab2bf728d7bee92f61d51fc349d8d9fb.json": "52a5452986d54e0d40d79edd1bc3f4e52157b558ad66f5ff8bed4f4ed5fd87f8",
+    "quality/bronze/receipts/historical_imports/au-data-gov-mbs-demographics/8b109720cd702440c4e14f35eb337ef8b8a466e11cae0556aa281567202d51e3.json": "da0fe5c525647ca3a43bc351a5c30fc497c5df5fc75a939c051c678c70499b87",
+    "quality/bronze/receipts/historical_imports/au-data-gov-mbs-demographics/a1701ca9f6f499c36c4fd35f5f8d957c22fe98559c7fc1b0ec45c9236b898690.json": "8953b3561647e788f6ac37e9a1669cb098d54f6480bca62499c3577a5e136b8b",
+    "quality/bronze/receipts/historical_imports/au-data-gov-mbs-demographics/c29e30b4419bbca60cfc062c98f855bf7c65db606636fa831c5b5438ed0262fd.json": "020882062bbb6fabe3ad1af84309f6b47ff330cc259872e340684774c37fb697",
+    "quality/bronze/receipts/historical_imports/au-data-gov-mbs-group/0bdc091b4d06d5ca8dccdacbf607c7c021b8a330662b509b871f665fa2813638.json": "3a9e66871ec8f878245fcf9e9849693c67544865081eb9b097d403baffdba5bb",
+    "quality/bronze/receipts/historical_imports/au-data-gov-mbs-group/5ba53ad638c557864f7c6b4f6a50cff44e7df26d7e7eed63cdeff38855ac9967.json": "29be004acc41e75464019e2533718ba5b03710d415bd500f8a9f866b4d9b101e",
+    "quality/bronze/receipts/historical_imports/au-data-gov-mbs-group/7b46430b1a5ec2c1b6b1617244aa6e983902004ab082aa314bfb7e3a9503663b.json": "37a6e1aa828f4bc277d109b2291bd5206a9d161bc7b5d4e1989fbdcdbbcd8158",
+    "quality/bronze/receipts/historical_imports/au-data-gov-mbs-group/b12cc1fd8ebca1dadf2c197dcd3ca086b63fcbd9b58ac2d2e9090b94217e5090.json": "d98092a867237bbc7ef2683d28d0c6ada927240c8a3e61be09d03ca24eee889c",
+    "quality/qualifications/australian-mbs-gold-same-record-review-20261018.json": "24f1bfcffde9a3bd453a637837efb53df042bd5d980e9362f9d3a8274e2a40f0",
+    "quality/qualifications/frontier-real-matcher-label-availability-20261021.json": "8eb8d7ae6bc2b83ae11aec3fd9210b8cd52ee772b9c460aeb3c96d137c7e7973",
+    "scripts/qualify_frontier_screening_calibration.py": "8d320e3c1b4e98703a54c9993ec8fc2fcf65cbf784546585347b75497cb3c93a",
+    "scripts/qualify_frozen_matcher_calibration.py": "ccbb440829b6b0b4082807b01d500a6d768fc8bb47c39f96720bb29b08c64155",
+    "src/global_medicines_atlas/bronze_fixture_landing.py": "1b0811f5140e7f4e39aa2290a7e0b1f10b04342ad963376ecc254e17d857dc1f",
+    "src/global_medicines_atlas/frontier_candidate_benchmark.py": "4c202fd62ff7f39cbe4b8076241da74a87c0d7ebd304b96edcd94c88d834f86c",
+    "src/global_medicines_atlas/frontier_score_calibration.py": "fd150b86fa0d61cdb01b89b63ffa263cc16a0ffd3f64affb387b04f544299b8b",
+    "src/global_medicines_atlas/matching.py": "968dfc9512e93b0d6e0bccd9e2ca357f0e97e0737b5715e03a55f21aa4e47712"
+  },
+  "real_source_calibration": {
+    "real_source_confidence_emitted": false,
+    "reviewed_eligible_pair_labels": 0,
+    "selected_threshold": null,
+    "state": "blocked_missing_reviewed_cross_jurisdiction_medicine_labels"
+  },
+  "retained_receipt_scope": {
+    "au-data-gov-mbs-demographics|AUS": 10,
+    "au-data-gov-mbs-group|AUS": 4,
+    "au-mbs-p7-legacy-workbook|AUS": 1,
+    "au-mbs|AUS": 3
+  },
+  "reviewed_receipt_tree_sha256": "884f5d4f615c7dba453483da1f03758ed68a10cd637c0a1f3545af5c128b040e",
+  "schema_id": "global-medicines-atlas.frozen-matcher-calibration",
+  "schema_version": 1,
+  "synthetic_actual_matcher_control": {
+    "calibrated_holdout_count": 400,
+    "calibration_case_count": 400,
+    "calibration_case_ids_sha256": "ad2948178528050264a6f4d3749c364bc171b702b61ff0a738b0fed3cb069b4a",
+    "calibration_dataset_sha256": "5a4e3644d4c16c4e26bc6ff2b939ef8bbeb2e8c4a1a2ba5f0e0a60325edc11d9",
+    "calibration_negative_count": 200,
+    "calibration_positive_count": 200,
+    "calibration_version": "frozen-synthetic-actual-matcher-v1",
+    "case_overlap_count": 0,
+    "clinical_equivalence_claim": false,
+    "confidence_authority": "review_priority_only",
+    "holdout_brier_score": 0.2108018566331871,
+    "holdout_case_count": 400,
+    "holdout_case_ids_sha256": "027f76c8c3fefd7bcede8f0fc87fb8c3bb91120aebaadab3f39e6395e5c30877",
+    "holdout_dataset_sha256": "cecba9a8a90c9c65eceadbcc8b8eb20f7fc01e3b15975e09bf5e33db766762ca",
+    "holdout_expected_calibration_error": 0.2067599625183237,
+    "holdout_negative_count": 200,
+    "holdout_positive_count": 200,
+    "minimum_per_class": 100,
+    "schema_id": "global-medicines-atlas.frontier-score-calibration",
+    "schema_version": 1,
+    "source_claim": false,
+    "state": "measured_synthetic_only"
+  },
+  "synthetic_holdout_operating_points": [
+    {
+      "cutoff": 0.5,
+      "false_negative": 0,
+      "false_positive": 200,
+      "precision": 0.5,
+      "recall": 1.0,
+      "true_negative": 0,
+      "true_positive": 200
+    },
+    {
+      "cutoff": 0.65,
+      "false_negative": 0,
+      "false_positive": 200,
+      "precision": 0.5,
+      "recall": 1.0,
+      "true_negative": 0,
+      "true_positive": 200
+    },
+    {
+      "cutoff": 0.8,
+      "false_negative": 0,
+      "false_positive": 200,
+      "precision": 0.5,
+      "recall": 1.0,
+      "true_negative": 0,
+      "true_positive": 200
+    },
+    {
+      "cutoff": 0.9,
+      "false_negative": 100,
+      "false_positive": 0,
+      "precision": 1.0,
+      "recall": 0.5,
+      "true_negative": 200,
+      "true_positive": 100
+    },
+    {
+      "cutoff": 1.0,
+      "false_negative": 100,
+      "false_positive": 0,
+      "precision": 1.0,
+      "recall": 0.5,
+      "true_negative": 200,
+      "true_positive": 100
+    }
+  ],
+  "synthetic_operating_point_scope": {
+    "end_to_end_retrieval_recall_claimed": false,
+    "generated_holdout_cases": 400,
+    "generated_train_cases": 400,
+    "population": "scored top candidates after the existing retrieval floor",
+    "retrieval_floor": 0.65,
+    "unscored_holdout_cases": 0,
+    "unscored_train_cases": 0
+  }
+}

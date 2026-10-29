@@ -22,7 +22,7 @@ ICEBERG_REST_FIXTURE_IMAGE = (
     "sha256:db8de90b5b7693d4ac334c336f91d9bbe320d7b19f4f514d26de84cdfbcbfe8d"
 )
 ICEBERG_RELEASE = "1.11.0"
-PYICEBERG_VERSION = "0.11.1"
+PYICEBERG_VERSION = "0.12.0"
 _BASE_FIELD_COUNT = 6
 _FORMAT_VERSION_V3 = 3
 
@@ -65,7 +65,7 @@ class IcebergInteropReceipt(FrozenModel):
         "apache/iceberg-rest-fixture@sha256:db8de90b5b7693d4ac334c336f91d9bbe320d7b19f4f514d26de84cdfbcbfe8d"
     ]
     iceberg_release: Literal["1.11.0"]
-    pyiceberg_version: Literal["0.11.1"]
+    pyiceberg_version: Literal["0.12.0"]
     fixture_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     fixture_acquisition_id: str = Field(min_length=1)
     fixture_record_count: int = Field(ge=1)

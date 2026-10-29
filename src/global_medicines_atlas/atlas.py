@@ -6,7 +6,7 @@ import json
 from collections.abc import Sequence
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated, Protocol
+from typing import TYPE_CHECKING, Annotated, Literal, Protocol
 from urllib.parse import urlsplit
 
 from fastapi import FastAPI, Query, Request
@@ -33,6 +33,7 @@ from .platinum_structure import (
     SourceStructurePage,
     SourceStructureQuery,
 )
+from .platinum_types import MAX_QUERY_OFFSET
 from .platinum_v2_contracts import (
     V2ComparisonQuery,
     V2ComparisonResponse,
@@ -498,8 +499,10 @@ def create_atlas_app(  # ruff: ignore[too-many-statements] - route registration 
                 "kind,semantic_dimension,comparison_validity,inferred"
             ),
             limit: Annotated[int, Query(ge=1, le=100)] = 50,
+            offset: Annotated[int, Query(ge=0, le=MAX_QUERY_OFFSET)] = 0,
             *,
             offline: bool = False,
+            view: Annotated[Literal["records", "fields"], Query()] = "records",
         ) -> HTMLResponse:
             selected_columns = tuple(
                 column.strip()
@@ -511,7 +514,11 @@ def create_atlas_app(  # ruff: ignore[too-many-statements] - route registration 
             status_code = 200
             try:
                 query = SourceStructureQuery(
-                    columns=selected_columns, limit=limit, offline=offline
+                    columns=selected_columns,
+                    limit=limit,
+                    offset=offset,
+                    offline=offline,
+                    view=view,
                 )
                 if resource_id:
                     page = federated_source_structure.query(resource_id, query)
@@ -527,8 +534,10 @@ def create_atlas_app(  # ruff: ignore[too-many-statements] - route registration 
                 name="atlas_federated_source_structure.html",
                 context={
                     "resource_id": resource_id or "",
+                    "view": view,
                     "columns": ",".join(selected_columns),
                     "limit": limit,
+                    "offset": offset,
                     "offline": offline,
                     "error": error,
                     "page": page.model_dump(mode="json") if page else None,

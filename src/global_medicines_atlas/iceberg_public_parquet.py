@@ -29,7 +29,7 @@ SOURCE_SHA256 = (
 QUALIFICATION_SHA256 = (
     "10a91301dfc9846ded0a5e64d98c77c35fa73dc567e6c340d70e2e03cea7662f"
 )
-PYICEBERG_VERSION = "0.11.1"
+PYICEBERG_VERSION = "0.12.0"
 HTTP_OK = 200
 
 
@@ -46,7 +46,7 @@ class PublicParquetIcebergReceipt(FrozenModel):
     source_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     qualification_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     name_mapping_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
-    pyiceberg_version: Literal["0.11.1"]
+    pyiceberg_version: Literal["0.12.0"]
     row_count: int = Field(ge=0)
     column_names: tuple[str, ...] = Field(min_length=1)
     anonymous_digest_verified: Literal[True] = True
@@ -114,7 +114,7 @@ def run_public_parquet_registration(  # ruff: ignore[too-many-locals, too-many-s
         or len(set(field_names)) != len(field_names)
     ):
         raise ValueError("public Parquet schema has invalid or duplicate names")
-    # PyIceberg 0.11.1 exposes no public Arrow-to-schema path before a mapping
+    # PyIceberg 0.12.0 exposes no public Arrow-to-schema path before a mapping
     # exists. Use its pinned converter, assign fresh field IDs, and emit the
     # resulting public name mapping for nested as well as flat Parquet fields.
     schema_without_ids = pyiceberg_arrow._pyarrow_to_schema_without_ids(

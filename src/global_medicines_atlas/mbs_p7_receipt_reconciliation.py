@@ -209,6 +209,21 @@ def reconcile_p7_storage_receipt(root: Path) -> P7ReceiptReconciliation:
     )
 
 
+def reconstruct_p7_storage_source_receipt(root: Path) -> SourceReceipt:
+    """Return the verified historical receipt for the pinned archive object.
+
+    The receipt records the Hugging Face archive retrieval boundary. It does
+    not establish the workbook's original source-origin acquisition or
+    qualify its source-date semantics.
+    """
+
+    reconciliation = reconcile_p7_storage_receipt(root)
+    receipt = _receipt(retrieved_at=reconciliation.retrieved_at)
+    if receipt.digest() != reconciliation.recorded_receipt_sha256:
+        raise ValueError("reconstructed P7 source receipt digest differs")
+    return receipt
+
+
 def dump_reconciliation(value: P7ReceiptReconciliation) -> str:
     """Serialize a reconciliation as stable JSON."""
 

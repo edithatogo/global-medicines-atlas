@@ -1,0 +1,57 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-august-prefix-disposition",
+  "schema_version": 1,
+  "recorded_at": "2026-10-28T04:51:35Z",
+  "purpose": "Record the bounded M-108 disposition of the exact August 2026 MBS projection prefix without changing rights, admission, inventory, or publication state.",
+  "disposition": {
+    "product_id": "f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63",
+    "state": "deferred_not_admitted",
+    "reason": "The exact public tree readback found no Bronze admission sidecar, and no product-specific federation-v4 card, typed admission, or independent-replica evidence is qualified. The exact-object maintainer attestation records public-release rights only and explicitly does not authorize v4 admission or consumer canaries.",
+    "resume_when": [
+      "Product-specific federation-v4 qualification card and output contract are complete.",
+      "The exact product has independently verifiable replica evidence.",
+      "A separate admission decision authorizes typed federation-v4 admission and any bounded consumer canaries."
+    ]
+  },
+  "objects": [
+    {
+      "path": "bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/p7.parquet",
+      "sha256": "50ce02b896984a4065a9f132890f38f19ec430c3f435dc589b1cbd978111dd69",
+      "byte_count": 24367
+    },
+    {
+      "path": "bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/source.parquet",
+      "sha256": "553399aa06830708a1dfb74351b5b49b6a799d7bd7b7584ab86aad168227369c",
+      "byte_count": 454247
+    }
+  ],
+  "evidence": {
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "revision": "b925a8a80b0f90db09513e7ce1378045461b05c0",
+    "phase4_reconciliation": {
+      "path": "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028-2.json",
+      "sha256": "a1f2c7f2d46e5f0a0e90ee153664d7ff0df8fb4bb7397b666a34a85d54ee0623"
+    },
+    "current_tree_readback": {
+      "path": "quality/qualifications/australian-mbs-august-projection-current-tree-readback-20261028.json",
+      "sha256": "941d85a576523bdf0bfa5a137ebbddac503c939b0fe6f75abe57c6828a6c4c03"
+    },
+    "scope_exception": {
+      "path": "quality/qualifications/australian-mbs-public-august-projection-scope-exception-20261020.json",
+      "sha256": "b8fb9f024cea21f4364db9867c73a44afea61615148b49a7ffd7bfffdf6edac2"
+    },
+    "rights_attestation": {
+      "path": "quality/qualifications/australian-mbs-august-outside-m112-projection-rights-attestation-20261020.json",
+      "sha256": "dc5a53ffaed82e758bbe918f0615b5158bdbdf65ad41da2193c6c84ba41841c5"
+    }
+  },
+  "boundaries": {
+    "new_sources": 0,
+    "inventory_membership_changed": false,
+    "rights_conclusion_changed": false,
+    "publication_performed": false,
+    "admission_performed": false,
+    "consumer_canaries_performed": false,
+    "federation_gate_closed": false
+  }
+}

@@ -8,7 +8,7 @@ The executable baseline is deliberately polyglot but layered:
 - DuckDB is the embedded SQL and coverage-analysis engine.
 - LanceDB is installed for regenerable semantic candidate indexes; it must not
   become an authoritative medicine-equivalence store.
-- Mojo is locked through Pixi for future measured kernels. Python 3.14 remains
+- Mojo is locked through Pixi for future measured kernels. Python 3.15.1 remains
   the complete reference and fallback.
 
 `pixi.lock` currently resolves the Linux Mojo nightly and Python toolchains.

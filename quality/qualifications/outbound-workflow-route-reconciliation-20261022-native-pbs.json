@@ -1,0 +1,93 @@
+{
+  "dataset_publication_performed": false,
+  "harvest_and_publication_routes_still_disabled": [
+    {
+      "id": 345202084,
+      "path": ".github/workflows/australian-legacy-hf-publication.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 388008494,
+      "path": ".github/workflows/australian-mbs-july-lifecycle-append.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 345735950,
+      "path": ".github/workflows/australian-mbs-release.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 386946789,
+      "path": ".github/workflows/australian-mbs-root-manifest-append.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 353105946,
+      "path": ".github/workflows/australian-mbs-schedule-harvest.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 368567479,
+      "path": ".github/workflows/australian-mbs-silver-publication.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 353105948,
+      "path": ".github/workflows/australian-mbs-utilisation-harvest.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 374560078,
+      "path": ".github/workflows/australian-mbs-utilisation-lifecycle.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 374495485,
+      "path": ".github/workflows/australian-mbs-utilisation-rights.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 368755681,
+      "path": ".github/workflows/australian-mbs-workbook-egress-preflight.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 345676297,
+      "path": ".github/workflows/australian-pbs-hf-publication.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 353105949,
+      "path": ".github/workflows/australian-pbs-utilisation-harvest.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 345156636,
+      "path": ".github/workflows/hf-legacy-composite-visibility.yml",
+      "state": "disabled_manually"
+    },
+    {
+      "id": 346596759,
+      "path": ".github/workflows/pbs-public-metadata-diagnostic.yml",
+      "state": "disabled_manually"
+    }
+  ],
+  "new_sources": 0,
+  "outbound_communications_performed": false,
+  "prior_observation": {
+    "path": "quality/qualifications/outbound-workflow-route-control-20261022.json",
+    "sha256": "ae0fd0ea08eea875109c2346f66c0c69458cf9473f9b916d9c21b36c24d4f702"
+  },
+  "read_only_qualification_workflow_reenabled": {
+    "id": 346125005,
+    "outbound_comment_commands": 0,
+    "path": ".github/workflows/pbs-historical-qualification.yml",
+    "run_id": 39641247728,
+    "scope_dispatched": "native-values",
+    "sha256": "95dd52919fdce26014ad7a5a88830669abaaa0d41f6a5bbc1f70c6a674bf7cf1",
+    "state": "active"
+  },
+  "recorded_at": "2026-10-21T17:14:31.378603+00:00",
+  "schema_version": 1,
+  "verified_main_commit": "c84c4898f78b7151f28c78a118d11d9b1ad765b6"
+}

@@ -1,0 +1,133 @@
+{
+  "$id": "https://global-medicines-atlas.example/schemas/silver-field-semantics-v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "interpreted"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "evidence_sha256": {
+            "type": "string"
+          },
+          "semantic_definition": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "evidence_sha256",
+          "semantic_definition"
+        ]
+      }
+    }
+  ],
+  "description": "One source-native field and its explicitly declared semantic evidence.",
+  "properties": {
+    "evidence_sha256": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Evidence Sha256"
+    },
+    "native_name": {
+      "minLength": 1,
+      "title": "Native Name",
+      "type": "string"
+    },
+    "reason": {
+      "minLength": 1,
+      "title": "Reason",
+      "type": "string"
+    },
+    "semantic_definition": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Semantic Definition"
+    },
+    "source_object_id": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Object Id"
+    },
+    "source_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Source Sha256",
+      "type": "string"
+    },
+    "state": {
+      "enum": [
+        "interpreted",
+        "native_unresolved",
+        "unavailable"
+      ],
+      "title": "State",
+      "type": "string"
+    },
+    "temporal_use_qualified": {
+      "default": true,
+      "title": "Temporal Use Qualified",
+      "type": "boolean"
+    },
+    "unit": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Unit"
+    },
+    "value_kind": {
+      "default": "measure",
+      "enum": [
+        "measure",
+        "date",
+        "category",
+        "count"
+      ],
+      "title": "Value Kind",
+      "type": "string"
+    }
+  },
+  "required": [
+    "source_sha256",
+    "native_name",
+    "state",
+    "reason"
+  ],
+  "title": "SilverFieldSemantics",
+  "type": "object"
+}

@@ -26,6 +26,7 @@ from global_medicines_atlas.research_exports import (
     ExportSource,
     QuerySnapshotManifest,
     build_query_snapshot_manifest,
+    canonical_result_bytes,
     manifest_sha256,
 )
 from global_medicines_atlas.research_lineage import (
@@ -182,6 +183,7 @@ def test_research_export_package_rejects_source_binding_mismatch(
     manifest, crate, lineage = _inputs()
     lineage = lineage.model_copy(
         update={
+            "schema_version": 2 if artifact_revision is not None else 1,
             "artifacts": tuple(
                 ResearchLineageArtifact(
                     identifier=artifact.identifier,
@@ -195,7 +197,7 @@ def test_research_export_package_rejects_source_binding_mismatch(
                 if artifact.role == "input"
                 else artifact
                 for artifact in lineage.artifacts
-            )
+            ),
         }
     )
 
@@ -696,3 +698,365 @@ def test_research_export_package_rejects_unbound_metadata(
             crate=crate,
             lineage=lineage,
         )
+
+
+def _local_inputs(result: bytes | None = None):
+    manifest, old_crate, old_lineage = _inputs()
+    manifest = manifest.model_copy(update={"generator_commit": "1" * 40})
+    result = (
+        result
+        if result is not None
+        else canonical_result_bytes([{"item_id": "1001"}])
+    )
+    manifest = manifest.model_copy(
+        update={"result_sha256": hashlib.sha256(result).hexdigest()}
+    )
+    address = f"urn:sha256:{manifest.result_sha256}"
+    distribution = CrateDistribution(
+        identifier="query-result.json",
+        name="Bounded query result",
+        content_url=address,
+        media_type="application/json",
+        sha256=manifest.result_sha256,
+        reference_kind="content_addressed",
+    )
+    crate = build_research_crate(
+        identifier=manifest_sha256(manifest),
+        name=old_crate.name,
+        version=old_crate.version,
+        dataset_url=old_crate.dataset_url,
+        distributions=(distribution,),
+    )
+    lineage = build_research_lineage_receipt(
+        export_id=manifest_sha256(manifest),
+        revision="1" * 40,
+        artifacts=(
+            next(
+                item for item in old_lineage.artifacts if item.role == "input"
+            ).model_copy(update={"revision": old_lineage.revision}),
+            ResearchLineageArtifact(
+                identifier="query-result.json",
+                role="output",
+                content_address=address,
+                sha256=manifest.result_sha256,
+            ),
+        ),
+    )
+    return manifest, crate, lineage, result
+
+
+def test_local_content_addressed_export_requires_exact_result_sidecar() -> None:
+    manifest, crate, lineage, result = _local_inputs()
+    package = build_research_export_package(
+        manifest=manifest, crate=crate, lineage=lineage
+    )
+    assert crate.schema_version == 2
+    assert lineage.schema_version == 3
+    assert (
+        package.archive_bytes()
+        == build_research_export_package(
+            manifest=manifest, crate=crate, lineage=lineage
+        ).archive_bytes()
+    )
+    assert (
+        verify_research_export_package(
+            package.archive_bytes(), result_bytes=result
+        )
+        == package
+    )
+    with pytest.raises(ValueError, match="sidecar"):
+        verify_research_export_package(package.archive_bytes())
+    with pytest.raises(ValueError, match="digest"):
+        verify_research_export_package(
+            package.archive_bytes(), result_bytes=b"[]"
+        )
+    assert result not in package.archive_bytes()
+
+
+def test_content_addressed_references_do_not_relax_public_or_input_rules() -> (
+    None
+):
+    digest = "a" * 64
+    address = f"urn:sha256:{digest}"
+    with pytest.raises(ValueError, match="must be public HTTPS"):
+        CrateDistribution(
+            identifier="x",
+            name="x",
+            content_url=address,
+            media_type="application/json",
+            sha256=digest,
+        )
+    with pytest.raises(ValueError, match="content address must match"):
+        CrateDistribution(
+            identifier="x",
+            name="x",
+            content_url=address,
+            media_type="application/json",
+            sha256="b" * 64,
+            reference_kind="content_addressed",
+        )
+    with pytest.raises(ValueError, match="local output content address"):
+        ResearchLineageArtifact(
+            identifier="x", role="input", content_address=address, sha256=digest
+        )
+    with pytest.raises(ValueError, match="must not contain credentials"):
+        ResearchLineageArtifact(
+            identifier="x",
+            role="output",
+            public_url="https://user:password@example.test/x",
+            sha256=digest,
+        )
+
+
+@pytest.mark.parametrize(
+    "result",
+    [b'[{"item_id":"1001"}]', b'[{"item_id":"1001","item_id":"1001"}\n]'],
+    ids=("noncanonical", "duplicate-json-key"),
+)
+def test_local_sidecar_with_matching_digest_still_requires_canonical_rows(
+    result: bytes,
+) -> None:
+    manifest, crate, lineage, _ = _local_inputs(result)
+    package = build_research_export_package(
+        manifest=manifest, crate=crate, lineage=lineage
+    )
+    with pytest.raises(ValueError, match="sidecar"):
+        verify_research_export_package(
+            package.archive_bytes(), result_bytes=result
+        )
+
+
+def test_local_package_rejects_forged_model_copies_and_wrong_commit() -> None:
+    manifest, crate, lineage, _ = _local_inputs()
+    distribution = crate.distributions[0].model_copy(
+        update={"content_url": "urn:sha256:" + "b" * 64}
+    )
+    forged = crate.model_copy(update={"distributions": (distribution,)})
+    with pytest.raises(ValueError, match="content address must match"):
+        build_research_export_package(
+            manifest=manifest, crate=forged, lineage=lineage
+        )
+    wrong_commit = lineage.model_copy(update={"revision": "2" * 40})
+    with pytest.raises(ValueError, match="assembly commit"):
+        build_research_export_package(
+            manifest=manifest, crate=crate, lineage=wrong_commit
+        )
+
+
+def test_local_lineage_rejects_unpinned_inputs_and_oversized_sidecar() -> None:
+    manifest, crate, lineage, _ = _local_inputs()
+    inputs = tuple(
+        item.model_copy(update={"revision": None})
+        if item.role == "input"
+        else item
+        for item in lineage.artifacts
+    )
+    with pytest.raises(ValueError, match="explicit source revisions"):
+        build_research_export_package(
+            manifest=manifest,
+            crate=crate,
+            lineage=lineage.model_copy(update={"artifacts": inputs}),
+        )
+    package = build_research_export_package(
+        manifest=manifest, crate=crate, lineage=lineage
+    )
+    with pytest.raises(ValueError, match="byte budget"):
+        verify_research_export_package(
+            package.archive_bytes(), result_bytes=b" " * (1024 * 1024 + 1)
+        )
+
+
+def test_local_package_rejects_forged_query_and_legacy_scope() -> None:
+    manifest, crate, lineage, result = _local_inputs()
+    bad_manifest = manifest.model_copy(update={"query_sha256": "f" * 64})
+    bad_id = manifest_sha256(bad_manifest)
+    package = build_research_export_package(
+        manifest=bad_manifest,
+        crate=crate.model_copy(update={"identifier": bad_id}),
+        lineage=lineage.model_copy(update={"export_id": bad_id}),
+    )
+    with pytest.raises(ValueError, match="query digest"):
+        verify_research_export_package(
+            package.archive_bytes(), result_bytes=result
+        )
+    with pytest.raises(ValueError, match="crate schema version 2"):
+        build_research_export_package(
+            manifest=manifest,
+            crate=crate.model_copy(update={"schema_version": 1}),
+            lineage=lineage,
+        )
+    with pytest.raises(ValueError, match="lineage schema version 3"):
+        build_research_export_package(
+            manifest=manifest,
+            crate=crate,
+            lineage=lineage.model_copy(update={"schema_version": 2}),
+        )
+
+
+def test_local_sidecar_rejects_excessive_json_nesting() -> None:
+    result = b"[" * 1100 + b"0" + b"]" * 1100
+    manifest, crate, lineage, _ = _local_inputs(result)
+    package = build_research_export_package(
+        manifest=manifest, crate=crate, lineage=lineage
+    )
+    with pytest.raises(ValueError, match=r"invalid JSON|row objects"):
+        verify_research_export_package(
+            package.archive_bytes(), result_bytes=result
+        )
+
+
+def test_local_and_public_output_scopes_cannot_be_confused() -> None:
+    manifest, crate, local_lineage, _ = _local_inputs()
+    source = next(
+        item for item in local_lineage.artifacts if item.role == "input"
+    )
+    public_output = ResearchLineageArtifact(
+        identifier="query-result.json",
+        role="output",
+        public_url=f"https://example.test/exports/{source.revision}/query-result.json",
+        sha256=manifest.result_sha256,
+    )
+    public_lineage = build_research_lineage_receipt(
+        export_id=manifest_sha256(manifest),
+        revision=source.revision or _REVISION,
+        artifacts=(source, public_output),
+    )
+    with pytest.raises(ValueError, match="reference scopes differ"):
+        build_research_export_package(
+            manifest=manifest, crate=crate, lineage=public_lineage
+        )
+    wrong_digest = "b" * 64
+    wrong_output = ResearchLineageArtifact(
+        identifier="query-result.json",
+        role="output",
+        content_address=f"urn:sha256:{wrong_digest}",
+        sha256=wrong_digest,
+    )
+    wrong_lineage = build_research_lineage_receipt(
+        export_id=manifest_sha256(manifest),
+        revision=manifest.generator_commit,
+        artifacts=(source, wrong_output),
+    )
+    with pytest.raises(ValueError, match="content addresses differ"):
+        build_research_export_package(
+            manifest=manifest, crate=crate, lineage=wrong_lineage
+        )
+
+
+def test_local_package_requires_a_pinned_resolve_path_and_row_array() -> None:
+    manifest, crate, lineage, _ = _local_inputs()
+    source = next(item for item in lineage.artifacts if item.role == "input")
+    assert source.public_url is not None
+    no_resolve = source.model_copy(
+        update={
+            "public_url": source.public_url.replace("/resolve/", "/archive/")
+        }
+    )
+    items = tuple(
+        no_resolve if item.role == "input" else item
+        for item in lineage.artifacts
+    )
+    with pytest.raises(ValueError, match="source identity, path, revision"):
+        build_research_export_package(
+            manifest=manifest,
+            crate=crate,
+            lineage=lineage.model_copy(update={"artifacts": items}),
+        )
+    invalid_result = b'{"item_id":"1001"}\n'
+    manifest, crate, lineage, _ = _local_inputs(invalid_result)
+    package = build_research_export_package(
+        manifest=manifest, crate=crate, lineage=lineage
+    )
+    with pytest.raises(ValueError, match="row objects"):
+        verify_research_export_package(
+            package.archive_bytes(), result_bytes=invalid_result
+        )
+
+
+def test_public_package_rejects_local_sidecar_argument() -> None:
+    manifest, crate, lineage = _inputs()
+    package = build_research_export_package(
+        manifest=manifest, crate=crate, lineage=lineage
+    )
+    with pytest.raises(ValueError, match="only supported for local"):
+        verify_research_export_package(
+            package.archive_bytes(), result_bytes=b"[]"
+        )
+
+
+def test_reference_scope_and_cardinality_are_explicit() -> None:
+    digest = "a" * 64
+    with pytest.raises(
+        ValueError, match="one public URL or local content address"
+    ):
+        ResearchLineageArtifact(
+            identifier="missing", role="input", sha256=digest
+        )
+    with pytest.raises(ValueError, match="local output content address"):
+        ResearchLineageArtifact(
+            identifier="revision",
+            role="output",
+            content_address=f"urn:sha256:{digest}",
+            sha256=digest,
+            revision="1" * 40,
+        )
+    manifest, crate, local, _ = _local_inputs()
+    with pytest.raises(ValueError, match="assembly commit scope"):
+        build_research_export_package(
+            manifest=manifest,
+            crate=crate,
+            lineage=local.model_copy(update={"revision_scope": None}),
+        )
+    old_manifest, old_crate, old_lineage = _inputs()
+    with pytest.raises(ValueError, match="public lineage cannot claim local"):
+        build_research_export_package(
+            manifest=old_manifest,
+            crate=old_crate,
+            lineage=old_lineage.model_copy(
+                update={"revision_scope": "assembly_commit"}
+            ),
+        )
+    local_output = next(
+        item for item in local.artifacts if item.role == "output"
+    )
+    duplicate = local_output.model_copy(
+        update={"identifier": "other-result.json"}
+    )
+    with pytest.raises(ValueError, match="exactly one local output"):
+        build_research_lineage_receipt(
+            export_id=local.export_id,
+            revision=local.revision,
+            artifacts=(*local.artifacts, duplicate),
+        )
+    with pytest.raises(ValueError, match="exactly one local distribution"):
+        build_research_crate(
+            identifier=crate.identifier,
+            name=crate.name,
+            version=crate.version,
+            dataset_url=crate.dataset_url,
+            distributions=(
+                crate.distributions[0],
+                crate.distributions[0].model_copy(
+                    update={"identifier": "other"}
+                ),
+            ),
+        )
+
+
+def test_public_model_dump_keeps_legacy_shape_and_local_scope_is_explicit() -> (
+    None
+):
+    _, public_crate, public_lineage = _inputs()
+    public_distribution = public_crate.distributions[0].model_dump()
+    assert "reference_kind" not in public_distribution
+    assert all(
+        "content_address" not in item.model_dump()
+        for item in public_lineage.artifacts
+    )
+    assert "revision_scope" not in public_lineage.model_dump()
+    _, local_crate, local_lineage, _ = _local_inputs()
+    assert (
+        local_crate.distributions[0].model_dump()["reference_kind"]
+        == "content_addressed"
+    )
+    assert local_lineage.model_dump()["revision_scope"] == "assembly_commit"

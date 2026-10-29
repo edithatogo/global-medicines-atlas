@@ -1,0 +1,197 @@
+{
+  "schema_id": "global-medicines-atlas.mbs-historical-workbook-source-column-semantics",
+  "schema_version": 1,
+  "qualification_state": "partial_source_column_meanings_qualified",
+  "scope": {
+    "dataset": "edithatogo/australian-mbs-utilisation-archive",
+    "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+    "candidate_cohort_receipt": {
+      "path": "quality/qualifications/mbs-historical-workbook-cohort-20261023-39724026209-39891918206.json",
+      "sha256": "3bbcc74fee209cee521ce6ee85ef87f3ed13df2d202cb1f96effb02274b48546"
+    },
+    "rights_attestation": {
+      "path": "quality/qualifications/australian-mbs-historical-workbook-91-derived-rights-attestation-20261023.json",
+      "sha256": "c6b74963f09eb68733793af7be04fbcfcad0b32df41a455f94c4b02c0a473408"
+    },
+    "workbooks": 91,
+    "distinct_verified_sheet_header_profiles": 91,
+    "normalized_source_column_profiles": 1,
+    "interpreted_header_bindings": 728,
+    "data_rows_per_field": 38771742,
+    "non_header_values": 310176929,
+    "non_header_value_state": "native_unresolved"
+  },
+  "evidence": [
+    {
+      "path": "quality/qualifications/mbs-historical-workbook-header-cohort-20261024-40040624592.json",
+      "sha256": "5a5858e0a458c46452188a4f52ea396bf1f98c9ce3710d747dd1a58588c196f1",
+      "role": "exact-main workbook, sheet, header, field-binding, and member-identity profiles"
+    },
+    {
+      "path": "quality/qualifications/mbs-workbook-field-state-reconciliation-20261025-shapes-40149410629.json",
+      "sha256": "634cabb9c1169a0e98343c9221d7fe361c43d69b6f3ab395638e18e443609b0b",
+      "role": "exact field-state denominator and native_unresolved classification for every non-header cell"
+    },
+    {
+      "path": "quality/qualifications/mbs-historical-workbook-value-shape-cohort-20261025-40149410629.json",
+      "sha256": "12e1af2eafa0d2aa7b1c2dbb3ccda9112d6ed1e232e2779f981e421a0699e373",
+      "role": "exact-main value-shape and formula/error counts without emitted source values"
+    },
+    {
+      "path": "quality/qualifications/australian-mbs-item-demographic-source-review-20260929.json",
+      "sha256": "b227c8bc25c77bade570ffc4ea8f737a9cbfb06a9a3ddaab297fc12c9e05121c",
+      "role": "existing metadata-only source identity, published field names, and source boundaries"
+    }
+  ],
+  "source_documentation": [
+    {
+      "publisher": "Services Australia",
+      "uri": "https://medicarestatistics.humanservices.gov.au/VEA0032/SAS.Web/statistics/mbs_item.html",
+      "applies_to": "MBS item and patient-demographic statistical reports",
+      "observations": [
+        "The demographic report describes patient age range and gender for an MBS item.",
+        "State or Territory is based on the patient's address at the time of claiming.",
+        "Month is based on the date the service was processed, not the date it was provided.",
+        "Service totals subtract later-day adjustments and may be negative.",
+        "Older item numbers requested in some report periods may be reported under a current equivalent item number."
+      ],
+      "limitations": [
+        "The live page is mutable and did not provide a stable content digest for this qualification.",
+        "Current privacy and demographic-category behavior is not projected onto historical values without exact-era evidence."
+      ]
+    },
+    {
+      "publisher": "Services Australia via the existing data.gov.au catalogue record",
+      "uri": "https://www.data.gov.au/data/dataset/medicare-benefits-schedule-mbs-group-by-patient-demographics-report/resource/492b39de-8c97-4bbf-880e-e97d933daa9c",
+      "repository_copy": "https://researchdata.edu.au/medicare-benefits-schedule-demographics-report/3806173",
+      "applies_to": "The existing 1993-2015 historical patient-demographics workbook and CSV series",
+      "observations": [
+        "The historical files are quarterly MBS patient-demographics reports.",
+        "The dataset description defines the report as patient age range, gender, services, and total benefit amount by MBS item and State or Territory.",
+        "The historical report notes use the claim-processing month and define service totals as claims less later-day adjustments."
+      ],
+      "limitations": [
+        "The repository copy is a metadata mirror of the data.gov.au description, not a new dataset source.",
+        "The catalogue record does not define historical category values, the currency code, or the benefit calculation formula."
+      ]
+    }
+  ],
+  "source_column_meanings": [
+    {
+      "column": "A",
+      "native_header": "Year",
+      "field": "calendar_year_label",
+      "state": "interpreted_with_limit",
+      "meaning": "Year component of the report period, paired with the source-defined processing month.",
+      "value_state": "native_unresolved",
+      "limits": [
+        "No service-year or fiscal-year interpretation is asserted.",
+        "No value conversion or cross-era pooling is qualified."
+      ]
+    },
+    {
+      "column": "B",
+      "native_header": "Month",
+      "field": "processing_month_label",
+      "state": "interpreted",
+      "meaning": "Month in which the service claim was processed, not the month the service was provided.",
+      "value_state": "native_unresolved",
+      "limits": [
+        "Preserve native month labels; no month-number conversion is qualified."
+      ]
+    },
+    {
+      "column": "C",
+      "native_header": "Item_Number",
+      "field": "schedule_item_identifier",
+      "state": "interpreted_with_limit",
+      "meaning": "MBS item number referencing a Medicare service.",
+      "value_state": "native_unresolved",
+      "limits": [
+        "Item numbers can change and some report requests can be remapped to a current equivalent.",
+        "No current-schedule identity or historical equivalence is asserted."
+      ]
+    },
+    {
+      "column": "D",
+      "native_header": "State",
+      "field": "state_label",
+      "state": "interpreted",
+      "meaning": "State or Territory dimension based on the patient's address when the service was claimed.",
+      "value_state": "native_unresolved",
+      "limits": [
+        "Native category values and code normalization remain unresolved."
+      ]
+    },
+    {
+      "column": "E",
+      "native_header": "Age_Range",
+      "field": "age_range_label",
+      "state": "interpreted_with_limit",
+      "meaning": "Patient age-range demographic dimension for the MBS item report.",
+      "value_state": "native_unresolved",
+      "limits": [
+        "Age-band boundaries, reference date, suppression tokens, and value taxonomy remain unresolved."
+      ]
+    },
+    {
+      "column": "F",
+      "native_header": "Gender",
+      "field": "gender_label",
+      "state": "interpreted_with_limit",
+      "meaning": "Patient gender demographic dimension for the MBS item report.",
+      "value_state": "native_unresolved",
+      "limits": [
+        "Historical labels, value taxonomy, and suppression tokens remain unresolved.",
+        "No normalization or clinical-sex interpretation is asserted."
+      ]
+    },
+    {
+      "column": "G",
+      "native_header": "Services",
+      "field": "service_count_label",
+      "state": "interpreted",
+      "meaning": "Reported service total for processed MBS claims, after later-day adjustments.",
+      "value_state": "native_unresolved",
+      "limits": [
+        "Values may be negative after adjustments.",
+        "Services are not distinct patients or a patient denominator."
+      ]
+    },
+    {
+      "column": "H",
+      "native_header": "Benefits ($)",
+      "field": "benefit_amount_label_currency_unresolved",
+      "state": "interpreted_with_limit",
+      "meaning": "Reported total benefit amount associated with MBS items and State or Territory; the native header denotes dollar units.",
+      "value_state": "native_unresolved",
+      "limits": [
+        "Currency code is not established.",
+        "Benefit amount calculation and adjustment treatment are not established.",
+        "No payable patient benefit or expenditure claim is made."
+      ]
+    }
+  ],
+  "value_and_era_rules": {
+    "formula_cells": 0,
+    "source_error_cells": 0,
+    "formula_evaluation": "not_applicable_for_this_91_workbook_cohort",
+    "formula_policy": "No formulas were observed; none are evaluated.",
+    "historical_schema_era": "1993-2015 quarterly MBS patient-demographics workbooks",
+    "current_schema_equivalence": false,
+    "cross_era_pooling": false,
+    "source_values_emitted": false,
+    "source_payload_bytes_read": false
+  },
+  "boundaries": {
+    "new_sources": 0,
+    "new_admissions": 0,
+    "consumer_canaries": 0,
+    "publications": 0,
+    "rights_conclusion_changed": false,
+    "cell_values_promoted": 0,
+    "all_non_header_values_native_unresolved": true,
+    "m109_complete": false,
+    "stable_v1_australian_health_federation_accepted": false
+  }
+}

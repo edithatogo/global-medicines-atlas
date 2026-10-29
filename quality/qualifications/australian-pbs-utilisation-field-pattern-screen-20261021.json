@@ -1,0 +1,599 @@
+{
+  "dataset": "edithatogo/australian-pbs-utilisation-archive",
+  "interpretation": "This screen attributes pattern counts to column positions and opaque cell-label digests only. Column labels, source-specific identifier contracts, and vocabulary membership require review; it does not establish rights clearance.",
+  "method": {
+    "field_labels_are_sha256_only": true,
+    "headers_or_first_cells_emitted": false,
+    "patterns": [
+      "umls_cui",
+      "atc_code_shape",
+      "explicit_terminology_marker",
+      "numeric_identifier_candidate"
+    ],
+    "source_bytes_persisted_locally": false,
+    "source_values_emitted": false
+  },
+  "objects": [
+    {
+      "byte_count": 372149,
+      "columns_with_pattern_hits": 10,
+      "field_profiles": [
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": null,
+          "column_index": 0,
+          "header_cell_sha256": null,
+          "sheet_index": 17,
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 2,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": null,
+          "column_index": 1,
+          "header_cell_sha256": null,
+          "sheet_index": 17,
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 1,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": null,
+          "column_index": 2,
+          "header_cell_sha256": null,
+          "sheet_index": 17,
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 1,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": null,
+          "column_index": 0,
+          "header_cell_sha256": null,
+          "sheet_index": 18,
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 3,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": null,
+          "column_index": 0,
+          "header_cell_sha256": null,
+          "sheet_index": 19,
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 2,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": null,
+          "column_index": 0,
+          "header_cell_sha256": null,
+          "sheet_index": 20,
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 2,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": null,
+          "column_index": 0,
+          "header_cell_sha256": null,
+          "sheet_index": 23,
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 34,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": null,
+          "column_index": 0,
+          "header_cell_sha256": null,
+          "sheet_index": 30,
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 4,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "ec883f59b9751caae24cfe91309128a20e16f7b526b8cb9009a421c34a8e2e76",
+          "column_index": 0,
+          "header_cell_sha256": "ec883f59b9751caae24cfe91309128a20e16f7b526b8cb9009a421c34a8e2e76",
+          "sheet_index": 39,
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 2,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": null,
+          "column_index": 3,
+          "header_cell_sha256": null,
+          "sheet_index": 39,
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 24,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        }
+      ],
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+      "rows_scanned": 2180,
+      "sha256": "32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b"
+    },
+    {
+      "byte_count": 468764,
+      "columns_with_pattern_hits": 11,
+      "field_profiles": [
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": null,
+          "column_index": 1,
+          "header_cell_sha256": null,
+          "sheet_index": 0,
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 1,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": null,
+          "column_index": 2,
+          "header_cell_sha256": null,
+          "sheet_index": 0,
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 9,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "523e1b1b394573fcbe9c03264686afb9619b2c91318d5a932c655cc13afb8e61",
+          "column_index": 0,
+          "header_cell_sha256": "523e1b1b394573fcbe9c03264686afb9619b2c91318d5a932c655cc13afb8e61",
+          "sheet_index": 24,
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 2,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": null,
+          "column_index": 1,
+          "header_cell_sha256": null,
+          "sheet_index": 24,
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 1,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": null,
+          "column_index": 2,
+          "header_cell_sha256": null,
+          "sheet_index": 24,
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 1,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "523e1b1b394573fcbe9c03264686afb9619b2c91318d5a932c655cc13afb8e61",
+          "column_index": 0,
+          "header_cell_sha256": "523e1b1b394573fcbe9c03264686afb9619b2c91318d5a932c655cc13afb8e61",
+          "sheet_index": 25,
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 3,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "523e1b1b394573fcbe9c03264686afb9619b2c91318d5a932c655cc13afb8e61",
+          "column_index": 0,
+          "header_cell_sha256": "523e1b1b394573fcbe9c03264686afb9619b2c91318d5a932c655cc13afb8e61",
+          "sheet_index": 26,
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 2,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "523e1b1b394573fcbe9c03264686afb9619b2c91318d5a932c655cc13afb8e61",
+          "column_index": 0,
+          "header_cell_sha256": "523e1b1b394573fcbe9c03264686afb9619b2c91318d5a932c655cc13afb8e61",
+          "sheet_index": 27,
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 2,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "523e1b1b394573fcbe9c03264686afb9619b2c91318d5a932c655cc13afb8e61",
+          "column_index": 0,
+          "header_cell_sha256": "523e1b1b394573fcbe9c03264686afb9619b2c91318d5a932c655cc13afb8e61",
+          "sheet_index": 31,
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 34,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "523e1b1b394573fcbe9c03264686afb9619b2c91318d5a932c655cc13afb8e61",
+          "column_index": 0,
+          "header_cell_sha256": "523e1b1b394573fcbe9c03264686afb9619b2c91318d5a932c655cc13afb8e61",
+          "sheet_index": 38,
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 2,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "523e1b1b394573fcbe9c03264686afb9619b2c91318d5a932c655cc13afb8e61",
+          "column_index": 0,
+          "header_cell_sha256": "523e1b1b394573fcbe9c03264686afb9619b2c91318d5a932c655cc13afb8e61",
+          "sheet_index": 40,
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 4,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        }
+      ],
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+      "rows_scanned": 2327,
+      "sha256": "147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99"
+    },
+    {
+      "byte_count": 35384567,
+      "columns_with_pattern_hits": 7,
+      "field_profiles": [
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "6b3572a1a208b277db33bdf13dbdd8522a48dbb8e5be3168a6c2774374148709",
+          "column_index": 0,
+          "header_sha256": "6b3572a1a208b277db33bdf13dbdd8522a48dbb8e5be3168a6c2774374148709",
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 389050,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "b4462798ae74d9371a8017f897b1a19568fe76ed293967861c9f6199768a7faa",
+          "column_index": 6,
+          "header_sha256": "b4462798ae74d9371a8017f897b1a19568fe76ed293967861c9f6199768a7faa",
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 269,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "807c394ed1e18e4a226d4a5ef64a0b188cdbe4abbb6cc30a716f90694fcfcbce",
+          "column_index": 7,
+          "header_sha256": "807c394ed1e18e4a226d4a5ef64a0b188cdbe4abbb6cc30a716f90694fcfcbce",
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 7478,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "d8ba562ff84acaa2adfad6152fe1d52cad15ff0d3b74a6b7a64348db8378f263",
+          "column_index": 8,
+          "header_sha256": "d8ba562ff84acaa2adfad6152fe1d52cad15ff0d3b74a6b7a64348db8378f263",
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 21173,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "30682864aa3777add5bb3ee4dd07e925b490f240b0ce743f724dfdb70330c6bc",
+          "column_index": 9,
+          "header_sha256": "30682864aa3777add5bb3ee4dd07e925b490f240b0ce743f724dfdb70330c6bc",
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 27620,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "69a8b6dd4f44f87aa6f2e8df405660f605dcbb6b1859b5ee2fd47035d27a77e0",
+          "column_index": 10,
+          "header_sha256": "69a8b6dd4f44f87aa6f2e8df405660f605dcbb6b1859b5ee2fd47035d27a77e0",
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 3808,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "4cd17ac64a87db188d7bd19831059c3675e8adc32f7b6d4c187769cc1ffc200f",
+          "column_index": 11,
+          "header_sha256": "4cd17ac64a87db188d7bd19831059c3675e8adc32f7b6d4c187769cc1ffc200f",
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 7266,
+            "umls_cui": 0
+          }
+        }
+      ],
+      "path": "raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+      "rows_scanned": 389050,
+      "sha256": "4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4"
+    },
+    {
+      "byte_count": 36381946,
+      "columns_with_pattern_hits": 7,
+      "field_profiles": [
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "6b3572a1a208b277db33bdf13dbdd8522a48dbb8e5be3168a6c2774374148709",
+          "column_index": 0,
+          "header_sha256": "6b3572a1a208b277db33bdf13dbdd8522a48dbb8e5be3168a6c2774374148709",
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 399660,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "b4462798ae74d9371a8017f897b1a19568fe76ed293967861c9f6199768a7faa",
+          "column_index": 6,
+          "header_sha256": "b4462798ae74d9371a8017f897b1a19568fe76ed293967861c9f6199768a7faa",
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 220,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "807c394ed1e18e4a226d4a5ef64a0b188cdbe4abbb6cc30a716f90694fcfcbce",
+          "column_index": 7,
+          "header_sha256": "807c394ed1e18e4a226d4a5ef64a0b188cdbe4abbb6cc30a716f90694fcfcbce",
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 7596,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "d8ba562ff84acaa2adfad6152fe1d52cad15ff0d3b74a6b7a64348db8378f263",
+          "column_index": 8,
+          "header_sha256": "d8ba562ff84acaa2adfad6152fe1d52cad15ff0d3b74a6b7a64348db8378f263",
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 23182,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "30682864aa3777add5bb3ee4dd07e925b490f240b0ce743f724dfdb70330c6bc",
+          "column_index": 9,
+          "header_sha256": "30682864aa3777add5bb3ee4dd07e925b490f240b0ce743f724dfdb70330c6bc",
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 29768,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "69a8b6dd4f44f87aa6f2e8df405660f605dcbb6b1859b5ee2fd47035d27a77e0",
+          "column_index": 10,
+          "header_sha256": "69a8b6dd4f44f87aa6f2e8df405660f605dcbb6b1859b5ee2fd47035d27a77e0",
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 3883,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "4cd17ac64a87db188d7bd19831059c3675e8adc32f7b6d4c187769cc1ffc200f",
+          "column_index": 11,
+          "header_sha256": "4cd17ac64a87db188d7bd19831059c3675e8adc32f7b6d4c187769cc1ffc200f",
+          "value_pattern_counts": {
+            "atc_code_shape": 0,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 7437,
+            "umls_cui": 0
+          }
+        }
+      ],
+      "path": "raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+      "rows_scanned": 399660,
+      "sha256": "f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8"
+    },
+    {
+      "byte_count": 1063694,
+      "columns_with_pattern_hits": 1,
+      "field_profiles": [
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "50531596032f02653a6f28e46232cad99469344645a34db803772da60b3ca732",
+          "column_index": 3,
+          "header_sha256": "50531596032f02653a6f28e46232cad99469344645a34db803772da60b3ca732",
+          "value_pattern_counts": {
+            "atc_code_shape": 10770,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        }
+      ],
+      "path": "raw/pbs/utilisation/reference/pbs-item-drug-map.csv",
+      "rows_scanned": 12162,
+      "sha256": "51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8"
+    },
+    {
+      "byte_count": 117376499,
+      "columns_with_pattern_hits": 5,
+      "field_profiles": [
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "20f9f06f6a7ddb3b7b96622cd4c29704ac436e71860946a02dff60152ae524ad",
+          "column_index": 2,
+          "header_cell_sha256": "20f9f06f6a7ddb3b7b96622cd4c29704ac436e71860946a02dff60152ae524ad",
+          "sheet_index": 0,
+          "value_pattern_counts": {
+            "atc_code_shape": 230819,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "20f9f06f6a7ddb3b7b96622cd4c29704ac436e71860946a02dff60152ae524ad",
+          "column_index": 2,
+          "header_cell_sha256": "20f9f06f6a7ddb3b7b96622cd4c29704ac436e71860946a02dff60152ae524ad",
+          "sheet_index": 1,
+          "value_pattern_counts": {
+            "atc_code_shape": 239316,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "20f9f06f6a7ddb3b7b96622cd4c29704ac436e71860946a02dff60152ae524ad",
+          "column_index": 2,
+          "header_cell_sha256": "20f9f06f6a7ddb3b7b96622cd4c29704ac436e71860946a02dff60152ae524ad",
+          "sheet_index": 2,
+          "value_pattern_counts": {
+            "atc_code_shape": 257881,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "20f9f06f6a7ddb3b7b96622cd4c29704ac436e71860946a02dff60152ae524ad",
+          "column_index": 2,
+          "header_cell_sha256": "20f9f06f6a7ddb3b7b96622cd4c29704ac436e71860946a02dff60152ae524ad",
+          "sheet_index": 3,
+          "value_pattern_counts": {
+            "atc_code_shape": 284808,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        },
+        {
+          "cell_label_marker_class": "unclassified",
+          "cell_label_sha256": "20f9f06f6a7ddb3b7b96622cd4c29704ac436e71860946a02dff60152ae524ad",
+          "column_index": 2,
+          "header_cell_sha256": "20f9f06f6a7ddb3b7b96622cd4c29704ac436e71860946a02dff60152ae524ad",
+          "sheet_index": 4,
+          "value_pattern_counts": {
+            "atc_code_shape": 291276,
+            "explicit_terminology_marker": 0,
+            "numeric_identifier_candidate": 0,
+            "umls_cui": 0
+          }
+        }
+      ],
+      "path": "raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx",
+      "rows_scanned": 1378311,
+      "sha256": "48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca"
+    }
+  ],
+  "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+  "rights_scope_assessment": {
+    "attestation": "quality/qualifications/australian-pbs-utilisation-six-object-rights-attestation-20261020.json",
+    "exact_six_objects_including_all_vocabulary": true,
+    "permission_instrument_independently_reviewed": false,
+    "public_release_performed": false
+  },
+  "schema_id": "global-medicines-atlas.australian-pbs-utilisation-field-pattern-screen",
+  "schema_version": 1
+}

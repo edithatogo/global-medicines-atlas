@@ -1,0 +1,72 @@
+{
+  "contracts": [
+    {
+      "contract_id": "au-data-gov-mbs-group:historical-backfill-replay:v1",
+      "correction_rule": "new_snapshot_never_overwrite",
+      "deterministic_output_rule": "canonical_json_sha256",
+      "idempotency_rule": "partition_and_snapshot_sha256",
+      "late_arrival_rule": "append_then_replay_partition",
+      "missing_payload_rule": "metadata_only_fail_closed",
+      "partition_identity": [
+        "source_id",
+        "archive_period",
+        "logical_asset_id"
+      ],
+      "replay_order": [
+        "partition_id",
+        "correction_sequence",
+        "snapshot_id"
+      ],
+      "snapshot_identity": [
+        "partition_id",
+        "payload_sha256",
+        "metadata_sha256"
+      ],
+      "source_id": "au-data-gov-mbs-group",
+      "supersession_rule": "explicit_acyclic_predecessor"
+    }
+  ],
+  "replay_plan": {
+    "deterministic": true,
+    "eligible_snapshot_count": 1,
+    "plan_sha256": "ba9b3ece14458dda9db12b7591ef328711c7976688f03dc3a788651999aa87aa",
+    "schema_version": "historical-replay-plan-v1",
+    "steps": [
+      {
+        "action": "verify_and_rebuild_raw_b2_snapshot_registration",
+        "candidate_only": true,
+        "expected_byte_count": 12291303,
+        "expected_payload_sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b",
+        "hosted_replay_status": "pending",
+        "m112_consumer_canary_performed": false,
+        "partition_id": "08fdb736ab894951af6a6c6220348e9123782520251416feaab375d1f494a542",
+        "registration_semantics": "append_only_idempotent",
+        "snapshot_id": "c1c60a691ad9fbd7f3faca4895791549b9b6aa43c65e096527bb84f73df5c84b",
+        "source_payload_values": "not_read",
+        "v4_admission_performed": false
+      }
+    ]
+  },
+  "snapshots": [
+    {
+      "archive_period": "filename-derived:mbs-group-2016-july.csv",
+      "correction_sequence": 0,
+      "idempotency_key": "8b9db0c0bfe487111a83dac3fe460dc82acd6f82bf16a5d8c55cbb93d6c85b88",
+      "late_arriving": false,
+      "logical_asset_id": "1bf452ddd495789f9d9cf7dbff169ddc5cd66aeaab7676f52f7034a925828aa9",
+      "metadata_sha256": "6b4ebe5ab2eadc7fc868fde9b9bafd4d866b4836785a781b08a59688eca6e54d",
+      "observation_status": "acquired",
+      "partition_id": "08fdb736ab894951af6a6c6220348e9123782520251416feaab375d1f494a542",
+      "partition_value": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+      "payload_sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b",
+      "replay_eligible": true,
+      "rights_state": "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified",
+      "snapshot_id": "c1c60a691ad9fbd7f3faca4895791549b9b6aa43c65e096527bb84f73df5c84b",
+      "source_id": "au-data-gov-mbs-group",
+      "source_url": "https://data.gov.au/data/dataset/5335e112-d91e-47ba-b5f8-5364c8e428dc/resource/663a7fac-114c-47b5-9017-a9dbb9073260/download/mbs-group-2016-july.csv",
+      "source_version_id": "data.gov.au-package-show-sha256-f6246c66c58e6a82835c99b3528720076b83f55689caadd273f495fd2c8adfe7",
+      "supersedes_snapshot_id": null
+    }
+  ],
+  "vocabulary_version": "3.0.0"
+}

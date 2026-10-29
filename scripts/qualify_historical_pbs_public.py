@@ -39,6 +39,10 @@ def _write(output: Path, report: dict[str, Any]) -> dict[str, Any]:
     return report
 
 
+# Reused by bounded metadata-only qualification CLIs.
+write_qualification_receipt = _write
+
+
 def main(argv: list[str] | None = None) -> int:
     """Emit aggregate checkpoints and a final receipt without source text."""
     parser = argparse.ArgumentParser()
@@ -46,7 +50,15 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument(
         "--projection",
-        choices=("native", "domain", "entities", "references", "dates"),
+        choices=(
+            "native",
+            "domain",
+            "entities",
+            "references",
+            "dates",
+            "values",
+            "value-package",
+        ),
     )
     parser.add_argument("--reference-shard-index", type=int)
     parser.add_argument("--reference-shard-count", type=int)

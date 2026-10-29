@@ -22,6 +22,7 @@ from http import HTTPStatus
 from pathlib import Path
 from typing import Any, cast
 from urllib.parse import quote, urljoin, urlsplit
+from xml.parsers import expat
 
 import httpx
 
@@ -30,7 +31,7 @@ from .acquisition import (
     BoundIPAddressTransport,
     DestinationPolicyError,
 )
-from .adapters.au_pbs import read_pbs_v3_member
+from .adapters.au_pbs import PBS_V3_NAMESPACE, read_pbs_v3_member
 from .pbs_historical_projections import iter_pbs_historical_entity_batches
 from .pbs_historical_qualification import (
     _denominator,  # pyright: ignore[reportPrivateUsage]
@@ -41,6 +42,15 @@ from .pbs_member_identity import (
     PbsXmlMemberBinding,
     build_pbs_xml_member_binding,
 )
+from .pbs_native_reference_screen import screen_native_references
+from .pbs_observed_domain import load_observed_profile
+from .pbs_observed_qualification import qualify_observed_values
+from .pbs_reference_context import (
+    CONTEXT_FAILURE_CODES,
+    ReferenceContextError,
+    encode_reference_context_receipt,
+    screen_reference_context,
+)
 from .pbs_reference_shards import (
     load_reference_entity_material,
     load_reference_entity_partition,
@@ -50,6 +60,10 @@ from .pbs_reference_shards import (
     prepare_reference_partition_group,
     prepare_reference_shards,
 )
+from .pbs_schema_inventory import profile_schema_paths
+from .pbs_value_package_v2 import (
+    qualify_value_package_pair_v2 as qualify_value_package_pair,
+)
 from .receipts import SourceReceipt
 
 DATASET = "edithatogo/australian-pbs-source-archive"
@@ -57,6 +71,12 @@ REVISION = "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7"
 INFO_URL = f"https://huggingface.co/api/datasets/{DATASET}/revision/{REVISION}"
 HOSTS = ("huggingface.co", "us.aws.cdn.hf.co")
 MAX_REPORT_BYTES = 48_000
+_PBS_SCHEMA_MAJOR = 3
+_MAX_ROOT_VERSION_LITERAL_BYTES = 32
+_ROOT_METADATA_PREFIX_BYTES = 64 * 1024
+_ROOT_METADATA_CHUNK_BYTES = 4096
+_VERSION_MINOR_COMPONENT_COUNT = 2
+_VERSION_PATCH_COMPONENT_COUNT = 3
 FAILURE_STAGES = frozenset({
     "context",
     "transport-setup",
@@ -211,6 +231,7 @@ class QualificationError(ValueError):
         transport_detail: str = "unknown",
         failure_type: str = "qualification-error",
         resource_code: str = "unavailable",
+        context_diagnostic_code: str = "unavailable",
     ) -> None:
         self.retry_event: tuple[str, str] | None = None
         self.retry_detail = "unknown"
@@ -225,6 +246,11 @@ class QualificationError(ValueError):
         self.resource_code = (
             resource_code
             if resource_code in {"enospc", "unavailable"}
+            else "unavailable"
+        )
+        self.context_diagnostic_code = (
+            context_diagnostic_code
+            if context_diagnostic_code in CONTEXT_FAILURE_CODES
             else "unavailable"
         )
         super().__init__(
@@ -279,6 +305,18 @@ class _RetryBudget:
                 "entities",
                 "references",
                 "dates",
+                "values",
+                "package-write",
+                "package-restore",
+                "package-native-oracle",
+                "schema-inventory",
+                "native-reference-index",
+                "native-reference-match",
+                "reference-context-index",
+                "reference-context-join",
+                "reference-context-aggregate",
+                "reference-context-report",
+                "reference-context-denominator",
             }
             or any(
                 type(value) is not int or not 0 <= value < 2**63
@@ -395,6 +433,11 @@ def _at(
             resource_code=(
                 "enospc"
                 if isinstance(error, OSError) and error.errno == errno.ENOSPC
+                else "unavailable"
+            ),
+            context_diagnostic_code=(
+                error.diagnostic_code
+                if isinstance(error, ReferenceContextError)
                 else "unavailable"
             ),
         ) from None
@@ -1100,18 +1143,38 @@ def _run(
 ) -> dict[str, Any]:
     inputs = _verified_inputs(exact_commit, transport=transport, retry=retry)
     with _at("projection-qualification", progress=retry.checkpoint):
-        qualification = qualify_pbs_historical_projections(
-            inputs.archive,
-            inputs.xml,
-            inputs.parent,
-            inputs.binding,
-            projection=projection,
-            reference_shard=reference_shard,
-            date_profile=date_profile,
-            progress=lambda phase, batches, rows: retry.checkpoint(
-                "projection-qualification", phase, batches, rows
-            ),
-        )
+        if projection == "value-package":
+            if reference_shard is not None or date_profile is not None:
+                raise ValueError(
+                    "value package does not interpret dates or reference shards"
+                )
+            with tempfile.TemporaryDirectory(
+                prefix="pbs-value-package-"
+            ) as temporary:
+                qualification = qualify_value_package_pair(
+                    inputs.archive,
+                    inputs.xml,
+                    inputs.parent,
+                    inputs.binding,
+                    Path(temporary) / "pair",
+                    progress=lambda phase, batches, rows: retry.checkpoint(
+                        "projection-qualification", phase, batches, rows
+                    ),
+                )
+            qualification["temporary_derivatives_removed"] = True
+        else:
+            qualification = qualify_pbs_historical_projections(
+                inputs.archive,
+                inputs.xml,
+                inputs.parent,
+                inputs.binding,
+                projection=projection,
+                reference_shard=reference_shard,
+                date_profile=date_profile,
+                progress=lambda phase, batches, rows: retry.checkpoint(
+                    "projection-qualification", phase, batches, rows
+                ),
+            )
     report = {
         "schema_version": 1,
         "status": "passed",
@@ -1177,8 +1240,9 @@ def failure_report(error: Exception | None = None) -> dict[str, Any]:
             transport_detail=error.transport_detail,
             failure_type=error.failure_type,
             resource_code=error.resource_code,
+            context_diagnostic_code=error.context_diagnostic_code,
         )
-    return {
+    report: dict[str, Any] = {
         "schema_version": 1,
         "status": "failed",
         **context,
@@ -1203,3 +1267,321 @@ def failure_report(error: Exception | None = None) -> dict[str, Any]:
         else None,
         "publication_performed": False,
     }
+    diagnostic_code = (
+        error.context_diagnostic_code
+        if isinstance(error, QualificationError)
+        else error.diagnostic_code
+        if isinstance(error, ReferenceContextError)
+        else "unavailable"
+    )
+    if diagnostic_code in CONTEXT_FAILURE_CODES:
+        report["diagnostic_code"] = diagnostic_code
+    return report
+
+
+def run_hosted_schema_inventory(
+    exact_commit: str,
+    output: Path,
+    *,
+    transport: httpx.BaseTransport | None = None,
+    progress: Callable[[dict[str, Any]], None] | None = None,
+) -> dict[str, Any]:
+    """Profile only the existing pinned member; emit paths/counts and a digest.
+
+    The full inventory has its own fixed byte bound, separate from the smaller
+    aggregate receipt. No source values, semantics, admission or publication
+    are included. Existing output is preserved rather than overwritten.
+    """
+    retry = _RetryBudget(progress=progress)
+    try:
+        return _run_schema_inventory(
+            exact_commit, output, transport=transport, retry=retry
+        )
+    except QualificationError as error:
+        error.retry_event = retry.event
+        error.retry_detail = retry.retry_detail
+        raise
+
+
+def _pbs_root_schema_version(xml: bytes) -> tuple[str, tuple[int, ...]]:
+    """Read only the pinned PBS member's root version metadata attribute."""
+    expected_root = PBS_V3_NAMESPACE + "}root"
+    parser = expat.ParserCreate(namespace_separator="}")
+    observed: tuple[str, tuple[int, ...]] | None = None
+
+    class _RootMetadataReadError(Exception):
+        pass
+
+    def reject_doctype(*_args: object) -> None:
+        raise ValueError("PBS root metadata XML declaration rejected")
+
+    def start_element(name: str, attributes: dict[str, str]) -> None:
+        nonlocal observed
+        if name != expected_root:
+            raise ValueError("PBS root metadata QName mismatch")
+        literal = attributes.get("version")
+        if (
+            literal is None
+            or len(literal) > _MAX_ROOT_VERSION_LITERAL_BYTES
+            or re.fullmatch(r"[0-9]+(?:\.[0-9]+){0,3}", literal) is None
+        ):
+            raise ValueError("PBS root version metadata is not bounded numeric")
+        components = tuple(int(part) for part in literal.split("."))
+        if components[0] != _PBS_SCHEMA_MAJOR:
+            raise ValueError("PBS root schema major does not match pinned v3")
+        observed = (literal, components)
+        raise _RootMetadataReadError
+
+    parser.StartDoctypeDeclHandler = reject_doctype
+    parser.EntityDeclHandler = reject_doctype
+    parser.StartElementHandler = start_element
+    parser.SetParamEntityParsing(expat.XML_PARAM_ENTITY_PARSING_NEVER)
+    # Feed bounded slices and stop from the root-start callback. No descendant
+    # element, text, tail, or attribute is parsed or retained in this profile.
+    prefix_limit = min(len(xml), _ROOT_METADATA_PREFIX_BYTES)
+    for offset in range(0, prefix_limit, _ROOT_METADATA_CHUNK_BYTES):
+        chunk = xml[offset : offset + _ROOT_METADATA_CHUNK_BYTES]
+        try:
+            parser.Parse(chunk, False)  # ruff: ignore[boolean-positional-value-in-call] -- pyexpat exposes isfinal positionally
+        except _RootMetadataReadError:
+            break
+    else:
+        raise ValueError(
+            "PBS root version metadata not found within prefix bound"
+        )
+    return cast("tuple[str, tuple[int, ...]]", observed)
+
+
+def run_hosted_root_schema_version_metadata(
+    exact_commit: str,
+    output: Path,
+    *,
+    transport: httpx.BaseTransport | None = None,
+) -> dict[str, Any]:
+    """Bind the root schema-version attribute to the exact pinned PBS bytes.
+
+    Only the numeric root version metadata is emitted; source field values are
+    neither parsed nor retained. Exact-main Actions context and all existing
+    archive/member digest checks are inherited from the pinned input loader.
+    """
+    if output.exists():
+        raise ValueError("PBS root metadata output already exists")
+    retry = _RetryBudget()
+    try:
+        inputs = _verified_inputs(
+            exact_commit, transport=transport, retry=retry
+        )
+        with _at("projection-qualification"):
+            literal, components = _pbs_root_schema_version(inputs.xml)
+        return {
+            "schema_version": 1,
+            "status": "passed",
+            "operation": "pbs-root-schema-version-metadata",
+            **inputs.context,
+            "dataset": DATASET,
+            "revision": REVISION,
+            "archive_path": ARCHIVE.path,
+            "archive_sha256": inputs.binding.archive_payload.sha256,
+            "archive_bytes": inputs.binding.archive_payload.byte_count,
+            "member_path": inputs.binding.member_path,
+            "member_sha256": inputs.binding.member_payload.sha256,
+            "member_bytes": inputs.binding.member_payload.byte_count,
+            "parent_receipt_sha256": inputs.parent.digest(),
+            "member_binding_sha256": inputs.binding.digest(),
+            "version_attribute_path": (
+                "/{http:~1~1schema.pbs.gov.au~1}root/attributes/version"
+            ),
+            "declared_schema_version": literal,
+            "schema_major": components[0],
+            "schema_minor": (
+                components[1]
+                if len(components) >= _VERSION_MINOR_COMPONENT_COUNT
+                else None
+            ),
+            "schema_patch": (
+                components[2]
+                if len(components) >= _VERSION_PATCH_COMPONENT_COUNT
+                else None
+            ),
+            "schema_minor_bound": (
+                len(components) >= _VERSION_MINOR_COMPONENT_COUNT
+            ),
+            "schema_patch_bound": (
+                len(components) >= _VERSION_PATCH_COMPONENT_COUNT
+            ),
+            "root_metadata_only": True,
+            "source_field_values_emitted": False,
+            "native_values_emitted": False,
+            "new_sources": 0,
+            "new_admissions": 0,
+            "rights_conclusion_changed": False,
+            "publications": 0,
+        }
+    except QualificationError as error:
+        error.retry_event = retry.event
+        error.retry_detail = retry.retry_detail
+        raise
+
+
+def _run_schema_inventory(
+    exact_commit: str,
+    output: Path,
+    *,
+    transport: httpx.BaseTransport | None,
+    retry: _RetryBudget,
+) -> dict[str, Any]:
+    with _at("context", progress=retry.checkpoint):
+        if output.exists():
+            raise ValueError("schema inventory output already exists")
+    inputs = _verified_inputs(exact_commit, transport=transport, retry=retry)
+    with _at("projection-qualification", progress=retry.checkpoint):
+        inventory = profile_schema_paths(
+            inputs.archive,
+            inputs.xml,
+            inputs.parent,
+            inputs.binding,
+            progress=lambda phase, batches, rows: retry.checkpoint(
+                "projection-qualification", phase, batches, rows
+            ),
+        )
+        payload = (
+            json.dumps(inventory, sort_keys=True, separators=(",", ":")) + "\n"
+        ).encode()
+        if len(payload) > inventory["limits"]["inventory_bytes"]:
+            raise ValueError("schema inventory byte limit exceeded")
+        output.parent.mkdir(parents=True, exist_ok=True)
+        temporary = output.with_suffix(output.suffix + ".tmp")
+        temporary.write_bytes(payload)
+        temporary.replace(output)
+    return {
+        "schema_version": 1,
+        "status": "passed",
+        "operation": "pbs-native-schema-inventory",
+        "qualification": "native_schema_inventory_only",
+        "domain_semantics_qualified": False,
+        **inputs.context,
+        "dataset": DATASET,
+        "revision": REVISION,
+        "source_receipt_file_sha256": RECEIPT.sha256,
+        "member_binding_sha256": inputs.binding.digest(),
+        "inventory_sha256": hashlib.sha256(payload).hexdigest(),
+        "inventory_bytes": len(payload),
+        "native_fields": inventory["native_fields"],
+        "unique_schema_paths": inventory["unique_schema_paths"],
+        "inventory_profile": inventory["limits"]["profile"],
+        "original_v1_limits_exceeded": inventory["original_v1_limits_exceeded"],
+        "native_values_emitted": False,
+        "rights_conclusion_changed": False,
+        "new_sources": 0,
+        "new_admissions": 0,
+        "publication_performed": False,
+    }
+
+
+def run_hosted_observed_values(
+    exact_commit: str,
+    root: Path,
+    *,
+    transport: httpx.BaseTransport | None = None,
+    progress: Callable[[dict[str, Any]], None] | None = None,
+) -> dict[str, Any]:
+    """Qualify observed roles using the unchanged exact-main source boundary."""
+    retry = _RetryBudget(progress=progress)
+    try:
+        inputs = _verified_inputs(
+            exact_commit, transport=transport, retry=retry
+        )
+        with _at("projection-qualification", progress=retry.checkpoint):
+            profile = load_observed_profile(root)
+            qualification = qualify_observed_values(
+                inputs.archive,
+                inputs.xml,
+                inputs.parent,
+                inputs.binding,
+                profile,
+                progress=lambda phase, batches, rows: retry.checkpoint(
+                    "projection-qualification", phase, batches, rows
+                ),
+            )
+    except QualificationError as error:
+        error.retry_event = retry.event
+        error.retry_detail = retry.retry_detail
+        raise
+
+    return {
+        "schema_version": 1,
+        "status": "passed",
+        "operation": "pbs-observed-structural-values",
+        **inputs.context,
+        "dataset": DATASET,
+        "revision": REVISION,
+        "source_receipt_file_sha256": RECEIPT.sha256,
+        "qualification": qualification,
+        "rights_conclusion_changed": False,
+        "publication_performed": False,
+    }
+
+
+def run_hosted_native_reference_screen(
+    exact_commit: str,
+    *,
+    transport: httpx.BaseTransport | None = None,
+    progress: Callable[[dict[str, Any]], None] | None = None,
+) -> dict[str, Any]:
+    """Screen source-local reference literals within the exact-main boundary."""
+    retry = _RetryBudget(progress=progress)
+    try:
+        inputs = _verified_inputs(
+            exact_commit, transport=transport, retry=retry
+        )
+        with _at("projection-qualification", progress=retry.checkpoint):
+            qualification = _screen_native_reference_with_context(inputs, retry)
+    except QualificationError as error:
+        error.retry_event = retry.event
+        error.retry_detail = retry.retry_detail
+        raise
+    return {
+        "schema_version": 2,
+        "status": "passed",
+        "operation": "pbs-native-reference-screen",
+        **inputs.context,
+        "dataset": DATASET,
+        "revision": REVISION,
+        "source_receipt_file_sha256": RECEIPT.sha256,
+        "qualification": qualification,
+        "rights_conclusion_changed": False,
+        "publication_performed": False,
+    }
+
+
+def _screen_native_reference_with_context(
+    inputs: _VerifiedInputs, retry: _RetryBudget
+) -> dict[str, Any]:
+    """Pair lexical counts with bounded, value-free occurrence context."""
+    qualification = screen_native_references(
+        inputs.archive,
+        inputs.xml,
+        inputs.parent,
+        inputs.binding,
+        progress=lambda phase, batches, rows: retry.checkpoint(
+            "projection-qualification", phase, batches, rows
+        ),
+    )
+    context = screen_reference_context(
+        inputs.xml,
+        progress=lambda phase, batches, rows: retry.checkpoint(
+            "projection-qualification", phase, batches, rows
+        ),
+    )
+    retry.checkpoint(
+        "projection-qualification",
+        "reference-context-denominator",
+        1,
+        context["reference_occurrences"],
+    )
+    if context["reference_occurrences"] != qualification["reference_fields"]:
+        raise QualificationError("denominator", "validation")
+    qualification["reference_context"] = encode_reference_context_receipt(
+        context
+    )
+    return qualification

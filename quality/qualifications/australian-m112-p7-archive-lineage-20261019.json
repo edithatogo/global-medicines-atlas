@@ -1,0 +1,73 @@
+{
+  "schema_id": "global-medicines-atlas.m112-p7-archive-lineage",
+  "schema_version": 1,
+  "observed_at": "2026-10-19",
+  "status": "archive_boundary_b1_b2_lineage_recorded_landed_unreviewed",
+  "inventory": {
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+    "path": "raw/mbs/legacy/2024-07/MBS-2024.07-Group-P7-Genetics.xlsx",
+    "sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
+    "byte_count": 87727,
+    "approved_denominator_member": true,
+    "membership_sha256": "fe48d50a105a5dc34720d4d0176d28b442d79f4d53b1f10ba738e0745ef0208b"
+  },
+  "archive_retrieval": {
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "revision": "4d1dae488ac43522f20e8320a8b2a56bf9138341",
+    "path": "raw/mbs/legacy/2024-07/MBS-2024.07-Group-P7-Genetics.xlsx",
+    "uri": "https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/4d1dae488ac43522f20e8320a8b2a56bf9138341/raw/mbs/legacy/2024-07/MBS-2024.07-Group-P7-Genetics.xlsx",
+    "final_uri": "https://huggingface.co/api/resolve-cache/datasets/edithatogo/australian-mbs-source-archive/4d1dae488ac43522f20e8320a8b2a56bf9138341/raw%2Fmbs%2Flegacy%2F2024-07%2FMBS-2024.07-Group-P7-Genetics.xlsx?%2Fdatasets%2Fedithatogo%2Faustralian-mbs-source-archive%2Fresolve%2F4d1dae488ac43522f20e8320a8b2a56bf9138341%2Fraw%2Fmbs%2Flegacy%2F2024-07%2FMBS-2024.07-Group-P7-Genetics.xlsx=&etag=%22a9d302b8a278f9e65659a1f5da09ded21723a239%22",
+    "observed_at": "2026-10-18T17:21:35Z",
+    "http_status": 200,
+    "streamed_byte_count": 87727,
+    "streamed_sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
+    "payload_values_inspected": false,
+    "payload_persisted_locally": false
+  },
+  "lineage": {
+    "source_receipt_path": "quality/bronze/receipts/au-mbs-p7-legacy-workbook/78239433b8f6dcaa99efeee66ff6756718e6bc8dd9d561394137a29423ecdc94.json",
+    "source_receipt_sha256": "ba18c36737f9244b204c9d604dce9853e855ee9e9d6f6fd375618c052fdf0d52",
+    "acquisition_event_path": "quality/bronze/acquisitions/au-mbs-p7-legacy-workbook/78239433b8f6dcaa99efeee66ff6756718e6bc8dd9d561394137a29423ecdc94.json",
+    "acquisition_id": "78239433b8f6dcaa99efeee66ff6756718e6bc8dd9d561394137a29423ecdc94",
+    "b2_manifest_path": "quality/bronze/raw-evidence/au-mbs-p7-legacy-workbook/78239433b8f6dcaa99efeee66ff6756718e6bc8dd9d561394137a29423ecdc94/manifest.json",
+    "b2_manifest_sha256": "6079c3f367bd04708248865f7ed3c35c693fdeb99892fd51f0c30fda546bba74",
+    "landed_admission_path": "quality/bronze/admissions/au-mbs-p7-legacy-workbook/78239433b8f6dcaa99efeee66ff6756718e6bc8dd9d561394137a29423ecdc94/202f3880e774e8edaf3a2e2147e0369ccd4e1df1ee474de37d783336df533d89.json",
+    "landed_admission_sha256": "70c107c4950bc56f5c47b9627d4252bf37d3f47f7f53ac78699f2a8929c72860",
+    "admission_state": "landed",
+    "reviewer_status": "unreviewed",
+    "rights_state_inherited_from_historical_receipt": "permitted"
+  },
+  "input_bindings": {
+    "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-mbs-util-lineages.json": "35e4bcbb1b459c78dff837d75c6bf5ae81f307f7211e383f938d9ffc05a07f89",
+    "quality/qualifications/mbs-p7-storage-receipt-reconciliation-20261003.json": "cea3652a8fe43c1af159e30842cfcab33cb3f8ea228cf7be7ee949a0bfc41349",
+    "quality/qualifications/mbs-workbook-storage-20260830.json": "fb2912703a45082cdfe050284b0822f1eb1867a16bf1d8fdc10e3202f80a2449",
+    "quality/qualifications/australian-mbs-public-huggingface-20260829.json": "0310b97525a01a619ce50230849843b5911ef842379c4e093f630942e9622b2f"
+  },
+  "implementation": {
+    "path": "scripts/reconcile_m112_p7_archive_lineage.py",
+    "sha256": "c79a5e472f71f0f8376b8f5b5fbf54d21ce58de227b1d637800f5d4e59aa5c6a",
+    "source_receipt_helper": {
+      "path": "src/global_medicines_atlas/mbs_p7_receipt_reconciliation.py",
+      "sha256": "3aed550f9e9a179553b1daebc43558ba813ac9f41fcdbb1aa4cd0d2eba81e7f5"
+    }
+  },
+  "output_bindings": {
+    "quality/bronze/receipts/au-mbs-p7-legacy-workbook/78239433b8f6dcaa99efeee66ff6756718e6bc8dd9d561394137a29423ecdc94.json": "ba18c36737f9244b204c9d604dce9853e855ee9e9d6f6fd375618c052fdf0d52",
+    "quality/bronze/acquisitions/au-mbs-p7-legacy-workbook/78239433b8f6dcaa99efeee66ff6756718e6bc8dd9d561394137a29423ecdc94.json": "7159a45f3685886ee07bc6535b097c00370291f59ad93e7825f2f92f4cb95ee5",
+    "quality/bronze/raw-evidence/au-mbs-p7-legacy-workbook/78239433b8f6dcaa99efeee66ff6756718e6bc8dd9d561394137a29423ecdc94/manifest.json": "6079c3f367bd04708248865f7ed3c35c693fdeb99892fd51f0c30fda546bba74",
+    "quality/bronze/admissions/au-mbs-p7-legacy-workbook/78239433b8f6dcaa99efeee66ff6756718e6bc8dd9d561394137a29423ecdc94/202f3880e774e8edaf3a2e2147e0369ccd4e1df1ee474de37d783336df533d89.json": "70c107c4950bc56f5c47b9627d4252bf37d3f47f7f53ac78699f2a8929c72860"
+  },
+  "scope_limits": {
+    "archive_boundary_acquisition_only": true,
+    "source_origin_acquisition_evidenced": false,
+    "source_date_semantics_qualified": false,
+    "rights_or_licensing_conclusion_added": false,
+    "derived_table_rights_concluded": false,
+    "processing_admission_performed": false,
+    "v4_admission_performed": false,
+    "consumer_canary_performed": false,
+    "new_source_or_dataset_added": false,
+    "frozen_inventory_changed": false
+  }
+}

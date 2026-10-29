@@ -296,15 +296,15 @@ def _method_path_lines(
         path_lines.append(
             f'        {encoded} = quote(str({identifier}), safe="")'
         )
-        sentinel = f"__GMA_ENCODED_PATH_{identifier.upper()}__"
-        rendered_path = rendered_path.replace(placeholder, sentinel)
-        encoded_placeholders.append((sentinel, f"{{{encoded}}}"))
+        marker = f"__GMA_ENCODED_PATH_{identifier.upper()}__"
+        rendered_path = rendered_path.replace(placeholder, marker)
+        encoded_placeholders.append((marker, f"{{{encoded}}}"))
     if "{" in rendered_path or "}" in rendered_path:
         raise OpenAPIClientGenerationError(
             f"unbound path placeholder in {rendered_path}"
         )
-    for sentinel, encoded_placeholder in encoded_placeholders:
-        rendered_path = rendered_path.replace(sentinel, encoded_placeholder)
+    for marker, encoded_placeholder in encoded_placeholders:
+        rendered_path = rendered_path.replace(marker, encoded_placeholder)
     path_literal = json.dumps(rendered_path)
     path_expression = f"f{path_literal}" if path_parameters else path_literal
     path_lines.append(f"        path = {path_expression}")

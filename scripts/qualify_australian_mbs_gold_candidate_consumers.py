@@ -58,6 +58,18 @@ SOURCE_CANDIDATE_REPORT_PATH = Path(
 )
 EXPECTED_V4_OBJECT_COUNT = 6
 EXPECTED_RECORD_COUNT = 5989
+EDGE_REVIEW_DISPOSITION_PATH = Path(
+    "quality/qualifications/australian-mbs-gold-same-record-review-20261018.json"
+)
+EXPECTED_EDGE_REVIEW_FILE_SHA256 = (
+    "24f1bfcffde9a3bd453a637837efb53df042bd5d980e9362f9d3a8274e2a40f0"
+)
+EXPECTED_EDGE_REVIEW_RECEIPT_SHA256 = (
+    "800a9d72488523b80aa7a49d21d7badf5d2a83a0a2feb26446c3ea66200fd228"
+)
+EXPECTED_REVIEWED_EDGE_ID_SHA256 = (
+    "7a2ba8a0b31dca32101172bde49f6dc17d3ef6d873afb4760651f2a22c3a502d"
+)
 WORKFLOW_PATH = (
     ".github/workflows/australian-mbs-gold-candidate-consumer-qualification.yml"
 )
@@ -545,6 +557,106 @@ def hosted_workflow_binding(
     }
 
 
+def reviewed_candidate_relationship_binding(
+    qualification: dict[str, Any],
+    review: dict[str, Any],
+    *,
+    review_file_sha256: str,
+) -> dict[str, object]:
+    """Bind the bounded consumer run to the exact reviewed candidate edge set.
+
+    The review disposition is candidate-only. It qualifies this exact
+    source-explicit within-record relationship for testing, not M-110 overall
+    acceptance, production admission, or cross-source semantic matching.
+    """
+    graph = qualification.get("graph")
+    source_identity = qualification.get("source_identity")
+    reviewed = review.get("reviewed_edge_set")
+    scope = review.get("scope")
+    if not all(
+        isinstance(value, dict)
+        for value in (graph, source_identity, reviewed, scope)
+    ):
+        raise ValueError("relationship qualification or review is malformed")
+    graph = cast("dict[str, Any]", graph)
+    source_identity = cast("dict[str, Any]", source_identity)
+    reviewed = cast("dict[str, Any]", reviewed)
+    scope = cast("dict[str, Any]", scope)
+    if review_file_sha256 != EXPECTED_EDGE_REVIEW_FILE_SHA256:
+        raise ValueError("exact MBS edge-review receipt digest differs")
+    if not all((
+        review.get("schema_id")
+        == "global-medicines-atlas.mbs-gold-edge-review-disposition",
+        review.get("decision_by") == "maintainer",
+        review.get("decision")
+        == "Accept the exact same-record edge set as reviewed",
+        review.get("disposition") == "accepted_candidate_only",
+        scope.get("source_id") == "au-mbs",
+        scope.get("schema_era") == "2025-07-version-3",
+        scope.get("source_sha256") == source_identity.get("source_sha256"),
+        scope.get("qualification_path") == QUALIFICATION_PATH.as_posix(),
+        scope.get("qualification_sha256") == _sha256(ROOT / QUALIFICATION_PATH),
+        scope.get("candidate_graph_sha256") == graph.get("graph_sha256"),
+        scope.get("admission_sha256") == _sha256(ROOT / ADMISSION_PATH),
+        scope.get("semantic_manifest_sha256") == _sha256(ROOT / SEMANTIC_PATH),
+        scope.get("candidate_v4_use_authorization_sha256")
+        == _sha256(ROOT / V4_USE_AUTHORIZATION_PATH),
+        review.get("receipt_sha256") == EXPECTED_EDGE_REVIEW_RECEIPT_SHA256,
+        reviewed.get("edge_count")
+        == graph.get("edge_count")
+        == EXPECTED_RECORD_COUNT,
+        reviewed.get("edge_id_sha256") == EXPECTED_REVIEWED_EDGE_ID_SHA256,
+        reviewed.get("edge_kind") == "source_record_has_benefit",
+        reviewed.get("semantic_dimension") == "service_benefit",
+        reviewed.get("mapping_method") == "source-explicit",
+        reviewed.get("assertion_basis") == "same_source_record",
+        reviewed.get("all_edges_same_record_bound") is True,
+        reviewed.get("negative_controls_passed") is True,
+        reviewed.get("pre_review_graph_state") == "not_reviewed",
+        reviewed.get("reviewed_state") == "reviewed_candidate",
+    )):
+        raise ValueError(
+            "review disposition does not bind the exact candidate edges"
+        )
+    return {
+        "state": "reviewed_candidate_only",
+        "receipt_path": EDGE_REVIEW_DISPOSITION_PATH.as_posix(),
+        "receipt_sha256": review_file_sha256,
+        "review_receipt_sha256": review.get("receipt_sha256"),
+        "edge_count": reviewed["edge_count"],
+        "edge_id_sha256": reviewed["edge_id_sha256"],
+        "edge_kind": reviewed["edge_kind"],
+        "candidate_only": True,
+        "m110_overall_accepted": False,
+        "m112_federation_accepted": False,
+    }
+
+
+def qualify_reviewed_candidate_canaries(
+    receipt: dict[str, Any],
+    review_binding: dict[str, object],
+) -> dict[str, object]:
+    """Verify each live consumer traversed only the reviewed edge set."""
+    surface_digests = receipt.get("surface_edge_id_sha256")
+    if not isinstance(surface_digests, dict):
+        raise TypeError("consumer surface digests must be an object")
+    surface_digests = cast("dict[str, Any]", surface_digests)
+    if set(surface_digests) != {"API", "Atlas", "Browser", "CLI"} or set(
+        surface_digests.values()
+    ) != {review_binding.get("edge_id_sha256")}:
+        raise ValueError("consumer canaries differ from the reviewed edge set")
+    return {
+        "status": "passed",
+        "surface_canary_count": 4,
+        "surfaces": ["API", "Atlas", "Browser", "CLI"],
+        "edge_count": review_binding["edge_count"],
+        "edge_id_sha256": review_binding["edge_id_sha256"],
+        "review_state": "reviewed_candidate",
+        "m110_overall_accepted": False,
+        "m112_federation_accepted": False,
+    }
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--edge-file", required=True, type=Path)
@@ -563,6 +675,7 @@ def main(argv: list[str] | None = None) -> int:
     v4_manifest = _read_json(MBS_V4_MANIFEST_PATH)
     v4_qualification = _read_json(MBS_V4_QUALIFICATION_PATH)
     source_report = _read_json(SOURCE_CANDIDATE_REPORT_PATH)
+    edge_review = _read_json(EDGE_REVIEW_DISPOSITION_PATH)
     authorization_binding = candidate_v4_use_binding(
         admission,
         authorization,
@@ -590,6 +703,15 @@ def main(argv: list[str] | None = None) -> int:
     receipt["candidate_v4_source_lineage"] = lineage_binding
     receipt["candidate_scalar_query_canary"] = qualify_candidate_scalar_queries(
         args.scalar_file.expanduser(), qualification
+    )
+    review_binding = reviewed_candidate_relationship_binding(
+        qualification,
+        edge_review,
+        review_file_sha256=_sha256(ROOT / EDGE_REVIEW_DISPOSITION_PATH),
+    )
+    receipt["reviewed_candidate_relationship"] = review_binding
+    receipt["reviewed_candidate_consumer_canary"] = (
+        qualify_reviewed_candidate_canaries(receipt, review_binding)
     )
     receipt["hosted_workflow"] = hosted_workflow_binding(
         commit=args.workflow_commit,

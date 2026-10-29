@@ -1,0 +1,206 @@
+{
+  "schema_id": "global-medicines-atlas.australian-m112-rights-release-preflight",
+  "schema_version": 1,
+  "recorded_at": "2026-10-19T05:35:58Z",
+  "status": "evidence_reconciled_maintainer_rights_decision_pending",
+  "scope": {
+    "frozen_inventory": {
+      "path": "quality/qualifications/australian-m112-frozen-object-inventory-20261018.json",
+      "sha256": "eaa1d84325c7672100398acf8116f0312369ca336d42ed21eee110452d3fefa4",
+      "denominator": 1759,
+      "raw_paths": 1736,
+      "projection_paths": 23,
+      "membership_changed": false
+    },
+    "current_gate_reconciliation": {
+      "path": "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-july-mbs-silver-lineage-reviewed.json",
+      "sha256": "c46f84f7529246c3d008063f9e4fcab059d8b60744bc898da61166b6fdd27ef8"
+    }
+  },
+  "frozen_inventory_rights_states": [
+    {
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "state": "Maintainer authorization covers the source/category/domain; exact per-object authorization and reuse disposition remain unresolved. Complete B1/B2 lineage is recorded separately and does not establish rights or v4 eligibility.",
+      "object_count": 4
+    },
+    {
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "state": "authorized_exact_source_release_permitted",
+      "object_count": 2
+    },
+    {
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "state": "maintainer authorization covers source/category/domain; exact sidecar per-object authorization and B1 binding incomplete",
+      "object_count": 2
+    },
+    {
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "state": "underlying source authorization exists; no projection rights conclusion added",
+      "object_count": 10
+    },
+    {
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "state": "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified",
+      "object_count": 14
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-source-archive",
+      "state": "upstream redistribution terms unknown",
+      "object_count": 2
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "state": "source-specific rights review absent; per-object sidecar has no rights_state",
+      "object_count": 6
+    },
+    {
+      "dataset": "edithatogo/reimbursement-atlas",
+      "state": "unresolved: source-specific rights and per-record provenance not qualified",
+      "object_count": 1719
+    }
+  ],
+  "july_2025_mbs_silver": {
+    "decision_status": "projection_rights_unresolved",
+    "source": {
+      "source_id": "au-mbs",
+      "version": "2025-07-version-3",
+      "path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+      "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+      "byte_count": 8194522,
+      "source_receipt": {
+        "path": "quality/bronze/receipts/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d.json",
+        "sha256": "cbb89dde7e24e790440b7aa3ec70ff8a580801d49b5f0b8839290f63bd64819c",
+        "rights_state": "permitted",
+        "rights_reference": "https://github.com/edithatogo/global-medicines-atlas/issues/340"
+      },
+      "lineage_qualification": {
+        "path": "quality/qualifications/australian-m112-july-mbs-source-lineage-reviewed-20261019.json",
+        "sha256": "ee2b89fb5cdfc35fa42b650d1d30f3cb0e6085a6a655e1ce9b8f2e9f1604d97f",
+        "rights_conclusion_added": false
+      }
+    },
+    "objects": [
+      {
+        "path": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+        "sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f",
+        "byte_count": 114493
+      },
+      {
+        "path": "silver/mbs/v4/2025-07-v3/caps.parquet",
+        "sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb",
+        "byte_count": 60259
+      },
+      {
+        "path": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+        "sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733",
+        "byte_count": 620348
+      },
+      {
+        "path": "silver/mbs/v4/2025-07-v3/fees.parquet",
+        "sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420",
+        "byte_count": 93072
+      },
+      {
+        "path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+        "sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756",
+        "byte_count": 51851
+      },
+      {
+        "path": "silver/mbs/v4/2025-07-v3/services.parquet",
+        "sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535",
+        "byte_count": 100062
+      }
+    ],
+    "existing_candidate_authorization": {
+      "path": "quality/qualifications/australian-mbs-v4-candidate-use-authorization-20261017.json",
+      "sha256": "ee5951226e105acbaa9b3180c672582b71d3b2d3f110bd0c0abb9c2eb10968b2",
+      "decision": "Authorize the exact six for candidate v4 qualification",
+      "permits_candidate_qualification": true,
+      "permits_candidate_consumer_canaries": true,
+      "permits_public_release_or_publication": false,
+      "adds_rights_or_licensing_conclusion": false
+    },
+    "official_evidence": [
+      {
+        "url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-250701",
+        "observed_at": "2026-10-19T05:35:43Z",
+        "http_status": 200,
+        "response_bytes": 43990,
+        "response_sha256": "01ec386aab3f712fe25145cace8802471baf375319ca4977c69467c4088b1722",
+        "finding": "The official July 2025 page identifies MBS-XML-20250701 Version 3 as released 16 June 2025 and effective 1 July 2025."
+      },
+      {
+        "url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/copyright",
+        "observed_at": "2026-10-19T05:35:56Z",
+        "http_status": 200,
+        "response_bytes": 24805,
+        "response_sha256": "c1b5c0cd4dc75dd58fc396f45e59e49c099d815e7e1b4d88e6be2e874a9c1c2c",
+        "finding": "The current MBS Online copyright page describes personal non-commercial unaltered copying and statutory fair dealing; it says retransmission or distribution requires prior written Commonwealth approval and that reproduction/reformatting on another site requires express written permission."
+      }
+    ],
+    "authorization_conflict": {
+      "receipt_state": "permitted",
+      "source_specific_written_permission_for_2025_release_found_in_linked_issue": false,
+      "issue_339_maintainer_approval_scope": "Exact 1 August 2026 MBS XML only",
+      "current_source_terms_and_prior_approval_reconciled": false,
+      "maintainer_rights_decision_required": true
+    },
+    "recommendation_pending_maintainer_decision": "Keep the six tables candidate-only and do not treat the existing source receipt or candidate-use authorization as public-release authority. Resolve the conflict with a source-specific written permission or an explicit, evidence-backed rights decision before any external release."
+  },
+  "cms_hcpcs_reference": {
+    "inside_m112_frozen_inventory": false,
+    "source_id": "us_cms_hcpcs_level_ii",
+    "source_version": "us_cms_hcpcs_level_ii_2026_07",
+    "source_url": "https://www.cms.gov/files/zip/july-2026-alpha-numeric-hcpcs-file.zip",
+    "payload_sha256": "5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a",
+    "b1_acquisition_path": "quality/bronze/imported-acquisitions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a.json",
+    "b1_acquisition_sha256": "5d655e0f516bf1f5e3d1825c0dbeed5ec0e03c7c391c007f33f8ef010b5b1de1",
+    "b2_manifest_path": "quality/bronze/raw-evidence/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/manifest.json",
+    "b2_manifest_sha256": "4080df52b58d0dfaae89484c8285c588619192ef8c46be7f1a723bc51192a394",
+    "admission_path": "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/0ccd108d550a27271b170900660e42a90e6237f3a9beeb67249087008bee74c2.json",
+    "admission_sha256": "d08dd8d20fdca069eff922ae8f3cca04bd5acb7bc494196ffa9c613c99548784",
+    "current_rights_state": "unknown",
+    "current_admission": "landed",
+    "reviewer_status": "unreviewed",
+    "b2_state": "external_reference_only",
+    "local_payload_bytes_retained": false,
+    "official_evidence": [
+      {
+        "url": "https://www.cms.gov/medicare/coding-billing/healthcare-common-procedure-system/quarterly-update",
+        "observed_at": "2026-10-19T05:35:57Z",
+        "http_status": 200,
+        "response_bytes": 194625,
+        "response_sha256": "09b45b705cbe3425a7f61222df4036f8afc692ca809cfff4ee03cb377e984396",
+        "finding": "CMS identifies its quarterly HCPCS file as an official public-use file."
+      },
+      {
+        "url": "https://www.cms.gov/medicare-coverage-database/search.aspx",
+        "observed_at": "2026-10-19T05:35:57Z",
+        "http_status": 200,
+        "response_bytes": 158675,
+        "response_sha256": "5c06487fef44ae89a4bb9971c5b98bbb61dec17557117b10e6a879204530ec80",
+        "finding": "CMS states that HCPCS Level II is maintained by CMS except D codes, which are maintained by the American Dental Association."
+      },
+      {
+        "url": "https://www.cms.gov/Medicare/Coding/MedHCPCSGenInfo/Downloads/2018-11-30-HCPCS-Level2-Coding-Procedure.pdf",
+        "observed_at": "2026-10-19T05:35:58Z",
+        "http_status": 200,
+        "response_bytes": 257800,
+        "response_sha256": "57289fd4b5a45ae2384d3810a33f763605fd3004ad55b8fa29ea1d22e3d1e1b9",
+        "finding": "CMS describes national HCPCS Level II codes as public domain and CDT dental codes as copyrighted and licensed by ADA."
+      }
+    ],
+    "applicability_boundary": "The CMS Part D authorization is bound to its Prompt 31 formulary and spending inventory; it does not cover this CMS HCPCS object. Public-use status alone does not establish the exact rights of any ADA-maintained D-code content in this referenced file.",
+    "status": "rights_unresolved_pending_exact_content_scope_and_maintainer_decision"
+  },
+  "decision_and_release_boundaries": {
+    "rights_conclusion_added": false,
+    "public_release_authorized": false,
+    "dataset_or_registry_mutated": false,
+    "source_payload_bytes_requested_or_inspected": false,
+    "new_sources_or_datasets_added": false,
+    "v4_admission_performed": false,
+    "consumer_canary_performed": false,
+    "all_1759_frozen_inventory_members_preserved": true
+  }
+}

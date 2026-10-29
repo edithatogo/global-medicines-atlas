@@ -1,0 +1,73 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-v4-current-public-tree-readback",
+  "schema_version": 1,
+  "observed_at": "2026-10-19T20:41:51Z",
+  "dataset": "edithatogo/australian-mbs-source-archive",
+  "current_revision": "42d73b6facac016f14a335d36d83f1a3b630add8",
+  "access": {
+    "anonymous": true,
+    "credentials_used": false,
+    "private": false,
+    "gated": false,
+    "method": "Hugging Face public dataset API tree metadata with expanded LFS metadata"
+  },
+  "scope": {
+    "candidate_version": "4",
+    "schema_era": "2025-07-version-3",
+    "exact_prefix": "silver/mbs/v4/2025-07-v3/",
+    "objects_expected": 6,
+    "objects_present_and_digest_size_matched": 6
+  },
+  "objects": [
+    {
+      "path": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+      "sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f",
+      "byte_count": 114493,
+      "public_lfs_metadata_match": true
+    },
+    {
+      "path": "silver/mbs/v4/2025-07-v3/caps.parquet",
+      "sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb",
+      "byte_count": 60259,
+      "public_lfs_metadata_match": true
+    },
+    {
+      "path": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+      "sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733",
+      "byte_count": 620348,
+      "public_lfs_metadata_match": true
+    },
+    {
+      "path": "silver/mbs/v4/2025-07-v3/fees.parquet",
+      "sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420",
+      "byte_count": 93072,
+      "public_lfs_metadata_match": true
+    },
+    {
+      "path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+      "sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756",
+      "byte_count": 51851,
+      "public_lfs_metadata_match": true
+    },
+    {
+      "path": "silver/mbs/v4/2025-07-v3/services.parquet",
+      "sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535",
+      "byte_count": 100062,
+      "public_lfs_metadata_match": true
+    }
+  ],
+  "historical_payload_verification": {
+    "publication_revision": "ba82cd1d0f9b0f28514df431b8da3a6c207d76fa",
+    "verified_object_count": 9,
+    "receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5859624790"
+  },
+  "boundaries": {
+    "current_revision_payload_bytes_downloaded_or_reverified": false,
+    "source_payload_values_inspected": false,
+    "rights_conclusion_added": false,
+    "external_publication_performed": false,
+    "v4_admission_or_promotion_performed": false,
+    "dataset_mutated": false
+  },
+  "interpretation": "The current anonymous public tree contains the same exact six LFS object digests and sizes named by the rights attestation. This readback verifies current public metadata identity; the linked hosted receipt separately records anonymous byte verification at the publication revision."
+}

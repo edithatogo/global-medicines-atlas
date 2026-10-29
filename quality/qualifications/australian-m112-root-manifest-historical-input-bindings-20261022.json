@@ -1,0 +1,19 @@
+{
+  "historical_evidence_rewritten": false,
+  "historical_readback": {
+    "path": "quality/qualifications/australian-m112-root-manifest-path-readback-20261021.json",
+    "sha256": "418611b2e12ab1ae5c85ca6b57d9e0a95642fb005c0f34e941e0265ad4ecff60"
+  },
+  "retained_inputs": [
+    {
+      "path": ".github/workflows/australian-mbs-root-manifest-append.yml",
+      "retained_path": "quality/qualifications/source-snapshots/australian-mbs-root-manifest-append-20261021.yml.txt",
+      "retention_reason": "The current workflow removes prohibited outbound comments; preserve the exact historical observed workflow as inert evidence.",
+      "sha256": "017afa5d95e97924b4749bb32b428d892c79e43140db103f680606b27727e655",
+      "source_commit": "d7bdaeb8c276eb50617a6d205aa4b97a02fe22c3"
+    }
+  ],
+  "schema_version": 1,
+  "scope": "Historical input retention only; no new root-manifest observation or changed rights/admission",
+  "snapshot_is_executable_workflow": false
+}

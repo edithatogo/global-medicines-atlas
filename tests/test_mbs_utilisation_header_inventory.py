@@ -239,7 +239,7 @@ def test_workflow_is_main_only_bounded_and_uses_existing_serialized_gate() -> (
     assert "workflow_dispatch:" in workflow
     assert "environment: australian-hf-publication" in workflow
     assert "group: australian-mbs-utilisation-harvest" in workflow
-    assert "issues: write" in workflow
+    assert "issues: write" not in workflow
     assert "inventory_mbs_utilisation_csv_headers.py" in workflow
     runner = (
         root / "scripts/inventory_mbs_utilisation_csv_headers.py"
@@ -247,7 +247,7 @@ def test_workflow_is_main_only_bounded_and_uses_existing_serialized_gate() -> (
     assert "--exact-commit" in runner
     assert "WORKER_SECONDS = 60" in runner
     assert "WORKER_MEMORY_BYTES = 1_073_741_824" in runner
-    assert "RECEIPT_URL_PATTERN.fullmatch" in runner
+    assert "valid_receipt_url(url)" in runner
     assert '"processing_admitted": False' in runner
     assert '"semantic_validation": False' in runner
 

@@ -224,43 +224,72 @@ class HubTransport:
 
 
 def persist_receipt(document: dict[str, Any], directory: Path) -> str:
-    """Persist and read back the exact public-safe issue receipt."""
+    """Persist a metadata-only receipt for the current Actions artifact."""
     body = json.dumps(document, sort_keys=True, separators=(",", ":"))
     if len(body) > MAX_RECEIPT_CHARS:
-        raise ValueError("durable issue receipt exceeds supported size")
-    path = directory / f"{document['status']}.json"
-    path.write_text(json.dumps({"body": body}))
-    response = json.loads(
-        subprocess.check_output(
-            [
-                "gh",
-                "api",
-                f"repos/{REPOSITORY}/issues/340/comments",
-                "--method",
-                "POST",
-                "--input",
-                str(path),
-            ],
-            text=True,
-        )
-    )
-    observed = json.loads(
-        subprocess.check_output(
-            [
-                "gh",
-                "api",
-                f"repos/{REPOSITORY}/issues/comments/{response['id']}",
-            ],
-            text=True,
-        )
-    )
-    if (
-        observed["body"] != body
-        or observed["user"]["login"] != "github-actions[bot]"
+        raise ValueError("receipt exceeds supported artifact size")
+    status = document.get("status")
+    if not isinstance(status, str) or not re.fullmatch(
+        r"[a-z][a-z0-9_]{0,63}", status
     ):
-        raise ValueError("durable issue receipt readback differs")
+        raise ValueError("receipt status is not a safe filename")
+    run_id = os.environ.get("GITHUB_RUN_ID", "")
+    if (
+        os.environ.get("GITHUB_ACTIONS") != "true"
+        or os.environ.get("GITHUB_REPOSITORY") != REPOSITORY
+        or not re.fullmatch(r"[0-9]+", run_id)
+    ):
+        raise ValueError(
+            "receipt persistence requires the exact hosted Actions run"
+        )
+    digest = hashlib.sha256(body.encode("utf-8")).hexdigest()
+    filename = f"{status}-{digest}.json"
+    path = directory / filename
     path.write_text(json.dumps(document, indent=2, sort_keys=True) + "\n")
-    return str(observed["html_url"])
+    observed = json.loads(path.read_text(encoding="utf-8"))
+    if json.dumps(observed, sort_keys=True, separators=(",", ":")) != body:
+        raise ValueError("workflow receipt file readback differs")
+    return f"https://github.com/{REPOSITORY}/actions/runs/{run_id}"
+
+
+class IntentPreparedError(Exception):
+    """Stop after writing a pre-append intent for workflow artifact retention."""
+
+
+def persist_transaction_receipt(
+    document: dict[str, Any],
+    directory: Path,
+    *,
+    prepare_only: bool = False,
+    prepublished_intent: Path | None = None,
+) -> str:
+    """Require the exact intent to round-trip through a hosted artifact first."""
+    if document.get("status") == "intent":
+        if prepare_only:
+            persist_receipt(document, directory)
+            raise IntentPreparedError
+        if prepublished_intent is None:
+            raise ValueError("append requires a retained pre-append intent")
+        matches = tuple(prepublished_intent.glob("intent-*.json"))
+        if len(matches) != 1:
+            raise ValueError(
+                "pre-append artifact must contain one intent receipt"
+            )
+        observed = json.loads(matches[0].read_text(encoding="utf-8"))
+        if observed != document:
+            raise ValueError(
+                "pre-append artifact differs from current transaction"
+            )
+        expected_url = (
+            f"https://github.com/{REPOSITORY}/actions/runs/"
+            f"{os.environ.get('GITHUB_RUN_ID', '')}"
+        )
+        if document.get("run_url") != expected_url:
+            raise ValueError(
+                "pre-append intent belongs to another workflow run"
+            )
+        return expected_url
+    return persist_receipt(document, directory)
 
 
 def read_acknowledgement(comment_id: str) -> dict[str, Any]:
@@ -319,6 +348,103 @@ def read_acknowledgement(comment_id: str) -> dict[str, Any]:
     return acknowledgement
 
 
+def read_artifact_acknowledgement(
+    run_id: str, artifact_directory: Path
+) -> dict[str, Any]:
+    """Read and bind a CAS acknowledgement from a downloaded run artifact."""
+    if not re.fullmatch(r"[0-9]+", run_id):
+        raise ValueError("invalid recovery run identifier")
+    expected_run_url = f"https://github.com/{REPOSITORY}/actions/runs/{run_id}"
+
+    def read_status(status: str) -> Any:
+        matches = tuple(artifact_directory.glob(f"{status}-*.json"))
+        if len(matches) == 1:
+            return json.loads(matches[0].read_text())
+        if not matches:
+            legacy_path = artifact_directory / f"{status}.json"
+            if legacy_path.is_file():
+                return json.loads(legacy_path.read_text())
+        raise ValueError(f"recovery artifact must contain one {status} receipt")
+
+    intent = read_status("intent")
+    acknowledgement = read_status("cas_acknowledged")
+    if not isinstance(intent, dict) or not isinstance(acknowledgement, dict):
+        raise TypeError("recovery artifact documents are invalid")
+    intent_document = cast("dict[str, Any]", intent)
+    acknowledgement_document = cast("dict[str, Any]", acknowledgement)
+    run_metadata = json.loads(
+        subprocess.check_output(
+            ["gh", "api", f"repos/{REPOSITORY}/actions/runs/{run_id}"],
+            text=True,
+            timeout=30,
+        )
+    )
+    if not isinstance(run_metadata, dict):
+        raise TypeError("recovery Actions run metadata is invalid")
+    run_document = cast("dict[str, Any]", run_metadata)
+    prior_workflow_path = run_document.get("path")
+    allowed_workflow_paths = {
+        ".github/workflows/australian-source-metadata.yml@refs/heads/main",
+        ".github/workflows/australian-donor-history.yml@refs/heads/main",
+    }
+    repository = run_document.get("repository")
+    if not isinstance(repository, dict):
+        raise TypeError("recovery Actions run repository is invalid")
+    repository_document = cast("dict[str, Any]", repository)
+    run_bindings = (
+        run_document.get("id"),
+        repository_document.get("full_name"),
+        run_document.get("head_branch"),
+        run_document.get("event"),
+        run_document.get("head_sha"),
+    )
+    expected_bindings = (
+        int(run_id),
+        REPOSITORY,
+        "main",
+        "workflow_dispatch",
+        intent_document.get("code_commit"),
+    )
+    if (
+        run_bindings != expected_bindings
+        or prior_workflow_path not in allowed_workflow_paths
+    ):
+        raise ValueError(
+            "recovery artifact is not from an exact authorized main workflow run"
+        )
+    bindings = (
+        intent_document.get("status"),
+        intent_document.get("run_url"),
+        acknowledgement_document.get("run_url"),
+        acknowledgement_document.get("status"),
+        acknowledgement_document.get("intent_url"),
+        acknowledgement_document.get("parent_basis"),
+    )
+    if bindings != (
+        "intent",
+        expected_run_url,
+        expected_run_url,
+        "cas_acknowledged",
+        expected_run_url,
+        "server_enforced_parent_commit",
+    ):
+        raise ValueError(
+            "recovery artifact does not bind the exact run intent and CAS acknowledgement"
+        )
+    expected: dict[str, Any] = {
+        **intent_document,
+        "status": "cas_acknowledged",
+        "revision": acknowledgement_document.get("revision"),
+        "intent_url": expected_run_url,
+        "parent_basis": "server_enforced_parent_commit",
+    }
+    if acknowledgement_document != expected:
+        raise ValueError(
+            "recovery artifact acknowledgement differs from intent"
+        )
+    return acknowledgement_document
+
+
 def main() -> None:
     """Publish one reviewed source profile after exact-main workflow checks."""
     parser = argparse.ArgumentParser(description=__doc__)
@@ -326,6 +452,9 @@ def main() -> None:
     parser.add_argument("--exact-commit", required=True)
     parser.add_argument("--expected-parent-revision", required=True)
     parser.add_argument("--recovery-receipt", default="")
+    parser.add_argument("--recovery-run-id", default="")
+    parser.add_argument("--prepare-intent", action="store_true")
+    parser.add_argument("--prepublished-intent", type=Path)
     args = parser.parse_args()
     require_hosted_main(args.exact_commit)
     # Independently bind the current repository default head before Hub writes.
@@ -341,11 +470,6 @@ def main() -> None:
     ).strip()
     if head != args.exact_commit:
         raise ValueError("reviewed main has advanced")
-    acknowledgement = (
-        read_acknowledgement(args.recovery_receipt)
-        if args.recovery_receipt
-        else None
-    )
     root = Path(__file__).resolve().parents[1]
     document = json.loads(
         (
@@ -356,15 +480,42 @@ def main() -> None:
     )
     receipts = root / "build/source-metadata-receipts"
     receipts.mkdir(parents=True, exist_ok=True)
-    cache = Path(tempfile.mkdtemp(prefix="gma-source-metadata-"))
-    result = execute_metadata_append(
-        document,
-        exact_commit=args.exact_commit,
-        expected_parent_revision=args.expected_parent_revision,
-        hub=HubTransport(cache),
-        persist=lambda receipt: persist_receipt(receipt, receipts),
-        acknowledgement=acknowledgement,
+    if args.recovery_receipt and args.recovery_run_id:
+        raise ValueError("select only one recovery receipt source")
+    acknowledgement = (
+        read_acknowledgement(args.recovery_receipt)
+        if args.recovery_receipt
+        else read_artifact_acknowledgement(
+            args.recovery_run_id,
+            root / "build/recovery-receipts",
+        )
+        if args.recovery_run_id
+        else None
     )
+    cache = Path(tempfile.mkdtemp(prefix="gma-source-metadata-"))
+    if args.prepare_intent and (args.prepublished_intent or acknowledgement):
+        raise ValueError(
+            "intent preparation cannot use an artifact or recovery"
+        )
+    if args.prepublished_intent and acknowledgement:
+        raise ValueError("select prepublished intent or recovery, not both")
+    try:
+        result = execute_metadata_append(
+            document,
+            exact_commit=args.exact_commit,
+            expected_parent_revision=args.expected_parent_revision,
+            hub=HubTransport(cache),
+            persist=lambda receipt: persist_transaction_receipt(
+                receipt,
+                receipts,
+                prepare_only=args.prepare_intent,
+                prepublished_intent=args.prepublished_intent,
+            ),
+            acknowledgement=acknowledgement,
+        )
+    except IntentPreparedError:
+        shutil.rmtree(cache)
+        return
     # Only successful durable anonymous verification permits source cache removal.
     shutil.rmtree(cache)
     (receipts / "result.json").write_text(

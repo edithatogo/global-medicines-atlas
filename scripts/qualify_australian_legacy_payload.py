@@ -11,6 +11,7 @@ import sys
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import Any
 
 import httpx
@@ -29,6 +30,10 @@ from global_medicines_atlas.mbs_workbook_qualification import (
     acquire_hosted_workbook,
     qualify_workbook_cells,
 )
+from global_medicines_atlas.mbs_workbook_value_package import (
+    build_workbook_value_package,
+    verify_workbook_value_package,
+)
 from global_medicines_atlas.mbs_workbook_values import profile_workbook_values
 from global_medicines_atlas.receipts import (
     AcquisitionMethod,
@@ -45,6 +50,23 @@ from global_medicines_atlas.receipts import (
 ROOT = Path(__file__).resolve().parents[1]
 RIGHTS_REFERENCE = AnyUrl(
     "https://github.com/edithatogo/global-medicines-atlas/issues/340"
+)
+P7_CALENDAR_PROFILE_PATH = (
+    ROOT / "quality/qualifications/"
+    "mbs-p7-calendar-profile-20261024-40088209026.json"
+)
+P7_CALENDAR_PROFILE_SHA256 = (
+    "c9b49f60a9a608bc77674a2094b8fd4439115fc17bb200b04fc202c6b463d1bf"
+)
+P7_DATE_INFERENCE_PATH = (
+    ROOT / "quality/qualifications/"
+    "mbs-p7-date-consistency-inference-20261025-40139026116.json"
+)
+P7_DATE_INFERENCE_SHA256 = (
+    "a9df045f3893c0f2774d80a2a0d806ad19c17c4d7173da64bde57d1169e06486"
+)
+P7_SOURCE_SHA256 = (
+    "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8"
 )
 
 
@@ -93,6 +115,32 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--retrieved-at", required=True)
     parser.add_argument("--public-hf-workbook", action="store_true")
     return parser.parse_args()
+
+
+def _p7_calendar_profile_evidence(
+    source_sha256: str,
+) -> tuple[bytes | None, str | None]:
+    """Load only the committed profile for its exact pinned P7 object."""
+    if source_sha256 != P7_SOURCE_SHA256:
+        return None, None
+    evidence = P7_CALENDAR_PROFILE_PATH.read_bytes()
+    actual_sha256 = hashlib.sha256(evidence).hexdigest()
+    if actual_sha256 != P7_CALENDAR_PROFILE_SHA256:
+        raise ValueError("committed P7 calendar profile digest differs")
+    return evidence, actual_sha256
+
+
+def _p7_date_inference_evidence(
+    source_sha256: str,
+) -> tuple[bytes | None, str | None]:
+    """Load the exact retained file-consistency inference for pinned P7."""
+    if source_sha256 != P7_SOURCE_SHA256:
+        return None, None
+    evidence = P7_DATE_INFERENCE_PATH.read_bytes()
+    actual_sha256 = hashlib.sha256(evidence).hexdigest()
+    if actual_sha256 != P7_DATE_INFERENCE_SHA256:
+        raise ValueError("committed P7 date inference digest differs")
+    return evidence, actual_sha256
 
 
 def _receipt(
@@ -214,6 +262,83 @@ def main() -> None:
         ).model_dump(mode="json")
         summary["domain_value_profile"] = profile_workbook_values(
             payload, receipt
+        )
+        calendar_profile_evidence, calendar_profile_sha256 = (
+            _p7_calendar_profile_evidence(receipt.payload.sha256)
+        )
+        date_inference_evidence, date_inference_sha256 = (
+            _p7_date_inference_evidence(receipt.payload.sha256)
+        )
+        with TemporaryDirectory(prefix="mbs-p7-typed-") as temporary:
+            directory = Path(temporary)
+            first = build_workbook_value_package(
+                payload,
+                receipt,
+                directory / "first",
+                calendar_profile_evidence=calendar_profile_evidence,
+                calendar_profile_sha256=calendar_profile_sha256,
+                date_inference_evidence=date_inference_evidence,
+                date_inference_sha256=date_inference_sha256,
+            )
+            second = build_workbook_value_package(
+                payload,
+                receipt,
+                directory / "second",
+                calendar_profile_evidence=calendar_profile_evidence,
+                calendar_profile_sha256=calendar_profile_sha256,
+                date_inference_evidence=date_inference_evidence,
+                date_inference_sha256=date_inference_sha256,
+            )
+            if first != second:
+                raise ValueError("P7 typed deterministic rebuild differs")
+            verify_workbook_value_package(
+                directory / "first",
+                payload,
+                receipt,
+                calendar_profile_evidence=calendar_profile_evidence,
+                calendar_profile_sha256=calendar_profile_sha256,
+                date_inference_evidence=date_inference_evidence,
+                date_inference_sha256=date_inference_sha256,
+            )
+            manifest_sha256 = hashlib.sha256(
+                (directory / "first/qualification.json").read_bytes()
+            ).hexdigest()
+        summary["typed_candidate_package"] = {
+            **first,
+            "manifest_sha256": manifest_sha256,
+            "rebuild_equal": True,
+            "temporary_derivatives_removed": True,
+        }
+        summary["p7_calendar_profile_evidence"] = (
+            {
+                "path": str(P7_CALENDAR_PROFILE_PATH.relative_to(ROOT)),
+                "sha256": calendar_profile_sha256,
+                "source_sha256": receipt.payload.sha256,
+                "date_order_selected": False,
+                "source_values_emitted": False,
+            }
+            if calendar_profile_evidence is not None
+            else None
+        )
+        summary["p7_date_inference_evidence"] = (
+            {
+                "path": str(P7_DATE_INFERENCE_PATH.relative_to(ROOT)),
+                "sha256": date_inference_sha256,
+                "source_sha256": receipt.payload.sha256,
+                "selection_status": "selected_internal_file_consistency_inference",
+                "selected_profile": "mbs-dmy",
+                "date_fields": [
+                    "BenefitStartDate",
+                    "DescriptionStartDate",
+                    "FeeStartDate",
+                    "ItemStartDate",
+                ],
+                "department_provenance_established": False,
+                "domain_meaning_established": False,
+                "other_workbooks_or_eras_in_scope": False,
+            }
+            if date_inference_evidence is not None
+            else None
         )
         summary["workflow_commit"] = os.environ["GITHUB_SHA"]
         summary["workflow_run"] = (

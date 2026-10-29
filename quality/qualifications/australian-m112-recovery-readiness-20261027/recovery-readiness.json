@@ -1,0 +1,535 @@
+{
+  "schema_id": "global-medicines-atlas.australian-m112-recovery-readiness",
+  "schema_version": 1,
+  "recorded_at": "2026-10-27T08:24:58Z",
+  "status": "primary_checksum_inventories_and_clean_room_restores_reconciled_independent_recovery_blocked",
+  "purpose": "Reconcile the exact 28-file public M-112 Hub manifest and prior anonymous clean-room restore against the current pinned Hub tree, and record the absent independent recovery authority as a blocker. No source payload bytes were downloaded or read.",
+  "scope": {
+    "dataset": "edithatogo/australian-mbs-utilisation-archive",
+    "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+    "manifest_file_count": 28,
+    "raw_payload_count": 14,
+    "b1_receipt_count": 14,
+    "hub_tree_file_count": 30,
+    "hub_tree_extra_files": [
+      ".gitattributes",
+      "manifest.json"
+    ],
+    "m112_frozen_inventory": {
+      "admitted_object_count": 8,
+      "consumer_canary_count": 8,
+      "deferred_object_count": 1751,
+      "denominator_changed": false,
+      "object_count": 1759
+    },
+    "additional_public_product_cohort": {
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+      "output_count": 6,
+      "cohort": "MBS July 2025 Silver v4 candidate",
+      "admitted_candidate_profiles": true,
+      "independent_recovery_qualified": false
+    }
+  },
+  "evidence": {
+    "manifest_readback": {
+      "path": "quality/qualifications/australian-m112-recovery-readiness-20261027/hub-manifest.json",
+      "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+      "pinned_receipt_sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+      "content_matches_pinned_receipt": true
+    },
+    "hub_tree_readback": {
+      "path": "quality/qualifications/australian-m112-recovery-readiness-20261027/hub-tree-readback.json",
+      "sha256": "5a8ef44c6e6c7d5ae7a633f6b6b10fba23be85b468bd174adc25799665ab8f77",
+      "anonymous_metadata_readback": true,
+      "entry_revision_matches": true,
+      "all_manifest_paths_present": true,
+      "all_byte_counts_match": true,
+      "all_observed_lfs_sha256_match": true,
+      "non_lfs_sha256_source": "pinned public manifest plus successful clean-room restore receipt"
+    },
+    "primary_restore_readback": {
+      "path": "quality/qualifications/australian-m112-primary-recovery-readback-20261023.json",
+      "sha256": "e7e28ee9f7306f46565a2bf095288c8d7f63eb82493687a5dd266a326fc4dbb8",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "manifest_sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+      "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964",
+      "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
+      "workflow_conclusion": "success",
+      "clean_room": true,
+      "verified_file_count": 28,
+      "anonymous_digest_verification": "passed",
+      "verified_at": "2026-09-27T16:44:12Z",
+      "receipt_body_sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15"
+    },
+    "silver_product_tree_readback": {
+      "path": "quality/qualifications/australian-m112-recovery-readiness-20261027/hub-silver-product-tree-readback.json",
+      "sha256": "41bed806aded4842fc5f3e512426c22df4803b3f8db56b518578aeb909921624",
+      "anonymous_metadata_readback": true,
+      "exact_product_paths_present": true,
+      "sizes_and_lfs_sha256_match_admission_and_restore": true
+    },
+    "silver_product_admission": {
+      "path": "quality/qualifications/australian-m112-recovery-readiness-20261027/silver-admission-remote-read.json",
+      "sha256": "aa94bdf19421eed202e6803daa94d58b65c8ccdcfe73b09e151ef00dc00eedd7",
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+      "hosted_workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40469072111",
+      "verified_object_count": 6,
+      "candidate_profiles_admitted": true,
+      "external_publication_performed": false
+    },
+    "silver_product_primary_restore": {
+      "path": "quality/qualifications/australian-m112-recovery-readiness-20261027/silver-primary-restore.json",
+      "sha256": "b6eb2c45abdf6b039352ecc85e052bca0b95a931aeb95ed0ef1c7c8eee550634",
+      "status": "passed",
+      "verified_object_count": 6,
+      "all_restored_from_primary": true,
+      "all_cache_entries_absent_before_restore": true,
+      "completed_at": "2026-10-25T08:26:36.214584+00:00"
+    }
+  },
+  "checksum_inventory": {
+    "algorithm": "SHA-256",
+    "entry_count": 28,
+    "canonical_entries_sha256": "d19894fbbac492bedac07ca45d70f79d99db556eda1f78edcb0a6e4d2adececd",
+    "entries": [
+      {
+        "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv.receipt.json",
+        "kind": "b1_receipt",
+        "source_id": "au-data-gov-mbs-demographics",
+        "sha256": "8030d0700ce2062fe0c45a0429635e3eec794689f037f6cd1438a1951f4b9f59",
+        "byte_count": 852,
+        "hub_git_blob_oid": "17a0e8f25c30ad34392cbba4bfa7c85f802452c9",
+        "hub_lfs_sha256": null,
+        "primary_restore_verified": true,
+        "m112_admission_contract": null
+      },
+      {
+        "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv.receipt.json",
+        "kind": "b1_receipt",
+        "source_id": "au-data-gov-mbs-demographics",
+        "sha256": "b284c79f10cd4488c5fbb59b6cc4f25716f085a98b26449e866bf0db4305b92f",
+        "byte_count": 845,
+        "hub_git_blob_oid": "331e4a747925971aa96e5e9a1f30409e4c49ff4d",
+        "hub_lfs_sha256": null,
+        "primary_restore_verified": true,
+        "m112_admission_contract": null
+      },
+      {
+        "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv.receipt.json",
+        "kind": "b1_receipt",
+        "source_id": "au-data-gov-mbs-demographics",
+        "sha256": "88f251843cad172739d30ca3e73cac4d4b77cd5708ef168313470271ee0ab6ad",
+        "byte_count": 854,
+        "hub_git_blob_oid": "c7b4e5c0d76230c48f29fadf07ca2b423e2f3667",
+        "hub_lfs_sha256": null,
+        "primary_restore_verified": true,
+        "m112_admission_contract": null
+      },
+      {
+        "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx.receipt.json",
+        "kind": "b1_receipt",
+        "source_id": "au-data-gov-mbs-demographics",
+        "sha256": "964299dbd55b524629da727f56f451a825183f3772f8bc73b1efb1d97c55a628",
+        "byte_count": 858,
+        "hub_git_blob_oid": "312097ebe46af2417041d8b37187d20e70594cb7",
+        "hub_lfs_sha256": null,
+        "primary_restore_verified": true,
+        "m112_admission_contract": null
+      },
+      {
+        "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx.receipt.json",
+        "kind": "b1_receipt",
+        "source_id": "au-data-gov-mbs-demographics",
+        "sha256": "e6b16613c8e9584e4dd4a3ebb1b7f57114f1fb13a4a6abbfb1c01b5604c0006c",
+        "byte_count": 855,
+        "hub_git_blob_oid": "c2f228779543d44b40a19804f038993d3dbad0c5",
+        "hub_lfs_sha256": null,
+        "primary_restore_verified": true,
+        "m112_admission_contract": null
+      },
+      {
+        "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx.receipt.json",
+        "kind": "b1_receipt",
+        "source_id": "au-data-gov-mbs-demographics",
+        "sha256": "e90964f58380c910d59be1762e8d36a0695aec18ea73106785f728935e142ffd",
+        "byte_count": 860,
+        "hub_git_blob_oid": "f9af856af4af0ccceb33deb55d230cb748bfcd6e",
+        "hub_lfs_sha256": null,
+        "primary_restore_verified": true,
+        "m112_admission_contract": null
+      },
+      {
+        "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip.receipt.json",
+        "kind": "b1_receipt",
+        "source_id": "au-data-gov-mbs-demographics",
+        "sha256": "3fe89ec4d65cda99aa4a918b23bf7c50b6a91c38c671f17a05a17ca99c73db2e",
+        "byte_count": 885,
+        "hub_git_blob_oid": "8ca3c81f213414e6b79f9388859b082b26b3ae13",
+        "hub_lfs_sha256": null,
+        "primary_restore_verified": true,
+        "m112_admission_contract": null
+      },
+      {
+        "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip.receipt.json",
+        "kind": "b1_receipt",
+        "source_id": "au-data-gov-mbs-demographics",
+        "sha256": "685fbbb522ed3252dd87a1508a91de61b1600bc119fcf0b7ccdbb97844b17ddd",
+        "byte_count": 885,
+        "hub_git_blob_oid": "5eb005f0b93d7ea695031a70f84304da45594e06",
+        "hub_lfs_sha256": null,
+        "primary_restore_verified": true,
+        "m112_admission_contract": null
+      },
+      {
+        "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip.receipt.json",
+        "kind": "b1_receipt",
+        "source_id": "au-data-gov-mbs-demographics",
+        "sha256": "c6c4b22e2eb7d8c05c65f499cd22a8463e3f78457077fdebf5eaadcd7b6d4c94",
+        "byte_count": 888,
+        "hub_git_blob_oid": "7fc4a9f68ae934b3affb60e495fdec974054cb3a",
+        "hub_lfs_sha256": null,
+        "primary_restore_verified": true,
+        "m112_admission_contract": null
+      },
+      {
+        "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip.receipt.json",
+        "kind": "b1_receipt",
+        "source_id": "au-data-gov-mbs-demographics",
+        "sha256": "e5997cb6eca4c1176866899e3b28ee869750c31a9405f427f97d8ccb5433b4e5",
+        "byte_count": 885,
+        "hub_git_blob_oid": "77026a4f7a3951daae820b75aa2a2df0810c1218",
+        "hub_lfs_sha256": null,
+        "primary_restore_verified": true,
+        "m112_admission_contract": null
+      },
+      {
+        "path": "bronze/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip.receipt.json",
+        "kind": "b1_receipt",
+        "source_id": "au-data-gov-mbs-group",
+        "sha256": "4eefa03cb054d5b5e211441e7e616ab082dac12d9b87dabeea762dfe57bd5f39",
+        "byte_count": 864,
+        "hub_git_blob_oid": "18e0f9d69b7246f2b25b89ad2112655d55090791",
+        "hub_lfs_sha256": null,
+        "primary_restore_verified": true,
+        "m112_admission_contract": null
+      },
+      {
+        "path": "bronze/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip.receipt.json",
+        "kind": "b1_receipt",
+        "source_id": "au-data-gov-mbs-group",
+        "sha256": "5996ad9fc9490f9f51c21e6c5ae0a07bda3c57b1f67d67060095bef158c7c74d",
+        "byte_count": 864,
+        "hub_git_blob_oid": "1318107aa007e86143f7ab815dbc744e74f14dfe",
+        "hub_lfs_sha256": null,
+        "primary_restore_verified": true,
+        "m112_admission_contract": null
+      },
+      {
+        "path": "bronze/mbs/utilisation/group/mbs-group-2016-july.csv.receipt.json",
+        "kind": "b1_receipt",
+        "source_id": "au-data-gov-mbs-group",
+        "sha256": "8c7cb6671145bf0700f4a8864000da424fc07a5a361153510cbaf5cc39fc376d",
+        "byte_count": 797,
+        "hub_git_blob_oid": "887758c83231236bab2467cadbca6d628736638d",
+        "hub_lfs_sha256": null,
+        "primary_restore_verified": true,
+        "m112_admission_contract": null
+      },
+      {
+        "path": "bronze/mbs/utilisation/group/mbs-group-2016hr-july.xlsx.receipt.json",
+        "kind": "b1_receipt",
+        "source_id": "au-data-gov-mbs-group",
+        "sha256": "414c380463f57cbe61051b16ebc7e8220bd09c75b8625834bde0a9aa32405c8a",
+        "byte_count": 807,
+        "hub_git_blob_oid": "57a9df91817b99e62949f0ababbd1bd20c7975bf",
+        "hub_lfs_sha256": null,
+        "primary_restore_verified": true,
+        "m112_admission_contract": null
+      },
+      {
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+        "kind": "raw_payload",
+        "source_id": "au-data-gov-mbs-demographics",
+        "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5",
+        "byte_count": 23934884,
+        "hub_git_blob_oid": "7432a243ff9508c93dc4eea4f3f3c9e7e820e0af",
+        "hub_lfs_sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5",
+        "primary_restore_verified": true,
+        "m112_admission_contract": {
+          "path": "quality/qualifications/australian-m112-v4-demographics-q1-march-raw-b2-contract.json",
+          "sha256": "3f4794f92a33b9e77950b2c864c7f4ae8a331a43b80297a15e73f1967814f6ce"
+        }
+      },
+      {
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+        "kind": "raw_payload",
+        "source_id": "au-data-gov-mbs-demographics",
+        "sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958",
+        "byte_count": 23436706,
+        "hub_git_blob_oid": "b4fee923d3301da656c0bffec3ffb0aa063f4840",
+        "hub_lfs_sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958",
+        "primary_restore_verified": true,
+        "m112_admission_contract": {
+          "path": "quality/qualifications/australian-m112-v4-demographics-q2-may-raw-b2-contract.json",
+          "sha256": "cd7ccdce266d1d42fa658abe4b097c207627d80943b01c198f7d844c16241152"
+        }
+      },
+      {
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+        "kind": "raw_payload",
+        "source_id": "au-data-gov-mbs-demographics",
+        "sha256": "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c",
+        "byte_count": 7680041,
+        "hub_git_blob_oid": "8ef49f030df25ecd525a695c016a4707f36c9ca3",
+        "hub_lfs_sha256": null,
+        "primary_restore_verified": true,
+        "m112_admission_contract": {
+          "path": "quality/qualifications/australian-m112-v4-demographics-q3-july-raw-b2-contract.json",
+          "sha256": "fdb1164ba5d03e7946c3146ee7ecde71a6b8d40f71af483fae356a0142baef7b"
+        }
+      },
+      {
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+        "kind": "raw_payload",
+        "source_id": "au-data-gov-mbs-demographics",
+        "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d",
+        "byte_count": 21966140,
+        "hub_git_blob_oid": "faee8cf394e2ebe297e66963d67a0405814eb6ad",
+        "hub_lfs_sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d",
+        "primary_restore_verified": true,
+        "m112_admission_contract": {
+          "path": "quality/qualifications/australian-m112-v4-demographics-q1-marchhr-raw-b2-contract.json",
+          "sha256": "5a8f97b0e36ad1e90110166e3fd66fda6ee7f12fd572232c5ba3cb0e8584d9a5"
+        }
+      },
+      {
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx",
+        "kind": "raw_payload",
+        "source_id": "au-data-gov-mbs-demographics",
+        "sha256": "7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c",
+        "byte_count": 23765087,
+        "hub_git_blob_oid": "22df8d52577c481bf9973fb978480fefa00cf056",
+        "hub_lfs_sha256": "7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c",
+        "primary_restore_verified": true,
+        "m112_admission_contract": null
+      },
+      {
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
+        "kind": "raw_payload",
+        "source_id": "au-data-gov-mbs-demographics",
+        "sha256": "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152",
+        "byte_count": 7316301,
+        "hub_git_blob_oid": "06ea0af69b48722979b92b43c84a6f30e1e627f6",
+        "hub_lfs_sha256": "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152",
+        "primary_restore_verified": true,
+        "m112_admission_contract": {
+          "path": "quality/qualifications/australian-m112-v4-demographics-q3-julyhr-raw-b2-contract.json",
+          "sha256": "f65f1da3d4b9018e61a1ba31a5de1ceeb9bfa732da363a142c88bc7260eca469"
+        }
+      },
+      {
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip",
+        "kind": "raw_payload",
+        "source_id": "au-data-gov-mbs-demographics",
+        "sha256": "7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b",
+        "byte_count": 185194594,
+        "hub_git_blob_oid": "6cff2ae49865352d324a0ef236e4ddf15286cbee",
+        "hub_lfs_sha256": "7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b",
+        "primary_restore_verified": true,
+        "m112_admission_contract": null
+      },
+      {
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip",
+        "kind": "raw_payload",
+        "source_id": "au-data-gov-mbs-demographics",
+        "sha256": "0c914176b3e45caaca9c14a926ea3d61740eabd4df53210f81858a84ce40ec8d",
+        "byte_count": 240803157,
+        "hub_git_blob_oid": "522d0f8d2ccabf60a5f2cae00b873e5949d5c4a8",
+        "hub_lfs_sha256": "0c914176b3e45caaca9c14a926ea3d61740eabd4df53210f81858a84ce40ec8d",
+        "primary_restore_verified": true,
+        "m112_admission_contract": null
+      },
+      {
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip",
+        "kind": "raw_payload",
+        "source_id": "au-data-gov-mbs-demographics",
+        "sha256": "9f649eb3c7c3fdc0c3b362d34f00ffb2e9f3374ec4629e9dd15a8c8ddc1d7c00",
+        "byte_count": 284302149,
+        "hub_git_blob_oid": "b33a512b2aa33bba2e3884994cc903835af15ed4",
+        "hub_lfs_sha256": "9f649eb3c7c3fdc0c3b362d34f00ffb2e9f3374ec4629e9dd15a8c8ddc1d7c00",
+        "primary_restore_verified": true,
+        "m112_admission_contract": null
+      },
+      {
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip",
+        "kind": "raw_payload",
+        "source_id": "au-data-gov-mbs-demographics",
+        "sha256": "7f7eeb62fbc6191ab76e3dcf6cc602aa9438b1eec037d7e5c385fe131acd5355",
+        "byte_count": 358227575,
+        "hub_git_blob_oid": "d598619919a918d5dd67dba815d659a6de95401b",
+        "hub_lfs_sha256": "7f7eeb62fbc6191ab76e3dcf6cc602aa9438b1eec037d7e5c385fe131acd5355",
+        "primary_restore_verified": true,
+        "m112_admission_contract": null
+      },
+      {
+        "path": "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+        "kind": "raw_payload",
+        "source_id": "au-data-gov-mbs-group",
+        "sha256": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33",
+        "byte_count": 205885063,
+        "hub_git_blob_oid": "825956ec22b618037003d61fb937f1516201dca1",
+        "hub_lfs_sha256": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33",
+        "primary_restore_verified": true,
+        "m112_admission_contract": {
+          "path": "quality/qualifications/australian-m112-v4-historical-1993-2015-raw-b2-contract.json",
+          "sha256": "992eb2ce2d93891f51423284df2d718bc7d44af6511cc09c11c33a578588210b"
+        }
+      },
+      {
+        "path": "raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip",
+        "kind": "raw_payload",
+        "source_id": "au-data-gov-mbs-group",
+        "sha256": "5d45554d8eae96b8e0b7f86a9fb38b63862168791b95954c9be953c03c2d1c96",
+        "byte_count": 237142509,
+        "hub_git_blob_oid": "d346dab7802e6dc3fa239fbd0324c465a70ebfdc",
+        "hub_lfs_sha256": "5d45554d8eae96b8e0b7f86a9fb38b63862168791b95954c9be953c03c2d1c96",
+        "primary_restore_verified": true,
+        "m112_admission_contract": null
+      },
+      {
+        "path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+        "kind": "raw_payload",
+        "source_id": "au-data-gov-mbs-group",
+        "sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b",
+        "byte_count": 12291303,
+        "hub_git_blob_oid": "703900ffa41d6a54e1dad08e0660a14f83178b08",
+        "hub_lfs_sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b",
+        "primary_restore_verified": true,
+        "m112_admission_contract": {
+          "path": "quality/qualifications/australian-m112-v4-group2016-csv-raw-b2-contract.json",
+          "sha256": "d1924c8c21a52baff437dcf0ec55e7abffe599bf091bdaea082bc020c203aab7"
+        }
+      },
+      {
+        "path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+        "kind": "raw_payload",
+        "source_id": "au-data-gov-mbs-group",
+        "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285",
+        "byte_count": 6857437,
+        "hub_git_blob_oid": "094d05f83648f833b0bf6fcf66f56204c543e476",
+        "hub_lfs_sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285",
+        "primary_restore_verified": true,
+        "m112_admission_contract": {
+          "path": "quality/qualifications/australian-m112-v4-july2016-raw-b2-contract.json",
+          "sha256": "b95056d6ab657f5b280870dc2ac7dcb1578019224e843d423a99e2880f451d7e"
+        }
+      }
+    ],
+    "additional_exact_public_product_inventory": {
+      "algorithm": "SHA-256",
+      "entry_count": 6,
+      "canonical_entries_sha256": "7b849536912a35d840566ad78e4bbedb39811be4b2eda2bf01f322d0de3703bc",
+      "entries": [
+        {
+          "dataset": "edithatogo/australian-mbs-source-archive",
+          "revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+          "path": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+          "sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f",
+          "byte_count": 114493,
+          "hub_git_blob_oid": "cf430777e26400ed8956d2046c7a6c0c34b687b6",
+          "hub_lfs_sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f",
+          "primary_restore_verified": true,
+          "origin": "remote"
+        },
+        {
+          "dataset": "edithatogo/australian-mbs-source-archive",
+          "revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+          "path": "silver/mbs/v4/2025-07-v3/caps.parquet",
+          "sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb",
+          "byte_count": 60259,
+          "hub_git_blob_oid": "43fb5794a515fa794f192344cedfddcdfb55403d",
+          "hub_lfs_sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb",
+          "primary_restore_verified": true,
+          "origin": "remote"
+        },
+        {
+          "dataset": "edithatogo/australian-mbs-source-archive",
+          "revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+          "path": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+          "sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733",
+          "byte_count": 620348,
+          "hub_git_blob_oid": "92132bb0700956cd61ead09f7649f0f10009e7e5",
+          "hub_lfs_sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733",
+          "primary_restore_verified": true,
+          "origin": "remote"
+        },
+        {
+          "dataset": "edithatogo/australian-mbs-source-archive",
+          "revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+          "path": "silver/mbs/v4/2025-07-v3/fees.parquet",
+          "sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420",
+          "byte_count": 93072,
+          "hub_git_blob_oid": "b3f30480983b27d7cb85d81ff8630d13683ad002",
+          "hub_lfs_sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420",
+          "primary_restore_verified": true,
+          "origin": "remote"
+        },
+        {
+          "dataset": "edithatogo/australian-mbs-source-archive",
+          "revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+          "path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+          "sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756",
+          "byte_count": 51851,
+          "hub_git_blob_oid": "cc0c99b7979e8dfc66971822c9599c5f693dd410",
+          "hub_lfs_sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756",
+          "primary_restore_verified": true,
+          "origin": "remote"
+        },
+        {
+          "dataset": "edithatogo/australian-mbs-source-archive",
+          "revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+          "path": "silver/mbs/v4/2025-07-v3/services.parquet",
+          "sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535",
+          "byte_count": 100062,
+          "hub_git_blob_oid": "c7e68cb0d86429141ea63855fb85afe8609a95d5",
+          "hub_lfs_sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535",
+          "primary_restore_verified": true,
+          "origin": "remote"
+        }
+      ]
+    }
+  },
+  "independent_recovery": {
+    "status": "blocked_authority_and_target_unavailable_in_repository_evidence",
+    "target": "not configured or evidenced",
+    "independent_administrative_domain": false,
+    "independent_geographic_domain": false,
+    "same_hugging_face_domain_is_independent": false,
+    "region": "unverified",
+    "rpo_seconds": null,
+    "rto_seconds": null,
+    "independent_clean_room_restore": "not performed",
+    "blocker": "The checked recovery contract, repository configuration, and retained receipts contain no approved independent recovery target or authority to qualify one. The existing Hugging Face primary and its clean-room restore are not an independent failure domain. RPO/RTO cannot be asserted without an approved target and accountable recovery policy.",
+    "required_to_unblock": [
+      "approved target with distinct administrative and geographic failure domains",
+      "authority/configuration evidence for that exact target",
+      "owner-approved measurable RPO and RTO",
+      "clean-room restore and checksum verification against the independent target"
+    ]
+  },
+  "boundaries": {
+    "new_sources": 0,
+    "frozen_inventory_membership_changed": false,
+    "source_payload_bytes_downloaded_or_read": false,
+    "public_dataset_mutated": false,
+    "external_publication_performed": false,
+    "independent_target_configured": false,
+    "independent_recovery_qualified": false,
+    "production_dr_claimed": false,
+    "source_values_emitted": false,
+    "product_candidate_external_publication": false
+  }
+}

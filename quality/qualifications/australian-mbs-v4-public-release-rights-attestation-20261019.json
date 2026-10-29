@@ -1,0 +1,78 @@
+{
+  "authorized_objects": [
+    {
+      "byte_count": 114493,
+      "name": "benefits",
+      "path": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+      "sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f"
+    },
+    {
+      "byte_count": 60259,
+      "name": "caps",
+      "path": "silver/mbs/v4/2025-07-v3/caps.parquet",
+      "sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb"
+    },
+    {
+      "byte_count": 620348,
+      "name": "descriptions",
+      "path": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+      "sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733"
+    },
+    {
+      "byte_count": 93072,
+      "name": "fees",
+      "path": "silver/mbs/v4/2025-07-v3/fees.parquet",
+      "sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420"
+    },
+    {
+      "byte_count": 51851,
+      "name": "hierarchy",
+      "path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+      "sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756"
+    },
+    {
+      "byte_count": 100062,
+      "name": "services",
+      "path": "silver/mbs/v4/2025-07-v3/services.parquet",
+      "sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535"
+    }
+  ],
+  "boundaries": {
+    "consumer_canary_performed": false,
+    "m110_gold_review_or_acceptance_added": false,
+    "m112_federation_acceptance_added": false,
+    "new_source_or_dataset_added": false,
+    "other_source_versions_or_object_paths_included": false,
+    "source_payload_release_included": false,
+    "v4_admission_or_promotion_performed": false
+  },
+  "dataset_identity": {
+    "candidate_only": true,
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "manifest_sha256": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
+    "revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38"
+  },
+  "decision": "Accept the maintainer attestation that exact written permission or another applicable rights instrument covers public release of these exact six July 2025 MBS v3 Silver objects. The maintainer instructed that the instrument be taken as given and not located.",
+  "decision_by": "maintainer",
+  "external_publication_authorized": true,
+  "permission_instrument": {
+    "existence_and_applicability": "attested_by_maintainer",
+    "independently_reviewed": false,
+    "instrument_digest": null,
+    "instrument_locator": null,
+    "instrument_type": "exact_written_permission_or_other_applicable_rights_instrument",
+    "review_boundary": "Not located or inspected at maintainer direction."
+  },
+  "public_release_authorized": true,
+  "public_release_performed": false,
+  "recorded_at": "2026-10-19T11:12:06Z",
+  "schema_id": "global-medicines-atlas.australian-mbs-v4-public-release-rights-attestation",
+  "schema_version": 1,
+  "scope": "Public release of only the exact six July 2025 MBS v3 Silver Parquet objects listed below.",
+  "source_identity": {
+    "schema_era": "2025-07-version-3",
+    "source_id": "au-mbs",
+    "source_path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+    "source_sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556"
+  }
+}

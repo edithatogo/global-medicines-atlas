@@ -1867,7 +1867,7 @@ def evaluate_properties(
             requirement_ids=("M-094", "S-013"),
             checks={
                 "src/global_medicines_atlas/iceberg_ready.py": (
-                    "Python 3.14 core does not import",
+                    "Python 3.15 core does not import",
                     "Iceberg REST catalogue",
                 ),
                 "tests/test_iceberg_ready.py": (

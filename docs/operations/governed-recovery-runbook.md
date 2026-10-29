@@ -5,11 +5,11 @@ local governed artifacts. It does not qualify production disaster recovery.
 
 ## Rehearse
 
-From a clean checkout with the locked Python 3.14 environment:
+From a clean checkout with the locked Python 3.15.1 environment:
 
 ```powershell
-uv sync --python 3.14.6 --locked
-uv run --python 3.14.6 python scripts/rehearse_governed_recovery.py
+uv sync --python 3.15.1 --locked
+uv run --python 3.15.1 python scripts/rehearse_governed_recovery.py
 ```
 
 The command writes `build/recovery/rehearsal-receipt.json` and exits non-zero

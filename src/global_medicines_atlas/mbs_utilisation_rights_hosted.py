@@ -25,6 +25,7 @@ from global_medicines_atlas.federation_metadata_hosted import (
     MetadataHub,
     PublicSnapshot,
     require_hosted_main,
+    valid_receipt_url,
 )
 from global_medicines_atlas.mbs_utilisation_rights_append import (
     RightsAppendPayload,
@@ -60,17 +61,10 @@ def _persist(
     document: dict[str, Any], persist: Callable[[dict[str, Any]], str]
 ) -> str:
     if len(json.dumps(document, sort_keys=True)) > MAX_RECEIPT_CHARS:
-        raise ValueError("durable receipt exceeds supported size")
+        raise ValueError("receipt exceeds supported artifact size")
     url = persist(json.loads(json.dumps(document)))
-    if (
-        type(url) is not str
-        or re.fullmatch(
-            rf"https://github.com/{re.escape(REPOSITORY)}/issues/340#issuecomment-[0-9]+",
-            url,
-        )
-        is None
-    ):
-        raise ValueError("durable receipt URL missing or invalid")
+    if type(url) is not str or not valid_receipt_url(url):
+        raise ValueError("receipt URL missing or invalid")
     return url
 
 
@@ -88,7 +82,8 @@ def execute_rights_append(
     """Validate, durably record intent, CAS-add and anonymously verify.
 
     ``current_main`` must independently read the repository main head.
-    ``persist`` must durably save and read back its exact public-safe document.
+    ``persist`` must save and read back its exact public-safe document in the
+    current hosted run artifact.
     No source cache is removed here; only a returned verification receipt may
     authorize the caller's cleanup. This function provides no v4 admission.
     """
@@ -186,7 +181,7 @@ def execute_validated_append(
         "gated": False,
     }
     if len(json.dumps(projected, sort_keys=True)) > MAX_RECEIPT_CHARS:
-        raise ValueError("durable receipt exceeds supported size")
+        raise ValueError("receipt exceeds supported artifact size")
     intent_url = _persist(intent, persist)
     if (
         current_main() != exact_commit

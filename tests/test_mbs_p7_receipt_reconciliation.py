@@ -13,6 +13,7 @@ from global_medicines_atlas.mbs_p7_receipt_reconciliation import (
     EXPECTED_RECEIPT_SHA256,
     dump_reconciliation,
     reconcile_p7_storage_receipt,
+    reconstruct_p7_storage_source_receipt,
     write_reconciliation,
 )
 
@@ -53,6 +54,33 @@ def test_reconstructs_exact_historical_archive_receipt_without_promotion() -> (
     assert result.source_date_semantics_qualified is False
     assert result.m112_federation_accepted is False
     assert result.payload_bytes_read_locally is False
+
+
+def test_reconstructs_the_verified_archive_boundary_source_receipt() -> None:
+    """The reusable receipt keeps the exact historical archive boundary."""
+
+    receipt = reconstruct_p7_storage_source_receipt(ROOT)
+
+    assert receipt.digest() == EXPECTED_RECEIPT_SHA256
+    assert str(receipt.retrieval.uri) == p7_module.ARCHIVE_URI
+    assert receipt.rights_state.value == "permitted"
+
+
+def test_source_receipt_reconstruction_rejects_digest_drift(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The exported receipt is rechecked against its reconciliation digest."""
+
+    reconciliation = reconcile_p7_storage_receipt(ROOT)
+    mismatched = reconciliation.model_copy(
+        update={"recorded_receipt_sha256": "0" * 64}
+    )
+    monkeypatch.setattr(
+        p7_module, "reconcile_p7_storage_receipt", lambda _root: mismatched
+    )
+
+    with pytest.raises(ValueError, match="source receipt digest differs"):
+        reconstruct_p7_storage_source_receipt(ROOT)
 
 
 def test_receipt_reconstruction_rejects_changed_digest(tmp_path: Path) -> None:

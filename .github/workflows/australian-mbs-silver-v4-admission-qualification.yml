@@ -1,0 +1,57 @@
+name: Qualify existing MBS Silver v4 admission and remote reads
+
+on:
+  workflow_dispatch:
+    inputs:
+      exact_commit:
+        description: Exact main commit containing the trusted profile and receipts
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: australian-mbs-silver-v4-admission-qualification
+  cancel-in-progress: false
+
+jobs:
+  qualify:
+    name: Admit six exact Silver objects and verify remote reads
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Require exact default-branch identity
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = 'refs/heads/main'
+          test "$GITHUB_SHA" = "$REQUESTED_COMMIT"
+      - name: Qualify exact six trusted profiles through the remote reader
+        env:
+          OUTPUT_DIR: ${{ runner.temp }}/gma-mbs-v4-admission-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          set -euo pipefail
+          uv run --locked --python 3.15.1 playwright install --with-deps chromium
+          uv run --locked --python 3.15.1 python scripts/qualify_mbs_silver_v4_admission.py \
+            --output-dir "$OUTPUT_DIR" \
+            --exact-commit "$GITHUB_SHA"
+      - name: Retain aggregate-only admission and read receipts
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: mbs-silver-v4-admission-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/gma-mbs-v4-admission-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: error
+          retention-days: 90
+      - name: Remove temporary qualification output
+        if: always()
+        env:
+          OUTPUT_DIR: ${{ runner.temp }}/gma-mbs-v4-admission-${{ github.run_id }}-${{ github.run_attempt }}
+        run: rm -rf "$OUTPUT_DIR"

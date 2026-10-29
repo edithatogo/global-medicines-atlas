@@ -4,10 +4,27 @@ title = "Global Medicines Atlas Gitleaks configuration"
 useDefault = true
 
 [[allowlists]]
-description = "Qualified public MBS revision and consumer graph-edge digest evidence are not credentials in their exact source evidence fields."
+description = "Qualified public MBS revision, deterministic MBS/PBS replay idempotency, and consumer graph-edge digest evidence are not credentials in their exact source evidence fields."
 targetRules = ["generic-api-key"]
 regexTarget = "match"
 regexes = [
   '''^huggingface_api_revision"\s*:\s*"da83cad9116e2f9a5b927be7b080e9a5e5ea6998"\s*$''',
   '''^API":"7a2ba8a0b31dca32101172bde49f6dc17d3ef6d873afb4760651f2a22c3a502d"$''',
+  '''^dataset_access_response_sha256"\s*:\s*"71266cd78d98a3ba258a697890985b105917d6848b73935d2bb5b8c81e7605d7"\s*$''',
+  '''^dataset_access_response_sha256"\s*:\s*"a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7"\s*$''',
+  '''^idempotency_key"\s*:\s*"9bbe0080117a6627811fea29389ea8ae59f6b195dd4d30dbea7aa97d563ebcb9"\s*$''',
+  '''^idempotency_key"\s*:\s*"8b9db0c0bfe487111a83dac3fe460dc82acd6f82bf16a5d8c55cbb93d6c85b88"\s*$''',
+  '''^idempotency_key"\s*:\s*"a0936cb6f853786bbcb5cb032f0c75066fd4b21f6c8f21ed49003341cef16a59"\s*$''',
+  '''^idempotency_key"\s*:\s*"368f119e1a60fe2594f233bd3d675bb1f3e96bee98c224e3da7636e5ca4996d8"\s*$''',
+  '''^idempotency_key"\s*:\s*"b3e281513d551a3c97f97e2dd703da864276398d81864993e6f81ad0ab357201"\s*$''',
+  '''^idempotency_key"\s*:\s*"0659773e5d7208c4f55249c5aeb2cdb5598f60f543e959014def7bdbc52f5300"\s*$''',
+  '''^idempotency_key"\s*:\s*"a952a4fa742e946bee9555aa58a61218af64748ff5fe4bacce3d2ddb22070f6d"\s*$''',
+  '''^idempotency_key"\s*:\s*"ac94f0aa6957a89ef8e6dbcdf0191a6f0a43242225b3f537194144f8cfcaaabb"\s*$''',
+  '''^idempotency_key"\s*:\s*"1482fa5d9ccd9937027f13be70530fe7b22d52cb20957ea9216dbde81e207381"\s*$''',
+  '''^idempotency_key"\s*:\s*"f0acc72a90fdba651eabae075462a6bff4004137b6ce2984f4f26e979aa1b29e"\s*$''',
+  '''^idempotency_key"\s*:\s*"fd057b36c2b050e8fc823442396af33352cf7184693125ec0dfc4c360249454b"\s*$''',
+  '''^idempotency_key"\s*:\s*"5e6faa5d2cc27691f1cf691310f5d9ca12384ea2bd41a49a3c65c86aa39521fc"\s*$''',
+  '''^idempotency_key"\s*:\s*"1b52329dc5c389b5b7ffb6f42ff735863ce3647eca0d1b12ca5de845d51cb26c"\s*$''',
+  '''^idempotency_key"\s*:\s*"17e67855ba638c55d45a9678ad09713e6d81582620b492a525dbb4b312399537"\s*$''',
+  '''^idempotency_key"\s*:\s*"20f5d5fd97ffbc310d871c59bb0548f01e2c510c84fe3e44ebc47d6620c5f4d1"\s*$''',
 ]

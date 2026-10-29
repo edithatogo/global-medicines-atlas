@@ -1,0 +1,408 @@
+{
+  "boundaries": {
+    "cms_effective_rights_reconciled": true,
+    "consumer_canaries_performed": false,
+    "denominator_changed": false,
+    "historical_b1_b2_records_rewritten": false,
+    "new_cms_rights_decision_created": false,
+    "pbs_parquet_payload_bytes_read": false,
+    "public_publication": false,
+    "rights_changed": false,
+    "v4_admission_performed": false
+  },
+  "cms_bronze_records": {
+    "acquisition_id": "db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a",
+    "acquisition_time_rights_state": "unknown",
+    "admission_path": "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/d820173ded1797b36b5504da096d725746b0fef1288d4fb632b9897e3a9876c6.json",
+    "admission_reviewer_status": "approved",
+    "admission_state": "landed",
+    "b2_manifest_path": "quality/bronze/raw-evidence/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/manifest.json",
+    "byte_count": 2499217,
+    "consumer_canary": false,
+    "content_sha256": "5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a",
+    "derived_table_rights_concluded": false,
+    "event_path": "quality/bronze/imported-acquisitions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a.json",
+    "external_publication_authorized": false,
+    "historical_admission_path": "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/0ccd108d550a27271b170900660e42a90e6237f3a9beeb67249087008bee74c2.json",
+    "historical_admission_reviewer_status": "unreviewed",
+    "output_bindings": {
+      "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/0ccd108d550a27271b170900660e42a90e6237f3a9beeb67249087008bee74c2.json": "d08dd8d20fdca069eff922ae8f3cca04bd5acb7bc494196ffa9c613c99548784",
+      "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/d820173ded1797b36b5504da096d725746b0fef1288d4fb632b9897e3a9876c6.json": "4548ff63dfd237098fa69d09bad32876bdfee59973c65494c88f303a86123c9b",
+      "quality/bronze/imported-acquisitions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a.json": "5d655e0f516bf1f5e3d1825c0dbeed5ec0e03c7c391c007f33f8ef010b5b1de1",
+      "quality/bronze/raw-evidence/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/manifest.json": "4080df52b58d0dfaae89484c8285c588619192ef8c46be7f1a723bc51192a394"
+    },
+    "payload_persisted": false,
+    "payload_values_inspected": false,
+    "rights_decision_path": "quality/bronze/rights-decisions/us-cms-hcpcs/5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a/ba77e8933ba160adada3e48d6c6d60fb6d1c795d1e3bd07b74a7a16ac7da3dbe.json",
+    "rights_decision_sha256": "205e44d378e5f847d164e662aa856ba1316fc7a6a95db168a4c3bffd04cd831d",
+    "rights_review_path": "quality/qualifications/cms-hcpcs-rights-review-20261019.json",
+    "rights_review_sha256": "577e69b0c4d0fa9b9b4c8618161320168e571412b7fbf5060c3467e3fde7a608",
+    "rights_reviewed_at": "2026-10-19T12:11:14Z",
+    "rights_reviewer_status": "approved",
+    "rights_state": "permitted",
+    "source_id": "us_cms_hcpcs_level_ii",
+    "source_version": "us_cms_hcpcs_level_ii_2026_07",
+    "v4_admission": false
+  },
+  "cms_rights_reconciliation": {
+    "acquisition_time_rights_state_preserved": "unknown",
+    "consumer_canaries_authorized": false,
+    "derived_table_rights_concluded": false,
+    "external_publication_authorized": false,
+    "historical_admission_reviewer_status_preserved": "unreviewed",
+    "processing_or_v4_admission_authorized": false,
+    "rights_decision_path": "quality/bronze/rights-decisions/us-cms-hcpcs/5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a/ba77e8933ba160adada3e48d6c6d60fb6d1c795d1e3bd07b74a7a16ac7da3dbe.json",
+    "rights_decision_sha256": "205e44d378e5f847d164e662aa856ba1316fc7a6a95db168a4c3bffd04cd831d",
+    "rights_review_path": "quality/qualifications/cms-hcpcs-rights-review-20261019.json",
+    "rights_review_sha256": "577e69b0c4d0fa9b9b4c8618161320168e571412b7fbf5060c3467e3fde7a608",
+    "rights_reviewed_at": "2026-10-19T12:11:14Z",
+    "rights_reviewer_status": "approved",
+    "rights_state": "permitted",
+    "sha256": "5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a",
+    "source_id": "us_cms_hcpcs_level_ii",
+    "source_version": "us_cms_hcpcs_level_ii_2026_07"
+  },
+  "lineage_disposition": {
+    "complete_configs": [
+      "acquisition_b1",
+      "catalogue_b0",
+      "evidence_b2",
+      "gold",
+      "lineage",
+      "pbs_archive_variants",
+      "pbs_archive_verification",
+      "pbs_pdf_provenance",
+      "pbs_structured_provenance",
+      "platinum",
+      "promotion_decisions",
+      "silver"
+    ],
+    "incomplete_configs": [],
+    "incomplete_reason": null,
+    "unresolved_input_sha256": []
+  },
+  "lineage_inputs": {
+    "cms_b1_b2_readback": {
+      "acquisition_id": "db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a",
+      "acquisition_time_rights_state": "unknown",
+      "admission_path": "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/d820173ded1797b36b5504da096d725746b0fef1288d4fb632b9897e3a9876c6.json",
+      "admission_reviewer_status": "approved",
+      "admission_state": "landed",
+      "b2_manifest_path": "quality/bronze/raw-evidence/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/manifest.json",
+      "byte_count": 2499217,
+      "derived_table_rights_concluded": false,
+      "event_path": "quality/bronze/imported-acquisitions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a.json",
+      "external_publication_authorized": false,
+      "final_url": "https://www.cms.gov/files/zip/july-2026-alpha-numeric-hcpcs-file.zip",
+      "historical_admission_path": "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/0ccd108d550a27271b170900660e42a90e6237f3a9beeb67249087008bee74c2.json",
+      "historical_admission_reviewer_status": "unreviewed",
+      "http_status": 200,
+      "observed_at": "2026-10-19T00:47:59.454375Z",
+      "output_bindings": {
+        "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/0ccd108d550a27271b170900660e42a90e6237f3a9beeb67249087008bee74c2.json": "d08dd8d20fdca069eff922ae8f3cca04bd5acb7bc494196ffa9c613c99548784",
+        "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/d820173ded1797b36b5504da096d725746b0fef1288d4fb632b9897e3a9876c6.json": "4548ff63dfd237098fa69d09bad32876bdfee59973c65494c88f303a86123c9b",
+        "quality/bronze/imported-acquisitions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a.json": "5d655e0f516bf1f5e3d1825c0dbeed5ec0e03c7c391c007f33f8ef010b5b1de1",
+        "quality/bronze/raw-evidence/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/manifest.json": "4080df52b58d0dfaae89484c8285c588619192ef8c46be7f1a723bc51192a394"
+      },
+      "payload_persisted": false,
+      "payload_values_inspected": false,
+      "rights_decision_path": "quality/bronze/rights-decisions/us-cms-hcpcs/5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a/ba77e8933ba160adada3e48d6c6d60fb6d1c795d1e3bd07b74a7a16ac7da3dbe.json",
+      "rights_decision_sha256": "205e44d378e5f847d164e662aa856ba1316fc7a6a95db168a4c3bffd04cd831d",
+      "rights_review_path": "quality/qualifications/cms-hcpcs-rights-review-20261019.json",
+      "rights_review_sha256": "577e69b0c4d0fa9b9b4c8618161320168e571412b7fbf5060c3467e3fde7a608",
+      "rights_reviewed_at": "2026-10-19T12:11:14Z",
+      "rights_reviewer_status": "approved",
+      "rights_state": "permitted",
+      "sha256": "5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a",
+      "source_owner_modified": false
+    },
+    "cms_source_version": {
+      "producer_checksum_sha256": "5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a",
+      "producer_file_sha256": "eb46d27d17f4b79d315df9a3e8adf24f390bca642c0645de26a4028746440950",
+      "producer_path": "data/seed/source_versions.jsonl",
+      "producer_retrieved_at": "2026-07-23T00:00:00Z",
+      "source_id": "us_cms_hcpcs_level_ii",
+      "source_url": "https://www.cms.gov/files/zip/july-2026-alpha-numeric-hcpcs-file.zip",
+      "source_version": "us_cms_hcpcs_level_ii_2026_07"
+    },
+    "cms_validation_report": {
+      "producer_byte_count": 886,
+      "producer_path": "data/derived/reviewed_source_bundles/snapshot_us_cms_hcpcs_level_ii_2026_07_5591fed257e4/validation_report.json",
+      "producer_sha256": "5f7e0027f11cbb1b4f948bff80866bb4a1d739a7757900adc5a39c6713a874a4",
+      "raw_file_copied_by_producer": false,
+      "raw_source_sha256": "5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a",
+      "review_required_before_publication": true
+    },
+    "source_registry_b0": {
+      "lineage_role": "B0 source registry metadata",
+      "producer_byte_count": 41734,
+      "producer_path": "data/seed/source_registry.jsonl",
+      "producer_sha256": "4ee107f5f451d2e7149f534c8a2ba5b7a6ce22ec32d54fd13048561512c63ab8"
+    }
+  },
+  "manifest": {
+    "config_count": 12,
+    "path": "medallion_manifest.json",
+    "sha256": "3f54ba0298d174e56d53380ade5c6b335f1d0102f349cc1394c3070777aa6091"
+  },
+  "objects": [
+    {
+      "b1_b2_lineage_complete": true,
+      "config_name": "catalogue_b0",
+      "dataset_byte_count": 27219,
+      "dataset_path": "data/medallion/catalogue_b0/data.jsonl",
+      "dataset_sha256": "c27b998f9425714c42da0a9c8192e6fb5a613031210548cc0eb8b44388aaa8c4",
+      "producer_source_byte_count": 27219,
+      "producer_source_path": "data/derived/medallion/bronze_source_index.jsonl",
+      "producer_source_row_count": 64,
+      "producer_source_sha256": "c27b998f9425714c42da0a9c8192e6fb5a613031210548cc0eb8b44388aaa8c4",
+      "projection_relation": "byte_identical_to_exact_producer_source_path",
+      "row_count": 64
+    },
+    {
+      "b1_b2_lineage_complete": true,
+      "config_name": "acquisition_b1",
+      "dataset_byte_count": 1820758,
+      "dataset_path": "data/medallion/acquisition_b1/data.jsonl",
+      "dataset_sha256": "0bd2f7661037b620a21943ed6d7f2dd28a93437d43072d6ceabf3411b5840da1",
+      "producer_source_byte_count": 1820758,
+      "producer_source_path": "data/derived/medallion/bronze_acquisition_ledger.jsonl",
+      "producer_source_row_count": 2076,
+      "producer_source_sha256": "0bd2f7661037b620a21943ed6d7f2dd28a93437d43072d6ceabf3411b5840da1",
+      "projection_relation": "byte_identical_to_exact_producer_source_path",
+      "row_count": 2076
+    },
+    {
+      "b1_b2_lineage_complete": true,
+      "config_name": "evidence_b2",
+      "dataset_byte_count": 1767273,
+      "dataset_path": "data/medallion/evidence_b2/data.jsonl",
+      "dataset_sha256": "d7d33a8b0b6bd5cf507639286348b53e79d76e59347ef9575ff555a1e66f68c5",
+      "producer_source_byte_count": 1767273,
+      "producer_source_path": "data/derived/medallion/bronze_evidence.jsonl",
+      "producer_source_row_count": 2056,
+      "producer_source_sha256": "d7d33a8b0b6bd5cf507639286348b53e79d76e59347ef9575ff555a1e66f68c5",
+      "projection_relation": "byte_identical_to_exact_producer_source_path",
+      "row_count": 2056
+    },
+    {
+      "b1_b2_lineage_complete": true,
+      "config_name": "silver",
+      "dataset_byte_count": 12732,
+      "dataset_path": "data/medallion/silver/data.jsonl",
+      "dataset_sha256": "299b3721f72af235dc80a9b96f590a39ef8fe0b683618764ad56af713e1848a1",
+      "producer_source_byte_count": 18087,
+      "producer_source_path": "data/derived/medallion/medallion_artifacts.jsonl",
+      "producer_source_row_count": 22,
+      "producer_source_sha256": "67fc5ec969875ef505a5a830311b8d3454b83ffcd48649194790c7722869a6cd",
+      "projection_relation": "exact_layer_partition_of_medallion_artifacts",
+      "row_count": 17
+    },
+    {
+      "b1_b2_lineage_complete": true,
+      "config_name": "gold",
+      "dataset_byte_count": 3267,
+      "dataset_path": "data/medallion/gold/data.jsonl",
+      "dataset_sha256": "a4d3a99d9b6db9dff6a9e267e73806460b082d8ee8fbdefb55a3c7d077d85532",
+      "producer_source_byte_count": 18087,
+      "producer_source_path": "data/derived/medallion/medallion_artifacts.jsonl",
+      "producer_source_row_count": 22,
+      "producer_source_sha256": "67fc5ec969875ef505a5a830311b8d3454b83ffcd48649194790c7722869a6cd",
+      "projection_relation": "exact_layer_partition_of_medallion_artifacts",
+      "row_count": 2
+    },
+    {
+      "b1_b2_lineage_complete": true,
+      "config_name": "platinum",
+      "dataset_byte_count": 2088,
+      "dataset_path": "data/medallion/platinum/data.jsonl",
+      "dataset_sha256": "82aa16098cbbdedb8d6583caf367c8a41b34ca00f448e354a3921b12592dc9d6",
+      "producer_source_byte_count": 18087,
+      "producer_source_path": "data/derived/medallion/medallion_artifacts.jsonl",
+      "producer_source_row_count": 22,
+      "producer_source_sha256": "67fc5ec969875ef505a5a830311b8d3454b83ffcd48649194790c7722869a6cd",
+      "projection_relation": "exact_layer_partition_of_medallion_artifacts",
+      "row_count": 3
+    },
+    {
+      "b1_b2_lineage_complete": true,
+      "config_name": "lineage",
+      "dataset_byte_count": 10763,
+      "dataset_path": "data/medallion/lineage/data.jsonl",
+      "dataset_sha256": "9d73e2f79b44f221486b4ad0e1df576cdbd18763d1aa3fa7adb8e6fe526e639f",
+      "producer_source_byte_count": 10763,
+      "producer_source_path": "data/derived/field_lineage/field_lineage.jsonl",
+      "producer_source_row_count": 17,
+      "producer_source_sha256": "9d73e2f79b44f221486b4ad0e1df576cdbd18763d1aa3fa7adb8e6fe526e639f",
+      "projection_relation": "byte_identical_to_exact_producer_source_path",
+      "row_count": 17
+    },
+    {
+      "b1_b2_lineage_complete": true,
+      "config_name": "promotion_decisions",
+      "dataset_byte_count": 1321055,
+      "dataset_path": "data/medallion/promotion_decisions/data.jsonl",
+      "dataset_sha256": "03036720150f163e471445b594d21eeb51f95e4bd7db1070b74afc27b7d8c5c7",
+      "producer_source_byte_count": 1321055,
+      "producer_source_path": "data/derived/medallion/promotion_decisions.jsonl",
+      "producer_source_row_count": 2145,
+      "producer_source_sha256": "03036720150f163e471445b594d21eeb51f95e4bd7db1070b74afc27b7d8c5c7",
+      "projection_relation": "byte_identical_to_exact_producer_source_path",
+      "row_count": 2145
+    },
+    {
+      "b1_b2_lineage_complete": true,
+      "config_name": "pbs_pdf_provenance",
+      "dataset_byte_count": 871678,
+      "dataset_path": "data/medallion/pbs_pdf_provenance/data.jsonl",
+      "dataset_sha256": "24cb8c98f8a09f943ef3369ec63b9a2f7b3e19bfca7cf2a7ec64e1a78dcf4e07",
+      "producer_source_byte_count": 871678,
+      "producer_source_path": "data/derived/publication/pbs_provenance/pbs_pdf_provenance.jsonl",
+      "producer_source_row_count": 1049,
+      "producer_source_sha256": "24cb8c98f8a09f943ef3369ec63b9a2f7b3e19bfca7cf2a7ec64e1a78dcf4e07",
+      "projection_relation": "byte_identical_to_exact_producer_source_path",
+      "row_count": 1049
+    },
+    {
+      "b1_b2_lineage_complete": true,
+      "config_name": "pbs_structured_provenance",
+      "dataset_byte_count": 548634,
+      "dataset_path": "data/medallion/pbs_structured_provenance/data.jsonl",
+      "dataset_sha256": "fab87f283f31f51db1f5f1bee76b02c3fbe5622bea1deee4632be0ff4768a28c",
+      "producer_source_byte_count": 548634,
+      "producer_source_path": "data/derived/publication/pbs_provenance/pbs_structured_provenance.jsonl",
+      "producer_source_row_count": 655,
+      "producer_source_sha256": "fab87f283f31f51db1f5f1bee76b02c3fbe5622bea1deee4632be0ff4768a28c",
+      "projection_relation": "byte_identical_to_exact_producer_source_path",
+      "row_count": 655
+    },
+    {
+      "b1_b2_lineage_complete": true,
+      "config_name": "pbs_archive_verification",
+      "dataset_byte_count": 811545,
+      "dataset_path": "data/medallion/pbs_archive_verification/data.jsonl",
+      "dataset_sha256": "7cea95acfde2f023a8a3b84628b7bcd70a023ab1ebde3d5ac0449eedb36a5f8d",
+      "producer_source_byte_count": 811545,
+      "producer_source_path": "data/derived/publication/pbs_provenance/pbs_archive_verification.jsonl",
+      "producer_source_row_count": 1049,
+      "producer_source_sha256": "7cea95acfde2f023a8a3b84628b7bcd70a023ab1ebde3d5ac0449eedb36a5f8d",
+      "projection_relation": "byte_identical_to_exact_producer_source_path",
+      "row_count": 1049
+    },
+    {
+      "b1_b2_lineage_complete": true,
+      "config_name": "pbs_archive_variants",
+      "dataset_byte_count": 4340,
+      "dataset_path": "data/medallion/pbs_archive_variants/data.jsonl",
+      "dataset_sha256": "e9059e17bf78c099f0350610487bbc78e5b51c8e9d49726b0b117e01e3c4d0db",
+      "producer_source_byte_count": 4340,
+      "producer_source_path": "data/derived/publication/pbs_provenance/pbs_archive_variants.jsonl",
+      "producer_source_row_count": 5,
+      "producer_source_sha256": "e9059e17bf78c099f0350610487bbc78e5b51c8e9d49726b0b117e01e3c4d0db",
+      "projection_relation": "byte_identical_to_exact_producer_source_path",
+      "row_count": 5
+    }
+  ],
+  "pbs_source_parquet_lineage": {
+    "dataset": "edithatogo/australian-pbs-source-archive",
+    "lfs_pointer_readback": true,
+    "lineage_complete": true,
+    "m112_rights_state_changed": false,
+    "payload_persisted_locally": false,
+    "payload_values_inspected": false,
+    "projection_byte_count": 158134,
+    "projection_git_blob_oid": "481bf525ab1f7889b51c659d6d06cb0c5e8f9cd5",
+    "projection_path": "bronze/2026-04-01/pbs-v3-source.parquet",
+    "projection_sha256": "9e9facc336b47c5a9d514388a95c9797ba3e03474806fba00b6f03c0e601e97d",
+    "raw_parent_b1_b2_lineage": {
+      "complete": true,
+      "evidence": {
+        "path": "quality/qualifications/australian-m112-pbs-projected-b1-b2-lineage-20261019.json",
+        "sha256": "aa4a0df6df4ec723e7b65f55379f47ae7912e4777a6b9d3bb3454c1accf3a16f"
+      },
+      "state": "complete: pinned producer B1 source receipt/acquisition and B2 references join to a current unreviewed local landed record"
+    },
+    "revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
+    "source_admission_path": "bronze/2026-04-01/admission.json",
+    "source_admission_sha256": "e80079760391d339ccfea4e1ceb59686ec7cfacbf91fac66333b113027b7fc1c",
+    "source_admission_state": "accepted",
+    "source_b1_acquisition_id": "7c964aef63666d334fafd9a461f5a4f8476018a4da5809cf8fefe3a6b8bee727",
+    "source_of_truth_byte_count": 11156706,
+    "source_of_truth_path": "raw/2026-04-01/2026-04-01-XML-V3.zip",
+    "source_of_truth_sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+    "source_receipt_path": "bronze/2026-04-01/source-receipt.json",
+    "source_receipt_sha256": "a5eb06cf7e655eb0e0d8fe5d244297721ebede51e96c237333f7dffd76e1ccd1",
+    "source_rights_evidence": "permitted"
+  },
+  "record_joins": {
+    "archive_variants": {
+      "exact_frozen_raw_paths_with_complete_lineage": 5,
+      "producer_rows": 5
+    },
+    "artifact_partitions": {
+      "all_artifact_output_sha256": 22,
+      "cms_validation_report_inputs_linked_to_raw_b1_b2": 1,
+      "gold_inputs_linked_to_silver_outputs": 17,
+      "gold_records": 2,
+      "platinum_inputs_linked_to_gold_outputs": 2,
+      "platinum_records": 3,
+      "silver_input_sha256_linked_to_b0_metadata": 1,
+      "silver_input_sha256_linked_to_b1": 18,
+      "silver_input_sha256_linked_to_b1_b2_including_cms": 19,
+      "silver_input_sha256_unresolved": [],
+      "silver_records": 17,
+      "unique_silver_input_sha256": 20
+    },
+    "b0_catalogue": {
+      "acquired_source_ids_linked_to_b1": 13,
+      "not_attempted_source_ids_explicit": 51,
+      "rows": 64
+    },
+    "b1_b2": {
+      "b1_acquisition_events": 2076,
+      "b1_events_with_payload_sha256": 2064,
+      "b1_failed_or_blocked_without_payload": 12,
+      "b2_evidence_records": 2056,
+      "b2_payload_digests_linked_to_b1": 2056,
+      "unique_b1_payload_sha256": 2056
+    },
+    "lineage_rows": 17,
+    "promotion_decisions": {
+      "rows": 2145,
+      "subjects_resolved_to_b0_b1_or_product_artifacts": 2145
+    },
+    "source_provenance_tables": {
+      "pbs_archive_verification": {
+        "failed_b1_event_joins_without_payload": 1,
+        "payload_digest_b1_b2_joins": 1048,
+        "rows": 1049
+      },
+      "pbs_pdf_provenance": {
+        "failed_b1_event_joins_without_payload": 1,
+        "payload_digest_b1_b2_joins": 1048,
+        "rows": 1049
+      },
+      "pbs_structured_provenance": {
+        "failed_b1_event_joins_without_payload": 0,
+        "payload_digest_b1_b2_joins": 655,
+        "rows": 655
+      }
+    }
+  },
+  "recorded_at": "2026-10-19T18:45:05.912635Z",
+  "schema_id": "global-medicines-atlas.australian-m112-reimbursement-medallion-projection-lineage",
+  "schema_version": 1,
+  "scope": {
+    "additional_pbs_projection_path_count": 1,
+    "dataset": "edithatogo/reimbursement-atlas",
+    "dataset_revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+    "frozen_inventory_count": 1759,
+    "new_sources_added": false,
+    "payload_values_inspected": false,
+    "producer_repository": "edithatogo/reimbursement-atlas",
+    "producer_repository_modified": false,
+    "producer_revision": "083be8aa4ff0f8d8e6df5c5d8242f7783be149de",
+    "projection_path_count": 13,
+    "reimbursement_projection_path_count": 12
+  }
+}

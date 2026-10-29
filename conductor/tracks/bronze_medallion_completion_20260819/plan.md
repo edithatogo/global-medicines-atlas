@@ -1065,7 +1065,12 @@ for credentialed or rights-unresolved sources.
   maturity projection.
 - [ ] Re-evaluate direct Bronze qualification only after the actual durable
   landed event and its exact accepted-event supersession link are evidenced.
-- [ ] Complete source-record projection lineage reconciliation and M-112
+- [x] Reconcile all 1,736 frozen raw paths against exact joins, B1/B2
+  projections, source receipts, historical publication receipts, alias
+  evidence, and PBS variant metadata. Every path now has identity evidence;
+  the five PBS variant matches remain identity metadata only and do not supply
+  acquisition receipts, B2 references, or admission histories.
+- [~] Complete source-record projection lineage reconciliation and M-112
   Australian federation acceptance as separate downstream gates.
 
 ## 2026-10-03 MBS P7 archived receipt reconciliation
@@ -1380,3 +1385,117 @@ for credentialed or rights-unresolved sources.
   224 focused maturity/contract tests, measured-coverage check, and Conductor
   context validation pass. Source rights, admissions, and federation gates are
   unchanged.
+
+## July 2025 MBS source B1/B2 lineage (2026-10-19)
+
+- [x] Bind the existing public-archive SourceReceipt for
+  `raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML` to its exact frozen inventory
+  revision, digest, and byte count. Add the missing acquisition event,
+  external-reference-only B2 manifest, and landed unreviewed admission using
+  the same acquisition identity. No source payload was requested or inspected.
+- [x] Update one object in the M-112 overlay: complete B1/B2 lineages increase
+  from 21 to 22; exact receipt/acquisition path joins increase from 26 to 27.
+  The separate path-digest total stays 118, the frozen denominator stays 1,759,
+  all 1,759 deferrals remain, and the separate per-object rights gate, v4
+  admission, and consumer-canary gates remain open.
+- [x] Regenerate the dependent Bronze receipt cohort; it remains 29 qualified
+  and 130 deferred.
+- [x] Focused M-112, Bronze cohort, and P7 regression tests pass (36); Ruff,
+  `ty`, BasedPyright, and diff checks pass.
+- [~] Run the full Test-Goblin profile: 6,924 passed, 3 skipped, 10 failed,
+  with 96.89% coverage. The failures are existing browser/runtime consumer
+  paths and stable-v1 clean-clone reproductions; the new lineage tests pass.
+  Hosted protected checks on the candidate head remain pending and are
+  authoritative for merge readiness.
+
+### Review hardening follow-up (2026-10-19)
+
+- [x] Validate the public archive dataset and immutable revision headers before
+  binding its July 2025 payload row. Validate the matching current-tree record's
+  exact dataset, revision, path, blob ID, and byte count against the frozen
+  object row before completing lineage.
+- [x] Preserve the first qualification and overlay as history; emit a reviewed
+  successor qualification and overlay with the validated current-tree identity
+  included in the report.
+- [x] Focused lineage, receipt-cohort, P7, utilisation-lineage, and M-112
+  reconciliation checks pass (35). Ruff, `ty`, BasedPyright, context, ecosystem,
+  and JSONL checks pass.
+- [x] The full local Test-Goblin run completed: 6,931 passed, 3 skipped, 7
+  failed, and 96.89% coverage. Failures remain in existing stable-v1 clean-clone,
+  browser/E2E, consumer, and performance tests; the changed lineage tests pass.
+  Both review findings were resolved, every protected check passed on revised
+  head `865211d`, and PR [#1176](https://github.com/edithatogo/global-medicines-atlas/pull/1176)
+  merged as `f897924`.
+
+## July 2025 MBS Silver projection lineage (2026-10-19)
+
+- [x] Bind the six existing July 2025 Silver tables to the exact frozen M-112
+  paths and output digests, the existing July MBS source receipt and raw B2
+  identity, each table's source-lineage digest, the candidate manifest, and
+  anonymous public metadata readback. No source payload or Parquet bytes were
+  requested or inspected.
+- [x] Mark only those six projection rows lineage-complete. Raw lineage remains
+  22; projection lineage is now 6 of 23; total complete object lineages are 28
+  of 1,759. Exact raw digest/path joins remain 118 and exact receipt/acquisition
+  joins remain 27.
+- [x] Preserve all 1,759 deferrals. The derived-table rights gate remains open;
+  v4 admissions and consumer canaries were zero at this 2026-10-20 checkpoint.
+  The current 2026-10-21 readback in the federated data-plane plan records
+  seven admissions and seven canaries for other raw B2 objects. No source or
+  dataset was added and no release was performed.
+- [x] Focused Silver/raw lineage tests pass (8); Ruff, `ty`, BasedPyright,
+  context, ecosystem, and Test-Goblin test-inventory checks pass.
+- [~] The full Test-Goblin profile completed with 6,929 passed, 3 skipped, 11
+  failed, and 96.89% coverage. Failures were in existing browser/E2E, consumer,
+  and stable-v1 clean-clone tests; the new lineage tests passed in the focused
+  run. Protected hosted checks remain required before merge.
+
+## Exact PBS utilisation six-object rights attestation (2026-10-20)
+
+- [x] Record the maintainer's attestation against the six frozen PBS utilisation
+  paths, digests, and byte counts. The scope expressly includes all file
+  contents, including any vocabulary previously excluded; the permission
+  instrument remains not independently reviewed.
+- [x] Reconcile the effective rights report and preflight to the exact attested
+  identities. Mark the historical unlicensed-vocabulary exclusion superseded
+  only for these six exact objects; the marker screen remains incomplete and
+  does not establish content review. No release, v4 admission, or consumer
+  canary is performed by this rights reconciliation.
+- [x] Focused rights tests (25) and the broader affected M-112 suite (54) pass;
+  Ruff, `ty`, BasedPyright, governance checks, and `git diff --check` pass.
+  The full Test-Goblin profile completed with 7,012 passed, 32 failed, 3
+  skipped, and 96.79% coverage. Twenty-nine browser failures report a missing
+  Playwright Chromium executable; the other failures are one Hypothesis timing
+  flake and two Stable v1 reproducibility tests. No changed rights test failed.
+- [~] Hosted protected checks, review, and merge remain pending on updated PR
+  #1242. The full local Test-Goblin profile above ran before rebasing onto the
+  Q2 canary and Q3 replay updates; protected CI must validate the final head.
+
+## M-112 current qualification readback (2026-10-21)
+
+Preflight 20261021-15 and the current rights and role reports reconcile all
+1,759 frozen objects with resolved rights, eight exact v4 admissions, eight
+admitted-object canaries and 1,751 deferred objects. Q1 HR run 39575404598 at
+merged main b6e8a8e4f6d633dfea0056104b62972a669c1b3e passed on 2026-10-21
+at 09:14:48 UTC. Its immutable metadata receipt is retained in
+`quality/qualifications/australian-m112-v4-demographics-q1-marchhr-admission-qualification-20261021-39575404598.json`.
+The frozen denominator and source inventory are unchanged. Earlier dated
+counts are historical. Source-supported field semantics and real matcher
+calibration remain separate from this raw-B2 admission; public datasets were
+not changed. The July XML, P7 and BSD sidecar B1/B2 joins remain recorded in
+their existing exact-object reports. Broader Bronze coverage work is outside
+the frozen M-112 denominator.
+
+## System completion execution focus (2026-10-25)
+
+Select the next task through the [system completion charter](../../system-completion.md)
+and [validated scheduling plan](../../system-completion.json). Name its shared
+capability or gate, concrete failure, bounded frozen-inventory scope, expected
+proof, and targeted validation. Advance the system lanes when prerequisites
+permit; perform dataset semantics or coverage work only when needed for a
+named gate. Preserve unresolved fields and all mandatory eligible-object
+identity, lineage, rights, admission, recovery, and consumer evidence. Broader
+coverage, new sources/terminology, and optional experiments remain deferred.
+This scheduling direction changes no acceptance criterion, current M-105/M-107
+disposition, or conditional release approval; current states come from the
+authoritative contract, reconciliation, and bound receipts.
