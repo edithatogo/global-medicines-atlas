@@ -73,6 +73,13 @@ def verify_checkout(exact_commit: str) -> None:
     )
     if result.stdout.strip() != exact_commit:
         raise ValueError("PBS checkout does not match the Actions commit")
+    subprocess.run(
+        ["git", "diff", "--quiet", "HEAD", "--"],  # ruff: ignore[start-process-with-partial-path] -- trusted Git executable
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        timeout=10,
+    )
 
 
 def prepare(exact_commit: str, output: Path) -> dict[str, Any]:

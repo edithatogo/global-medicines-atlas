@@ -1765,3 +1765,14 @@ def test_reproduced_delivery_rejects_checkout_mismatch(monkeypatch):
     )
     with pytest.raises(ValueError, match="checkout does not match"):
         delivery.verify_checkout(SHA)
+
+
+def test_reproduced_delivery_rejects_dirty_checkout(monkeypatch):
+    def git_run(args, **_kwargs):
+        if args[1] == "rev-parse":
+            return SimpleNamespace(stdout=SHA)
+        raise delivery.subprocess.CalledProcessError(1, args)
+
+    monkeypatch.setattr(delivery.subprocess, "run", git_run)
+    with pytest.raises(delivery.subprocess.CalledProcessError):
+        delivery.verify_checkout(SHA)
