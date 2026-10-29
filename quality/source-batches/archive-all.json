@@ -242,7 +242,9 @@
     "quality/source-batches/brazil-register-20261030/batch.json",
     "quality/source-batches/brazil-conitec-20261030/batch.json",
     "quality/source-batches/japan-mhlw-20261030/batch.json",
-    "quality/source-batches/sweden-tlv-20261030/batch.json"
+    "quality/source-batches/sweden-tlv-20261030/batch.json",
+    "quality/source-batches/who-eml-20261030/batch.json",
+    "quality/source-batches/east-africa-eml-20261030/batch.json"
   ],
   "blockers": [
     {

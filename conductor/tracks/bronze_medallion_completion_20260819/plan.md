@@ -1579,7 +1579,7 @@ No other source rights or federation acceptance state changes.
 ## Remaining 100 source IDs — explicit scope extension, 30 October 2026
 
 - [x] Inspect all 100 catalogue entries and official landing/terms surfaces.
-- [x] Prepare nine clear-rights sources with 33 verified native files.
+- [x] Prepare 12 clear-rights sources with 37 verified native files.
 - [x] Extend existing runner and publisher for finite multi-file releases.
 - [ ] Integrate CI and publish the qualified batches with anonymous verification.
 - [ ] Continue every remaining source until acquired/reused or an evidenced blocker.

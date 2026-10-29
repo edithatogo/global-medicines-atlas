@@ -1327,3 +1327,11 @@ def test_batch_signed_redirect_credentials_are_not_retained(
     assert "secret-signature" not in encoded
     assert "REDACTED" in encoded
     assert "version=2026" in str(evidence.final_uri)
+
+
+def test_global_catalogue_identity_uses_existing_global_receipt_code() -> None:
+    source = catalog_source().model_copy(update={"jurisdictions": ("GLOBAL",)})
+    identity = acquisition_module._source_identity(source)
+    assert identity.jurisdiction == "GLB"
+    assert identity.catalog_id == source.source_id
+    assert source.jurisdictions == ("GLOBAL",)

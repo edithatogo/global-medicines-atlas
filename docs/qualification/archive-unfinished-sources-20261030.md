@@ -7,7 +7,7 @@ deferred; original federation and Stable v1 gates are unchanged.
 
 ## First qualified batch
 
-Nine sources, 33 immutable native files, acquired using the shared batch runner:
+Twelve sources, 37 immutable native files, acquired using the shared batch runner:
 
 | Batch | Sources | Exact scope |
 |---|---|---|
@@ -33,14 +33,25 @@ bound; their explicit bound is now 512 MiB. CONITEC returned
 `binary/octet-stream`, now accepted by this runner. Core receipt contracts and
 historical acceptance bindings are unchanged.
 
-Local validation: 134 focused acquisition/publication tests passed; all 33
+Local validation: 134 focused acquisition/publication tests passed; all 37
 payload digests verified, ZIP/XLSX member CRC checks passed, Singapore response
 record count equals its declared total. Metadata-only validation evidence is
 `quality/qualifications/archive-unfinished-first-batch-20261030.json`.
 
+The next three clear-rights sources are the WHO 2025 adult/children EML PDFs,
+Kenya EML 2023 and Uganda EMHSLU 2023. Their embedded licences explicitly permit
+noncommercial reproduction with attribution; separate archive notices preserve
+that restriction. WHO exposed a catalogue/receipt mismatch: `GLOBAL` now maps to
+the repository's existing `GLB` receipt code without changing the receipt schema.
+
+Hosted CI found three stale derived-ledger assertions after catalogue recipe
+updates. Regenerate the prompt audit and bounded future ledger, and update their
+exact expected queue counts. Catalogue-wide rights remain unresolved; exact batch
+rights do not authorize every object or historical release in a source.
+
 ## Continuing inventory
 
-The remaining 91 entries are still under assessment, including four with
+The remaining 88 entries are still under assessment, including four with
 previously retained private evidence. An absent recipe is unfinished engineering,
 not an external blocker. Public access alone is not a redistribution licence.
 No source is counted complete merely because a landing page was fetched.

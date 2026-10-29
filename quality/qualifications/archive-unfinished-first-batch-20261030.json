@@ -1,5 +1,5 @@
 {
-  "scope": "Nine sources; exact selected inventories only",
+  "scope": "Twelve sources; 37 selected native objects only",
   "publication_verified": false,
   "federation_resumed": false,
   "objects": [
@@ -237,6 +237,34 @@
       "bytes": 1284211,
       "format": "zip",
       "members": 11
+    },
+    {
+      "path": "build/archive-unfinished-20261030/who-eml-qualified/global-who-eml/payload.bin",
+      "sha256": "69daf7c8399b85978ba85e143d3af34e6ccf7f3d493b1e056daa7ef909d64eb2",
+      "bytes": 1364687,
+      "format": "pdf",
+      "pages": 74
+    },
+    {
+      "path": "build/archive-unfinished-20261030/who-eml-qualified/global-who-eml/objects/0001/payload.bin",
+      "sha256": "53e7b6ab5d50ca5d8c57ed0814a024eb018430a0c09d925e6decd06cd6fa4432",
+      "bytes": 844948,
+      "format": "pdf",
+      "pages": 52
+    },
+    {
+      "path": "build/archive-unfinished-20261030/east-africa-eml/ke-national-eml/payload.bin",
+      "sha256": "b6d76bfaf978b42481757f1891600fb63350774942373122b45dc427bf34c343",
+      "bytes": 2687843,
+      "format": "pdf",
+      "pages": 146
+    },
+    {
+      "path": "build/archive-unfinished-20261030/east-africa-eml/ug-national-eml/payload.bin",
+      "sha256": "7e8c4a721b7c3a52820328f25c922c3fa9e4c3da80bda8f0d119f91088852f4c",
+      "bytes": 2947434,
+      "format": "pdf",
+      "pages": 118
     }
   ]
 }

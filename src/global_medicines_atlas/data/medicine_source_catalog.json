@@ -4859,9 +4859,7 @@
       "evidence_limit": "Global EML is formulary/EML evidence, not reimbursement, registration, or procurement.",
       "interface_status": "documented_download",
       "formats": [
-        "xlsx",
-        "pdf",
-        "html"
+        "pdf"
       ],
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
@@ -4899,8 +4897,9 @@
         "tests/test_bronze_fixture_landing.py",
         "tests/fixtures/source_expansion/who-eml.csv"
       ],
-      "download_url": "https://www.who.int/groups/expert-committee-on-selection-and-use-of-essential-medicines/essential-medicines-lists",
-      "acquisition_profile": "public-bulk"
+      "download_url": "https://iris.who.int/server/api/core/bitstreams/17642505-ecd3-4940-a691-4f1dfa0d835a/content",
+      "acquisition_profile": "public-bulk",
+      "api_url": null
     },
     {
       "source_id": "global-who-medicine-prices",
@@ -5907,7 +5906,7 @@
       "authority": "Kenya Pharmacy and Poisons Board",
       "title": "KEN essential medicines / health-supplies list",
       "dimension": "formulary",
-      "access_mode": "document",
+      "access_mode": "download",
       "landing_page": "https://www.pharmacyboardkenya.org/",
       "update_cadence": "source-declared",
       "rights_status": "review_required",
@@ -5915,8 +5914,7 @@
       "evidence_limit": "EML/formulary evidence is not automatically reimbursement or registration.",
       "interface_status": "documented_download",
       "formats": [
-        "pdf",
-        "html"
+        "pdf"
       ],
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
@@ -5949,7 +5947,9 @@
         "names"
       ],
       "qualification_state": "declared",
-      "qualification_references": []
+      "qualification_references": [],
+      "api_url": null,
+      "download_url": "https://cdn.who.int/media/docs/default-source/essential-medicines/national-essential-medicines-lists-(neml)/afro_neml/kenya-2023.pdf?sfvrsn=5f922bbf_3&download=true"
     },
     {
       "source_id": "ke-ppb-register",
@@ -8846,7 +8846,7 @@
       "authority": "Uganda National Drug Authority",
       "title": "Uganda EML and health supplies list",
       "dimension": "formulary",
-      "access_mode": "document",
+      "access_mode": "download",
       "landing_page": "https://www.nda.or.ug/",
       "update_cadence": "source-declared",
       "rights_status": "review_required",
@@ -8854,8 +8854,7 @@
       "evidence_limit": "EML/formulary evidence is not automatically reimbursement or registration.",
       "interface_status": "documented_download",
       "formats": [
-        "pdf",
-        "html"
+        "pdf"
       ],
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
@@ -8888,7 +8887,9 @@
         "names"
       ],
       "qualification_state": "declared",
-      "qualification_references": []
+      "qualification_references": [],
+      "api_url": null,
+      "download_url": "https://cdn.who.int/media/docs/default-source/essential-medicines/national-essential-medicines-lists-(neml)/afro_neml/uganda-2023.pdf?sfvrsn=5205bf98_3&download=true"
     },
     {
       "source_id": "ug-nda-register",

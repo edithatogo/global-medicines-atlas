@@ -382,7 +382,11 @@ def _source_identity(source: MedicineDataSource) -> SourceIdentity:
     return SourceIdentity(
         catalog_id=source.source_id,
         source_id=source.source_id,
-        jurisdiction=source.jurisdictions[0],
+        jurisdiction=(
+            "GLB"
+            if source.jurisdictions[0] == "GLOBAL"
+            else source.jurisdictions[0]
+        ),
         authority=source.authority,
         dataset_title=source.title,
         catalog_version="1",

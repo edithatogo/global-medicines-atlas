@@ -12,9 +12,9 @@
   "queue_state_counts": {
     "credentialed_and_excluded": 15,
     "landed_and_evidenced": 42,
-    "manual_only_documented_acquisition": 91,
+    "manual_only_documented_acquisition": 83,
     "not_yet_implemented": 0,
-    "rights_blocked": 27,
+    "rights_blocked": 35,
     "superseded_by_reused_source": 0,
     "temporarily_unavailable": 1
   },
@@ -1150,14 +1150,14 @@
       ],
       "queue_states": {
         "fr-open-medic": "landed_and_evidenced",
-        "jp-mhlw-ndb-utilisation": "manual_only_documented_acquisition",
+        "jp-mhlw-ndb-utilisation": "rights_blocked",
         "ca-cihi-nhex-medicines": "rights_blocked",
         "ie-pcrs-reimbursement": "manual_only_documented_acquisition"
       },
       "queue_state_counts": {
         "landed_and_evidenced": 1,
-        "manual_only_documented_acquisition": 2,
-        "rights_blocked": 1
+        "manual_only_documented_acquisition": 1,
+        "rights_blocked": 2
       },
       "fixture_qualified_source_ids": [],
       "live_qualified_source_ids": [

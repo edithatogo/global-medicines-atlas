@@ -31,8 +31,8 @@
   },
   "schema_id": "global-medicines-atlas.b0-source-index",
   "schema_version": 1,
-  "snapshot_id": "sha256:5cac39168cf2b4289d93fe5221c506eb4ce453e79a2c96fa58a09b82b915a98d",
-  "snapshot_sha256": "5cac39168cf2b4289d93fe5221c506eb4ce453e79a2c96fa58a09b82b915a98d",
+  "snapshot_id": "sha256:0234c08cbf23b64ecf676ea368eb4f8a875aeb685e184685bb9fc6967f641381",
+  "snapshot_sha256": "0234c08cbf23b64ecf676ea368eb4f8a875aeb685e184685bb9fc6967f641381",
   "source_count": 176,
   "sources": [
     {
@@ -3077,12 +3077,10 @@
       "current_landing_disposition": "landed_and_evidenced",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.who.int/groups/expert-committee-on-selection-and-use-of-essential-medicines/essential-medicines-lists",
-      "download_url": "https://www.who.int/groups/expert-committee-on-selection-and-use-of-essential-medicines/essential-medicines-lists",
+      "download_url": "https://iris.who.int/server/api/core/bitstreams/17642505-ecd3-4940-a691-4f1dfa0d835a/content",
       "evidence_scope": "governed_fixture",
       "expected_formats": [
-        "xlsx",
-        "pdf",
-        "html"
+        "pdf"
       ],
       "index_presence_implies_coverage": false,
       "indexed": true,
@@ -3858,7 +3856,7 @@
       "update_cadence": "source-declared"
     },
     {
-      "access_mode": "document",
+      "access_mode": "download",
       "acquisition_family": "document_collection",
       "api_url": "",
       "authentication": "none",
@@ -3866,11 +3864,10 @@
       "current_landing_disposition": "manual_only_documented_acquisition",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.pharmacyboardkenya.org/",
-      "download_url": "",
+      "download_url": "https://cdn.who.int/media/docs/default-source/essential-medicines/national-essential-medicines-lists-(neml)/afro_neml/kenya-2023.pdf?sfvrsn=5f922bbf_3&download=true",
       "evidence_scope": "none",
       "expected_formats": [
-        "pdf",
-        "html"
+        "pdf"
       ],
       "index_presence_implies_coverage": false,
       "indexed": true,
@@ -6057,7 +6054,7 @@
       "update_cadence": "source-declared"
     },
     {
-      "access_mode": "document",
+      "access_mode": "download",
       "acquisition_family": "document_collection",
       "api_url": "",
       "authentication": "none",
@@ -6065,11 +6062,10 @@
       "current_landing_disposition": "manual_only_documented_acquisition",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.nda.or.ug/",
-      "download_url": "",
+      "download_url": "https://cdn.who.int/media/docs/default-source/essential-medicines/national-essential-medicines-lists-(neml)/afro_neml/uganda-2023.pdf?sfvrsn=5205bf98_3&download=true",
       "evidence_scope": "none",
       "expected_formats": [
-        "pdf",
-        "html"
+        "pdf"
       ],
       "index_presence_implies_coverage": false,
       "indexed": true,

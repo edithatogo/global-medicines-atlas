@@ -2009,9 +2009,7 @@
         "endpoint": "https://www.who.int/groups/expert-committee-on-selection-and-use-of-essential-medicines/essential-medicines-lists",
         "family": "document_collection",
         "formats": [
-          "xlsx",
-          "pdf",
-          "html"
+          "pdf"
         ],
         "pagination": "manual",
         "preserves_source_bytes": true,
@@ -2523,8 +2521,7 @@
         "endpoint": "https://www.pharmacyboardkenya.org/",
         "family": "document_collection",
         "formats": [
-          "pdf",
-          "html"
+          "pdf"
         ],
         "pagination": "manual",
         "preserves_source_bytes": true,
@@ -3954,8 +3951,7 @@
         "endpoint": "https://www.nda.or.ug/",
         "family": "document_collection",
         "formats": [
-          "pdf",
-          "html"
+          "pdf"
         ],
         "pagination": "manual",
         "preserves_source_bytes": true,
