@@ -60,32 +60,82 @@ from datetime import UTC, datetime
 from hashlib import sha256
 import json
 from pathlib import Path
-from global_medicines_atlas.source_catalog import load_source_catalog, MedicineDataSource
-from global_medicines_atlas.data_layer_archive import HttpPayloadRetriever, PayloadKind
-from global_medicines_atlas.publication_transport import prepare_publication, PublicationTarget, PublicationDestination
+from global_medicines_atlas.source_catalog import (
+    load_source_catalog,
+    MedicineDataSource,
+)
+from global_medicines_atlas.data_layer_archive import (
+    HttpPayloadRetriever,
+    PayloadKind,
+)
+from global_medicines_atlas.publication_transport import (
+    prepare_publication,
+    PublicationTarget,
+    PublicationDestination,
+)
 
-root = Path('build/swiss-ema-bronze-20261029/ema-package')
+root = Path("build/swiss-ema-bronze-20261029/ema-package")
 root.mkdir(exist_ok=False)
-url = 'https://www.ema.europa.eu/en/documents/report/medicines-output-medicines_json-report_en.json'
-original = next(s for s in load_source_catalog() if s.source_id == 'eu-ema-json')
-data = original.model_dump(mode='json')
+url = "https://www.ema.europa.eu/en/documents/report/medicines-output-medicines_json-report_en.json"
+original = next(
+    s for s in load_source_catalog() if s.source_id == "eu-ema-json"
+)
+data = original.model_dump(mode="json")
 data.update(download_url=url)
 source = MedicineDataSource.model_validate(data)
-payload = HttpPayloadRetriever(max_bytes=32*1024*1024, max_attempts=1, timeout_seconds=60).retrieve(source)
+payload = HttpPayloadRetriever(
+    max_bytes=32 * 1024 * 1024, max_attempts=1, timeout_seconds=60
+).retrieve(source)
 assert payload.kind == PayloadKind.LIVE_PUBLIC, payload.skip_reason
 assert payload.uri == url
 parsed = json.loads(payload.content)
-assert isinstance(parsed, (dict,list))
+assert isinstance(parsed, (dict, list))
 assert sha256(payload.content).hexdigest() == payload.sha256
-(root/'medicines.json').write_bytes(payload.content)
-assert sha256((root/'medicines.json').read_bytes()).hexdigest() == payload.sha256
-(root/'README.md').write_text('''# EMA medicines JSON snapshot\n\nSource: European Medicines Agency (EMA).\nOfficial URL: https://www.ema.europa.eu/en/documents/report/medicines-output-medicines_json-report_en.json\nTerms: https://www.ema.europa.eu/en/about-us/about-website/legal-notice\n\nUnmodified public JSON index, captured for the bounded Bronze batch.\nEMA attribution is retained; no EMA endorsement is implied. EMA reproduction\npermissions exclude third-party content. Linked documents, images and other\ndownloads are not included. This is not complete EU medicine coverage, a\ncurrent-status guarantee, a clinical conclusion or a source-data licence grant.\nNo public upload has been authorized or performed.\n''')
-metadata = {'source_id':source.source_id,'uri':url,'retrieved_at':payload.retrieved_at,'sha256':payload.sha256,'byte_count':len(payload.content),'content_type':payload.content_type,'attempts':payload.attempts,'top_level_type':type(parsed).__name__,'top_level_count':len(parsed),'byte_readback_verified':True,'publication_state':'not_uploaded','rights_assessment':'proposed EMA attribution terms; maintainer publication decision pending','linked_documents_downloaded':0}
-(root/'retrieval.json').write_text(json.dumps(metadata,indent=2)+'\n')
-target = PublicationTarget(destination=PublicationDestination.HUGGING_FACE,repository='edithatogo/global-medicines-atlas-ema-bronze-20261029',revision='main',public_base_url='https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-bronze-20261029/resolve/main')
-plan, receipt = prepare_publication(root=root,release_version='bronze-ema-20261029',target=target,relative_paths=tuple(sorted(p.name for p in root.iterdir())),recorded_at=datetime.now(UTC))
-for name,obj in [('publication-plan.json',plan),('prepared-receipt.json',receipt)]:
- Path('quality/qualifications/swiss-ema-bronze-20261029',name).write_text(obj.model_dump_json(indent=2)+'\n')
-Path('quality/qualifications/swiss-ema-bronze-20261029/retrieval.json').write_text(json.dumps(metadata,indent=2)+'\n')
+(root / "medicines.json").write_bytes(payload.content)
+assert (
+    sha256((root / "medicines.json").read_bytes()).hexdigest() == payload.sha256
+)
+(root / "README.md").write_text(
+    """# EMA medicines JSON snapshot\n\nSource: European Medicines Agency (EMA).\nOfficial URL: https://www.ema.europa.eu/en/documents/report/medicines-output-medicines_json-report_en.json\nTerms: https://www.ema.europa.eu/en/about-us/about-website/legal-notice\n\nUnmodified public JSON index, captured for the bounded Bronze batch.\nEMA attribution is retained; no EMA endorsement is implied. EMA reproduction\npermissions exclude third-party content. Linked documents, images and other\ndownloads are not included. This is not complete EU medicine coverage, a\ncurrent-status guarantee, a clinical conclusion or a source-data licence grant.\nNo public upload has been authorized or performed.\n"""
+)
+metadata = {
+    "source_id": source.source_id,
+    "uri": url,
+    "retrieved_at": payload.retrieved_at,
+    "sha256": payload.sha256,
+    "byte_count": len(payload.content),
+    "content_type": payload.content_type,
+    "attempts": payload.attempts,
+    "top_level_type": type(parsed).__name__,
+    "top_level_count": len(parsed),
+    "byte_readback_verified": True,
+    "publication_state": "not_uploaded",
+    "rights_assessment": "proposed EMA attribution terms; maintainer publication decision pending",
+    "linked_documents_downloaded": 0,
+}
+(root / "retrieval.json").write_text(json.dumps(metadata, indent=2) + "\n")
+target = PublicationTarget(
+    destination=PublicationDestination.HUGGING_FACE,
+    repository="edithatogo/global-medicines-atlas-ema-bronze-20261029",
+    revision="main",
+    public_base_url="https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-bronze-20261029/resolve/main",
+)
+plan, receipt = prepare_publication(
+    root=root,
+    release_version="bronze-ema-20261029",
+    target=target,
+    relative_paths=tuple(sorted(p.name for p in root.iterdir())),
+    recorded_at=datetime.now(UTC),
+)
+for name, obj in [
+    ("publication-plan.json", plan),
+    ("prepared-receipt.json", receipt),
+]:
+    Path("quality/qualifications/swiss-ema-bronze-20261029", name).write_text(
+        obj.model_dump_json(indent=2) + "\n"
+    )
+Path(
+    "quality/qualifications/swiss-ema-bronze-20261029/retrieval.json"
+).write_text(json.dumps(metadata, indent=2) + "\n")
 print(json.dumps(metadata))
 ```

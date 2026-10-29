@@ -1125,7 +1125,7 @@
         "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
         "acquisition_profile": "public-bulk",
         "credentials_persisted": false,
-        "endpoint": "https://www.ema.europa.eu/en/about-us/about-website/download-website-data-json-data-format",
+        "endpoint": "https://www.ema.europa.eu/en/documents/report/medicines-output-medicines_json-report_en.json",
         "family": "static_file_download",
         "formats": [
           "source_native"

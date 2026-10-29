@@ -1516,3 +1516,22 @@ authoritative contract, reconciliation, and bound receipts.
 
 This bounded preparation does not close the overall source landing track or
 change its qualified/deferred denominators.
+
+## Shared URL configuration follow-up — 29 October 2026
+
+The maintainer requested one all-source URL file and reusable execution, then
+confirmed proceeding. This bounded follow-up covers configuration and shared
+local download behavior for the existing 176 IDs; it does not authorize live
+acquisition of every source, publication or federation work.
+
+- [x] Export all catalogue URLs/types/access/rights to `docs/data-sources/source-urls.csv`.
+- [x] Connect explicit file and single-response API selections to existing
+  `acquire_source`; preview offline, skip blocked rows, preserve receipts and
+  refuse output reuse. No second URL registry or source-specific downloader.
+- [x] Replace EMA's documentation-page download URL with its observed JSON
+  endpoint and regenerate existing B0/landing projections without changing rights.
+- [x] Focused acquisition, catalogue and projection tests; static checks.
+- [ ] Integrate the updated technical PR after final-head protected CI.
+
+Stop at that integration. Retain the earlier Swiss blocker and separate EMA
+publication decision; no other live sources, schedules or deferred milestones.

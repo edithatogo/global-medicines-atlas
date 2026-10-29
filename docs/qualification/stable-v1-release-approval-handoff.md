@@ -158,3 +158,15 @@ append. Native scope is public read-only discovery and one local EMA retrieval.
 No other chat's native object or authentication scope is acquired. Next operation:
 finish the preparation packet and pause for exact EMA publication approval;
 Swiss remains explicitly blocked. No schedule or public dataset write is active.
+
+### Shared URL configuration follow-up — 29 October 2026
+
+The same chat and worktree, now titled **Global Medicines Atlas — Bronze —
+Shared source downloads**, own the user-requested shared URL follow-up on
+`codex/swiss-ema-bronze-batch`: `scripts/source_download_batch.py`, the generated
+URL CSV/runbook, the exact EMA catalogue URL and derived B0/landing projections,
+focused acquisition tests and this track receipt. The primary checkout and its
+other writer remain untouched. Native scope is offline generation and synthetic
+network tests; no additional live source acquisition, publication or schedule.
+Next operation: finish the updated PR's protected CI and integrate this bounded
+packet. Existing Swiss and EMA publication blockers retain their dispositions.

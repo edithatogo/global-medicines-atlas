@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import csv
 import gzip
+import io
 from collections.abc import Callable
 from datetime import UTC, datetime
 from itertools import permutations
@@ -8,6 +10,8 @@ from pathlib import Path
 
 import httpx
 import pytest
+import scripts.source_download_batch as batch
+from scripts.source_download_batch import url_inventory
 
 import global_medicines_atlas.acquisition as acquisition_module
 from global_medicines_atlas.acquisition import (
@@ -35,6 +39,7 @@ from global_medicines_atlas.source_catalog import (
     InterfaceStatus,
     MedicineDataSource,
     SourceReadiness,
+    load_source_catalog,
 )
 
 NOW = datetime(2026, 7, 29, 4, 5, 6, tzinfo=UTC)
@@ -991,3 +996,198 @@ def test_acquisition_without_reuse_gate_fails(tmp_path: Path) -> None:
             ),
             clock=lambda: NOW,
         )
+
+
+@pytest.mark.unit
+def test_download_batch_inventory_is_complete_and_current() -> None:
+
+    sources = load_source_catalog()
+    text = url_inventory(sources)
+    rows = list(csv.DictReader(io.StringIO(text)))
+    assert {row["source_id"] for row in rows} == {s.source_id for s in sources}
+    assert len(rows) == len(sources)
+    assert (
+        text
+        == (
+            Path(__file__).resolve().parents[1]
+            / "docs/data-sources/source-urls.csv"
+        ).read_text()
+    )
+    ema = next(row for row in rows if row["source_id"] == "eu-ema-json")
+    assert ema["download_url"].endswith("medicines_json-report_en.json")
+    assert ema["rights_status"] == "review_required"
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "problem", ["authority", "reuse", "url", "auth", "page"]
+)
+def test_download_batch_blocks_before_network(tmp_path, monkeypatch, problem):
+
+    source = catalog_source()
+    selection = batch.DownloadSelection(
+        source_id=source.source_id,
+        expected_url=str(source.download_url),
+        retention_authority_reference="synthetic test authority",
+        reuse_decision=acquire_new_decision(source.source_id),
+    )
+    if problem == "authority":
+        selection = selection.model_copy(
+            update={"retention_authority_reference": ""}
+        )
+    elif problem == "reuse":
+        selection = selection.model_copy(update={"reuse_decision": None})
+    elif problem == "url":
+        selection = selection.model_copy(
+            update={"expected_url": "https://example.test/changed"}
+        )
+    elif problem == "auth":
+        source = source.model_copy(
+            update={"authentication": AuthenticationMode.API_KEY}
+        )
+    else:
+        source = source.model_copy(update={"landing_page": source.download_url})
+
+    def forbidden(*_args, **_kwargs):
+        pytest.fail("blocked batch attempted network")
+
+    monkeypatch.setattr(batch, "acquire_source", forbidden)
+    output = tmp_path / "build/batch"
+    result = batch.run_batch(
+        (selection,), sources=(source,), output=output, repository_root=tmp_path
+    )
+    assert result[0]["state"] == "blocked"
+    assert not output.exists()
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("surface", ["download", "single_api_response"])
+def test_download_batch_reuses_acquirer_and_preserves_receipts(
+    tmp_path, monkeypatch, surface
+):
+
+    source = catalog_source(
+        access_mode=AccessMode.API
+        if surface == "single_api_response"
+        else AccessMode.DOWNLOAD
+    )
+    url = (
+        source.api_url
+        if surface == "single_api_response"
+        else source.download_url
+    )
+    selection = batch.DownloadSelection(
+        source_id=source.source_id,
+        surface=surface,
+        expected_url=str(url),
+        retention_authority_reference="synthetic test authority",
+        reuse_decision=acquire_new_decision(source.source_id),
+    )
+    seen = []
+
+    def handler(request):
+        seen.append(str(request.url))
+        return httpx.Response(
+            200, content=b"{}", headers={"Content-Type": "application/json"}
+        )
+
+    def acquire_fixture(*args, **kwargs):
+        return acquire_source(
+            *args,
+            **kwargs,
+            transport=httpx.MockTransport(handler),
+            clock=lambda: NOW,
+        )
+
+    monkeypatch.setattr(batch, "acquire_source", acquire_fixture)
+    blocked = selection.model_copy(update={"source_id": "unknown-source"})
+    output = tmp_path / "build/batch"
+    results = batch.run_batch(
+        (blocked, selection),
+        sources=(source,),
+        output=output,
+        repository_root=tmp_path,
+        execute=True,
+    )
+    assert [r["state"] for r in results] == ["blocked", "acquired_local"]
+    assert seen == [str(url)]
+    assert (output / source.source_id / "payload.bin").read_bytes() == b"{}"
+    assert (output / source.source_id / "receipt.json").is_file()
+    assert (output / source.source_id / "selection.json").is_file()
+    assert (output / "results.json").is_file()
+    with pytest.raises(FileExistsError):
+        batch.run_batch(
+            (selection,),
+            sources=(source,),
+            output=output,
+            repository_root=tmp_path,
+            execute=True,
+        )
+    assert seen == [str(url)]
+
+
+@pytest.mark.unit
+def test_download_batch_respects_existing_raw_byte_restrictions():
+    source = next(
+        s for s in load_source_catalog() if s.source_id == "us-rxnorm-api"
+    )
+    selection = batch.DownloadSelection(
+        source_id=source.source_id,
+        surface="single_api_response",
+        expected_url=str(source.api_url),
+        retention_authority_reference="cannot override source restriction",
+        reuse_decision=acquire_new_decision(source.source_id),
+    )
+    with pytest.raises(ValueError, match="existing source restriction"):
+        batch.selected_source(selection, (source,))
+
+
+@pytest.mark.unit
+def test_download_batch_receipts_failure_without_partial_payload(
+    tmp_path, monkeypatch
+):
+    source = catalog_source()
+    selection = batch.DownloadSelection(
+        source_id=source.source_id,
+        expected_url=str(source.download_url),
+        retention_authority_reference="synthetic test authority",
+        reuse_decision=acquire_new_decision(source.source_id),
+        max_bytes=1,
+    )
+
+    def handler(_request):
+        return httpx.Response(
+            200, content=b"{}", headers={"Content-Type": "application/json"}
+        )
+
+    def acquire_fixture(*args, **kwargs):
+        return acquire_source(
+            *args,
+            **kwargs,
+            transport=httpx.MockTransport(handler),
+            clock=lambda: NOW,
+        )
+
+    monkeypatch.setattr(batch, "acquire_source", acquire_fixture)
+    output = tmp_path / "build/batch"
+    results = batch.run_batch(
+        (selection,),
+        sources=(source,),
+        output=output,
+        repository_root=tmp_path,
+        execute=True,
+    )
+    assert results[0]["state"] == "failed"
+    assert not (output / source.source_id / "payload.bin").exists()
+    assert (output / source.source_id / "receipt.json").is_file()
+
+
+@pytest.mark.unit
+def test_download_batch_cli_is_offline_by_default(tmp_path, capsys):
+    output = tmp_path / "urls.csv"
+    assert batch.main(["--urls-output", str(output)]) == 0
+    assert output.read_text() == url_inventory(load_source_catalog())
+    assert batch.main([]) == 0
+    assert capsys.readouterr().out == output.read_text()
+    with pytest.raises(SystemExit, match="2"):
+        batch.main(["--execute"])

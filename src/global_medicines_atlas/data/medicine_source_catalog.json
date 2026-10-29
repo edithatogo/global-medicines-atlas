@@ -3057,7 +3057,7 @@
       "discovery_status": "declaration_verified",
       "implemented_ingestion": false,
       "evidence_limit": "Source semantics, rights, currency and completeness require receipt-backed qualification.",
-      "download_url": "https://www.ema.europa.eu/en/about-us/about-website/download-website-data-json-data-format",
+      "download_url": "https://www.ema.europa.eu/en/documents/report/medicines-output-medicines_json-report_en.json",
       "interface_status": "documented_download",
       "formats": [
         "source_native"
