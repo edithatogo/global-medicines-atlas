@@ -481,3 +481,33 @@ def test_source_structure_page_retains_source_record_granularity(
     assert page.identity.entity_granularity == "source_record"
     assert page.identity.semantic_dimension == "source_structure"
     assert page.comparison_validity == "not_evaluated"
+
+
+def test_v2_source_record_transport_preserves_uninterpreted_identity():
+    class Lookup:
+        def query(self, resource_id, query):
+            assert resource_id == RESOURCE_ID
+            return SourceStructurePage(
+                status="available",
+                view=query.view,
+                identity=_identity().model_copy(
+                    update={"entity_granularity": "source_record"}
+                ),
+                rows=({"value": "synthetic native"},),
+                query_sha256="d" * 64,
+                query_receipt_sha256="e" * 64,
+                query_receipt_json="{}",
+                reason=None,
+            )
+
+    client = TestClient(
+        create_v2_app(cast("Any", object()), source_structure=Lookup())
+    )
+    response = client.get(
+        f"/api/v2/source-structure/{RESOURCE_ID}", params={"columns": "value"}
+    )
+    assert response.status_code == 200
+    document = response.json()
+    assert document["identity"]["entity_granularity"] == "source_record"
+    assert document["identity"]["semantic_dimension"] == "source_structure"
+    assert document["comparison_validity"] == "not_evaluated"

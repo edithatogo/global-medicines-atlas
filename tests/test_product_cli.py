@@ -138,7 +138,14 @@ def test_source_structure_cli_uses_operator_trust_and_bounded_query(
             self.status = status
 
         def model_dump_json(self) -> str:
-            return json.dumps({"status": self.status, "rows": []})
+            return json.dumps({
+                "status": self.status,
+                "rows": [],
+                "identity": {
+                    "semantic_dimension": "source_structure",
+                    "entity_granularity": "source_record",
+                },
+            })
 
     class Service:
         def __init__(self, value: object, *, jurisdictions: object) -> None:
@@ -178,7 +185,14 @@ def test_source_structure_cli_uses_operator_trust_and_bounded_query(
     )
 
     assert result.exit_code == exit_code, result.stderr
-    assert json.loads(result.stdout) == {"status": status, "rows": []}
+    assert json.loads(result.stdout) == {
+        "status": status,
+        "rows": [],
+        "identity": {
+            "semantic_dimension": "source_structure",
+            "entity_granularity": "source_record",
+        },
+    }
     assert loader_args == {
         "trust_file": trust_file,
         "metadata_root": metadata_root,
