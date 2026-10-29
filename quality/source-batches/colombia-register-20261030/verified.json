@@ -1,0 +1,47 @@
+{
+  "receipt_version": "1",
+  "plan_sha256": "1f6af99713e5ad8aa47fdcf01dde9f420a8d86ae0a40d478fee4380b0ba55790",
+  "artifact_sha256": [
+    "d8e5b096a79a371e0a3cc15079b4b723a6a58c0316be35068e724b24d4cebcb4",
+    "bea0f5b2c31e609e802f3ca21007879d9a47baafd3e553cbdc8365ebfea48c4b",
+    "2bfe38cccac054f1e962e2f30f4c3a88b8116fb204442506ce94e64757b41e78",
+    "a46b9f850624c141010401da47e065dd33f509b53f7628a8ec538a501c0e3b29"
+  ],
+  "target": {
+    "destination": "hugging_face",
+    "repository": "edithatogo/global-medicines-atlas-colombia-register-20261030",
+    "revision": "main",
+    "public_base_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-colombia-register-20261030"
+  },
+  "state": "public",
+  "recorded_at": "2026-10-29T21:03:36.985751Z",
+  "remote_revision": "4bdd05123581aad6ff1effdae93e6de100e0d5e8",
+  "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-colombia-register-20261030/tree/4bdd05123581aad6ff1effdae93e6de100e0d5e8",
+  "failure_reason": null,
+  "verified_artifacts": [
+    {
+      "relative_path": "README.md",
+      "sha256": "d8e5b096a79a371e0a3cc15079b4b723a6a58c0316be35068e724b24d4cebcb4",
+      "size": 634,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-colombia-register-20261030/resolve/4bdd05123581aad6ff1effdae93e6de100e0d5e8/README.md"
+    },
+    {
+      "relative_path": "co-invima-register/payload.bin",
+      "sha256": "bea0f5b2c31e609e802f3ca21007879d9a47baafd3e553cbdc8365ebfea48c4b",
+      "size": 68014232,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-colombia-register-20261030/resolve/4bdd05123581aad6ff1effdae93e6de100e0d5e8/co-invima-register/payload.bin"
+    },
+    {
+      "relative_path": "co-invima-register/receipt.json",
+      "sha256": "2bfe38cccac054f1e962e2f30f4c3a88b8116fb204442506ce94e64757b41e78",
+      "size": 5083,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-colombia-register-20261030/resolve/4bdd05123581aad6ff1effdae93e6de100e0d5e8/co-invima-register/receipt.json"
+    },
+    {
+      "relative_path": "rights.json",
+      "sha256": "a46b9f850624c141010401da47e065dd33f509b53f7628a8ec538a501c0e3b29",
+      "size": 695,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-colombia-register-20261030/resolve/4bdd05123581aad6ff1effdae93e6de100e0d5e8/rights.json"
+    }
+  ]
+}

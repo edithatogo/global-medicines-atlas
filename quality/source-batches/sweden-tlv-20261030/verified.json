@@ -1,0 +1,47 @@
+{
+  "receipt_version": "1",
+  "plan_sha256": "0d3df8310a4ef20248f2943d40a27f9c03cc44050ece2f8ec1eaf7351c658df4",
+  "artifact_sha256": [
+    "0a3280952432250bcd920348d4a89058701fb5a389ba5340e1d4885b08f00819",
+    "64bedd7cc420921a76a08b7730b052408b4d09cdd8564d8720cb701d4c41c27d",
+    "d865e912b5ffae496f03ab9b1235f6632cfb5e84875ed6365a3745c862dc7c3b",
+    "6d42cf69908e354eacee57ad2a3f687d7b1172bf00eca097521b5d7bc87a57ff"
+  ],
+  "target": {
+    "destination": "hugging_face",
+    "repository": "edithatogo/global-medicines-atlas-sweden-tlv-20261030",
+    "revision": "main",
+    "public_base_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-sweden-tlv-20261030"
+  },
+  "state": "public",
+  "recorded_at": "2026-10-29T22:52:58.686140Z",
+  "remote_revision": "a40a3932063d354331c2cbf8a862c1d7cc118c57",
+  "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-sweden-tlv-20261030/tree/a40a3932063d354331c2cbf8a862c1d7cc118c57",
+  "failure_reason": null,
+  "verified_artifacts": [
+    {
+      "relative_path": "README.md",
+      "sha256": "0a3280952432250bcd920348d4a89058701fb5a389ba5340e1d4885b08f00819",
+      "size": 581,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-sweden-tlv-20261030/resolve/a40a3932063d354331c2cbf8a862c1d7cc118c57/README.md"
+    },
+    {
+      "relative_path": "rights.json",
+      "sha256": "64bedd7cc420921a76a08b7730b052408b4d09cdd8564d8720cb701d4c41c27d",
+      "size": 649,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-sweden-tlv-20261030/resolve/a40a3932063d354331c2cbf8a862c1d7cc118c57/rights.json"
+    },
+    {
+      "relative_path": "se-tlv-subsidies/payload.bin",
+      "sha256": "d865e912b5ffae496f03ab9b1235f6632cfb5e84875ed6365a3745c862dc7c3b",
+      "size": 1284211,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-sweden-tlv-20261030/resolve/a40a3932063d354331c2cbf8a862c1d7cc118c57/se-tlv-subsidies/payload.bin"
+    },
+    {
+      "relative_path": "se-tlv-subsidies/receipt.json",
+      "sha256": "6d42cf69908e354eacee57ad2a3f687d7b1172bf00eca097521b5d7bc87a57ff",
+      "size": 4834,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-sweden-tlv-20261030/resolve/a40a3932063d354331c2cbf8a862c1d7cc118c57/se-tlv-subsidies/receipt.json"
+    }
+  ]
+}

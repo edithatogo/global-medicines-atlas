@@ -222,3 +222,16 @@ receipts and this track append. Existing private archives remain private. Native
 writes are eligible approved source batches through Actions to public HF only;
 no credentials, schedules or federation work. Next: reconcile existing archives,
 inspect official endpoints and terms, implement and publish eligible batches.
+
+### Remaining-source outcomes and hosted verification — 30 October 2026
+
+The same chat and actual worktree retain ownership on
+`codex/archive-source-outcomes`, based on merged `c20cfe39`. PR #1383 passed all
+29 required checks at `281ac69e`; its merge tree is
+`10f866fc1ad6e1d392331fe382459f2248e9d320`. This lane owns the 100-source outcome
+ledger, archive-all reuse/blocker configuration, exact hosted batch receipts and
+this track append. The single serial publication process owns the ten approved
+batch destinations from that frozen main commit. Next: retain terminal anonymous
+verification, execute the complete accounting pass, and integrate the outcome
+ledger. Existing primary-checkout edits and native private archives are untouched.
+Federation remains deferred; no new schedule or outbound communication.

@@ -1559,9 +1559,9 @@ The report is `docs/qualification/ema-canada-bronze-20261030.md`.
   local batches and retain explicit review/blocker outcomes.
 - [x] Prepare reusable hosted publisher and three exact batch inventories,
   reusing existing acquisition, transport and verification machinery.
-- [~] Integrate protected CI, publish approved Canada first, then execute and
+- [x] Integrate protected CI, publish approved Canada first, then execute and
   publish the named clear-rights EMA and Nova Scotia batches.
-- [ ] Record final complete inventory outcomes and exact public revisions.
+- [x] Record final complete inventory outcomes and exact public revisions.
 
 Archive-all does not waive rights, imply every historical version is retained,
 or mark unconfigured/blocked sources archived. No federation work or schedule.
@@ -1572,7 +1572,7 @@ or mark unconfigured/blocked sources archived. No federation work or schedule.
   their six exact revisions now populate the canonical archive-all reuse ledger.
 - [x] Resolve the Canada Vigilance size/redirect prerequisites through explicit
   bounded settings and secret-free HTTP receipt projection.
-- [~] Integrate focused changes and publish this one additional bulk source.
+- [x] Integrate focused changes and publish this one additional bulk source.
 
 No other source rights or federation acceptance state changes.
 
@@ -1581,7 +1581,14 @@ No other source rights or federation acceptance state changes.
 - [x] Inspect all 100 catalogue entries and official landing/terms surfaces.
 - [x] Prepare 13 clear-rights sources with 39 verified native files.
 - [x] Extend existing runner and publisher for finite multi-file releases.
-- [ ] Integrate CI and publish the qualified batches with anonymous verification.
-- [ ] Continue every remaining source until acquired/reused or an evidenced blocker.
+- [x] Integrate CI and publish the qualified batches with anonymous verification.
+- [x] Continue every remaining source until acquired/reused or an evidenced blocker.
 
 No federation work. Missing recipes remain work, not external blockers.
+
+Terminal outcome: 13 newly public sources (39 native files), four retained private
+archives, and 83 documented blockers in the exact 100-source scope. Full
+archive-all accounting covers 176 IDs, with 50 verified public archive references
+and no unconfigured recipe/review states. This is bounded execution completion,
+not universal archival, historical completeness or federation acceptance. See
+`docs/qualification/unfinished-source-assessment-20261030.md`.
