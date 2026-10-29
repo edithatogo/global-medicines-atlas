@@ -315,7 +315,7 @@ class _SchemaView:
 
 
 def _locked_version(_name: str) -> str:
-    return "0.11.1"
+    return "0.12.0"
 
 
 def _unlocked_version(_name: str) -> str:

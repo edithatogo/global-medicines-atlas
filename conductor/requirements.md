@@ -44,7 +44,7 @@
 ### Runtime and quality
 
 - **M-040:** Evaluate performance-critical kernels Mojo-first with a complete
-  Python 3.14 reference fallback; promote a Mojo kernel only after shared-fixture
+  Python 3.15.1 reference fallback; promote a Mojo kernel only after shared-fixture
   parity, representative performance and memory evidence, and fallback rehearsal.
 - **M-041:** Require parity fixtures before Mojo or Rust implementations become authoritative.
 - **M-042:** Run unit, integration, end-to-end, smoke, property-based,
@@ -210,7 +210,7 @@
   sources with source-specific re-entry conditions.
   sources and already-governed fixtures. Credentialed, licensed-feed, and
   restricted-payload sources remain catalogued with explicit exclusion from this
-  completion horizon. Python 3.14 remains the complete fallback. Credentials and
+  completion horizon. Python 3.15.1 remains the complete fallback. Credentials and
   restricted source bytes must never be inspected, committed, logged, or
   published. Make source landing the dominant workstream through one
   catalogue-driven factory for static files, archives, paginated APIs,
@@ -409,7 +409,7 @@
   source-release month or acquisition month and optionally bucket a
   high-volume record identifier. Jurisdiction and source identity are table
   identity, not repeated physical partitions; mutable rights, admission, and
-  review state must never be partition keys. Python 3.14 core
+  review state must never be partition keys. CPython 3.15.1 core
   must not require Iceberg.
 - **S-014:** Provide explicit historical-versus-current MBS/PBS comparison
   views, including schema drift, item/fee/restriction changes, added and ceased

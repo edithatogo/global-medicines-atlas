@@ -1,0 +1,163 @@
+{
+  "schema_id": "global-medicines-atlas.frontier-experiment-disposition",
+  "schema_version": 1,
+  "recorded_at": "2026-10-23T15:40:00Z",
+  "track_id": "federated_medallion_frontier_experiments_20260829",
+  "review_scope": "Reconciled frontier screening, matcher calibration, live graph/catalogue evidence, and optional experiment dispositions against current product requirements. No new sources, acquisitions, external services, rights conclusions, releases, or production promotions. This successor only rebinds evidence digests after the Python 3.15.1 runtime/dependency qualification; it records no new experiment execution or disposition change. This correction preserves the human-readable matrix formatting while rebinding the same Python 3.15.1 lock and evidence identities.",
+  "reviewed_inputs": [
+    {
+      "path": "quality/qualifications/frontier-experiment-matrix.json",
+      "sha256": "4cc7e824f6bfc3250fa056008b3b72bd8dbb72a7ed7307d35ed90dbbbb8d2157"
+    },
+    {
+      "path": "quality/qualifications/frontier-screen-calibration-v2-20261018.json",
+      "sha256": "ff5d81919140df8d44cfc6d9b0f14a8d9fd23ab03dd5b17d5608748c3f504447"
+    },
+    {
+      "path": "quality/qualifications/frontier-real-matcher-label-availability-20261021.json",
+      "sha256": "8eb8d7ae6bc2b83ae11aec3fd9210b8cd52ee772b9c460aeb3c96d137c7e7973"
+    },
+    {
+      "path": "quality/qualifications/frontier-frozen-matcher-calibration-20261021.json",
+      "sha256": "1c7912641b5f8cd2ebb514ac5a00b44d9c4a1cb03ee21d318bc143d3ff58be37"
+    },
+    {
+      "path": "quality/qualifications/neo4j-synthetic-graph-parity-20261011.json",
+      "sha256": "916648a6148fb6476ba41de175f961557dbc862371516837538acb104bb27441"
+    },
+    {
+      "path": "quality/qualifications/oxigraph-rdf12-reification-semantic-parity-20261012.json",
+      "sha256": "047d665c960ff8e4ffb0e2d551543a8cd3cdbdcf4224e7705ca4f9702e2fda65"
+    },
+    {
+      "path": "quality/qualifications/public-parquet-iceberg-registration-20261010.json",
+      "sha256": "717cc62571711564ede23c1ba869fe02a9cce3ee2238382b39a6f4415371c0be"
+    },
+    {
+      "path": "quality/qualifications/australian-mbs-gold-same-record-review-20261018.json",
+      "sha256": "24f1bfcffde9a3bd453a637837efb53df042bd5d980e9362f9d3a8274e2a40f0"
+    },
+    {
+      "path": "quality/qualifications/australian-mbs-v4-bounded-content-screen-20261021.json",
+      "sha256": "83ae8b29ad197495c6cb929165bf2560eaaf22f13ffbb8c7410f8a26ce2d6e5e"
+    },
+    {
+      "path": "quality/qualifications/australian-pbs-utilisation-private-pattern-screen-20261021.json",
+      "sha256": "43c1c2a80adb86bb215dbd2340645fee1ce20d4c17a2a0545c9134c2d4c86f33"
+    },
+    {
+      "path": "quality/qualifications/australian-pbs-dos-sensitive-header-context-20261021.json",
+      "sha256": "a5046bae17eb24a63e286f0c083ca0a2269c997bc2918b7fe3bf97324ee40654"
+    },
+    {
+      "path": "quality/qualifications/australian-pbs-expenditure-marker-context-screen-20261021.json",
+      "sha256": "150c92ae5a2e488243b3bb324651ba946593246b548eb17c25694c7f0de149a1"
+    },
+    {
+      "path": "quality/qualifications/australian-restricted-content-screen-disposition-20261021.json",
+      "sha256": "81fc11f9d4b1a07de3ff7ebbc3d5bf444b6eaabeed0acfc9fed794db53c3d184"
+    },
+    {
+      "path": "quality/qualifications/frontier-experiment-disposition-20261011.json",
+      "sha256": "5591238c0aba06a2d6c94de3bc6776e2f706623b04668e67f8e1c7781ef02bfb"
+    }
+  ],
+  "review": {
+    "hosted_graph_engines": "Neo4j 2026.09.0 and Oxigraph 0.5.9 RDF 1.2 reproduce synthetic MBS/PBS payloads and directed edges. These are engine previews, not public-source or production qualification.",
+    "catalogue": "The exact existing public Parquet object has hosted Iceberg REST registration and row-value parity. Catalogue metadata remains rebuildable and optional.",
+    "relationship_screen": "The maintainer reviewed the exact 5,989 same-source-record MBS service/benefit edges. This does not label cross-jurisdiction medicine identity, establish semantic or clinical equivalence, or authorize public release.",
+    "bounded_content_screen": "The exact MBS/PBS receipts classify all patterns reported by their configured detectors. Those detectors are not exhaustive, do not establish ATC vocabulary membership, and do not independently review the rights instruments.",
+    "synthetic_matcher_calibration": "The actual matcher scored 400 generated calibration cases and 400 disjoint generated holdout cases. Holdout Brier is 0.2108 and ten-bin ECE is 0.2068; the result is poor synthetic-only diagnostic evidence. No confidence or threshold is selected.",
+    "real_matcher_labels": "The retained B1 scope has 18 receipts, all Australian MBS/PBS. There are zero reviewed cross-jurisdiction medicine-pair labels. The same-record MBS edge set is not medicine-identity ground truth.",
+    "cost_and_supply_chain": "No dependencies or external services added. Optional derivatives remain disposable; the direct portable-table fallback is retained. No incremental external-service cost was incurred.",
+    "product_boundary": "Product requirement M-072 requires confidence-scored cross-jurisdiction mapping. This frontier receipt does not qualify that requirement or its existing evidence. Keep confidence un-emitted and real calibration open in the product-owning qualification; do not infer a threshold from synthetic fixtures."
+  },
+  "dispositions": [
+    {
+      "experiment_id": "remote_query_streaming",
+      "disposition": "defer",
+      "basis": "No product need requires comparative request, byte, latency, cache, and memory measurements at this time.",
+      "fallback": "Pinned anonymous full-object restore with digest verification and bounded local DuckDB queries."
+    },
+    {
+      "experiment_id": "xet_object_mechanics",
+      "disposition": "defer",
+      "basis": "Two exact historical public revisions with anonymous byte verification are not available in the selected experiment scope; chunk reuse is not a product prerequisite.",
+      "fallback": "Restore and independently verify each complete source object."
+    },
+    {
+      "experiment_id": "iceberg_catalogue",
+      "disposition": "retain-preview",
+      "basis": "Hosted registration and exact row-value parity passed for one existing public Parquet object. Catalogue metadata remains rebuildable and is not a production dependency or source of evidentiary identity.",
+      "fallback": "Read the source-faithful Parquet object directly."
+    },
+    {
+      "experiment_id": "batch_attestation",
+      "disposition": "retain-preview",
+      "basis": "Existing MBS/PBS object identities are bound into metadata-only Merkle package evidence. The preview does not prove cross-dataset payload-content parity, rights, or source coverage.",
+      "fallback": "Verify each immutable object using its independent SHA-256 receipt."
+    },
+    {
+      "experiment_id": "graph_semantic_projection",
+      "disposition": "retain-preview",
+      "basis": "Deterministic projections, synthetic Neo4j/Oxigraph parity, bounded content screens, and the reviewed same-record edge set support a non-authoritative preview only. No public graph, rights clearance, restricted-vocabulary clearance, or production promotion is qualified.",
+      "fallback": "Query portable Gold node and edge tables directly; preserve source identifiers and review state."
+    },
+    {
+      "experiment_id": "semantic_candidate_retrieval",
+      "disposition": "defer",
+      "basis": "Synthetic candidate performance and calibration are insufficient for a product confidence threshold; no reviewed cross-jurisdiction labels exist in the retained source scope.",
+      "fallback": "Use exact identifiers and human review; do not emit calibrated confidence or automate acceptance."
+    },
+    {
+      "experiment_id": "transactional_alternatives",
+      "disposition": "defer",
+      "basis": "No measured multi-writer or high-update product requirement justifies another storage engine.",
+      "fallback": "Immutable Parquet, append-only receipts, and embedded DuckDB."
+    }
+  ],
+  "screening": {
+    "state": "bounded_exact_scope_preview_only",
+    "mbs_objects": 6,
+    "mbs_rows_screened": 35934,
+    "pbs_objects": 6,
+    "pbs_pattern_occurrences_classified": 2243416,
+    "all_bound_detector_findings_classified": true,
+    "exhaustive_screening": false,
+    "restricted_vocabulary_membership_established": false,
+    "rights_instruments_independently_reviewed": false,
+    "public_release_or_admission_authorized_by_this_receipt": false,
+    "owner_track": "australian_benefits_silver_gold_20260829"
+  },
+  "matcher_calibration": {
+    "synthetic_actual_matcher_state": "measured_synthetic_only_poor_holdout",
+    "calibration_count": 400,
+    "holdout_count": 400,
+    "holdout_brier_score": 0.2108018566331871,
+    "holdout_expected_calibration_error": 0.2067599625183237,
+    "real_source_state": "deferred_missing_reviewed_cross_jurisdiction_labels",
+    "reviewed_cross_jurisdiction_pair_count": 0,
+    "confidence_emitted": false,
+    "threshold_selected": false,
+    "product_requirement_m072_qualified_by_this_receipt": false
+  },
+  "decision": "Retain graph, catalogue, and batch-attestation capabilities as non-authoritative previews. Defer optional remote-query, Xet, candidate-retrieval, and transactional-engine experiments until a product requirement changes. Treat the bounded source screens and poor synthetic calibration as experiment evidence only. Keep product-owned source semantics and real matcher calibration gates open in their owning track.",
+  "reopen_conditions": [
+    "A changed product workload demonstrates a material remote-query or catalogue requirement.",
+    "The approved retained inventory gains reviewed cross-jurisdiction medicine-pair labels suitable for independent calibration and holdout review.",
+    "The Australian Silver qualification completes its source-specific narrative and restricted-content disposition under its own acceptance criteria."
+  ],
+  "source_boundary": {
+    "sources_added_or_acquired": false,
+    "coverage_claimed": false,
+    "rights_or_licensing_conclusion": false,
+    "restricted_bytes_added": false,
+    "public_data_mutated": false,
+    "production_authority_promoted": false,
+    "public_release_performed": false
+  },
+  "supersedes": {
+    "path": "quality/qualifications/frontier-experiment-disposition-20261024.json",
+    "sha256": "ab5258f4443cb2072918d0be5e0bdc32969dd23794fd39aa1dcd590e9ff347a5"
+  }
+}

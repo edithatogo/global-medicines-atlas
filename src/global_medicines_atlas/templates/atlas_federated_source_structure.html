@@ -21,10 +21,17 @@
           <div class="form-grid">
             <label for="resource-id">Resource identifier</label>
             <input id="resource-id" name="resource_id" value="{{ resource_id }}" maxlength="256" required>
+            <label for="view">Evidence view</label>
+            <select id="view" name="view">
+              <option value="records" {% if view == "records" %}selected{% endif %}>Source records</option>
+              <option value="fields" {% if view == "fields" %}selected{% endif %}>Native source fields</option>
+            </select>
             <label for="columns">Source columns, comma separated</label>
             <input id="columns" name="columns" value="{{ columns }}" maxlength="8192" required>
             <label for="limit">Maximum rows</label>
             <input id="limit" name="limit" type="number" min="1" max="100" value="{{ limit }}">
+            <label for="offset">Start at row</label>
+            <input id="offset" name="offset" type="number" min="0" max="100000000" value="{{ offset }}">
           </div>
           <label><input type="checkbox" name="offline" value="true" {% if offline %}checked{% endif %}> Use verified cache only</label>
           <button type="submit">Read pinned structure</button>
@@ -77,7 +84,7 @@
             <pre><code>{{ page.query_receipt_json }}</code></pre>
           </details>
           {% endif %}
-          <p class="notice">These edges record source structure only. They do not establish medicine equivalence or funding, formulary, regulatory, or terminology conclusions. Missing coverage is not negative evidence.</p>
+          <p class="notice">These observations record source structure only. They do not establish medicine equivalence or funding, formulary, regulatory, or terminology conclusions. Missing coverage is not negative evidence.</p>
         </section>
         {% if page.status == "unavailable" %}
           <section class="notice" role="status" aria-labelledby="unavailable-heading">

@@ -1,0 +1,317 @@
+{
+  "schema_id": "global-medicines-atlas.m112-pbs-native-admission-reader-cohort",
+  "schema_version": 1,
+  "recorded_at": "2026-10-28T13:09:49.503607+00:00",
+  "producer_commit": "10b104417ccb37da6ec20b8e7151c6486a787eec",
+  "workflow": "australian-m112-pbs-v4-admission-qualification.yml",
+  "scope": {
+    "objects": 6,
+    "bytes": 191047619,
+    "frozen_denominator": 1759,
+    "source_native_schemas": "unqualified",
+    "layer": "bronze_b2_raw"
+  },
+  "contract_manifest": {
+    "path": "quality/qualifications/australian-m112-pbs-v4-contract-candidates-20261028/manifest.json",
+    "sha256": "cfeb7aada59155023420d760f86a85809850c429b74ff1f10a61031a68d0f4a2"
+  },
+  "objects": [
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+      "byte_count": 372149,
+      "sha256": "32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b",
+      "source_id": "au-pbs-expenditure",
+      "acquisition_id": "e73b23d9bb37156da60ef23eb796fded72be04dd9e3b6ef149288fc78b159a45",
+      "contract_sha256": "28c6642d690e693a8a56d78186ed8befa5e28b86d6d8401a1d20a74a5a78f5a7",
+      "receipt": {
+        "path": "quality/qualifications/australian-m112-pbs-v4-admission-readers-20261028/40691968215/australian-m112-pbs-v4-admission-reader.json",
+        "sha256": "0c20fdeaf43d9f1672c395c06a4da2182a81314a330396eb025644f4d95a0544"
+      },
+      "artifact": {
+        "id": 12817277446,
+        "name": "australian-m112-pbs-v4-admission-reader-40691968215-1",
+        "digest": "sha256:9a276b2835261202ec0382111a8f2ad3418ce680f1164dad1e98f8b7f992a70d",
+        "size_in_bytes": 2450
+      },
+      "native_run": {
+        "id": 40691968215,
+        "run_attempt": 1,
+        "head_sha": "10b104417ccb37da6ec20b8e7151c6486a787eec",
+        "head_branch": "main",
+        "path": ".github/workflows/australian-m112-pbs-v4-admission-qualification.yml",
+        "event": "workflow_dispatch",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-28T12:56:14Z",
+        "updated_at": "2026-10-28T12:56:48Z"
+      },
+      "native_job": {
+        "id": 122828791512,
+        "name": "Qualify exact PBS raw-B2 admission and bounded reader",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-28T12:56:22Z",
+        "completed_at": "2026-10-28T12:56:47Z"
+      },
+      "hosted_run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40691968215",
+      "receipt_roles": 13,
+      "unique_receipts": 10,
+      "raw_v4_admitted": true,
+      "raw_reader_canary_passed": true,
+      "domain_semantics_qualified": false,
+      "independent_recovery_qualified": false
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+      "byte_count": 468764,
+      "sha256": "147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99",
+      "source_id": "au-pbs-expenditure",
+      "acquisition_id": "70cd297ddd1ffb1aa74862be93ff57363f78dff4cf839c65212e152c915f1041",
+      "contract_sha256": "fa2fbb020b5eb62a20ba6b808d2f1c066d7b8270ec93ac24e6ef6e1f0472927a",
+      "receipt": {
+        "path": "quality/qualifications/australian-m112-pbs-v4-admission-readers-20261028/40692208170/australian-m112-pbs-v4-admission-reader.json",
+        "sha256": "fb2b963672d5239ab3f8f7f98c3861b80cafdd5d98e2d8d3c4e6a849cd2c2d79"
+      },
+      "artifact": {
+        "id": 12816549510,
+        "name": "australian-m112-pbs-v4-admission-reader-40692208170-1",
+        "digest": "sha256:233b19f6dec4948206578bb243037e1c8f03050a4cb49b62ab4852f872a7fc7b",
+        "size_in_bytes": 2455
+      },
+      "native_run": {
+        "id": 40692208170,
+        "run_attempt": 1,
+        "head_sha": "10b104417ccb37da6ec20b8e7151c6486a787eec",
+        "head_branch": "main",
+        "path": ".github/workflows/australian-m112-pbs-v4-admission-qualification.yml",
+        "event": "workflow_dispatch",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-28T12:58:00Z",
+        "updated_at": "2026-10-28T12:58:25Z"
+      },
+      "native_job": {
+        "id": 122829637971,
+        "name": "Qualify exact PBS raw-B2 admission and bounded reader",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-28T12:58:03Z",
+        "completed_at": "2026-10-28T12:58:24Z"
+      },
+      "hosted_run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40692208170",
+      "receipt_roles": 13,
+      "unique_receipts": 10,
+      "raw_v4_admitted": true,
+      "raw_reader_canary_passed": true,
+      "domain_semantics_qualified": false,
+      "independent_recovery_qualified": false
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+      "byte_count": 35384567,
+      "sha256": "4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4",
+      "source_id": "au-pbs-dos-utilisation",
+      "acquisition_id": "24922c3670bd6a9243cdb4d081bd04662f7e4b9c31fd76b220aabe643d221002",
+      "contract_sha256": "a990f80f3554e090196a13a79a84c44e72018c0b031fad56ec1f9c7d657d80c5",
+      "receipt": {
+        "path": "quality/qualifications/australian-m112-pbs-v4-admission-readers-20261028/40692360821/australian-m112-pbs-v4-admission-reader.json",
+        "sha256": "295d81bc99d150815fd615f13a432ae1f25b8ba917ede382dcac1fa7a5cbf4d3"
+      },
+      "artifact": {
+        "id": 12818160552,
+        "name": "australian-m112-pbs-v4-admission-reader-40692360821-1",
+        "digest": "sha256:3c679608baf392955390afef8fa3072ba47255a12df795b60acaf8509c306560",
+        "size_in_bytes": 2452
+      },
+      "native_run": {
+        "id": 40692360821,
+        "run_attempt": 1,
+        "head_sha": "10b104417ccb37da6ec20b8e7151c6486a787eec",
+        "head_branch": "main",
+        "path": ".github/workflows/australian-m112-pbs-v4-admission-qualification.yml",
+        "event": "workflow_dispatch",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-28T12:59:07Z",
+        "updated_at": "2026-10-28T12:59:34Z"
+      },
+      "native_job": {
+        "id": 122830173854,
+        "name": "Qualify exact PBS raw-B2 admission and bounded reader",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-28T12:59:10Z",
+        "completed_at": "2026-10-28T12:59:34Z"
+      },
+      "hosted_run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40692360821",
+      "receipt_roles": 13,
+      "unique_receipts": 10,
+      "raw_v4_admitted": true,
+      "raw_reader_canary_passed": true,
+      "domain_semantics_qualified": false,
+      "independent_recovery_qualified": false
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+      "byte_count": 36381946,
+      "sha256": "f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8",
+      "source_id": "au-pbs-dos-utilisation",
+      "acquisition_id": "4ea5ea1cd261f393c883d542647951e54f443a8923215cefaf102f071d5acf0d",
+      "contract_sha256": "699bcad8965918b5eff84c092cb53fbf4f82a401837edb6de308fbb64b6ade27",
+      "receipt": {
+        "path": "quality/qualifications/australian-m112-pbs-v4-admission-readers-20261028/40692757372/australian-m112-pbs-v4-admission-reader.json",
+        "sha256": "39765a6c201afbad510c3102de2f14900da2a87cf776d45ad7a97c35d1717a75"
+      },
+      "artifact": {
+        "id": 12817273320,
+        "name": "australian-m112-pbs-v4-admission-reader-40692757372-1",
+        "digest": "sha256:d7d8279b7e129d061ff466c71a0ba34be681754fb8ed4a502fb02311438717c7",
+        "size_in_bytes": 2449
+      },
+      "native_run": {
+        "id": 40692757372,
+        "run_attempt": 1,
+        "head_sha": "10b104417ccb37da6ec20b8e7151c6486a787eec",
+        "head_branch": "main",
+        "path": ".github/workflows/australian-m112-pbs-v4-admission-qualification.yml",
+        "event": "workflow_dispatch",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-28T13:01:47Z",
+        "updated_at": "2026-10-28T13:02:11Z"
+      },
+      "native_job": {
+        "id": 122831516153,
+        "name": "Qualify exact PBS raw-B2 admission and bounded reader",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-28T13:01:51Z",
+        "completed_at": "2026-10-28T13:02:11Z"
+      },
+      "hosted_run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40692757372",
+      "receipt_roles": 13,
+      "unique_receipts": 10,
+      "raw_v4_admitted": true,
+      "raw_reader_canary_passed": true,
+      "domain_semantics_qualified": false,
+      "independent_recovery_qualified": false
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/utilisation/reference/pbs-item-drug-map.csv",
+      "byte_count": 1063694,
+      "sha256": "51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8",
+      "source_id": "au-pbs-dos-utilisation",
+      "acquisition_id": "17465d4ef0f95c1b74d529ae13a99d5b099c26a0950b9cf1c1b25e61e482b285",
+      "contract_sha256": "f12a5a8f91c3f4e3ac48ed10a2565e5a77fbeba0f789a7f11817e3276a38bc93",
+      "receipt": {
+        "path": "quality/qualifications/australian-m112-pbs-v4-admission-readers-20261028/40692888934/australian-m112-pbs-v4-admission-reader.json",
+        "sha256": "4ac071a2f45f0c9865540796144f69b47137da01b9d8d2b89bffe9a4954d0b16"
+      },
+      "artifact": {
+        "id": 12816784256,
+        "name": "australian-m112-pbs-v4-admission-reader-40692888934-1",
+        "digest": "sha256:ac922873d9111dc93c215e48ed0c2858eb9d70a5cdc996bbc5d4602913260701",
+        "size_in_bytes": 2439
+      },
+      "native_run": {
+        "id": 40692888934,
+        "run_attempt": 1,
+        "head_sha": "10b104417ccb37da6ec20b8e7151c6486a787eec",
+        "head_branch": "main",
+        "path": ".github/workflows/australian-m112-pbs-v4-admission-qualification.yml",
+        "event": "workflow_dispatch",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-28T13:02:43Z",
+        "updated_at": "2026-10-28T13:03:05Z"
+      },
+      "native_job": {
+        "id": 122831978972,
+        "name": "Qualify exact PBS raw-B2 admission and bounded reader",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-28T13:02:46Z",
+        "completed_at": "2026-10-28T13:03:05Z"
+      },
+      "hosted_run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40692888934",
+      "receipt_roles": 13,
+      "unique_receipts": 10,
+      "raw_v4_admitted": true,
+      "raw_reader_canary_passed": true,
+      "domain_semantics_qualified": false,
+      "independent_recovery_qualified": false
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx",
+      "byte_count": 117376499,
+      "sha256": "48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca",
+      "source_id": "au-pbs-dos-utilisation",
+      "acquisition_id": "dca1d05c85ce4a1bbdb11cd68a69cf88c2bd65f4763e51828f9be4e4882470e4",
+      "contract_sha256": "13b0e58ac142e2f412975b969a0604d02482fd71629d6d1f9692c99f894199f9",
+      "receipt": {
+        "path": "quality/qualifications/australian-m112-pbs-v4-admission-readers-20261028/40693427540/australian-m112-pbs-v4-admission-reader.json",
+        "sha256": "4f096f6b054daf4fa4a0b582e48ca9e042f1c4cbbbcb5c01e28bdde70c1ab505"
+      },
+      "artifact": {
+        "id": 12817474272,
+        "name": "australian-m112-pbs-v4-admission-reader-40693427540-1",
+        "digest": "sha256:185122a4e26495c09e27ac7dc8bc39807b0e78e1c015e540dc7d53e11ce5ec93",
+        "size_in_bytes": 2453
+      },
+      "native_run": {
+        "id": 40693427540,
+        "run_attempt": 1,
+        "head_sha": "10b104417ccb37da6ec20b8e7151c6486a787eec",
+        "head_branch": "main",
+        "path": ".github/workflows/australian-m112-pbs-v4-admission-qualification.yml",
+        "event": "workflow_dispatch",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-28T13:06:21Z",
+        "updated_at": "2026-10-28T13:06:51Z"
+      },
+      "native_job": {
+        "id": 122833820905,
+        "name": "Qualify exact PBS raw-B2 admission and bounded reader",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-28T13:06:24Z",
+        "completed_at": "2026-10-28T13:06:50Z"
+      },
+      "hosted_run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40693427540",
+      "receipt_roles": 13,
+      "unique_receipts": 10,
+      "raw_v4_admitted": true,
+      "raw_reader_canary_passed": true,
+      "domain_semantics_qualified": false,
+      "independent_recovery_qualified": false
+    }
+  ],
+  "boundaries": {
+    "reconciliation_performs_admission": false,
+    "native_admissions_observed": 6,
+    "native_reader_canaries_observed": 6,
+    "new_sources": 0,
+    "public_dataset_mutated": false,
+    "outbound_communications": 0,
+    "source_values_interpreted": false,
+    "federation_gate_closed": false
+  },
+  "limitations": [
+    "All six admitted objects are exact raw-B2 profiles; no PBS domain semantics, current status, patient rate, vocabulary membership or derived-output admission is established.",
+    "Primary restoration and reader cleanup pass; independent recovery remains unqualified.",
+    "The separately qualified six-table MBS Silver cohort is not added to the frozen raw-object admission count."
+  ]
+}

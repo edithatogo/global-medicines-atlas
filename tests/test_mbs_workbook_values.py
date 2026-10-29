@@ -1,8 +1,11 @@
 """Domain types supplement native workbook evidence without guessing."""
 
 import json
+import sys
+from collections import Counter, defaultdict
 from datetime import date
 from decimal import Decimal
+from hashlib import sha256
 from io import BytesIO
 from pathlib import Path
 from types import SimpleNamespace
@@ -11,16 +14,25 @@ from zipfile import ZipFile
 import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
+from scripts import profile_mbs_p7_calendar_dates as calendar_cli
 from scripts import qualify_australian_legacy_payload as cli
 from test_mbs_workbook_domain import fixture
 from test_mbs_workbook_silver import (
     _receipt,  # ruff: ignore[import-private-name] -- shared synthetic receipt
 )
 
+from global_medicines_atlas import mbs_workbook_values as values_module
 from global_medicines_atlas.adapters.au_mbs_workbook import parse_mbs_workbook
+from global_medicines_atlas.mbs_p7_calendar_profile import (
+    profile_p7_calendar_dates,
+)
+from global_medicines_atlas.mbs_workbook_domain import (
+    iter_workbook_domain_batches,
+)
 from global_medicines_atlas.mbs_workbook_values import (
     iter_workbook_value_batches,
     profile_workbook_values,
+    workbook_date_for_comparison,
 )
 
 
@@ -49,6 +61,50 @@ def rows_for(payload: bytes, **kwargs):
     }
 
 
+def p7_calendar_profile_evidence(payload: bytes, receipt) -> bytes:
+    by_field = defaultdict(Counter)
+    for batch in iter_workbook_domain_batches(payload, receipt):
+        for row in batch.to_pylist():
+            name = row["mapping_field"]
+            field = values_module._FIELDS.get(name)
+            if (
+                row["row_kind"] == "header"
+                or not field
+                or field.value_type != "source_date"
+            ):
+                continue
+            value = row["display_value"]
+            if value is None:
+                status = (
+                    "null"
+                    if "display_value" in row["present_properties"]
+                    else "missing_value"
+                )
+            elif row["cell_type"] == "e":
+                status = "source_error"
+            elif row["cell_type"] in {None, "n"}:
+                status = "unsupported_serial_date"
+            else:
+                status = values_module._calendar_profile_status(value)
+            by_field[name][status] += 1
+    report = {
+        "kind": "mbs_p7_unique_calendar_date_profile",
+        "profile": {
+            "schema_version": 2,
+            "rule": "unique_valid_calendar_date_per_value_no_order_selected",
+            "source_sha256": receipt.payload.sha256,
+            "source_byte_count": receipt.payload.byte_count,
+            "date_order_selected": False,
+            "source_values_emitted": False,
+            "by_field": {
+                name: dict(sorted(counts.items()))
+                for name, counts in sorted(by_field.items())
+            },
+        },
+    }
+    return json.dumps(report, sort_keys=True, separators=(",", ":")).encode()
+
+
 def test_identifiers_dates_money_and_annotations_keep_native_values() -> None:
     payload = payload_with(
         '<c r="C2" t="inlineStr"><is><t>01.07.2024</t></is></c><c r="V2"><v>1e2</v></c>'
@@ -74,6 +130,103 @@ def test_dates_need_explicit_profile_and_serials_are_never_guessed() -> None:
     assert rows["C2"]["domain_status"] == "unsupported_format"
     assert rows["D2"]["domain_status"] == "unsupported_serial_date"
     assert rows["D2"]["domain_date"] is None
+
+
+def test_aggregate_calendar_profile_counts_without_emitting_values() -> None:
+    payload = payload_with(
+        '<c r="C2" t="inlineStr"><is><t>15.07.2024</t></is></c>'
+        '<c r="C3" t="inlineStr"><is><t>05.06.2024</t></is></c>'
+        '<c r="C4" t="inlineStr"><is><t>06.06.2024</t></is></c>'
+        '<c r="C5" t="inlineStr"><is><t>31.02.2024</t></is></c>'
+        '<c r="C6"><v>45000</v></c>'
+        '<c r="C7" t="inlineStr"><is><t>07.15.2024</t></is></c>'
+    )
+    profile = profile_p7_calendar_dates(payload, _receipt(payload))
+
+    assert profile["source_sha256"] == sha256(payload).hexdigest()
+    assert profile["schema_version"] == 2
+    assert profile["date_order_selected"] is False
+    assert profile["source_values_emitted"] is False
+    assert profile["by_field"]["ItemStartDate"] == {
+        "ambiguous_calendar_order": 1,
+        "invalid": 1,
+        "unique_calendar_date": 1,
+        "unique_dmy_calendar_date": 1,
+        "unique_mdy_calendar_date": 1,
+        "unsupported_serial_date": 1,
+    }
+    assert "15.07.2024" not in json.dumps(profile)
+
+
+def test_aggregate_calendar_profile_classifies_missing_null_error_and_text() -> (
+    None
+):
+    payload = payload_with(
+        '<c r="C3"/> '
+        '<c r="C4"><v/></c>'
+        '<c r="C5" t="e"><v>#N/A</v></c>'
+        '<c r="C6" t="inlineStr"><is><t>not a date</t></is></c>'
+    )
+
+    profile = profile_p7_calendar_dates(payload, _receipt(payload))
+
+    assert profile["by_field"]["ItemStartDate"] == {
+        "invalid": 1,
+        "missing_value": 1,
+        "null": 1,
+        "source_error": 1,
+    }
+
+
+def test_calendar_profile_cli_emits_only_pinned_aggregate_output(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    payload = payload_with(
+        '<c r="C2" t="inlineStr"><is><t>15.07.2024</t></is></c>'
+        '<c r="C3" t="inlineStr"><is><t>05.06.2024</t></is></c>'
+    )
+
+    class Client:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+    monkeypatch.setattr(
+        calendar_cli.httpx, "Client", lambda **_kwargs: Client()
+    )
+    monkeypatch.setattr(
+        calendar_cli, "acquire_hosted_workbook", lambda _client: payload
+    )
+    monkeypatch.setattr(calendar_cli, "LEGACY_P7_BYTES", len(payload))
+    monkeypatch.setattr(
+        calendar_cli, "LEGACY_P7_SHA256", sha256(payload).hexdigest()
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "profile_mbs_p7_calendar_dates.py",
+            "--output",
+            str(tmp_path / "profile.json"),
+        ],
+    )
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("GITHUB_REPOSITORY", "edithatogo/global-medicines-atlas")
+    monkeypatch.setenv("GITHUB_REF", "refs/heads/main")
+    monkeypatch.setenv("GITHUB_SHA", "f" * 40)
+    monkeypatch.setenv("GITHUB_RUN_ID", "12345")
+
+    calendar_cli.main()
+    report = json.loads((tmp_path / "profile.json").read_text())
+
+    assert report["profile"]["by_field"]["ItemStartDate"] == {
+        "ambiguous_calendar_order": 1,
+        "unique_dmy_calendar_date": 1,
+    }
+    assert report["profile"]["source_values_emitted"] is False
+    assert "15.07.2024" not in json.dumps(report)
 
 
 @pytest.mark.parametrize(
@@ -133,6 +286,234 @@ def test_dotted_date_calendar_compatibility_is_value_free_and_unselected(
     assert report["date_profile"] is None
     assert report["semantic_promotion"] is False
     assert value not in json.dumps(report)
+
+
+def test_exact_p7_profile_interprets_only_individually_unique_text_dates(
+    monkeypatch,
+) -> None:
+    payload = payload_with(
+        '<c r="C2" t="inlineStr"><is><t>15.07.2024</t></is></c>'
+        '<c r="D2" t="inlineStr"><is><t>05.06.2024</t></is></c>'
+        '<c r="T2" t="inlineStr"><is><t>01.01.2024</t></is></c>'
+    )
+    receipt = _receipt(payload)
+    monkeypatch.setattr(
+        values_module, "_P7_SOURCE_SHA256", receipt.payload.sha256
+    )
+    evidence = p7_calendar_profile_evidence(payload, receipt)
+    monkeypatch.setattr(
+        values_module, "_P7_DATE_PROFILE_SHA256", sha256(evidence).hexdigest()
+    )
+    rows = rows_for(
+        payload,
+        date_format="mbs-dmy",
+        calendar_profile_evidence=evidence,
+        calendar_profile_sha256=sha256(evidence).hexdigest(),
+    )
+
+    assert rows["C2"]["interpretation_state"] == "interpreted"
+    assert rows["C2"]["domain_date"] == date(2024, 7, 15)
+    assert (
+        rows["C2"]["semantic_evidence_sha256"] == sha256(evidence).hexdigest()
+    )
+    assert rows["D2"]["interpretation_state"] == "native_unresolved"
+    assert rows["D2"]["domain_date"] is None
+    assert rows["T2"]["interpretation_state"] == "interpreted"
+    assert rows["T2"]["domain_date"] == date(2024, 1, 1)
+    assert workbook_date_for_comparison(rows["C2"]) == date(2024, 7, 15)
+    for coordinate in ("D2",):
+        with pytest.raises(ValueError, match="interpreted"):
+            workbook_date_for_comparison(rows[coordinate])
+
+
+@pytest.mark.parametrize(
+    ("cell", "expected_state", "expected_status", "expected_date"),
+    [
+        (
+            '<c r="C2" t="inlineStr"><is><t>05.06.2024</t></is></c>',
+            "interpreted",
+            "qualified_file_consistency_dmy",
+            date(2024, 6, 5),
+        ),
+        (
+            '<c r="C2" t="str"><f>TEXT(1,1)</f><v>05.06.2024</v></c>',
+            "native_unresolved",
+            "unsupported_format",
+            None,
+        ),
+        (
+            '<c r="C2"><v>45448</v></c>',
+            "native_unresolved",
+            "unsupported_serial_date",
+            None,
+        ),
+        (
+            '<c r="C2" t="e"><v>#VALUE!</v></c>',
+            "native_unresolved",
+            "source_error",
+            None,
+        ),
+    ],
+)
+def test_selected_file_consistency_inference_is_literal_p7_only(
+    monkeypatch, cell, expected_state, expected_status, expected_date
+) -> None:
+    payload = payload_with(cell)
+    receipt = _receipt(payload)
+    digest = "a" * 64
+    decision = {"date_fields_with_populated_values": ["ItemStartDate"]}
+    monkeypatch.setattr(
+        values_module, "_P7_SOURCE_SHA256", receipt.payload.sha256
+    )
+    monkeypatch.setattr(values_module, "_P7_DATE_INFERENCE_SHA256", digest)
+    monkeypatch.setattr(
+        values_module,
+        "validate_p7_date_consistency_inference",
+        lambda *_args, **_kwargs: (decision, digest),
+    )
+    rows = rows_for(
+        payload,
+        date_inference_evidence=b"selected inference",
+        date_inference_sha256=digest,
+    )
+    row = rows["C2"]
+    assert row["interpretation_state"] == expected_state
+    assert row["domain_status"] == expected_status
+    assert row["domain_date"] == expected_date
+    assert row["display_value"] == (
+        "#VALUE!"
+        if expected_status == "source_error"
+        else "05.06.2024"
+        if expected_date is not None or expected_status == "unsupported_format"
+        else "45448"
+    )
+    if expected_date is not None:
+        assert row["semantic_evidence_sha256"] == digest
+        assert "Department provenance" in row["interpretation_reason"]
+        with pytest.raises(ValueError, match="domain-qualified meaning"):
+            workbook_date_for_comparison(row)
+
+
+@pytest.mark.parametrize("value", ["not-a-date", "31.02.2024"])
+def test_selected_inference_leaves_invalid_or_non_date_text_unresolved(
+    monkeypatch, value
+) -> None:
+    payload = payload_with(
+        f'<c r="C2" t="inlineStr"><is><t>{value}</t></is></c>'
+    )
+    receipt = _receipt(payload)
+    digest = "a" * 64
+    monkeypatch.setattr(
+        values_module, "_P7_SOURCE_SHA256", receipt.payload.sha256
+    )
+    monkeypatch.setattr(values_module, "_P7_DATE_INFERENCE_SHA256", digest)
+    monkeypatch.setattr(
+        values_module,
+        "validate_p7_date_consistency_inference",
+        lambda *_args, **_kwargs: (
+            {"date_fields_with_populated_values": ["ItemStartDate"]},
+            digest,
+        ),
+    )
+    row = rows_for(
+        payload,
+        date_inference_evidence=b"selected inference",
+        date_inference_sha256=digest,
+    )["C2"]
+    assert row["interpretation_state"] == "native_unresolved"
+    assert row["domain_date"] is None
+
+
+def test_selected_inference_requires_pinned_digest(monkeypatch) -> None:
+    payload = payload_with(
+        '<c r="C2" t="inlineStr"><is><t>05.06.2024</t></is></c>'
+    )
+    receipt = _receipt(payload)
+    digest = "a" * 64
+    monkeypatch.setattr(
+        values_module, "_P7_SOURCE_SHA256", receipt.payload.sha256
+    )
+    monkeypatch.setattr(values_module, "_P7_DATE_INFERENCE_SHA256", "b" * 64)
+    monkeypatch.setattr(
+        values_module,
+        "validate_p7_date_consistency_inference",
+        lambda *_args, **_kwargs: (
+            {"date_fields_with_populated_values": ["ItemStartDate"]},
+            digest,
+        ),
+    )
+    with pytest.raises(ValueError, match="not the pinned receipt"):
+        rows_for(
+            payload,
+            date_inference_evidence=b"selected inference",
+            date_inference_sha256=digest,
+        )
+
+
+def test_p7_profile_mismatch_and_other_source_fail_closed(monkeypatch) -> None:
+    payload = payload_with(
+        '<c r="C2" t="inlineStr"><is><t>15.07.2024</t></is></c>'
+    )
+    receipt = _receipt(payload)
+    monkeypatch.setattr(
+        values_module, "_P7_SOURCE_SHA256", receipt.payload.sha256
+    )
+    evidence = json.loads(p7_calendar_profile_evidence(payload, receipt))
+    evidence["profile"]["by_field"]["ItemStartDate"][
+        "unique_dmy_calendar_date"
+    ] = 99
+    bad_counts = json.dumps(evidence).encode()
+    monkeypatch.setattr(
+        values_module, "_P7_DATE_PROFILE_SHA256", sha256(bad_counts).hexdigest()
+    )
+    with pytest.raises(ValueError, match="counts differ"):
+        list(
+            iter_workbook_value_batches(
+                payload,
+                receipt,
+                calendar_profile_evidence=bad_counts,
+                calendar_profile_sha256=sha256(bad_counts).hexdigest(),
+            )
+        )
+    monkeypatch.setattr(values_module, "_P7_SOURCE_SHA256", "0" * 64)
+    other_evidence = p7_calendar_profile_evidence(payload, receipt)
+    monkeypatch.setattr(
+        values_module,
+        "_P7_DATE_PROFILE_SHA256",
+        sha256(other_evidence).hexdigest(),
+    )
+    with pytest.raises(ValueError, match="source identity"):
+        list(
+            iter_workbook_value_batches(
+                payload,
+                receipt,
+                calendar_profile_evidence=other_evidence,
+                calendar_profile_sha256=sha256(other_evidence).hexdigest(),
+            )
+        )
+
+
+def test_unique_cached_formula_date_remains_unresolved(monkeypatch) -> None:
+    payload = payload_with(
+        '<c r="C2" t="str"><f>DATE(2024,7,15)</f><v>15.07.2024</v></c>'
+    )
+    receipt = _receipt(payload)
+    monkeypatch.setattr(
+        values_module, "_P7_SOURCE_SHA256", receipt.payload.sha256
+    )
+    evidence = p7_calendar_profile_evidence(payload, receipt)
+    monkeypatch.setattr(
+        values_module, "_P7_DATE_PROFILE_SHA256", sha256(evidence).hexdigest()
+    )
+    row = rows_for(
+        payload,
+        calendar_profile_evidence=evidence,
+        calendar_profile_sha256=sha256(evidence).hexdigest(),
+    )["C2"]
+    assert row["domain_date"] is None
+    assert row["interpretation_state"] == "native_unresolved"
+    with pytest.raises(ValueError, match="interpreted"):
+        workbook_date_for_comparison(row)
 
 
 def test_errors_boolean_storage_and_precision_loss_are_explicit() -> None:
@@ -336,6 +717,14 @@ def test_hosted_workbook_qualifier_does_not_select_xml_date_profile(
     cli.main()
     report = json.loads(capsys.readouterr().out)
     assert report["domain_value_profile"]["date_profile"] is None
+    typed = report["typed_candidate_package"]
+    assert typed["rebuild_equal"] is True
+    assert typed["typed_parquet_restore_verified"] is True
+    assert typed["native_cell_parity_verified"] is True
+    assert typed["temporary_derivatives_removed"] is True
+    assert typed["date_profile"] is None
+    assert report["p7_calendar_profile_evidence"] is None
+    assert typed["output_admitted"] is False
     storage = report["storage_qualification"]
     assert storage["parquet_roundtrip_verified"] is True
     assert storage["publication_performed"] is False
@@ -358,3 +747,239 @@ def test_hosted_workbook_qualifier_does_not_select_xml_date_profile(
         ]
         == 1
     )
+
+
+def test_p7_profile_evidence_is_loaded_only_for_exact_source() -> None:
+    assert cli._p7_calendar_profile_evidence("a" * 64) == (None, None)
+    evidence, digest = cli._p7_calendar_profile_evidence(cli.P7_SOURCE_SHA256)
+    assert evidence is not None
+    assert digest == cli.P7_CALENDAR_PROFILE_SHA256
+    assert b'"date_order_selected":false' in evidence
+    assert b'"source_values_emitted":false' in evidence
+
+
+def test_p7_parsed_dates_remain_unresolved_for_temporal_consumers() -> None:
+    payload = payload_with(
+        '<c r="C2" t="inlineStr"><is><t>01.07.2024</t></is></c>'
+    )
+    row = rows_for(payload, date_format="mbs-dmy")["C2"]
+    assert row["interpretation_state"] == "native_unresolved"
+    assert row["display_value"] == "01.07.2024"
+    assert row["domain_date"] == date(2024, 7, 1)
+    with pytest.raises(ValueError, match="interpreted"):
+        workbook_date_for_comparison(row)
+
+
+def test_workbook_temporal_consumer_rejects_nondate_columns() -> None:
+    with pytest.raises(ValueError, match="not a source date"):
+        workbook_date_for_comparison(rows_for(fixture())["A2"])
+
+
+def test_p7_value_era_rules_bind_exact_source_without_selecting_dates() -> None:
+    root = Path(__file__).resolve().parents[1]
+    rules_path = (
+        root / "quality/qualifications/mbs-p7-value-era-rules-20261024.json"
+    )
+    rules = json.loads(rules_path.read_text(encoding="utf-8"))
+
+    assert rules["source"]["source_id"] == "au-mbs-p7-legacy-workbook"
+    assert rules["source"]["sha256"] == (
+        "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8"
+    )
+    assert rules["source"]["byte_count"] == 87727
+    assert rules["rules"]["dates"]["selected_profile"] is None
+    assert rules["rules"]["dates"]["calendar_compatibility"] == {
+        "both_dmy_and_mdy_valid": 1276,
+        "dmy_only": 4,
+        "mdy_only": 0,
+        "source_values_emitted": False,
+        "profile_selected": False,
+    }
+    assert rules["rules"]["dates"]["consumer_state"] == (
+        "86 uniquely determined calendar values interpreted; 1194 ambiguous "
+        "date-shaped values and all remaining cells stay native_unresolved"
+    )
+    assert rules["rules"]["dates"]["per_cell_unique_calendar_interpretation"]
+    assert rules["rules"]["dates"]["profile_wide_semantic_promotion"] is False
+    assert rules["rules"]["dates"]["temporal_comparison_enabled"] is False
+    assert rules["rules"]["benefits"]["formula_cells"] == 4
+    assert rules["rules"]["benefits"]["error_cells"] == 2
+    assert (
+        rules["rules"]["schema_eras"]["historical_workbook"]
+        != (rules["rules"]["schema_eras"]["current_xml"])
+    )
+    assert rules["gates"]["all_13742_cells_remain_native_unresolved"] is False
+    assert rules["gates"]["per_cell_unique_calendar_dates_interpreted"] is True
+    assert rules["gates"]["remaining_unresolved_cells"] == 13_656
+    assert rules["gates"]["date_profile_selected"] is False
+
+    for evidence in rules["evidence"].values():
+        evidence_path = root / evidence["path"]
+        assert (
+            sha256(evidence_path.read_bytes()).hexdigest() == evidence["sha256"]
+        )
+
+    qualification_path = (
+        root / rules["evidence"]["typed_candidate_qualification"]["path"]
+    )
+    qualification = json.loads(qualification_path.read_text(encoding="utf-8"))
+    typed = qualification["typed_candidate_package"]
+    assert typed["coverage"]["native_cells"] == 13742
+    assert typed["coverage"]["unresolved_cells"] == 13742
+    assert typed["coverage"]["formula_cells"] == 4
+    assert typed["coverage"]["error_cells"] == 2
+    assert typed["date_profile"] is None
+    assert typed["semantic_promotion"] is False
+
+
+def test_exact_main_p7_calendar_profile_is_digest_bound() -> None:
+    path = (
+        Path(__file__).resolve().parents[1]
+        / "quality/qualifications/mbs-p7-calendar-profile-20261024-40088209026.json"
+    )
+    evidence = path.read_bytes()
+    assert sha256(evidence).hexdigest() == values_module._P7_DATE_PROFILE_SHA256
+    report = json.loads(evidence)
+    profile = report["profile"]
+    assert report["kind"] == "mbs_p7_unique_calendar_date_profile"
+    assert profile["schema_version"] == 2
+    assert profile["source_sha256"] == values_module._P7_SOURCE_SHA256
+    assert profile["date_order_selected"] is False
+    assert profile["source_values_emitted"] is False
+    assert (
+        sum(
+            counts.get("unique_calendar_date", 0)
+            + counts.get("unique_dmy_calendar_date", 0)
+            + counts.get("unique_mdy_calendar_date", 0)
+            for counts in profile["by_field"].values()
+        )
+        == 86
+    )
+
+
+def test_p7_profile_rejects_digest_without_evidence() -> None:
+    payload = fixture()
+    with pytest.raises(ValueError, match="digest has no evidence"):
+        list(
+            iter_workbook_value_batches(
+                payload,
+                _receipt(payload),
+                calendar_profile_sha256="a" * 64,
+            )
+        )
+
+
+@pytest.mark.parametrize("evidence", [b"{", b"[]"])
+def test_p7_profile_rejects_malformed_document(
+    evidence: bytes, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    payload = fixture()
+    receipt = _receipt(payload)
+    monkeypatch.setattr(
+        values_module, "_P7_SOURCE_SHA256", receipt.payload.sha256
+    )
+    monkeypatch.setattr(
+        values_module, "_P7_DATE_PROFILE_SHA256", sha256(evidence).hexdigest()
+    )
+
+    with pytest.raises(ValueError, match="evidence is invalid"):
+        list(
+            iter_workbook_value_batches(
+                payload,
+                receipt,
+                calendar_profile_evidence=evidence,
+                calendar_profile_sha256=sha256(evidence).hexdigest(),
+            )
+        )
+
+
+def test_p7_profile_rejects_wrong_qualification_metadata(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    payload = fixture()
+    receipt = _receipt(payload)
+    monkeypatch.setattr(
+        values_module, "_P7_SOURCE_SHA256", receipt.payload.sha256
+    )
+    report = json.loads(p7_calendar_profile_evidence(payload, receipt))
+    report["profile"]["date_order_selected"] = True
+    evidence = json.dumps(report, separators=(",", ":")).encode()
+    monkeypatch.setattr(
+        values_module, "_P7_DATE_PROFILE_SHA256", sha256(evidence).hexdigest()
+    )
+
+    with pytest.raises(ValueError, match="does not qualify"):
+        list(
+            iter_workbook_value_batches(
+                payload,
+                receipt,
+                calendar_profile_evidence=evidence,
+                calendar_profile_sha256=sha256(evidence).hexdigest(),
+            )
+        )
+
+
+@pytest.mark.parametrize(
+    ("value", "status"),
+    [
+        ("2024-07-15", "invalid"),
+        ("07.15.2024", "unique_mdy_calendar_date"),
+        ("15.07.2024", "unique_dmy_calendar_date"),
+        ("05.06.2024", "ambiguous_calendar_order"),
+        ("31.02.2024", "invalid"),
+    ],
+)
+def test_calendar_status_handles_non_dotted_and_each_date_order(
+    value: str, status: str
+) -> None:
+    assert values_module._calendar_profile_status(value) == status
+
+
+def test_profile_count_validation_accounts_for_null_missing_error_and_serial() -> (
+    None
+):
+    payload = payload_with(
+        '<c r="C10"/><c r="C11"><v/></c>'
+        '<c r="C12" t="e"><v>#N/A</v></c><c r="C13"><v>45000</v></c>'
+    )
+    receipt = _receipt(payload)
+    evidence = p7_calendar_profile_evidence(payload, receipt)
+    report = json.loads(evidence)
+
+    assert values_module._profile_counts_match(
+        payload, receipt, report["profile"]
+    )
+    assert report["profile"]["by_field"]["ItemStartDate"] == {
+        "missing_value": 1,
+        "null": 1,
+        "source_error": 1,
+        "unsupported_serial_date": 1,
+    }
+
+
+def test_qualified_date_returns_unresolved_for_null_cell() -> None:
+    payload = payload_with(
+        '<c r="C2" t="inlineStr"><is><t>15.07.2024</t></is></c>'
+    )
+    row = rows_for(payload)["C2"]
+    row["display_value"] = None
+    assert values_module._qualified_profile_date(row, {}, "a" * 64) == {}
+
+
+def test_profile_evidence_missing_after_validation_fails_closed(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    payload = fixture()
+    monkeypatch.setattr(
+        values_module, "_validated_p7_date_profile", lambda *_args: (None, None)
+    )
+
+    with pytest.raises(ValueError, match="evidence is missing"):
+        list(
+            iter_workbook_value_batches(
+                payload,
+                _receipt(payload),
+                calendar_profile_evidence=b"qualified evidence",
+                calendar_profile_sha256="a" * 64,
+            )
+        )

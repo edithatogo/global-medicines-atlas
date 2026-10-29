@@ -25,19 +25,23 @@
     "source_payload_bytes_written": false,
     "v4_admission_performed": false
   },
+  "cache_candidate_evidence": {
+    "objects": 7,
+    "state": "candidate_cleanup_receipts_available_unbound_for_7_of_16"
+  },
   "cohort": {
     "anonymous_digest_readback": 16,
     "approved_denominator": 1759,
     "approved_denominator_changed": false,
     "b1_b2_lineage_complete": 16,
-    "consumer_canaries": 0,
+    "consumer_canaries": 7,
     "dataset_path_aliases": 1,
     "objects": 16,
     "publication_candidate_receipts": 14,
     "rights_qualified": 16,
     "selection_rule": "Exact rights state in the two listed states plus complete B1/B2 lineage plus anonymous digest readback; this does not imply admission.",
     "unique_payload_identities": 15,
-    "v4_admissions": 0,
+    "v4_admissions": 7,
     "verification_candidate_receipts": 14
   },
   "contract": {
@@ -46,7 +50,65 @@
     "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6",
     "version": "4.1"
   },
-  "decision": "The exact v4.1 schema identity and successful producer workflow are now bound as candidate authority evidence for all 16 MBS utilisation objects; publication and token-free anonymous restore receipts remain unbound candidate evidence for 14 of 16 paths. Authority is not yet referenced by complete v4 contracts. Two August paths, source semantics, discovery, recovery/cache, and consumers remain incomplete. Official source temporal semantics are qualified for 13 utilisation objects; their native schema layouts and three source-role candidates remain unresolved. Location and discovery evidence now cover all 16 paths but remain unbound until referenced by complete per-object v4 contracts. V3 replay evidence is candidate-only for 1 of 16 objects. Recovery evidence covers only the 14 utilisation paths; cache evidence remains missing. Preserve zero v4 admissions and zero M-112 consumer canaries.",
+  "current_admission_evidence": [
+    {
+      "contract_path": "quality/qualifications/australian-m112-v4-demographics-q1-march-raw-b2-contract.json",
+      "contract_sha256": "3f4794f92a33b9e77950b2c864c7f4ae8a331a43b80297a15e73f1967814f6ce",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5"
+    },
+    {
+      "contract_path": "quality/qualifications/australian-m112-v4-demographics-q2-may-raw-b2-contract.json",
+      "contract_sha256": "cd7ccdce266d1d42fa658abe4b097c207627d80943b01c198f7d844c16241152",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958"
+    },
+    {
+      "contract_path": "quality/qualifications/australian-m112-v4-demographics-q3-july-raw-b2-contract.json",
+      "contract_sha256": "fdb1164ba5d03e7946c3146ee7ecde71a6b8d40f71af483fae356a0142baef7b",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c"
+    },
+    {
+      "contract_path": "quality/qualifications/australian-m112-v4-group2016-csv-raw-b2-contract.json",
+      "contract_sha256": "d1924c8c21a52baff437dcf0ec55e7abffe599bf091bdaea082bc020c203aab7",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b"
+    },
+    {
+      "contract_path": "quality/qualifications/australian-m112-v4-historical-1993-2015-raw-b2-contract.json",
+      "contract_sha256": "992eb2ce2d93891f51423284df2d718bc7d44af6511cc09c11c33a578588210b",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33"
+    },
+    {
+      "contract_path": "quality/qualifications/australian-m112-v4-demographics-q3-julyhr-raw-b2-contract.json",
+      "contract_sha256": "f65f1da3d4b9018e61a1ba31a5de1ceeb9bfa732da363a142c88bc7260eca469",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152"
+    },
+    {
+      "contract_path": "quality/qualifications/australian-m112-v4-july2016-raw-b2-contract.json",
+      "contract_sha256": "b95056d6ab657f5b280870dc2ac7dcb1578019224e843d423a99e2880f451d7e",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285"
+    }
+  ],
+  "decision": "The exact v4.1 schema identity and successful producer workflow are now bound as candidate authority evidence for all 16 MBS utilisation objects; publication and token-free anonymous restore receipts remain unbound candidate evidence for 14 of 16 paths. Authority is not yet referenced by complete v4 contracts. Two August paths, source semantics, discovery, recovery/cache, and consumers remain incomplete. Official source temporal semantics are qualified for 13 utilisation objects; their native schema layouts and three source-role candidates remain unresolved. Location and discovery evidence now cover all 16 paths but remain unbound until referenced by complete per-object v4 contracts. V3 replay evidence is candidate-only for 7 of 16 objects. Recovery evidence covers only the 14 utilisation paths; hosted cache-cleanup candidates bind 7 of 16 paths. Consumer cache behavior remains a post-admission check. Current independently evidenced state is 7 v4 admissions and 7 admitted-object consumer canaries; this candidate-role refresh performed no admission or canary.",
   "discovery_candidate_evidence": {
     "objects": 16,
     "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
@@ -289,16 +351,29 @@
         "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
       },
       "bytes": 23934884,
+      "cache_candidate_receipt": {
+        "cleanup_receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39368825712.json",
+          "sha256": "8c5e4bb4f3d00641951dc680da5e0138990605fd9ff4fd5aa03d62a14be50717"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "created_at": "2026-10-20T04:17:51Z",
+        "expires_at": "2026-10-20T04:32:51Z",
+        "max_bytes": 23934884,
+        "offline_behavior": "fail_closed",
+        "origin": "github_actions",
+        "state": "removed"
+      },
       "contract_role_states": {
         "authority": "candidate_identity_available_unbound",
-        "cache": "missing",
+        "cache": "candidate_receipt_available_unbound",
         "consumers": "missing",
         "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
         "lineage.v2_field_lineage": "not_applicable_raw_b2_v4_1",
-        "lineage.v3_replay": "missing",
+        "lineage.v3_replay": "candidate_receipt_available_unbound",
         "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
         "recovery": "candidate_receipt_available_unbound",
@@ -452,6 +527,25 @@
         "sha256": "826f7380ecb925d9c51dad826307f2d94348ed9ac44320ef70f8faff25709842",
         "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/290cc219217821404cf25bcfc58761821389d614/quality/qualifications/australian-m112-v1-conformance-20261019.json"
       },
+      "v3_replay_candidate_receipt": {
+        "anonymous_digest_verified": true,
+        "candidate_only": true,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "partition_id": "64b2f22cf9c17ed69e948e212ee8ea279c2fdcaf13a2a3fdeac499ee66de34d4",
+        "plan": {
+          "path": "quality/qualifications/australian-m112-v3-replay-plan-20261020-39368825712.json",
+          "sha256": "4f7e6dd24acfc5f2864fb7bbc8e961f4fc285b560c5eef5f7eec11173727c4fb"
+        },
+        "receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39368825712.json",
+          "sha256": "8c5e4bb4f3d00641951dc680da5e0138990605fd9ff4fd5aa03d62a14be50717"
+        },
+        "registration_sha256": "8dc0bbf5c17b07700bb3c57a3a00c61d3a61b2057035d31156e4f83d1f472f61",
+        "snapshot_id": "be3f06c474a4cc7f1c2d1b3b90e96774e526233d53749c9d917a9002ca4afba6",
+        "temporary_source_bytes_removed": true,
+        "workflow_commit": "cea68bd01ad5a2938c12cf72e0c6d2aa50fb742a",
+        "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39368825712"
+      },
       "v4_admission_eligible": false,
       "verification_candidate_receipt": {
         "anonymous": true,
@@ -495,16 +589,29 @@
         "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
       },
       "bytes": 23436706,
+      "cache_candidate_receipt": {
+        "cleanup_receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39414292406.json",
+          "sha256": "f1fd2a196e1fb5cf4f8f303b0d9ba5638da68cdbee423a6f2cb6b062cbcfb62d"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "created_at": "2026-10-20T11:21:03Z",
+        "expires_at": "2026-10-20T11:36:03Z",
+        "max_bytes": 23436706,
+        "offline_behavior": "fail_closed",
+        "origin": "github_actions",
+        "state": "removed"
+      },
       "contract_role_states": {
         "authority": "candidate_identity_available_unbound",
-        "cache": "missing",
+        "cache": "candidate_receipt_available_unbound",
         "consumers": "missing",
         "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
         "lineage.v2_field_lineage": "not_applicable_raw_b2_v4_1",
-        "lineage.v3_replay": "missing",
+        "lineage.v3_replay": "candidate_receipt_available_unbound",
         "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
         "recovery": "candidate_receipt_available_unbound",
@@ -658,6 +765,25 @@
         "sha256": "826f7380ecb925d9c51dad826307f2d94348ed9ac44320ef70f8faff25709842",
         "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/290cc219217821404cf25bcfc58761821389d614/quality/qualifications/australian-m112-v1-conformance-20261019.json"
       },
+      "v3_replay_candidate_receipt": {
+        "anonymous_digest_verified": true,
+        "candidate_only": true,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "partition_id": "1ee54f02826fa1b0802cd5b0cb6e60f744e051bc091d92bf754471a85004e1ad",
+        "plan": {
+          "path": "quality/qualifications/australian-m112-v3-replay-plan-20261020-39414292406.json",
+          "sha256": "a1839832483009bff331475edf89e536f304769b3c48fe9a123f8e68e774a7ba"
+        },
+        "receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39414292406.json",
+          "sha256": "f1fd2a196e1fb5cf4f8f303b0d9ba5638da68cdbee423a6f2cb6b062cbcfb62d"
+        },
+        "registration_sha256": "70685ca50cce93050face2bfc6bc55b4f9eb6a0aa5423937e84551633f0820a0",
+        "snapshot_id": "3dc53f56ee56736fc8850ef0978d3df4fb22455541c1a6beb82397340d245b5d",
+        "temporary_source_bytes_removed": true,
+        "workflow_commit": "295160bab1e694f9a01a70e0befc5f7e5bf660de",
+        "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39414292406"
+      },
       "v4_admission_eligible": false,
       "verification_candidate_receipt": {
         "anonymous": true,
@@ -701,16 +827,29 @@
         "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
       },
       "bytes": 7680041,
+      "cache_candidate_receipt": {
+        "cleanup_receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39344611967.json",
+          "sha256": "490e67b5adcfc9e38e62763549b172ca87404358ad533bae96454dc4c8dc843b"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "created_at": "2026-10-19T23:56:20Z",
+        "expires_at": "2026-10-20T00:11:20Z",
+        "max_bytes": 7680041,
+        "offline_behavior": "fail_closed",
+        "origin": "github_actions",
+        "state": "removed"
+      },
       "contract_role_states": {
         "authority": "candidate_identity_available_unbound",
-        "cache": "missing",
+        "cache": "candidate_receipt_available_unbound",
         "consumers": "missing",
         "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
         "lineage.v2_field_lineage": "not_applicable_raw_b2_v4_1",
-        "lineage.v3_replay": "missing",
+        "lineage.v3_replay": "candidate_receipt_available_unbound",
         "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
         "recovery": "candidate_receipt_available_unbound",
@@ -863,6 +1002,25 @@
         "objects": 16,
         "sha256": "826f7380ecb925d9c51dad826307f2d94348ed9ac44320ef70f8faff25709842",
         "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/290cc219217821404cf25bcfc58761821389d614/quality/qualifications/australian-m112-v1-conformance-20261019.json"
+      },
+      "v3_replay_candidate_receipt": {
+        "anonymous_digest_verified": true,
+        "candidate_only": true,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "partition_id": "4b1bc80d66151290629164c23a9b2ff6b62ff52d1d2428a61b4ff6a4bd5541c0",
+        "plan": {
+          "path": "quality/qualifications/australian-m112-v3-replay-plan-20261020-39344611967.json",
+          "sha256": "d9fedad2934672471af1d91752b1a86738d2a19b7d5131705e0dfa0a24028179"
+        },
+        "receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39344611967.json",
+          "sha256": "490e67b5adcfc9e38e62763549b172ca87404358ad533bae96454dc4c8dc843b"
+        },
+        "registration_sha256": "3ddcae1434da9690b4d2849290d1826778980080da8368ca74aec5f12ab5b57d",
+        "snapshot_id": "3afcc2274c01f64d9d1b7775865e1b9f2f1bc30d833b37e8ac695182759095ed",
+        "temporary_source_bytes_removed": true,
+        "workflow_commit": "1ebee786331c2e63d0a4d9501894ad657006ea9d",
+        "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39344611967"
       },
       "v4_admission_eligible": false,
       "verification_candidate_receipt": {
@@ -1319,16 +1477,29 @@
         "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
       },
       "bytes": 7316301,
+      "cache_candidate_receipt": {
+        "cleanup_receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39431880718.json",
+          "sha256": "51c8b91655463154f7c168c68b5cf81b682467b6b4971750bce0586e94c6c641"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "created_at": "2026-10-20T13:36:38Z",
+        "expires_at": "2026-10-20T13:51:38Z",
+        "max_bytes": 7316301,
+        "offline_behavior": "fail_closed",
+        "origin": "github_actions",
+        "state": "removed"
+      },
       "contract_role_states": {
         "authority": "candidate_identity_available_unbound",
-        "cache": "missing",
+        "cache": "candidate_receipt_available_unbound",
         "consumers": "missing",
         "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
         "lineage.v2_field_lineage": "not_applicable_raw_b2_v4_1",
-        "lineage.v3_replay": "missing",
+        "lineage.v3_replay": "candidate_receipt_available_unbound",
         "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
         "recovery": "candidate_receipt_available_unbound",
@@ -1481,6 +1652,25 @@
         "objects": 16,
         "sha256": "826f7380ecb925d9c51dad826307f2d94348ed9ac44320ef70f8faff25709842",
         "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/290cc219217821404cf25bcfc58761821389d614/quality/qualifications/australian-m112-v1-conformance-20261019.json"
+      },
+      "v3_replay_candidate_receipt": {
+        "anonymous_digest_verified": true,
+        "candidate_only": true,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "partition_id": "e8cea17ab2f82958c2a4b9938a7d6c831a6c7845f9b29362d4c713f10f4197b5",
+        "plan": {
+          "path": "quality/qualifications/australian-m112-v3-replay-plan-20261020-39431880718.json",
+          "sha256": "7f54d35c4fea04f03d5f2180ed3d4b54bfff7a348f2f52ab8bac44edf8332fb9"
+        },
+        "receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39431880718.json",
+          "sha256": "51c8b91655463154f7c168c68b5cf81b682467b6b4971750bce0586e94c6c641"
+        },
+        "registration_sha256": "0325c2a95c215add80ccca47c4f3c80a0a70472bf19a5632cf1ce077e9eb818c",
+        "snapshot_id": "4563f34680c50e3c3bba6e6d4473a24fba4acbc8da151bb7f4ad81d2bd45c104",
+        "temporary_source_bytes_removed": true,
+        "workflow_commit": "46b9f93bb54abcdacbfbee99dae7cd2548d505f8",
+        "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39431880718"
       },
       "v4_admission_eligible": false,
       "verification_candidate_receipt": {
@@ -2349,16 +2539,29 @@
         "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
       },
       "bytes": 205885063,
+      "cache_candidate_receipt": {
+        "cleanup_receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39324097024.json",
+          "sha256": "d0b13510173001f20d4809d6389acd123465d55cb85091d8356c98104eb28731"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "created_at": "2026-10-19T21:01:00Z",
+        "expires_at": "2026-10-19T21:16:00Z",
+        "max_bytes": 205885063,
+        "offline_behavior": "fail_closed",
+        "origin": "github_actions",
+        "state": "removed"
+      },
       "contract_role_states": {
         "authority": "candidate_identity_available_unbound",
-        "cache": "missing",
+        "cache": "candidate_receipt_available_unbound",
         "consumers": "missing",
         "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
         "lineage.v2_field_lineage": "not_applicable_raw_b2_v4_1",
-        "lineage.v3_replay": "missing",
+        "lineage.v3_replay": "candidate_receipt_available_unbound",
         "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
         "recovery": "candidate_receipt_available_unbound",
@@ -2511,6 +2714,25 @@
         "objects": 16,
         "sha256": "826f7380ecb925d9c51dad826307f2d94348ed9ac44320ef70f8faff25709842",
         "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/290cc219217821404cf25bcfc58761821389d614/quality/qualifications/australian-m112-v1-conformance-20261019.json"
+      },
+      "v3_replay_candidate_receipt": {
+        "anonymous_digest_verified": true,
+        "candidate_only": true,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "partition_id": "79a3579eb6ca9d01445f22a8b27455de165bf9c70badb58f9da1441863945665",
+        "plan": {
+          "path": "quality/qualifications/australian-m112-v3-replay-plan-20261020-39324097024.json",
+          "sha256": "1b1e68b33666b3d334e604534c50ab5ab912ae0c023d53764b0cd123a48fc7bf"
+        },
+        "receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39324097024.json",
+          "sha256": "d0b13510173001f20d4809d6389acd123465d55cb85091d8356c98104eb28731"
+        },
+        "registration_sha256": "c4048a7dd36474416c9f41a829c6350452de5d91798ae1528fb9e03d3806adf1",
+        "snapshot_id": "dab50896f0c8fcca1db79c186144d468b171f0bd6e00144be52d89182f21f05d",
+        "temporary_source_bytes_removed": true,
+        "workflow_commit": "3df35dbd1475557122faa3025b915e37cf202a55",
+        "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39324097024"
       },
       "v4_admission_eligible": false,
       "verification_candidate_receipt": {
@@ -2730,16 +2952,29 @@
         "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
       },
       "bytes": 12291303,
+      "cache_candidate_receipt": {
+        "cleanup_receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39305977097.json",
+          "sha256": "6eaa516178587352704af2f2f03ade2777a2253c13e402ef4574ef92d4bd8fda"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "created_at": "2026-10-19T18:51:00Z",
+        "expires_at": "2026-10-19T19:06:00Z",
+        "max_bytes": 12291303,
+        "offline_behavior": "fail_closed",
+        "origin": "github_actions",
+        "state": "removed"
+      },
       "contract_role_states": {
         "authority": "candidate_identity_available_unbound",
-        "cache": "missing",
+        "cache": "candidate_receipt_available_unbound",
         "consumers": "missing",
         "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
         "lineage.v2_field_lineage": "not_applicable_raw_b2_v4_1",
-        "lineage.v3_replay": "missing",
+        "lineage.v3_replay": "candidate_receipt_available_unbound",
         "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
         "recovery": "candidate_receipt_available_unbound",
@@ -2893,6 +3128,25 @@
         "sha256": "826f7380ecb925d9c51dad826307f2d94348ed9ac44320ef70f8faff25709842",
         "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/290cc219217821404cf25bcfc58761821389d614/quality/qualifications/australian-m112-v1-conformance-20261019.json"
       },
+      "v3_replay_candidate_receipt": {
+        "anonymous_digest_verified": true,
+        "candidate_only": true,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "partition_id": "08fdb736ab894951af6a6c6220348e9123782520251416feaab375d1f494a542",
+        "plan": {
+          "path": "quality/qualifications/australian-m112-v3-replay-plan-20261020-39305977097.json",
+          "sha256": "fa9590744179573bad23a98acb95a6aeb03f68ae70bf5f016205a4db1bf60a19"
+        },
+        "receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39305977097.json",
+          "sha256": "6eaa516178587352704af2f2f03ade2777a2253c13e402ef4574ef92d4bd8fda"
+        },
+        "registration_sha256": "762fba989f78e1b5981efb9b9e1aa72a44655660ce26d238f68127892653c7c5",
+        "snapshot_id": "c1c60a691ad9fbd7f3faca4895791549b9b6aa43c65e096527bb84f73df5c84b",
+        "temporary_source_bytes_removed": true,
+        "workflow_commit": "7dbf14db2403485cabbe699858579cf7c7567012",
+        "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39305977097"
+      },
       "v4_admission_eligible": false,
       "verification_candidate_receipt": {
         "anonymous": true,
@@ -2936,9 +3190,22 @@
         "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
       },
       "bytes": 6857437,
+      "cache_candidate_receipt": {
+        "cleanup_receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020.json",
+          "sha256": "52cf19b6226a08df52cb686a7c081cbd7542e13de01f97ec94a41626e2e26a27"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "created_at": "2026-10-19T16:51:27Z",
+        "expires_at": "2026-10-19T17:06:27Z",
+        "max_bytes": 6857437,
+        "offline_behavior": "fail_closed",
+        "origin": "github_actions",
+        "state": "removed"
+      },
       "contract_role_states": {
         "authority": "candidate_identity_available_unbound",
-        "cache": "missing",
+        "cache": "candidate_receipt_available_unbound",
         "consumers": "missing",
         "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
@@ -3104,6 +3371,10 @@
         "candidate_only": true,
         "contract_role_state": "candidate_receipt_available_unbound",
         "partition_id": "189f15f0a2ad8e61c23317bfa75feeb29fb10e74909810fd84599bfaa267dbfe",
+        "plan": {
+          "path": "quality/qualifications/australian-m112-v3-replay-plan-20261020.json",
+          "sha256": "2fc6c9632c473d599d0fe40f93b40f2fb24269c348b7aa88a40851492e19cecd"
+        },
         "receipt": {
           "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020.json",
           "sha256": "52cf19b6226a08df52cb686a7c081cbd7542e13de01f97ec94a41626e2e26a27"
@@ -3152,7 +3423,7 @@
     "url": "https://huggingface.co/api/datasets/edithatogo/australian-mbs-utilisation-archive/revision/dee9a5b0580dfe394474dc26b372559462e157e7"
   },
   "purpose": "Qualify mandatory v4.1 contract roles for every current M-112 path identity with exact approved rights, complete B1/B2 lineage, and anonymous digest evidence. This is an evidence-gap assessment; it does not create contracts or admissions.",
-  "recorded_at": "2026-10-19T16:54:24Z",
+  "recorded_at": "2026-10-19T21:01:38Z",
   "recovery_candidate_evidence": {
     "objects": 14,
     "state": "candidate_receipts_available_unbound_for_14_of_16"
@@ -3218,9 +3489,9 @@
       "state": "not_applicable_raw_b2_v4_1"
     },
     {
-      "evidence": "One exact M-112 raw B2 identity has a successful, anonymous, token-free hosted v3 replay receipt with byte-count/SHA-256 verification and temporary-byte cleanup. It remains candidate-only and unbound; the other 15 replay roles are missing.",
+      "evidence": "7 exact M-112 raw B2 identities have successful, anonymous, token-free hosted v3 replay receipts with byte-count/SHA-256 verification and temporary-byte cleanup. They remain candidate-only and unbound; replay roles for the remaining 9 candidates are missing.",
       "role": "lineage.v3_replay",
-      "state": "candidate_receipt_available_unbound_for_1_of_16"
+      "state": "candidate_receipts_available_unbound_for_7_of_16"
     },
     {
       "evidence": "raw B2 is not a promoted derived layer; receipt may be null",
@@ -3233,21 +3504,21 @@
       "state": "candidate_receipts_available_unbound_for_14_of_16"
     },
     {
-      "evidence": "no bounded cache lifecycle and cleanup evidence is attached to the contracts",
+      "evidence": "The exact hosted v3 replay receipts bind a bounded temporary runner cache, expiry, token-free cleanup, and removal for 7 object(s). This is temporary acquisition cache evidence, not a durable reader cache or consumer claim.",
       "role": "cache",
-      "state": "missing"
+      "state": "candidate_cleanup_receipts_available_unbound_for_7_of_16"
     },
     {
-      "evidence": "M-112 consumer-canary count is zero; no consumer canary receipt qualifies",
+      "evidence": "7 exact admitted M-112 objects have successful bounded readbacks through the FederatedReader, with remote and consumer-stream digest matches and zero reader-cache bytes after close. This is cumulative receipt evidence; this candidate-role refresh performed no canary. Objects outside the admitted cohort remain untested.",
       "role": "consumers",
-      "state": "missing"
+      "state": "qualified_consumer_canaries_for_7_of_7_current_admissions"
     }
   ],
   "schema_id": "global-medicines-atlas.australian-m112-v4-contract-role-evidence-qualification",
   "schema_version": 1,
   "source_qualification": {
     "path": "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-reimbursement-medallion-projection-lineage.json",
-    "sha256": "17724f7d2c779f5c68f1083e5cbb054e66e096d9863a83b844eed4a59e96187c"
+    "sha256": "278f7e72b098eb89453e3e42542ba3ee4fff6a5fd02726f3473e8e3d75333a7d"
   },
   "source_semantics_candidate_evidence": {
     "native_schema_layout_qualified": false,
@@ -3270,9 +3541,9 @@
     "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/290cc219217821404cf25bcfc58761821389d614/quality/qualifications/australian-m112-v1-conformance-20261019.json"
   },
   "v3_replay_candidate_evidence": {
-    "objects": 1,
-    "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020.json",
-    "sha256": "52cf19b6226a08df52cb686a7c081cbd7542e13de01f97ec94a41626e2e26a27",
-    "state": "candidate_receipt_available_unbound_for_1_of_16"
+    "objects": 7,
+    "path": "quality/qualifications/australian-m112-v3-replay-readbacks-20261020.json",
+    "sha256": "e2b52024f066877a1e3b4e3fb8461c3a7630e8e2e74f17bed288cd565df06e26",
+    "state": "candidate_receipts_available_unbound_for_7_of_16"
   }
 }

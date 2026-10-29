@@ -1,0 +1,227 @@
+{
+  "boundaries": {
+    "admission_performed": false,
+    "consumer_canary_performed": false,
+    "new_sources_added": false,
+    "public_dataset_mutated": false,
+    "rights_or_vocabulary_conclusion_changed": false,
+    "source_bytes_persisted_locally": false,
+    "source_values_or_rows_emitted": false
+  },
+  "dataset": "edithatogo/australian-pbs-utilisation-archive",
+  "interpretation": "This maps aggregate explicit-terminology marker counts to official workbook sheet titles and cell-column positions. It does not emit matched cell contents, identify every table field, or clear rights/restricted terminology.",
+  "objects": [
+    {
+      "byte_count": 372149,
+      "marker_sheets": [
+        {
+          "columns": [
+            {
+              "column_index": 0,
+              "marker_cells": 2
+            },
+            {
+              "column_index": 1,
+              "marker_cells": 1
+            },
+            {
+              "column_index": 2,
+              "marker_cells": 1
+            }
+          ],
+          "marker_cells": 4,
+          "sheet_index": 17,
+          "sheet_name": "Table7"
+        },
+        {
+          "columns": [
+            {
+              "column_index": 0,
+              "marker_cells": 3
+            }
+          ],
+          "marker_cells": 3,
+          "sheet_index": 18,
+          "sheet_name": "Table8"
+        },
+        {
+          "columns": [
+            {
+              "column_index": 0,
+              "marker_cells": 2
+            }
+          ],
+          "marker_cells": 2,
+          "sheet_index": 19,
+          "sheet_name": "Figure5(a)"
+        },
+        {
+          "columns": [
+            {
+              "column_index": 0,
+              "marker_cells": 2
+            }
+          ],
+          "marker_cells": 2,
+          "sheet_index": 20,
+          "sheet_name": "Figure5(b)"
+        },
+        {
+          "columns": [
+            {
+              "column_index": 0,
+              "marker_cells": 34
+            }
+          ],
+          "marker_cells": 34,
+          "sheet_index": 23,
+          "sheet_name": "Table10(a)-(b)"
+        },
+        {
+          "columns": [
+            {
+              "column_index": 0,
+              "marker_cells": 4
+            }
+          ],
+          "marker_cells": 4,
+          "sheet_index": 30,
+          "sheet_name": "Table16(a)-(b)"
+        },
+        {
+          "columns": [
+            {
+              "column_index": 0,
+              "marker_cells": 2
+            },
+            {
+              "column_index": 3,
+              "marker_cells": 24
+            }
+          ],
+          "marker_cells": 26,
+          "sheet_index": 39,
+          "sheet_name": "Figure 5 input data"
+        }
+      ],
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+      "sha256": "32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b",
+      "sheet_count": 41
+    },
+    {
+      "byte_count": 468764,
+      "marker_sheets": [
+        {
+          "columns": [
+            {
+              "column_index": 1,
+              "marker_cells": 1
+            },
+            {
+              "column_index": 2,
+              "marker_cells": 9
+            }
+          ],
+          "marker_cells": 10,
+          "sheet_index": 0,
+          "sheet_name": "Table index"
+        },
+        {
+          "columns": [
+            {
+              "column_index": 0,
+              "marker_cells": 2
+            },
+            {
+              "column_index": 1,
+              "marker_cells": 1
+            },
+            {
+              "column_index": 2,
+              "marker_cells": 1
+            }
+          ],
+          "marker_cells": 4,
+          "sheet_index": 24,
+          "sheet_name": "Table7"
+        },
+        {
+          "columns": [
+            {
+              "column_index": 0,
+              "marker_cells": 3
+            }
+          ],
+          "marker_cells": 3,
+          "sheet_index": 25,
+          "sheet_name": "Table8"
+        },
+        {
+          "columns": [
+            {
+              "column_index": 0,
+              "marker_cells": 2
+            }
+          ],
+          "marker_cells": 2,
+          "sheet_index": 26,
+          "sheet_name": "Figure7(a)"
+        },
+        {
+          "columns": [
+            {
+              "column_index": 0,
+              "marker_cells": 2
+            }
+          ],
+          "marker_cells": 2,
+          "sheet_index": 27,
+          "sheet_name": "Figure7(b)"
+        },
+        {
+          "columns": [
+            {
+              "column_index": 0,
+              "marker_cells": 34
+            }
+          ],
+          "marker_cells": 34,
+          "sheet_index": 31,
+          "sheet_name": "Table10(a)-(b)"
+        },
+        {
+          "columns": [
+            {
+              "column_index": 0,
+              "marker_cells": 2
+            }
+          ],
+          "marker_cells": 2,
+          "sheet_index": 38,
+          "sheet_name": "Table14(d)"
+        },
+        {
+          "columns": [
+            {
+              "column_index": 0,
+              "marker_cells": 4
+            }
+          ],
+          "marker_cells": 4,
+          "sheet_index": 40,
+          "sheet_name": "Table16(a)-(b)"
+        }
+      ],
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+      "sha256": "147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99",
+      "sheet_count": 47
+    }
+  ],
+  "prior_screen": {
+    "path": "quality/qualifications/australian-pbs-utilisation-field-pattern-screen-20261021.json",
+    "sha256": "a865255e2139db9bc3ec5bd46ca35db840dc6782fcd7df998cc7a8a32e66ffb9"
+  },
+  "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+  "schema_id": "global-medicines-atlas.pbs-expenditure-terminology-marker-sheet-map",
+  "schema_version": 1
+}

@@ -1,0 +1,112 @@
+{
+  "report": {
+    "domains": {
+      "document_valid_date": {
+        "entity_count": 1,
+        "field_count": 1,
+        "limits": [
+          "does not establish a medicine listing interval or current status",
+          "applies only to the exact pinned 2026-04-01 PBS v3 member"
+        ],
+        "meaning": "document-level dcterms:valid date, kept distinct from schedule effective date",
+        "status": "qualified_separate_source_date_role"
+      },
+      "effective_date": {
+        "entity_count": 2799,
+        "field_count": 2799,
+        "limits": [
+          "profile applies only to the exact pinned 2026-04-01 PBS v3 member",
+          "date roles remain separate; no validity interval, commencement precedence, or current status is inferred",
+          "other date-shaped values and other PBS eras remain unresolved"
+        ],
+        "meaning": "source schedule, item-effectivity, and restriction-effective date roles",
+        "status": "qualified_bounded_source_structure_and_date_grammar"
+      },
+      "item": {
+        "entity_count": 58774,
+        "field_count": 132395,
+        "limits": [
+          "occurrence identity is source/member/path-bound, not a global item key",
+          "native code or identifier values are not interpreted or normalized"
+        ],
+        "meaning": "PBS pharmaceutical-item record occurrence",
+        "status": "qualified_bounded_source_structure"
+      },
+      "price": {
+        "entity_count": 4940077,
+        "field_count": 11539739,
+        "limits": [
+          "an amount under a PBS price path is not by itself a payable benefit or patient cost",
+          "price basis, currency, contribution, and benefit semantics remain unresolved",
+          "numeric candidate conversion remains lossless-only and native values remain native_unresolved"
+        ],
+        "meaning": "source-labelled price component and amount structure",
+        "status": "qualified_bounded_source_structure"
+      },
+      "product": {
+        "entity_count": 238514,
+        "field_count": 561085,
+        "limits": [
+          "source structure does not establish ingredient equivalence or a unique marketed product",
+          "mp/product code references remain literal and unresolved"
+        ],
+        "meaning": "PBS drug/product and nested mp structures",
+        "status": "qualified_bounded_source_structure"
+      },
+      "restriction": {
+        "entity_count": 2120959,
+        "field_count": 5019620,
+        "limits": [
+          "text and rule structure are preserved; no patient eligibility or clinical conclusion is inferred",
+          "linked criteria and administrative advice remain source references unless separately resolved"
+        ],
+        "meaning": "PBS prescribing restriction and prescribing-rule source material",
+        "status": "qualified_bounded_source_structure"
+      },
+      "status": {
+        "entity_count": 0,
+        "field_count": 0,
+        "limits": [
+          "the exact path inventory contains no PBS element or attribute named status",
+          "effective, supply-only, and non-effective dates do not establish a current listing state"
+        ],
+        "meaning": null,
+        "status": "unresolved_no_explicit_status_field_qualified"
+      }
+    },
+    "meaning_basis": [
+      "docs/qualification/australian-source-contracts.md#pbs-structural-destination-candidates",
+      "docs/qualification/australian-source-contracts.md#pbs-opt-in-date-candidates",
+      "docs/qualification/pbs-public-qualification.md#pinned-v3-date-profile-receipt-2026-09-28",
+      "https://info.data.pbs.gov.au/xml-schema/doc/html/guide.html",
+      "https://info.data.pbs.gov.au/xml-schema/doc/html/mapping.html"
+    ],
+    "profile_id": "pbs-v3-pinned-2026-04-01-domain-fields-v1",
+    "schema_id": "global-medicines-atlas.pbs-domain-field-semantics",
+    "schema_version": 1,
+    "scope": {
+      "complete_domain_semantics_qualified": false,
+      "consumer_canaries": 0,
+      "cross_era_equivalence": false,
+      "new_admissions": 0,
+      "new_sources": 0,
+      "publications": 0,
+      "rights_conclusion_changed": false,
+      "source_values_emitted": false
+    },
+    "source": {
+      "archive_sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+      "dataset": "edithatogo/australian-pbs-source-archive",
+      "date_profile_receipt_sha256": "79c0590fbe39e22d7044d12b6522838e8bd32788df762cd3a648eb608f3a0b38",
+      "member_path": "sch-2026-04-01-r1.xml",
+      "member_sha256": "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43",
+      "native_digest": "890c607f0e8c9de95c37770610fdc51fd241ea97210ef5ea61d7ad22fd228a25",
+      "native_fields": 18208758,
+      "observed_domain_receipt_sha256": "c30da0bf8cdd002fd0fe47bab4a05dfaa4fb4e739c13db3ce3869c8772d21157",
+      "revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7",
+      "schema_path_inventory_sha256": "6da85f3e3526a52dca7b0f41206b5ec1afde854f89d858ae659867827219408b"
+    },
+    "status": "bounded_semantics_qualified_with_explicit_unresolved_fields"
+  },
+  "report_sha256": "6999155565770f6112385705ba22b6b819db51508d352b3d16330ec8077c8a72"
+}

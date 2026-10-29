@@ -16,7 +16,11 @@ from .donor_history_publication import (
     validate_append_plan,
     verification_digest,
 )
-from .federation_metadata_hosted import REPOSITORY, require_hosted_main
+from .federation_metadata_hosted import (
+    REPOSITORY,
+    require_hosted_main,
+    valid_receipt_url,
+)
 
 
 class HistoryTransport(Protocol):
@@ -94,10 +98,8 @@ def execute_history_append(
         ):
             raise ValueError("existing history requires authenticated recovery")
         intent_url = persist(intent)
-        if not intent_url.startswith(
-            f"https://github.com/{REPOSITORY}/issues/340#issuecomment-"
-        ):
-            raise ValueError("durable intent URL missing")
+        if not valid_receipt_url(intent_url):
+            raise ValueError("intent receipt URL missing or invalid")
         if transport.head() != plan.before.revision:
             raise ValueError("archive head drifted after intent")
         revision = transport.append(plan)
@@ -109,9 +111,7 @@ def execute_history_append(
             "parent_basis": "server_enforced_parent_commit",
         }
         acknowledgement_url = persist(acknowledgement)
-        if not acknowledgement_url.startswith(
-            f"https://github.com/{REPOSITORY}/issues/340#issuecomment-"
-        ):
+        if not valid_receipt_url(acknowledgement_url):
             raise ValueError("durable acknowledgement URL missing")
     else:
         expected = {
@@ -156,8 +156,6 @@ def execute_history_append(
         "verification_run_url": intent["run_url"],
     }
     url = persist(result)
-    if not url.startswith(
-        f"https://github.com/{REPOSITORY}/issues/340#issuecomment-"
-    ):
-        raise ValueError("durable verification URL missing")
+    if not valid_receipt_url(url):
+        raise ValueError("verification receipt URL missing or invalid")
     return {**result, "receipt_url": url}

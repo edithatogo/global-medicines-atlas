@@ -1,0 +1,38 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-silver-v4-remote-admission-qualification-artifact",
+  "schema_version": 1,
+  "artifact": {
+    "id": 12801155022,
+    "name": "mbs-silver-v4-admission-40653807510-1",
+    "sha256": "2e49b3a881d639c064315ec5636a4ef5befd30c8b9562a5c0ce2ed59645f6751",
+    "size_bytes": 21247,
+    "url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40653807510"
+  },
+  "report": {
+    "path": "admission-remote-read.json",
+    "sha256": "bb040677eeb45cc3972726b16ce1aec1d2e648c2ac92d6285216be2f9c5050ce"
+  },
+  "workflow": {
+    "run_id": 40653807510,
+    "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40653807510",
+    "head_commit": "2005165bcc48d85dbe1565dd766d92243223d3a7",
+    "workflow": ".github/workflows/australian-mbs-silver-v4-admission-qualification.yml"
+  },
+  "validation": {
+    "contract_commit": "2005165bcc48d85dbe1565dd766d92243223d3a7",
+    "hosted_workflow_conclusion": "success",
+    "object_identity_and_role_evidence": "six exact July 2025 MBS table identities and 11 receipt roles each matched the existing qualified cohort",
+    "remote_reads": "six passed with verified digest and byte count at the pinned Hugging Face revision",
+    "consumer_canaries": "six requests each through API, CLI JSON, CLI JSONL, Atlas HTML, and Chromium browser rendering; two rows per request",
+    "source_values_included": false
+  },
+  "boundaries": {
+    "browser_qualification": "passed",
+    "external_publication_performed": false,
+    "independent_recovery_qualified": false,
+    "m112_federation_acceptance": false,
+    "new_sources_added": false,
+    "production_promotion": false,
+    "source_completeness_established": false
+  }
+}

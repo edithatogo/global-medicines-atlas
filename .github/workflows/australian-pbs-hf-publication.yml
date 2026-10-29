@@ -27,7 +27,6 @@ jobs:
     timeout-minutes: 45
     permissions:
       contents: read
-      issues: write # Persist exact publication intent and verification receipts.
     steps:
       - name: Check out governed acquisition code
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
@@ -45,8 +44,7 @@ jobs:
           default_branch=$(gh api "repos/${GITHUB_REPOSITORY}" --jq .default_branch)
           default_head=$(gh api "repos/${GITHUB_REPOSITORY}/commits/${default_branch}" --jq .sha)
           test "${GITHUB_SHA}" = "${default_head}"
-          gh issue comment 340 --repo "${GITHUB_REPOSITORY}" \
-            --body "PBS publication intent: dataset=${HF_DATASET}; authorization=${AUTHORIZATION_ID}; exact_commit=${GITHUB_SHA}; run=https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}; visibility=public-from-outset; failure_policy=retain-public-revision-and-record-failure"
+          : # Outbound comments prohibited; retain workflow artifacts instead.
 
       - name: Install uv
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
@@ -92,15 +90,21 @@ jobs:
               json.dumps(receipt, indent=2, sort_keys=True) + '\n'
           )
           PY
-          gh issue comment 340 --repo "${GITHUB_REPOSITORY}" \
-            --body-file work/retrieval-attempt.json
+          : # Outbound comments prohibited; retain workflow artifacts instead.
           test "$curl_exit" -eq 0
           test -s work/source.zip
 
+      - name: Retain verification artifact 7 without outbound messages
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: retained-verification-7-${{ github.run_id }}-${{ github.run_attempt }}
+          path: work/retrieval-attempt.json
+          if-no-files-found: error
+          retention-days: 30
       - name: Admit and project immutable Bronze products
         run: |
           set -euo pipefail
-          uv run --frozen --python 3.14.6 python scripts/qualify_pbs_v3_archive.py \
+          uv run --frozen --python 3.15.1 python scripts/qualify_pbs_v3_archive.py \
             --archive work/source.zip --output work/stage \
             --source-url "$SOURCE_URL" --dataset "$HF_DATASET" \
             --retrieved-at "$(cat work/retrieved-at.txt)" \
@@ -115,7 +119,7 @@ jobs:
         run: |
           set -euo pipefail
           test -n "${HF_TOKEN:-}"
-          uv run --python 3.14.6 --with huggingface-hub==1.14.0 python - <<'PY'
+          uv run --python 3.15.1 --with huggingface-hub==1.14.0 python - <<'PY'
           import os
           from pathlib import Path
           from huggingface_hub import HfApi
@@ -153,7 +157,7 @@ jobs:
           REVISION: ${{ steps.publish.outputs.revision }}
         run: |
           set -euo pipefail
-          uv run --python 3.14.6 --with huggingface-hub==1.14.0 python - <<'PY'
+          uv run --python 3.15.1 --with huggingface-hub==1.14.0 python - <<'PY'
           import hashlib
           import json
           import os
@@ -213,9 +217,15 @@ jobs:
           receipt['temporary_source_bytes_removed'] = True
           path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + '\n')
           PY
-          gh issue comment 340 --repo "${GITHUB_REPOSITORY}" \
-            --body-file work/hosted-receipt.json
+          : # Outbound comments prohibited; retain workflow artifacts instead.
 
+      - name: Retain verification artifact 8 without outbound messages
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: retained-verification-8-${{ github.run_id }}-${{ github.run_attempt }}
+          path: work/hosted-receipt.json
+          if-no-files-found: error
+          retention-days: 30
       - name: Retain hosted qualification and cleanup receipt
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:

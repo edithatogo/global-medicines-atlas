@@ -1,4 +1,4 @@
-"""Iceberg-ready identities without requiring Iceberg in Python 3.14 core."""
+"""Iceberg-ready identities without requiring Iceberg in Python 3.15 core."""
 
 from __future__ import annotations
 

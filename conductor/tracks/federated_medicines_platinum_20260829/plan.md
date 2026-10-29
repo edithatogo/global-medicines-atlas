@@ -778,6 +778,33 @@
     medallion tests and governed 31-test E2E lane pass; no source bytes or
     production admission are involved. PR #846 merged as
     `292b9719147796866cf059b3576f928ff9ed0eb8` after 38 hosted checks passed.
+
+### Actual consumers for the admitted July 2025 MBS Silver cohort (2026-10-27)
+
+- [x] Reconcile the post-admission live canaries across the API, CLI JSON,
+  Atlas HTML, and deterministic CLI JSONL export for all six exact Silver
+  resources at dataset revision
+  `3d2d528439bddf6f42e8e700c88917f0960a9f38`. Hosted workflow run `40469072111`
+  passed six requests per surface with two rows per request. The durable
+  consumer receipt binds each resource path, object digest, byte count, row
+  count, v4 contract digest, semantic-profile digest, and source/lineage roles
+  to request, identity, query, page, window, and returned-row digests. The
+  Platinum reconciliation is
+  `quality/qualifications/platinum-actual-consumer-reconciliation-20261027.json`.
+- [x] Retain coverage and semantic limits with those consumer results. Each
+  object has 5,989 declared rows, while each canary reads two rows;
+  source/product completeness remains unestablished. The exact July 2025 MBS
+  XML v3 semantic contract treats absence as `unknown`; it makes no patient
+  denominator, M110 Gold graph acceptance, M112 federation acceptance, PBS or
+  clinical equivalence, production promotion, public release, or independent
+  recovery claim. No source values are included in the aggregate receipt.
+- [ ] Publish a deterministic research package with v4 identities and
+  anonymous verification. The JSONL export canary qualifies a bounded actual
+  consumer only; package publication remains separately gated.
+- [ ] Extend these canaries to another output only after its exact identity,
+  lineage, rights, semantic qualification, and admission prerequisites pass.
+  The current historical workbook, PBS Silver, and out-of-inventory August
+  MBS candidates remain blocked as recorded in the Phase 4 reconciliation.
     This is synthetic API integration only.
   - [x] Exercise the same synthetic MBS Gold edge through `gma benefits` and
     compare rows, identity, page/window digests, and conservative coverage and
@@ -1421,7 +1448,8 @@
 - [x] The role qualification test passed (5), including altered-schema
   rejection; Ruff passed; generated report regeneration and `--check` passed.
   Preserve the approved 1,759-object denominator, 0 v4 admissions, and 0 M-112
-  consumer canaries.
+  consumer canaries at this 2026-10-20 checkpoint. This dated count is
+  superseded by the 2026-10-21 current qualification readback below.
 - [~] Authority contract binding remains open together with source semantics,
   discovery, v3 replay, recovery/cache and consumer evidence. This candidate
   identity is not itself a v4 admission.
@@ -1454,8 +1482,10 @@
 - [~] Keep location and discovery receipts candidate-only and unbound until
   referenced from complete per-object v4 contracts. The approved denominator
   remains 1,759, with zero v4 admissions and zero qualifying M-112 consumer
-  canaries. Cache lifecycle evidence remains missing; source semantics,
-  complete v4 contracts and consumer qualification remain open.
+  canaries at this 2026-10-20 checkpoint. This dated count is superseded by
+  the 2026-10-21 current qualification readback below. Cache lifecycle
+  evidence remains missing; source semantics, complete v4 contracts and
+  consumer qualification remain open.
 
 ## 2026-10-19 M-112 source-temporal evidence for one MBS group object
 
@@ -1472,8 +1502,9 @@
 - [x] Focused role tests (9), broader M-112 v1/federation selection (75),
   qualification regeneration/check, Ruff, and routine Test-Goblin passed.
 - [~] The source role remains unbound pending complete v4 contracts; 15 other
-  source candidates still lack source-specific temporal qualification. Preserve
-  the 1,759 denominator, zero admissions, and zero consumer canaries.
+  source candidates still lack source-specific temporal qualification. The
+  1,759 denominator, zero admissions, and zero consumer canaries were the
+  2026-10-19 checkpoint state; see the current 2026-10-21 readback below.
 
 ## 2026-10-19 M-112 source-temporal evidence expanded to 13 objects
 
@@ -1489,8 +1520,9 @@
 - [x] Focused role tests (9), broader M-112 v1/federation selection (75),
   qualification regeneration/check, Ruff, and routine Test-Goblin passed.
 - [~] The 13 temporal role candidates remain unbound pending complete v4
-  contracts, schema qualification and the other mandatory evidence. Preserve
-  the approved 1,759 denominator, zero admissions, and zero consumer canaries.
+  contracts, schema qualification and the other mandatory evidence. The current
+  M-112 readback records seven admissions and seven canaries from the approved
+  1,759-object denominator; those admissions do not close these remaining roles.
 
 ## 2026-10-20 M-112 qualifier strict typing repair
 
@@ -1507,11 +1539,11 @@
   passed. Its full-history scan found no leaks; the same targeted correction
   is included in PR #1200, where it addresses 33 false-positive public digest
   matches.
-- [~] The M-112 qualification remains unchanged: 0 v4 admissions and 0
-  consumer canaries. This repair only makes the current candidate evidence
-  verifier pass strict typing; it does not bind incomplete role receipts or
-  create an admission. PR #1200 hosted checks are rerunning on its updated
-  head.
+- [x] At this verifier-repair checkpoint, M-112 remained at 0 admissions and 0
+  consumer canaries. The repair only made current candidate evidence pass
+  strict typing; it did not bind incomplete role receipts or create an
+  admission. That dated 0/0 state is superseded by the current 7/7 readback
+  below.
 
 ## 2026-10-20 one-object M-112 v3 replay preparation
 
@@ -1538,9 +1570,236 @@
 - [x] Focused v3 replay role tests (11), broader M-112 federation selection
   (131), role-report `--check`, Ruff, targeted BasedPyright, and Test-Goblin
   routine passed after binding the receipt.
-- [~] Keep M-112 v4 admission and consumer-canary counts at zero. Current
-  qualification still has incomplete/unbound mandatory contract roles and no
-  admitted object. The existing API/CLI/Atlas/Chromium traversal is explicitly
-  candidate-only; it cannot be counted as an admitted-product canary. Run the
-  bounded actual-consumer canaries only after an exact object passes v4
-  admission and is pinned in the consumer contract.
+- [x] Reconcile M-112 admission and admitted-product consumer-canary counts.
+  Two raw MBS B2 objects are admitted under their exact v4 contracts: the July
+  workbook and July CSV. Each has a bounded canary through the pinned
+  `FederatedReader`; both exact-main receipts verify remote and streamed digest
+  and byte count, with no source values interpreted or retained and cache
+  usage at zero after read and close. The latest CSV receipt is
+  `quality/qualifications/australian-m112-v4-group2016-csv-consumer-canary-20261020-39317542644.json`.
+  The API/CLI/Atlas/Chromium traversal remains candidate-only, and the 1,757
+  other denominator objects remain unqualified. Continue per-object admission
+  and run its bounded consumer check only after that object qualifies.
+
+## 2026-10-20 M-112 exact-main consumer canary refresh
+
+- [x] Re-run the bounded hosted M-112 consumer on exact `main` commit
+  `b6dcb12d29fd6c9b4e751c9ec82b6fcdc6e0d976` for the already-admitted July
+  2016 Group workbook. The `FederatedReader` receipt passed remote and streamed
+  digest checks, retained zero cache bytes after read and close, interpreted no
+  source values, and retained no source payload. Preserve the metadata-only
+  receipt at
+  `quality/qualifications/australian-m112-v4-july2016-consumer-canary-20261020-39351963357.json`.
+- [x] Attempt the same exact-main canary for the admitted July CSV and historical
+  ZIP. The CSV stopped before consumer execution because its raw-B2 contract is
+  stale against current role evidence (`39351959932`). The ZIP stopped during
+  receipt closure because GitHub API returned `403 rate limit exceeded`
+  (`39351966724`). Neither run is counted as a canary; retain both blockers
+  without retrying unchanged inputs.
+- [x] At this 2026-10-20 checkpoint, the role report recorded 3 admissions and
+  3 qualifying canaries. Later sections record the CSV and historical ZIP
+  canaries and the current 7/7 total. API/CLI/Atlas/browser-product consumer
+  qualification remains a separate open gate.
+
+## 2026-10-20 M-112 Q1 demographics replay-role qualification
+
+- [x] Execute the one-object v3 replay for Q1 March demographics on exact
+  `main` commit `cea68bd01ad5a2938c12cf72e0c6d2aa50fb742a`. Hosted run
+  `39368825712` passed anonymous digest and byte-count verification for the
+  pinned 23,934,884-byte B2 object, rebuilt only the append-only registration,
+  and removed temporary source bytes.
+- [x] Bind the metadata-only run receipt and deterministic replay plan into the
+  v3 readback manifest and refresh the contract-role qualification. The
+  candidate now has v3 replay and temporary-cache cleanup candidate roles;
+  the readback manifest covers 5 of 16 objects.
+- [x] Build and locally validate the Q1 v4.1 contract from the complete
+  candidate role evidence. The contract pins evidence commit
+  `71b8ca00dee8275578cb8d50a0e4db12cc6160f3` and SHA-256
+  `3f4794f92a33b9e77950b2c864c7f4ae8a331a43b80297a15e73f1967814f6ce`.
+- [x] Run its exact-main admission and `FederatedReader` canary after the
+  contract is merged. Q1's successful canary receipt is
+  `quality/qualifications/australian-m112-v4-demographics-q1-march-consumer-canary-20261020-39375704078.json`;
+  the latest current readback records seven admissions and seven canaries.
+
+
+## 2026-10-20 M-112 Q3 demographics v4 raw-B2 contract qualification
+
+- [x] Bind the Q3 demographics replay evidence to its exact merged source commit,
+  `510cb08901923e713ee0fae3f3db15f29dbacab3`, and pin that commit in the v4
+  admission contract builder. Preserve the approved exact-scope rights decision,
+  source receipt, B1 acquisition, immutable B2 manifest, and successful hosted
+  v3 digest/byte-count replay roles.
+- [x] Generate the Q3 raw-B2 v4.1 contract at
+  `quality/qualifications/australian-m112-v4-demographics-q3-july-raw-b2-contract.json`.
+  The contract has 12 receipt roles, passes schema and semantic validation, and
+  passes the deterministic `--check`; no source payload bytes were read locally.
+- [x] Focused v4 admission/publication-role tests passed (25), the broader
+  federation-admission suite passed (24), and the current M112 role report
+  `--check` passed with 14 publication/restore and 4 v3 replay candidate
+  bindings.
+- [x] The exact-main hosted workflow subsequently closed all 12 receipt roles,
+  admitted the Q3 raw B2 object, and passed its `FederatedReader` canary; see
+  the 2026-10-20 admission evidence below. That later receipt supersedes this
+  section's earlier pending state.
+
+## 2026-10-20 M-112 Q3 demographics exact-main v4 admission
+
+- [x] Run the exact-main hosted v4 verification for the Q3 demographics raw B2
+  object on `cea68bd01ad5a2938c12cf72e0c6d2aa50fb742a`. Independent closure
+  verified the contract's 12 receipt roles and admitted the exact 7,680,041-byte
+  object at SHA-256
+  `bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c`.
+- [x] The same hosted run passed the actual `FederatedReader` canary: remote and
+  streamed digests matched, the expired cache was not retained, cache bytes
+  were zero after read and close, and no source values or payload bytes were
+  included or retained. Preserve the metadata-only admission/canary report at
+  `quality/qualifications/australian-m112-v4-demographics-q3-july-admission-qualification-20261020-39356792827.json`.
+- [x] Regenerate and check the M-112 role qualification from durable admission
+  reports. Current independently evidenced state is 4 v4 admissions and 4
+  object canaries out of the unchanged 1,759 approved denominator; the new
+  role-report SHA-256 is
+  `ffd50a20a277a8a61e90708181c2db70c653d809d3f2c37b81e70ea3d637806a`.
+- [~] The Q3 source-native layout remains unqualified, and 1,755 approved paths
+  still lack v4 admission. Continue with the next object only after its own
+  contract roles and exact identities qualify; do not promote raw admission to
+  Silver schema or semantic acceptance.
+- [x] Refresh the current rights reconciliation from the four-object role
+  report, validating the Q3 hosted receipt and updating the rights preflight's
+  admission/canary totals to 4 while preserving the 1,759 denominator and 1,755
+  deferrals. Focused rights/preflight tests passed (14); the v4 role report
+  check passed.
+- [x] The refreshed rights reconciliation merged in PR #1232 at exact `main`
+  commit `4255ae0d187413d24a9055f33bd13f08b73e396e` after all 39 exact-head
+  checks passed. Subsequent M-112 readbacks are summarized below.
+
+## M-112 current qualification readback (2026-10-21)
+
+The latest bound preflight and role report record seven exact v4 admissions and
+seven admitted-object `FederatedReader` canaries from the unchanged 1,759-object
+denominator; 1,752 remain deferred. This reader evidence does not qualify
+API/CLI/Atlas/export product surfaces, source-native layouts, or relationship
+semantics. No public dataset mutation or external publication was performed.
+Current evidence:
+`quality/qualifications/australian-m112-rights-release-preflight-20261021-11.json`,
+`quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json`,
+`quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json` (the role report bound by this preflight),
+and the later candidate-role refresh
+`quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json`,
+which preserves the same 7/7 counts and 1,752 deferrals without changing the
+preflight admission or canary evidence.
+
+## 2026-10-23 exact-main reviewed-candidate consumer traversal
+
+- [x] Run the protected four-surface consumer traversal on exact `main`
+  commit `78e857839aad8298060c65eb5ef03a4e3114827a`. Hosted run
+  [39939296038](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39939296038)
+  passed API, CLI, Atlas, and Chromium traversal over 5,989 edges and six
+  pages. All surfaces returned the same ordered edge-ID digest. Bounded date
+  and decimal queries matched between DuckDB and Polars. The report binds the
+  current v4 candidate, semantic-manifest, exact-six-use-authorization, and
+  maintainer-reviewed same-record receipt identities.
+- [x] Preserve the aggregate-only hosted result at
+  `quality/qualifications/australian-mbs-gold-candidate-consumers-20261023-39939296038.json`
+  (artifact 12495406664; SHA-256
+  `c27ffdf46bfe07285578580348027bd566aa76ad8b1020f0175a45e69b474c8b`). The
+  nested state is `reviewed_candidate`; the top-level `not_reviewed` retains
+  the original pre-review graph state. M-110 overall acceptance and M-112
+  acceptance remain false. Product and output remain candidate-only.
+- [x] Reconcile the eight current M-112 admissions to their existing exact
+  clean-room anonymous restore receipt and live pinned 28-file checksum
+  inventory. See
+  `quality/qualifications/australian-m112-primary-recovery-readback-20261023.json`.
+  This closes the primary restore identity join for the eight admitted
+  objects; every contract marks the target non-independent and has null
+  RPO/RTO. Independent recovery, M-111 admitted-product queries, and release
+  remain open.
+- [x] Preserve M-112 release-preflight snapshot #36 unchanged and create
+  successor #37 after the E2E registry change. Snapshot #37 binds the current
+  `scripts/test_goblin.py` and `tests/test_m112_rights_release_preflight.py`
+  digests and points to #36 by exact SHA-256. Focused preflight and live
+  consumer/recovery readback checks pass (16 tests). The successor changes no
+  admission, rights, product, recovery-independence, or publication state.
+
+## System completion execution focus (2026-10-25)
+
+Select the next task through the [system completion charter](../../system-completion.md)
+and [validated scheduling plan](../../system-completion.json). Name its shared
+capability or gate, concrete failure, bounded frozen-inventory scope, expected
+proof, and targeted validation. Advance the system lanes when prerequisites
+permit; perform dataset semantics or coverage work only when needed for a
+named gate. Preserve unresolved fields and all mandatory eligible-object
+identity, lineage, rights, admission, recovery, and consumer evidence. Broader
+coverage, new sources/terminology, and optional experiments remain deferred.
+This scheduling direction changes no acceptance criterion, current M-105/M-107
+disposition, or conditional release approval; current states come from the
+authoritative contract, reconciliation, and bound receipts.
+
+## 2026-10-28 exact-main M-111 Chromium canary for the admitted cohort
+
+- [x] Re-run the exact-main six-table July 2025 MBS v4 admission and remote-reader
+  qualification after merging PRs #1355 and #1356. Run
+  [40653807510](https://github.com/edithatogo/global-medicines-atlas/actions/runs/40653807510)
+  passed on contract commit `2005165bcc48d85dbe1565dd766d92243223d3a7` at the
+  pinned source revision `3d2d528439bddf6f42e8e700c88917f0960a9f38`.
+- [x] Validate all six exact path, digest, byte-count, and row-count identities
+  against the prior admitted cohort. Remote reads, API, CLI JSON, CLI JSONL,
+  Atlas, and Chromium browser rendering passed. The browser compared rendered
+  table cell text to the API rows in memory; the retained report contains only
+  counts, statuses, and digests.
+- [x] Preserve the aggregate-only hosted receipt and artifact manifest under
+  `quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261028-40653807510/`.
+  The consumer reconciliation and Stable v1 contract bind the exact receipt.
+- [~] M-111 and the Australian federation gate remain blocked. The browser
+  canary covers only this admitted six-table cohort; other eligible outputs,
+  M-109/110 semantics and relationships, independent recovery, and broader
+  consumer qualification remain open. No public release, new source, or
+  Stable v1 promotion occurred.
+
+## Bounded native-field consumer delivery (2026-10-29)
+
+- [x] Confirm the scalar query cannot select the preserved native field list;
+  add explicit bounded collection projection with digest-bound query identity
+  and the API, CLI and Atlas source-field views. Nine initial new tests failed
+  because QuerySpec lacked this capability; 112 focused and 504 broader
+  affected tests now pass.
+- [~] Complete the required production-change milestone verification, review
+  and protected checks; the full local profile is running.
+- [ ] Qualify actual consumers only after an exact eligible derived output is
+  admitted; synthetic field-view tests do not qualify PBS or workbook delivery.
+
+### Offline research-package output reference (2026-10-29)
+
+- [~] Resolve the actual contract mismatch: research metadata packages require
+  an HTTPS output distribution and revision-bound lineage URL, while the
+  approved system scope permits local package qualification before any optional
+  public publication. The existing verifier checks canonical metadata, not
+  remote existence. A placeholder URL cannot establish a published result.
+- [ ] Add and qualify an explicit content-addressed offline output reference,
+  or another supported local representation, without weakening published URL
+  validation. Bind the package to a real admitted query and verify its result
+  digest and clean-room restoration; public publication remains a distinct
+  optional operation under its existing authorization boundary.
+
+### Native-field delivery review fixes (2026-10-29)
+
+- [x] Reject unsupported nested scalar-component selectors before a verified
+  read, and update the keyboard recovery flow to include the view selector.
+- [x] Add bounded page offsets to the shared query, source-structure API, CLI
+  and Atlas, preserving the original default query receipt representation.
+  Synthetic two-engine tests reach later flat records and nested fields; an
+  admitted synthetic object yields the same later page through API, Atlas and
+  CLI. Real derived output canaries remain outstanding.
+- [~] Complete protected CI and the review/merge checkpoint. The one local full
+  invocation stopped after coverage with four failures; the affected rerun
+  passed the two keyboard cases and one release fixture, while the other
+  release fixture still exceeded its p95 query budget. No budget was weakened.
+
+### Offline research-package implementation (2026-10-29)
+
+- [~] Implement a versioned local content-addressed result reference and
+  verify the separate canonical result without relaxing public URL validation.
+  The implementing agent reviewed the increment and 103 affected tests passed;
+  exact-head protected checks are pending.
+- [ ] Build and verify a deterministic package from an already-admitted real
+  query at a pinned source revision and exact merged assembly commit. Retain
+  digest-bound evidence; do not claim publication or federation acceptance.

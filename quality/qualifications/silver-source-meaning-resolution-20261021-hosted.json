@@ -1,0 +1,143 @@
+{
+  "hosted_q1_evidence": {
+    "completed_at": "2026-10-21T11:19:18Z",
+    "native_unknown_rows": 58,
+    "observed_conclusion": "success",
+    "receipt_path": "quality/qualifications/mbs-q1-source-meaning-diagnostics-20261021-39590928303.json",
+    "receipt_sha256": "057e164ec03445f480ec8156469682f855062c3771a2b654f8f59ff06b3ff69e",
+    "rounding_truncation_results_reproduced": true,
+    "run_id": 39590928303,
+    "workflow_commit": "6522e7959b2065214e77cd623dbb05c379217b57",
+    "workflow_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39590928303"
+  },
+  "inputs": {
+    "australian-mbs-demographics-q1hr-context-measure-diagnostics-20261021.json": "1eb5248f2338e75784e7e119db0f4f5639162371659ae3571bdbadf25296c154",
+    "australian-mbs-demographics-q1hr-metadata-semantics-20261021.json": "927269591afa38f5393615510a0ae5dc8ce8a6b99040759de92f7bdeeb465bd5",
+    "australian-mbs-m106-source-metadata-recheck-20261017.json": "9bb9af0caa3b23e83fee4faf44063bd82d1b1a373adc1f2c21c34770fe74d7ce",
+    "mbs-p7-workbook-field-lineage-20261011.json": "335a737fec71abc6f502d65417a6a2b40b9ff20933e710abe02fc92453274f74"
+  },
+  "lanes": {
+    "p7": {
+      "calendar_ambiguous": 1276,
+      "calendar_dmy_only": 4,
+      "qualified": [
+        "native_storage",
+        "header_lineage",
+        "formula_error_preservation"
+      ],
+      "unresolved": [
+        "workbook_date_convention",
+        "unrepresentable_numeric_value_conventions"
+      ],
+      "xml_date_rule_transfer_permitted": false
+    },
+    "patient_denominators": {
+      "existing_reference_readback": {
+        "does_not_establish": [
+          "Full-MBS distinct-patient numerator",
+          "Item-level deduplication rules",
+          "An exact denominator for the retained 2016 demographic files"
+        ],
+        "findings": [
+          "Statistics use claim-processing time.",
+          "A patient can have multiple services within one reporting period.",
+          "Patient bulk-billing proportions use all patients within the applicable population and period."
+        ],
+        "observed_at": "2026-10-21T10:54:17.293646+00:00",
+        "pages_reviewed": [
+          2,
+          5
+        ],
+        "payload_acquired_or_retained": false,
+        "publication_url": "https://www.health.gov.au/resources/publications/explanatory-notes-for-medicare-statistics?language=en",
+        "qualification_status": "unqualified_web_observations_only_no_exact_byte_identity",
+        "reference_already_registered_in": "quality/qualifications/australian-mbs-m106-source-review-20261005.json",
+        "reference_url": "https://www.health.gov.au/sites/default/files/2026-05/explanatory-notes-for-medicare-statistics_0.pdf",
+        "source_inventory_changed": false,
+        "usable_for_semantic_promotion": false
+      },
+      "qualified": [],
+      "service_counts_substitutable": false,
+      "unresolved": [
+        "population",
+        "period",
+        "cross_item_deduplication",
+        "coverage",
+        "suppression"
+      ]
+    },
+    "q1_demographics": {
+      "age_category_resolution": {
+        "cause_of_unknown_established": false,
+        "csv_semantic_equivalence_claimed": false,
+        "digest_and_byte_count_reverified": true,
+        "hosted_native_label_observation_complete": true,
+        "meaning": "Source emits the literal nominal label Unknown; its definition and cause are unresolved.",
+        "native_category": "Unknown",
+        "nonnumeric_data_categories": 1,
+        "numeric_age_bounds": null,
+        "numeric_source_categories": 10,
+        "observation_origin": "Hosted main Actions run 39590928303; exact byte/digest checked objects",
+        "qualification_scope": "Native label identification only; preserve verbatim without assigning numeric bounds or inferring equivalence or difference from suppression.",
+        "semantic_qualification_required_for_promotion": true,
+        "source_identity": "Q1 HR workbook pinned in the input metadata-semantics receipt",
+        "source_rows_retained": false,
+        "suppression_relationship_established": false
+      },
+      "next_evidence": "Source-defined benefit calculation and definition of the native Unknown age marker remain required.",
+      "qualified": [
+        "claim_processing_month",
+        "patient_address_at_claim",
+        "net_adjusted_service_counts"
+      ],
+      "rounding_truncation_diagnostic": {
+        "conclusion": "Tested rounding and truncation do not explain the mismatch.",
+        "decimal_places_tested": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "equal": 54693,
+        "matches_for_every_tested_mode_and_precision": 54693,
+        "observation_origin": "Hosted main Actions run 39590928303",
+        "rounding_modes": [
+          "ROUND_DOWN",
+          "ROUND_HALF_UP"
+        ],
+        "shared_full_key_pairs": 545070,
+        "source_bytes_persisted": false,
+        "source_identity_validation": "Both pinned byte counts and SHA-256 verified by existing fetch_exact_source_bytes before parsing.",
+        "source_values_emitted": false,
+        "workbook_higher": 229431,
+        "workbook_lower": 260946
+      },
+      "unresolved": [
+        "benefit_measure_calculation",
+        "source_definition_of_unknown_age",
+        "relationship_of_unknown_to_suppression"
+      ]
+    }
+  },
+  "new_sources_added": false,
+  "outreach_sent": false,
+  "previous_resolution": {
+    "path": "quality/qualifications/silver-source-meaning-resolution-20261021.json",
+    "preserved_unchanged": true,
+    "sha256": "b56136094a3b3ccef950cc10bfea144365b247887c716f8d8387cfe4c3334e12"
+  },
+  "recorded_at": "2026-10-21T11:24:15.126399+00:00",
+  "remaining_requirements": {
+    "p7_dates": "Source-era evidence for the exact workbook date convention.",
+    "p7_values": "Source-native conventions behind unrepresentable numeric outcomes; preserve formula/errors independently.",
+    "patient_denominators": "Exact population, period, deduplication, coverage and suppression rules for any included patient measure.",
+    "q1_age": "Definition of the literal Unknown marker, including its relationship to suppression.",
+    "q1_benefits": "Source-defined measure calculation and explanation of the exact-object disagreement."
+  },
+  "schema_id": "global-medicines-atlas.silver-source-meaning-resolution",
+  "schema_version": 1,
+  "semantic_resolution_complete": false
+}

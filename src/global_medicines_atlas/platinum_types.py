@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Literal
 
+MAX_QUERY_OFFSET = 100_000_000
 RESOURCE_ID_PATTERN = r"^[a-z0-9]+(?:[._-][a-z0-9]+)+$"
 
 SemanticDimension = Literal[
@@ -36,6 +37,7 @@ Capability = Literal[
 ]
 
 __all__ = [
+    "MAX_QUERY_OFFSET",
     "RESOURCE_ID_PATTERN",
     "Capability",
     "EntityGranularity",

@@ -1,0 +1,212 @@
+{
+  "boundaries": {
+    "consumer_canary_performed": false,
+    "external_publication_performed": false,
+    "formula_semantics_qualified": false,
+    "native_workbook_layout_qualified": true,
+    "public_dataset_mutated": false,
+    "schema_matches_are_semantic_qualification": false,
+    "source_bytes_persisted_locally": false,
+    "source_field_semantics_qualified": false,
+    "source_values_or_rows_emitted": false,
+    "v4_admission_performed": false
+  },
+  "comparison": {
+    "existing_contract": "quality/qualifications/australian-mbs-utilisation-semantic-requirements-20261005.json",
+    "existing_q1_csv_schema_inventory": "quality/qualifications/australian-mbs-utilisation-header-inventory-20261006.json",
+    "method": "exact string-vector equality within each of workbook rows 1-10; cell values are never emitted",
+    "schema_candidate_count": 4,
+    "schema_ids": [
+      "492b39de-8c97-4bbf-880e-e97d933daa9c",
+      "663a7fac-114c-47b5-9017-a9dbb9073260",
+      "c3e6f879-be6c-41b9-9cf1-c74feb928b83",
+      "ff6d0692-4c6f-466b-9d93-015224d80b14"
+    ]
+  },
+  "layout_qualification": {
+    "exact_header_match": false,
+    "existing_q1_csv_schema_headers": [
+      "Year",
+      "Month of Processing",
+      "Item Number",
+      "State",
+      "Age Range",
+      "Gender",
+      "Services",
+      "Benefit"
+    ],
+    "existing_q1_csv_schema_id": "492b39de-8c97-4bbf-880e-e97d933daa9c",
+    "formula_cell_count": 171477,
+    "formulas_evaluated": false,
+    "position_differences": [
+      {
+        "column": 2,
+        "q1_csv_schema_header": "Month of Processing",
+        "workbook_header": "Month"
+      },
+      {
+        "column": 3,
+        "q1_csv_schema_header": "Item Number",
+        "workbook_header": "Item_Number"
+      },
+      {
+        "column": 5,
+        "q1_csv_schema_header": "Age Range",
+        "workbook_header": "Age_Range"
+      },
+      {
+        "column": 8,
+        "q1_csv_schema_header": "Benefit",
+        "workbook_header": "Benefits ($)"
+      }
+    ],
+    "primary_sheet_header_row": 3,
+    "primary_sheet_native_headers": [
+      "Year",
+      "Month",
+      "Item_Number",
+      "State",
+      "Age_Range",
+      "Gender",
+      "Services",
+      "Benefits ($)"
+    ],
+    "scope": "Exact object identity, sheet order/names, dimensions, row and cell counts, formula presence, and observed native header row. This does not qualify formulas, period interpretation, field mapping, or transform behavior.",
+    "state": "qualified_for_exact_pinned_physical_structure"
+  },
+  "schema_id": "global-medicines-atlas.mbs-demographics-q1hr-workbook-layout-candidate",
+  "schema_version": 1,
+  "screened_at": "2026-10-21T03:07:08Z",
+  "source": {
+    "byte_count": 21966140,
+    "dataset": "edithatogo/australian-mbs-utilisation-archive",
+    "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+    "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+    "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d"
+  },
+  "status": "physical_layout_qualified_source_field_semantics_open",
+  "workbook": {
+    "epoch": "1899-12-30 00:00:00",
+    "sheet_count": 2,
+    "sheets": [
+      {
+        "cell_type_counts": {
+          "f": 171477,
+          "n": 2180280,
+          "s": 2008831
+        },
+        "declared_dimension": "A1:H545077",
+        "first_ten_row_string_profiles": [
+          {
+            "exact_existing_csv_schema_matches": [],
+            "nonempty_string_cell_count": 1,
+            "row_index": 1,
+            "string_vector_sha256": "e2701a625f7ac855e76f36ae2398d126982f1bc8fe620fb74db6761720b41804"
+          },
+          {
+            "exact_existing_csv_schema_matches": [],
+            "nonempty_string_cell_count": 1,
+            "row_index": 2,
+            "string_vector_sha256": "c2f85b360c9fbf3a808b6b1d324262ca61b5519fd10fa6682383f71911cd03f1"
+          },
+          {
+            "exact_existing_csv_schema_matches": [],
+            "nonempty_string_cell_count": 8,
+            "row_index": 3,
+            "string_vector_sha256": "04e9bba59c20bacc15aaa25095cc78449ed67196fb73330b5442d3f4737f8c9e"
+          },
+          {
+            "exact_existing_csv_schema_matches": [],
+            "nonempty_string_cell_count": 4,
+            "row_index": 4,
+            "string_vector_sha256": "b2a13531f05956293bcb1b24e3cc4b83efa7b61cea91c27f7e3c26225d463254"
+          },
+          {
+            "exact_existing_csv_schema_matches": [],
+            "nonempty_string_cell_count": 4,
+            "row_index": 5,
+            "string_vector_sha256": "43b7f4d0abe0bfcdca7fc6b3c721ab069a0bc9a64d2cfc89fe6189d0b42a06d9"
+          },
+          {
+            "exact_existing_csv_schema_matches": [],
+            "nonempty_string_cell_count": 4,
+            "row_index": 6,
+            "string_vector_sha256": "4432a826a7c162f79bf3edf87bac7dc04df97c85194c37602d56353808349903"
+          },
+          {
+            "exact_existing_csv_schema_matches": [],
+            "nonempty_string_cell_count": 4,
+            "row_index": 7,
+            "string_vector_sha256": "5ad83aaed6db8269aa253d09b513a8f51310870a9e2839d9f0e49f4e1172ac22"
+          },
+          {
+            "exact_existing_csv_schema_matches": [],
+            "nonempty_string_cell_count": 4,
+            "row_index": 8,
+            "string_vector_sha256": "e812f35f8340994ea8899bf38e6ec176e2d40ff9aee4b409d61b96f409823933"
+          },
+          {
+            "exact_existing_csv_schema_matches": [],
+            "nonempty_string_cell_count": 4,
+            "row_index": 9,
+            "string_vector_sha256": "d385661023453305ee3b207fd9be672efa24e02289630e7160262997e1432be2"
+          },
+          {
+            "exact_existing_csv_schema_matches": [],
+            "nonempty_string_cell_count": 4,
+            "row_index": 10,
+            "string_vector_sha256": "1cbaec09c2e7e057cba03ca87df46fa4c30bf5c17102b076985018468b823060"
+          }
+        ],
+        "formula_cell_count": 171477,
+        "iterated_row_count": 545077,
+        "name": "MBS Demographics 2016 Qtr1",
+        "nonempty_cell_count": 4360588,
+        "observed_nonempty_column_count": 8
+      },
+      {
+        "cell_type_counts": {
+          "s": 14
+        },
+        "declared_dimension": "A1:A22",
+        "first_ten_row_string_profiles": [
+          {
+            "exact_existing_csv_schema_matches": [],
+            "nonempty_string_cell_count": 1,
+            "row_index": 1,
+            "string_vector_sha256": "ca10e33a82fe9a01b1938f567fa41fc8d33a329c46a171b55276e832252fd4f1"
+          },
+          {
+            "exact_existing_csv_schema_matches": [],
+            "nonempty_string_cell_count": 1,
+            "row_index": 3,
+            "string_vector_sha256": "a3edc1b753189ba7b49508a3960bc30aa6fefa68b0f43d8e22e3abf8df05bb37"
+          },
+          {
+            "exact_existing_csv_schema_matches": [],
+            "nonempty_string_cell_count": 1,
+            "row_index": 6,
+            "string_vector_sha256": "b0aeaf29b193776a79a0c82f722aa07447ef9c06c9ad21ab5816bab5123f84f8"
+          },
+          {
+            "exact_existing_csv_schema_matches": [],
+            "nonempty_string_cell_count": 1,
+            "row_index": 9,
+            "string_vector_sha256": "b809de79cb933cf4fa14a66d0eb28ab0fc7af9a67b5afaba17c1c7999b725159"
+          },
+          {
+            "exact_existing_csv_schema_matches": [],
+            "nonempty_string_cell_count": 1,
+            "row_index": 10,
+            "string_vector_sha256": "61490d66ad957fc2aebe554fc6497646cbb09aa2cb02ab7d00cb2de1d1a4a3ca"
+          }
+        ],
+        "formula_cell_count": 0,
+        "iterated_row_count": 22,
+        "name": "Metadata",
+        "nonempty_cell_count": 14,
+        "observed_nonempty_column_count": 1
+      }
+    ]
+  }
+}

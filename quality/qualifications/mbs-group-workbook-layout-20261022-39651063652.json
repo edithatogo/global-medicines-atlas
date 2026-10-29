@@ -1,0 +1,1232 @@
+{
+  "new_admissions": 0,
+  "new_sources": 0,
+  "publications": 0,
+  "result": {
+    "members": [
+      {
+        "bytes": 1420,
+        "path": "[Content_Types].xml",
+        "sha256": "c51690c5096838117b323abaf41fcfd917c04be68c3400cddbcd8d2f4708d79e"
+      },
+      {
+        "bytes": 588,
+        "path": "_rels/.rels",
+        "sha256": "73e5a29f48d5ab979eeda062493bc7e679265c1344ef936978b8becec5549497"
+      },
+      {
+        "bytes": 839,
+        "path": "xl/_rels/workbook.xml.rels",
+        "sha256": "15e353ac27ab7362603f4a0d0754a97885e8e2ce523615a3cd59b458ddcd60e9"
+      },
+      {
+        "bytes": 1292,
+        "path": "xl/workbook.xml",
+        "sha256": "822903906e26c9719d383849a6179641625c78eb0044dc83c0e58aed2152aaaa"
+      },
+      {
+        "bytes": 22118,
+        "path": "xl/styles.xml",
+        "sha256": "7e9e79827e15965ffcf08e248f7195c4d77a85f22211b70543b4ce5d452ebe89"
+      },
+      {
+        "bytes": 571,
+        "path": "xl/worksheets/_rels/sheet2.xml.rels",
+        "sha256": "603f30aed634f7a611ced175f8d1319ad52333880ac7a681526e3d11bd436219"
+      },
+      {
+        "bytes": 322,
+        "path": "xl/worksheets/_rels/sheet1.xml.rels",
+        "sha256": "65cefb6727e21f882eb83bb6c10370afa59aafda7f007f531df0c30026dc4684"
+      },
+      {
+        "bytes": 6489,
+        "path": "xl/worksheets/sheet2.xml",
+        "sha256": "843e55a337515c5b6fa870fefe1f877e2a828a341b58ae8f639ef9b6b7c66361"
+      },
+      {
+        "bytes": 6798,
+        "path": "xl/theme/theme1.xml",
+        "sha256": "a0df54cd7c507e485061a0ba3de7503eb81f6dfa8cc701ee4478439bdf26dfbb"
+      },
+      {
+        "bytes": 59519293,
+        "path": "xl/worksheets/sheet1.xml",
+        "sha256": "76aa8fcf9e36989427b08cba0fca55d4a1c9a9bb54bcdb26e453166fd8bc8a40"
+      },
+      {
+        "bytes": 17770,
+        "path": "xl/sharedStrings.xml",
+        "sha256": "e7b3da87cc86c8e78ab8715ba399156ea4f81acdd8cabb06bd1d8bd4a9e00809"
+      },
+      {
+        "bytes": 623,
+        "path": "docProps/core.xml",
+        "sha256": "25e4741c462661e0cc1fc4a7b3b371608d273a98a26b0413853f98166b4c310c"
+      },
+      {
+        "bytes": 2511,
+        "path": "xl/printerSettings/printerSettings2.bin",
+        "sha256": "e8b5700141f2a30d0db2abd85ee9203c53f13811b1fe9611c5f3ad1d3ac8227c"
+      },
+      {
+        "bytes": 7108,
+        "path": "xl/printerSettings/printerSettings1.bin",
+        "sha256": "d536d9012adf485cd122ad60dbe33b5ba4a403d18df7f6c577606ab37591bc4f"
+      },
+      {
+        "bytes": 803,
+        "path": "docProps/app.xml",
+        "sha256": "789fd64fa15338e70a8c97c9d6e87e7eebbca58a5982324dbaa7b2e411dfb730"
+      }
+    ],
+    "new_admissions": 0,
+    "publications": 0,
+    "qualification": "native_layout_candidate_only",
+    "schema_version": 1,
+    "semantic_roles_assigned": false,
+    "sheet_count": 2,
+    "sheets": [
+      {
+        "formula_cells": 0,
+        "header_candidates": [
+          {
+            "column": 1,
+            "name": "A1",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "A1",
+                  "s": "21",
+                  "t": "s"
+                },
+                "children": [
+                  {
+                    "element": {
+                      "attributes": {},
+                      "children": [],
+                      "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}v",
+                      "text": "333"
+                    },
+                    "tail": null
+                  }
+                ],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": "s",
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": "333",
+              "row_attributes": {
+                "ht": "18.75",
+                "r": "1",
+                "spans": "1:8",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.3"
+              },
+              "shared_string_structure": {
+                "attributes": {},
+                "children": [
+                  {
+                    "element": {
+                      "attributes": {},
+                      "children": [],
+                      "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}t",
+                      "text": "Medicare Benefits Schedule - Group Report.  Year:  2016 (by Month) - UP TO JULY"
+                    },
+                    "tail": null
+                  }
+                ],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}si",
+                "text": null
+              }
+            },
+            "row": 1,
+            "state": "value",
+            "value": "Medicare Benefits Schedule - Group Report.  Year:  2016 (by Month) - UP TO JULY"
+          },
+          {
+            "column": 2,
+            "name": "B1",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "B1",
+                  "s": "22"
+                },
+                "children": [],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": null,
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": null,
+              "row_attributes": {
+                "ht": "18.75",
+                "r": "1",
+                "spans": "1:8",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.3"
+              }
+            },
+            "row": 1,
+            "state": "null",
+            "value": null
+          },
+          {
+            "column": 3,
+            "name": "C1",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "C1",
+                  "s": "22"
+                },
+                "children": [],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": null,
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": null,
+              "row_attributes": {
+                "ht": "18.75",
+                "r": "1",
+                "spans": "1:8",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.3"
+              }
+            },
+            "row": 1,
+            "state": "null",
+            "value": null
+          },
+          {
+            "column": 4,
+            "name": "D1",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "D1",
+                  "s": "22"
+                },
+                "children": [],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": null,
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": null,
+              "row_attributes": {
+                "ht": "18.75",
+                "r": "1",
+                "spans": "1:8",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.3"
+              }
+            },
+            "row": 1,
+            "state": "null",
+            "value": null
+          },
+          {
+            "column": 5,
+            "name": "E1",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "E1",
+                  "s": "22"
+                },
+                "children": [],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": null,
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": null,
+              "row_attributes": {
+                "ht": "18.75",
+                "r": "1",
+                "spans": "1:8",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.3"
+              }
+            },
+            "row": 1,
+            "state": "null",
+            "value": null
+          },
+          {
+            "column": 6,
+            "name": "F1",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "F1",
+                  "s": "22"
+                },
+                "children": [],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": null,
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": null,
+              "row_attributes": {
+                "ht": "18.75",
+                "r": "1",
+                "spans": "1:8",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.3"
+              }
+            },
+            "row": 1,
+            "state": "null",
+            "value": null
+          },
+          {
+            "column": 7,
+            "name": "G1",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "G1",
+                  "s": "22"
+                },
+                "children": [],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": null,
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": null,
+              "row_attributes": {
+                "ht": "18.75",
+                "r": "1",
+                "spans": "1:8",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.3"
+              }
+            },
+            "row": 1,
+            "state": "null",
+            "value": null
+          },
+          {
+            "column": 8,
+            "name": "H1",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "H1",
+                  "s": "23"
+                },
+                "children": [],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": null,
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": null,
+              "row_attributes": {
+                "ht": "18.75",
+                "r": "1",
+                "spans": "1:8",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.3"
+              }
+            },
+            "row": 1,
+            "state": "null",
+            "value": null
+          },
+          {
+            "column": 1,
+            "name": "A2",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "A2",
+                  "s": "18",
+                  "t": "s"
+                },
+                "children": [
+                  {
+                    "element": {
+                      "attributes": {},
+                      "children": [],
+                      "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}v",
+                      "text": "269"
+                    },
+                    "tail": null
+                  }
+                ],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": "s",
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": "269",
+              "row_attributes": {
+                "ht": "18.75",
+                "r": "2",
+                "spans": "1:8",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.3"
+              },
+              "shared_string_structure": {
+                "attributes": {},
+                "children": [
+                  {
+                    "element": {
+                      "attributes": {},
+                      "children": [],
+                      "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}t",
+                      "text": "JANUARY"
+                    },
+                    "tail": null
+                  }
+                ],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}si",
+                "text": null
+              }
+            },
+            "row": 2,
+            "state": "value",
+            "value": "JANUARY"
+          },
+          {
+            "column": 2,
+            "name": "B2",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "B2",
+                  "s": "19"
+                },
+                "children": [],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": null,
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": null,
+              "row_attributes": {
+                "ht": "18.75",
+                "r": "2",
+                "spans": "1:8",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.3"
+              }
+            },
+            "row": 2,
+            "state": "null",
+            "value": null
+          },
+          {
+            "column": 3,
+            "name": "C2",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "C2",
+                  "s": "19"
+                },
+                "children": [],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": null,
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": null,
+              "row_attributes": {
+                "ht": "18.75",
+                "r": "2",
+                "spans": "1:8",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.3"
+              }
+            },
+            "row": 2,
+            "state": "null",
+            "value": null
+          },
+          {
+            "column": 4,
+            "name": "D2",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "D2",
+                  "s": "19"
+                },
+                "children": [],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": null,
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": null,
+              "row_attributes": {
+                "ht": "18.75",
+                "r": "2",
+                "spans": "1:8",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.3"
+              }
+            },
+            "row": 2,
+            "state": "null",
+            "value": null
+          },
+          {
+            "column": 5,
+            "name": "E2",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "E2",
+                  "s": "19"
+                },
+                "children": [],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": null,
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": null,
+              "row_attributes": {
+                "ht": "18.75",
+                "r": "2",
+                "spans": "1:8",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.3"
+              }
+            },
+            "row": 2,
+            "state": "null",
+            "value": null
+          },
+          {
+            "column": 6,
+            "name": "F2",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "F2",
+                  "s": "19"
+                },
+                "children": [],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": null,
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": null,
+              "row_attributes": {
+                "ht": "18.75",
+                "r": "2",
+                "spans": "1:8",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.3"
+              }
+            },
+            "row": 2,
+            "state": "null",
+            "value": null
+          },
+          {
+            "column": 7,
+            "name": "G2",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "G2",
+                  "s": "19"
+                },
+                "children": [],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": null,
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": null,
+              "row_attributes": {
+                "ht": "18.75",
+                "r": "2",
+                "spans": "1:8",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.3"
+              }
+            },
+            "row": 2,
+            "state": "null",
+            "value": null
+          },
+          {
+            "column": 8,
+            "name": "H2",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "H2",
+                  "s": "20"
+                },
+                "children": [],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": null,
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": null,
+              "row_attributes": {
+                "ht": "18.75",
+                "r": "2",
+                "spans": "1:8",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.3"
+              }
+            },
+            "row": 2,
+            "state": "null",
+            "value": null
+          },
+          {
+            "column": 1,
+            "name": "A3",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "A3",
+                  "s": "1",
+                  "t": "s"
+                },
+                "children": [
+                  {
+                    "element": {
+                      "attributes": {},
+                      "children": [],
+                      "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}v",
+                      "text": "0"
+                    },
+                    "tail": null
+                  }
+                ],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": "s",
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": "0",
+              "row_attributes": {
+                "r": "3",
+                "spans": "1:8",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.25"
+              },
+              "shared_string_structure": {
+                "attributes": {},
+                "children": [
+                  {
+                    "element": {
+                      "attributes": {},
+                      "children": [],
+                      "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}t",
+                      "text": "Year"
+                    },
+                    "tail": null
+                  }
+                ],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}si",
+                "text": null
+              }
+            },
+            "row": 3,
+            "state": "value",
+            "value": "Year"
+          },
+          {
+            "column": 2,
+            "name": "B3",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "B3",
+                  "s": "1",
+                  "t": "s"
+                },
+                "children": [
+                  {
+                    "element": {
+                      "attributes": {},
+                      "children": [],
+                      "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}v",
+                      "text": "1"
+                    },
+                    "tail": null
+                  }
+                ],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": "s",
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": "1",
+              "row_attributes": {
+                "r": "3",
+                "spans": "1:8",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.25"
+              },
+              "shared_string_structure": {
+                "attributes": {},
+                "children": [
+                  {
+                    "element": {
+                      "attributes": {},
+                      "children": [],
+                      "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}t",
+                      "text": "Month"
+                    },
+                    "tail": null
+                  }
+                ],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}si",
+                "text": null
+              }
+            },
+            "row": 3,
+            "state": "value",
+            "value": "Month"
+          },
+          {
+            "column": 3,
+            "name": "C3",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "C3",
+                  "s": "1",
+                  "t": "s"
+                },
+                "children": [
+                  {
+                    "element": {
+                      "attributes": {},
+                      "children": [],
+                      "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}v",
+                      "text": "2"
+                    },
+                    "tail": null
+                  }
+                ],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": "s",
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": "2",
+              "row_attributes": {
+                "r": "3",
+                "spans": "1:8",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.25"
+              },
+              "shared_string_structure": {
+                "attributes": {},
+                "children": [
+                  {
+                    "element": {
+                      "attributes": {},
+                      "children": [],
+                      "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}t",
+                      "text": "Group"
+                    },
+                    "tail": null
+                  }
+                ],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}si",
+                "text": null
+              }
+            },
+            "row": 3,
+            "state": "value",
+            "value": "Group"
+          },
+          {
+            "column": 4,
+            "name": "D3",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "D3",
+                  "s": "1",
+                  "t": "s"
+                },
+                "children": [
+                  {
+                    "element": {
+                      "attributes": {},
+                      "children": [],
+                      "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}v",
+                      "text": "3"
+                    },
+                    "tail": null
+                  }
+                ],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": "s",
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": "3",
+              "row_attributes": {
+                "r": "3",
+                "spans": "1:8",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.25"
+              },
+              "shared_string_structure": {
+                "attributes": {},
+                "children": [
+                  {
+                    "element": {
+                      "attributes": {},
+                      "children": [],
+                      "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}t",
+                      "text": "Sub_Group"
+                    },
+                    "tail": null
+                  }
+                ],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}si",
+                "text": null
+              }
+            },
+            "row": 3,
+            "state": "value",
+            "value": "Sub_Group"
+          },
+          {
+            "column": 5,
+            "name": "E3",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "E3",
+                  "s": "1",
+                  "t": "s"
+                },
+                "children": [
+                  {
+                    "element": {
+                      "attributes": {},
+                      "children": [],
+                      "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}v",
+                      "text": "4"
+                    },
+                    "tail": null
+                  }
+                ],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": "s",
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": "4",
+              "row_attributes": {
+                "r": "3",
+                "spans": "1:8",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.25"
+              },
+              "shared_string_structure": {
+                "attributes": {},
+                "children": [
+                  {
+                    "element": {
+                      "attributes": {},
+                      "children": [],
+                      "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}t",
+                      "text": "Item_Number"
+                    },
+                    "tail": null
+                  }
+                ],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}si",
+                "text": null
+              }
+            },
+            "row": 3,
+            "state": "value",
+            "value": "Item_Number"
+          },
+          {
+            "column": 6,
+            "name": "F3",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "F3",
+                  "s": "1",
+                  "t": "s"
+                },
+                "children": [
+                  {
+                    "element": {
+                      "attributes": {},
+                      "children": [],
+                      "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}v",
+                      "text": "5"
+                    },
+                    "tail": null
+                  }
+                ],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": "s",
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": "5",
+              "row_attributes": {
+                "r": "3",
+                "spans": "1:8",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.25"
+              },
+              "shared_string_structure": {
+                "attributes": {},
+                "children": [
+                  {
+                    "element": {
+                      "attributes": {},
+                      "children": [],
+                      "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}t",
+                      "text": "State"
+                    },
+                    "tail": null
+                  }
+                ],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}si",
+                "text": null
+              }
+            },
+            "row": 3,
+            "state": "value",
+            "value": "State"
+          },
+          {
+            "column": 7,
+            "name": "G3",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "G3",
+                  "s": "17",
+                  "t": "s"
+                },
+                "children": [
+                  {
+                    "element": {
+                      "attributes": {},
+                      "children": [],
+                      "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}v",
+                      "text": "6"
+                    },
+                    "tail": null
+                  }
+                ],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": "s",
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": "6",
+              "row_attributes": {
+                "r": "3",
+                "spans": "1:8",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.25"
+              },
+              "shared_string_structure": {
+                "attributes": {},
+                "children": [
+                  {
+                    "element": {
+                      "attributes": {},
+                      "children": [],
+                      "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}t",
+                      "text": "Services"
+                    },
+                    "tail": null
+                  }
+                ],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}si",
+                "text": null
+              }
+            },
+            "row": 3,
+            "state": "value",
+            "value": "Services"
+          },
+          {
+            "column": 8,
+            "name": "H3",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "H3",
+                  "s": "11",
+                  "t": "s"
+                },
+                "children": [
+                  {
+                    "element": {
+                      "attributes": {},
+                      "children": [],
+                      "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}v",
+                      "text": "270"
+                    },
+                    "tail": null
+                  }
+                ],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": "s",
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": "270",
+              "row_attributes": {
+                "r": "3",
+                "spans": "1:8",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.25"
+              },
+              "shared_string_structure": {
+                "attributes": {},
+                "children": [
+                  {
+                    "element": {
+                      "attributes": {},
+                      "children": [],
+                      "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}t",
+                      "text": "Benefits ($)"
+                    },
+                    "tail": null
+                  }
+                ],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}si",
+                "text": null
+              }
+            },
+            "row": 3,
+            "state": "value",
+            "value": "Benefits ($)"
+          }
+        ],
+        "name": "MBS_Group_2016",
+        "native_cells": 1316464,
+        "native_inventory_sha256": "2a8e5ee6af5d8a1b6c48b47815761388707c44dc4fbd45294c25416362d5c383",
+        "native_rows": 164558,
+        "path": "xl/worksheets/sheet1.xml",
+        "relationship_id": "rId1",
+        "source_error_cells": 0
+      },
+      {
+        "formula_cells": 0,
+        "header_candidates": [
+          {
+            "column": 1,
+            "name": "A1",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "A1",
+                  "s": "2",
+                  "t": "s"
+                },
+                "children": [
+                  {
+                    "element": {
+                      "attributes": {},
+                      "children": [],
+                      "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}v",
+                      "text": "271"
+                    },
+                    "tail": null
+                  }
+                ],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": "s",
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": "271",
+              "row_attributes": {
+                "ht": "18",
+                "r": "1",
+                "spans": "1:27",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.25"
+              },
+              "shared_string_structure": {
+                "attributes": {},
+                "children": [
+                  {
+                    "element": {
+                      "attributes": {},
+                      "children": [],
+                      "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}t",
+                      "text": "About MBS Group Statistics Reports"
+                    },
+                    "tail": null
+                  }
+                ],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}si",
+                "text": null
+              }
+            },
+            "row": 1,
+            "state": "value",
+            "value": "About MBS Group Statistics Reports"
+          },
+          {
+            "column": 1,
+            "name": "A2",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "A2",
+                  "s": "3"
+                },
+                "children": [],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": null,
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": null,
+              "row_attributes": {
+                "r": "2",
+                "spans": "1:27",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.25"
+              }
+            },
+            "row": 2,
+            "state": "null",
+            "value": null
+          },
+          {
+            "column": 1,
+            "name": "A3",
+            "native_properties": {
+              "cell_structure": {
+                "attributes": {
+                  "r": "A3",
+                  "s": "8",
+                  "t": "s"
+                },
+                "children": [
+                  {
+                    "element": {
+                      "attributes": {},
+                      "children": [],
+                      "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}v",
+                      "text": "272"
+                    },
+                    "tail": null
+                  }
+                ],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}c",
+                "text": null
+              },
+              "cell_type": "s",
+              "formula": null,
+              "formula_attributes": null,
+              "formula_present": false,
+              "raw_value": "272",
+              "row_attributes": {
+                "ht": "30",
+                "r": "3",
+                "spans": "1:27",
+                "{http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac}dyDescent": "0.25"
+              },
+              "shared_string_structure": {
+                "attributes": {},
+                "children": [
+                  {
+                    "element": {
+                      "attributes": {},
+                      "children": [],
+                      "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}t",
+                      "text": "These reports produce statistics on groups of MBS items. MBS groups (ie. category, groups and subgroup) are described in the MBS Online. An alternative grouping is Broad Type of Service which is used in the Medicare Australia annual report."
+                    },
+                    "tail": null
+                  }
+                ],
+                "tag": "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}si",
+                "text": null
+              }
+            },
+            "row": 3,
+            "state": "value",
+            "value": "These reports produce statistics on groups of MBS items. MBS groups (ie. category, groups and subgroup) are described in the MBS Online. An alternative grouping is Broad Type of Service which is used in the Medicare Australia annual report."
+          }
+        ],
+        "name": "Metadata",
+        "native_cells": 228,
+        "native_inventory_sha256": "b0d4667065201f73bd6ce46a6c773999979a84fdc71fbc90517059915548dc5c",
+        "native_rows": 20,
+        "path": "xl/worksheets/sheet2.xml",
+        "relationship_id": "rId2",
+        "source_error_cells": 0
+      }
+    ],
+    "source_sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285"
+  },
+  "rights_conclusion_changed": false,
+  "schema_id": "global-medicines-atlas.mbs-group-workbook-layout",
+  "schema_version": 1,
+  "source": {
+    "acquisition_id": "7b46430b1a5ec2c1b6b1617244aa6e983902004ab082aa314bfb7e3a9503663b",
+    "b1_sha256": "a3cbcbe8b4368caf23cc13ab6f32ee90cfe9debe9321d7a45424906597712e05",
+    "b2_sha256": "3f2290f6a2f565974812c7e7545e399753d9da65d2e17381618b8a9dd3d75d35",
+    "bytes": 6857437,
+    "dataset": "edithatogo/australian-mbs-utilisation-archive",
+    "path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+    "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+    "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285",
+    "source_id": "au-data-gov-mbs-group",
+    "source_object_id": "b965b467492fb62b85a3a891eeff5a46400cec1d92af31e24318454b85916ea1",
+    "structural_receipt_sha256": "f622434530f3d184a5aea6684e67dc7f874424c2ada634b2f154490a39c6f457"
+  },
+  "workflow_commit": "f1531496c039538540ec5dcbd848e64c4d556a5a"
+}

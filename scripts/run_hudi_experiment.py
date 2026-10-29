@@ -125,7 +125,7 @@ def main() -> int:
     arguments.output.write_text(
         json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
-    return 0
+    return 0 if receipt["outcome"] == "passed" else 1
 
 
 if __name__ == "__main__":

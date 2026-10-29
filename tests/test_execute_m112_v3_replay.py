@@ -18,8 +18,10 @@ def _canonical(value: Any) -> bytes:
     ).encode("utf-8")
 
 
-def _small_plan(payload: bytes) -> dict[str, Any]:
-    plan = qualification.qualify()
+def _small_plan(
+    payload: bytes, *, target_path: str = qualification.TARGET_PATH
+) -> dict[str, Any]:
+    plan = qualification.qualify(target_path=target_path, allow_existing=True)
     snapshot = plan["snapshots"][0]
     step = plan["replay_plan"]["steps"][0]
     digest = hashlib.sha256(payload).hexdigest()
@@ -58,10 +60,10 @@ def _fake_download(payload: bytes):
         assert kwargs["repo_id"] == executor.DATASET
         assert kwargs["repo_type"] == "dataset"
         assert kwargs["revision"] == executor.REVISION
-        assert kwargs["filename"] == executor.TARGET_PATH
+        assert kwargs["filename"].startswith("raw/mbs/utilisation/")
         assert kwargs["token"] is False
         local_dir = Path(kwargs["local_dir"])
-        path = local_dir / executor.TARGET_PATH
+        path = local_dir / kwargs["filename"]
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(payload)
         return str(path)
@@ -100,6 +102,98 @@ def test_replay_receipt_contains_only_identity_and_proves_cleanup(
     assert json.loads(output_path.read_text(encoding="utf-8")) == receipt
 
 
+def test_executor_replays_another_pinned_raw_mbs_object(
+    tmp_path: Path,
+) -> None:
+    target_path = "raw/mbs/utilisation/group/mbs-group-2016-july.csv"
+    payload = b"second object synthetic bytes for digest-only executor test"
+    plan = _small_plan(payload, target_path=target_path)
+    work_dir = tmp_path / "work"
+    output_path = tmp_path / "receipt.json"
+
+    receipt = executor.execute(
+        plan,
+        work_dir=work_dir,
+        output_path=output_path,
+        workflow_commit="a" * 40,
+        workflow_run_id="124",
+        workflow_run_attempt="1",
+        download=_fake_download(payload),
+    )
+
+    assert receipt["scope"]["path"] == target_path
+    assert receipt["scope"]["byte_count"] == len(payload)
+    assert receipt["verification"]["temporary_source_bytes_removed"] is True
+    assert not work_dir.exists()
+
+
+def test_executor_replays_pinned_demographics_source(
+    tmp_path: Path,
+) -> None:
+    target_path = (
+        "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv"
+    )
+    payload = b"demographics replay synthetic bytes"
+    plan = _small_plan(payload, target_path=target_path)
+    work_dir = tmp_path / "work"
+    output_path = tmp_path / "receipt.json"
+
+    receipt = executor.execute(
+        plan,
+        work_dir=work_dir,
+        output_path=output_path,
+        workflow_commit="a" * 40,
+        workflow_run_id="126",
+        workflow_run_attempt="1",
+        download=_fake_download(payload),
+    )
+
+    assert receipt["scope"]["path"] == target_path
+    assert receipt["replay"]["registration"]["source_id"] == (
+        "au-data-gov-mbs-demographics"
+    )
+    assert receipt["verification"]["temporary_source_bytes_removed"] is True
+    assert not work_dir.exists()
+
+
+def test_executor_rejects_source_id_drift_between_contract_and_snapshot(
+    tmp_path: Path,
+) -> None:
+    plan = _small_plan(b"synthetic bytes")
+    plan["contracts"][0]["source_id"] = "au-data-gov-mbs-demographics"
+
+    with pytest.raises(ValueError, match="not eligible for hosted replay"):
+        executor.execute(
+            plan,
+            work_dir=tmp_path / "work",
+            output_path=tmp_path / "receipt.json",
+            workflow_commit="a" * 40,
+            workflow_run_id="127",
+            workflow_run_attempt="1",
+            download=_fake_download(b"synthetic bytes"),
+        )
+
+
+def test_executor_rejects_non_mbs_or_unapproved_path_from_plan(
+    tmp_path: Path,
+) -> None:
+    plan = _small_plan(b"test")
+    plan["snapshots"][0]["partition_value"] = (
+        f"{executor.DATASET}@{executor.REVISION}:raw/pbs/test.pdf"
+    )
+
+    with pytest.raises(ValueError, match="approved raw B2 path"):
+        executor.execute(
+            plan,
+            work_dir=tmp_path / "work",
+            output_path=tmp_path / "receipt.json",
+            workflow_commit="a" * 40,
+            workflow_run_id="125",
+            workflow_run_attempt="1",
+            download=_fake_download(b"test"),
+        )
+
+
 def test_replay_digest_mismatch_fails_closed_and_removes_temporary_bytes(
     tmp_path: Path,
 ) -> None:
@@ -108,7 +202,7 @@ def test_replay_digest_mismatch_fails_closed_and_removes_temporary_bytes(
 
     with pytest.raises(ValueError, match="digest or byte count differs"):
         executor.execute(
-            qualification.qualify(),
+            qualification.qualify(allow_existing=True),
             work_dir=work_dir,
             output_path=output_path,
             workflow_commit="a" * 40,

@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
-from typing import cast
+from typing import Any, cast
 
 import pytest
 from fastapi.testclient import TestClient
@@ -26,6 +26,7 @@ from global_medicines_atlas.platinum_surface_contracts import (
     DatasetIdentityV2Envelope,
 )
 from global_medicines_atlas.platinum_types import PlatinumSemanticDimension
+from global_medicines_atlas.platinum_v2_api import create_v2_app
 
 RESOURCE_ID = "au.pbs.synthetic.structure"
 OBJECT_SHA256 = "a" * 64
@@ -324,3 +325,145 @@ def test_atlas_source_structure_errors_are_bounded(
 
     assert response.status_code == expected_status
     assert message in response.text
+
+
+@pytest.mark.parametrize(
+    ("view", "collection"), [("records", None), ("fields", "native_fields")]
+)
+def test_structure_view_selects_explicit_field_collection(
+    monkeypatch, view, collection
+):
+    service = _service(monkeypatch, result=_available_result())
+    seen = []
+
+    def query_state(self, resource_id, *, engine, spec, offline):
+        del self, resource_id, engine, offline
+        seen.append(spec)
+        return _available_result()
+
+    monkeypatch.setattr(PlatinumQueryService, "query_state", query_state)
+    page = service.query(
+        RESOURCE_ID,
+        SourceStructureQuery(columns=("value",), view=view, limit=2),
+    )
+    assert page.view == view
+    assert seen[0].field_collection == collection
+    assert seen[0].limit == 2
+
+
+def test_atlas_field_view_is_preserved_and_escaped():
+    seen = []
+
+    class Lookup:
+        def query(self, resource_id, query):
+            assert resource_id == RESOURCE_ID
+            seen.append(query)
+            return SourceStructurePage(
+                status="available",
+                view=query.view,
+                identity=_identity(),
+                rows=({"value": "<script>source observation</script>"},),
+                query_sha256="d" * 64,
+                query_receipt_sha256="e" * 64,
+                query_receipt_json="{}",
+                reason=None,
+            )
+
+    client = TestClient(
+        create_atlas_app(
+            cast("AtlasQueryService", object()),
+            federated_source_structure=cast("SourceStructureService", Lookup()),
+        )
+    )
+    response = client.get(
+        "/federated/source-structure",
+        params={
+            "resource_id": RESOURCE_ID,
+            "view": "fields",
+            "columns": "value",
+            "limit": 2,
+        },
+    )
+    assert response.status_code == 200
+    assert seen[0].view == "fields"
+    assert '<option value="fields" selected>' in response.text
+    assert "<script>source observation</script>" not in response.text
+    assert "&lt;script&gt;source observation&lt;/script&gt;" in response.text
+
+
+@pytest.mark.parametrize(
+    ("error", "code"),
+    [
+        (None, 200),
+        ("unavailable", 200),
+        (ValueError, 422),
+        (OSError, 503),
+        (UnknownPlatinumResourceError, 404),
+    ],
+)
+def test_v2_source_structure_field_transport_is_bounded(error, code):
+    seen = []
+
+    class Lookup:
+        def query(self, resource_id, query):
+            assert resource_id == RESOURCE_ID
+            seen.append(query)
+            if error and error != "unavailable":
+                raise error("sensitive source value")
+            return SourceStructurePage(
+                status="unavailable" if error == "unavailable" else "available",
+                view=query.view,
+                identity=_identity(),
+                rows=() if error == "unavailable" else ({"value": "native"},),
+                query_sha256="d" * 64,
+                query_receipt_sha256="e" * 64,
+                query_receipt_json="{}",
+                reason="offline_cache_unavailable"
+                if error == "unavailable"
+                else None,
+            )
+
+    client = TestClient(
+        create_v2_app(cast("Any", object()), source_structure=Lookup())
+    )
+    url = f"/api/v2/source-structure/{RESOURCE_ID}"
+    response = client.get(
+        url, params={"columns": "value", "view": "fields", "limit": 2}
+    )
+    assert response.status_code == code
+    assert seen[0].view == "fields"
+    assert seen[0].limit == 2
+    assert "sensitive source value" not in response.text
+    if error is None:
+        assert response.json()["rows"] == [{"value": "native"}]
+        assert response.json()["comparison_validity"] == "not_evaluated"
+    assert (
+        client.get(
+            url, params={"columns": "value", "view": "invented"}
+        ).status_code
+        == 422
+    )
+    assert (
+        client.get(url, params={"columns": "value", "limit": 101}).status_code
+        == 422
+    )
+    assert (
+        client.get(url, params={"columns": "value", "offset": -1}).status_code
+        == 422
+    )
+    assert (
+        client.get(
+            url, params={"columns": "value", "offset": 100_000_001}
+        ).status_code
+        == 422
+    )
+    assert len(seen) == 1
+
+
+def test_v2_source_structure_without_operator_service_is_unavailable():
+    client = TestClient(create_v2_app(cast("Any", object())))
+    response = client.get(
+        f"/api/v2/source-structure/{RESOURCE_ID}", params={"columns": "value"}
+    )
+    assert response.status_code == 503
+    assert response.headers["cache-control"] == "no-store"

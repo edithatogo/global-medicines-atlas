@@ -10,8 +10,11 @@ from pathlib import Path
 from typing import Any, cast
 
 import duckdb
+import pyarrow as pa
 import pyarrow.parquet as pq
+import pytest
 
+from global_medicines_atlas import comparison as comparison_module
 from global_medicines_atlas.columnar import (
     materialize_temporal_duckdb,
     write_temporal_assertions_parquet,
@@ -176,3 +179,34 @@ def test_duckdb_comparison_never_infers_missing_funding(
 
     assert usa_funding.is_empty()
     assert persisted_usa_funding == (0,)
+
+
+@pytest.mark.unit
+def test_country_comparison_rejects_missing_arrow_readback(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class Result:
+        def to_arrow_table(self) -> None:
+            return None
+
+    class Connection:
+        def register(self, _name: str, _table: object) -> None:
+            pass
+
+        def execute(self, *_args: object) -> Result:
+            return Result()
+
+        def close(self) -> None:
+            pass
+
+    monkeypatch.setattr(
+        comparison_module.duckdb, "connect", lambda *_: Connection()
+    )
+
+    with pytest.raises(RuntimeError, match="no Arrow table"):
+        compare_countries_as_of(
+            pa.table({"value": [1]}),
+            concept_id="fixture:1",
+            valid_at=VALID_AT,
+            observed_at=OBSERVED_AT,
+        )

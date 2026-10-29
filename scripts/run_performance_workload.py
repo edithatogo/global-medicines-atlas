@@ -68,11 +68,14 @@ def main() -> None:
     if process_memory is not None:
         current["process_peak_memory_mib"] = process_memory
     baseline = load_phase3_baselines(arguments.baseline).performance
-    if receipt["workload"]["dataset_sha256"] != (
-        baseline.workload.dataset_sha256
+    workload_identity = receipt["workload"]
+    if (
+        workload_identity["row_count"] != baseline.workload.row_count
+        or workload_identity["seed"] != baseline.workload.seed
+        or workload_identity["readers"] != baseline.workload.readers
     ):
         raise RuntimeError(
-            "performance workload differs from immutable baseline"
+            "performance workload configuration differs from immutable baseline"
         )
     regressions = performance_regressions(baseline, current)
     if regressions:

@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import pytest
 from tests import test_query_service as query_service_tests
@@ -111,11 +111,13 @@ def test_history_rejects_invalid_evidence_file(
 @pytest.mark.parametrize(
     ("status", "exit_code"), [("available", 0), ("unavailable", 3)]
 )
+@pytest.mark.parametrize("view", ["records", "fields"])
 def test_source_structure_cli_uses_operator_trust_and_bounded_query(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
     status: str,
     exit_code: int,
+    view: str,
 ) -> None:
     trust_file = tmp_path / "trust.json"
     trust_file.write_text("{}")
@@ -154,6 +156,10 @@ def test_source_structure_cli_uses_operator_trust_and_bounded_query(
         app,
         [
             "source-structure",
+            "--view",
+            view,
+            "--offset",
+            "2",
             "au.pbs.synthetic",
             "--trust-file",
             str(trust_file),
@@ -179,10 +185,12 @@ def test_source_structure_cli_uses_operator_trust_and_bounded_query(
         "schema_file": schema_file,
     }
     assert query_args["resource_id"] == "au.pbs.synthetic"
-    query = query_args["query"]
+    query = cast("platinum_structure.SourceStructureQuery", query_args["query"])
     assert query.columns == ("kind", "node_id")
     assert query.limit == 5
     assert query.offline is True
+    assert query.view == view
+    assert query.offset == 2
 
 
 @pytest.mark.parametrize(
@@ -548,7 +556,7 @@ def test_health_is_machine_readable(database: Path) -> None:
                 "--observed-at",
                 CLOCK,
             ],
-            "invalid value",
+            "timezone",
         ),
         (
             [

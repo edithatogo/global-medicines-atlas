@@ -11,24 +11,42 @@ import copy
 import hashlib
 import json
 import re
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any, cast
 
 ROOT = Path(__file__).resolve().parents[1]
+if __package__:
+    from . import qualify_m112_v3_replay
+else:
+    import qualify_m112_v3_replay
+
 ROLE_REPORT = "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261019.json"
 DIGEST_REPORT = "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json"
 DISCOVERY_REPORT = "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json"
 SOURCE_SEMANTICS_REPORT = "quality/qualifications/australian-m112-mbs-group-2016-source-semantics-20261020.json"
+PHYSICAL_LAYOUT_REPORT = (
+    "quality/qualifications/"
+    "australian-mbs-demographics-q1hr-workbook-layout-candidate-20261021.json"
+)
+OVERLAY_REPORT = (
+    "quality/qualifications/"
+    "australian-m112-per-object-gate-reconciliation-20261019-"
+    "reimbursement-medallion-projection-lineage.json"
+)
 V3_REPLAY_REPORT = (
     "quality/qualifications/australian-m112-v3-replay-execution-20261020.json"
 )
 V3_REPLAY_PLAN = (
     "quality/qualifications/australian-m112-v3-replay-plan-20261020.json"
 )
+V3_REPLAY_MANIFEST = (
+    "quality/qualifications/australian-m112-v3-replay-readbacks-20261021.json"
+)
 SOURCE_SEMANTICS_UNRESOLVED_PATH = (
     "raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip"
 )
-OUTPUT = "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json"
+OUTPUT = "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json"
 DATASET = "edithatogo/australian-mbs-utilisation-archive"
 PINNED_REVISION = "dee9a5b0580dfe394474dc26b372559462e157e7"
 WORKFLOW_COMMIT = "979f806fcf92267f9595eb78a88707e4ec2e503c"
@@ -45,8 +63,11 @@ EXPECTED_PATHS = 14
 EXPECTED_CANDIDATES = 16
 EXPECTED_SOURCE_SEMANTICS_OBJECTS = 13
 EXPECTED_MANIFEST_FILES = 28
+V3_REPLAY_TIMEOUT_MINUTES = 15
+APPROVED_DENOMINATOR = 1_759
+MIN_V4_RECEIPT_ROLES = 10
 OBSERVED_AT = "2026-10-19T16:13:05Z"
-ROLE_REPORT_RECORDED_AT = "2026-10-19T16:54:24Z"
+ROLE_REPORT_RECORDED_AT = "2026-10-21T09:34:41Z"
 CONTRACT_REPOSITORY = "edithatogo/global-medicines-atlas"
 CONTRACT_COMMIT = "a5753b1c79ccedd9bb54112bf803882ffc9deb96"
 CONTRACT_SCHEMA_PATH = "contracts/medallion/v4.1/federation.schema.json"
@@ -56,6 +77,9 @@ CONTRACT_SCHEMA_SHA256 = (
 PRODUCER_WORKFLOW = ".github/workflows/australian-mbs-utilisation-harvest.yml"
 SHA256_HEX_LENGTH = 64
 SOURCE_SEMANTICS_PATH = "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx"
+PHYSICAL_LAYOUT_PATH = (
+    "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx"
+)
 V3_REPLAY_PATH = "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx"
 V3_REPLAY_COMMIT = "dd7a01bcd3da60190f821395ceb1260a3d9ddad9"
 V3_REPLAY_RUN_ID = "39289077989"
@@ -541,6 +565,87 @@ def _bind_source_semantics_candidate(
     }
 
 
+def _bind_physical_layout_evidence(
+    candidates: list[Any], layout: dict[str, Any], root: Path
+) -> int:
+    """Bind the Q1 HR physical layout without promoting semantic roles."""
+    expected_source = {
+        "dataset": DATASET,
+        "revision": PINNED_REVISION,
+        "path": PHYSICAL_LAYOUT_PATH,
+        "byte_count": 21_966_140,
+        "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d",
+    }
+    source_value = layout.get("source")
+    boundaries_value = layout.get("boundaries")
+    qualification_value = layout.get("layout_qualification")
+    if not isinstance(source_value, dict):
+        raise TypeError("Q1 HR physical-layout evidence source is malformed")
+    source = cast("dict[str, Any]", source_value)
+    if any(source.get(key) != value for key, value in expected_source.items()):
+        raise ValueError("Q1 HR physical-layout evidence identity changed")
+    expected_boundaries = {
+        "native_workbook_layout_qualified": True,
+        "source_field_semantics_qualified": False,
+        "formula_semantics_qualified": False,
+        "v4_admission_performed": False,
+        "consumer_canary_performed": False,
+    }
+    if not isinstance(boundaries_value, dict):
+        raise TypeError("Q1 HR physical-layout boundaries are malformed")
+    boundaries = cast("dict[str, Any]", boundaries_value)
+    if any(
+        boundaries.get(key) is not value
+        for key, value in expected_boundaries.items()
+    ):
+        raise ValueError("Q1 HR physical-layout evidence exceeded its scope")
+    if not isinstance(qualification_value, dict):
+        raise TypeError("Q1 HR physical-layout qualification is malformed")
+    qualification = cast("dict[str, Any]", qualification_value)
+    if (
+        layout.get("status")
+        != "physical_layout_qualified_source_field_semantics_open"
+        or qualification.get("state")
+        != "qualified_for_exact_pinned_physical_structure"
+    ):
+        raise ValueError("Q1 HR physical-layout evidence exceeded its scope")
+
+    expected_candidate: dict[str, Any] = {
+        "dataset": DATASET,
+        "revision": PINNED_REVISION,
+        "path": PHYSICAL_LAYOUT_PATH,
+        "bytes": 21_966_140,
+        "sha256": expected_source["sha256"],
+    }
+    matches: list[dict[str, Any]] = []
+    for candidate_value in candidates:
+        if not isinstance(candidate_value, dict):
+            continue
+        candidate = cast("dict[str, Any]", candidate_value)
+        if all(
+            candidate.get(key) == value
+            for key, value in expected_candidate.items()
+        ):
+            matches.append(candidate)
+    if len(matches) != 1:
+        raise ValueError("Q1 HR physical-layout identity is not unique")
+    candidate = matches[0]
+    candidate["physical_layout_evidence"] = {
+        "report": {
+            "path": PHYSICAL_LAYOUT_REPORT,
+            "sha256": _sha256((root / PHYSICAL_LAYOUT_REPORT).read_bytes()),
+        },
+        "state": qualification["state"],
+        "scope": qualification["scope"],
+        "native_workbook_layout_qualified": True,
+        "source_field_semantics_qualified": False,
+        "formula_semantics_qualified": False,
+        "admission_performed": False,
+        "consumer_canary_performed": False,
+    }
+    return len(matches)
+
+
 def _validate_source_semantics_fields(
     candidate: dict[str, Any],
     source_row: dict[str, Any],
@@ -581,6 +686,8 @@ def _update_summary(
     root: Path,
     matched_count: int,
     v3_replay_count: int,
+    admission_count: int,
+    consumer_canary_count: int,
 ) -> None:
     report["cohort"]["publication_candidate_receipts"] = matched_count
     report["cohort"]["verification_candidate_receipts"] = matched_count
@@ -637,13 +744,27 @@ def _update_summary(
                 "have no such receipt."
             )
         if role.get("role") == "lineage.v3_replay":
-            role["state"] = "candidate_receipt_available_unbound_for_1_of_16"
+            role["state"] = (
+                f"candidate_receipts_available_unbound_for_"
+                f"{v3_replay_count}_of_16"
+            )
             role["evidence"] = (
-                "One exact M-112 raw B2 identity has a successful, anonymous, "
-                "token-free hosted v3 replay receipt with byte-count/SHA-256 "
-                "verification and temporary-byte cleanup. It remains "
-                "candidate-only and unbound; the other 15 replay roles are "
-                "missing."
+                f"{v3_replay_count} exact M-112 raw B2 identities have successful, "
+                "anonymous, token-free hosted v3 replay receipts with byte-count/"
+                "SHA-256 verification and temporary-byte cleanup. They remain "
+                "candidate-only and unbound; replay roles for the remaining "
+                f"{EXPECTED_CANDIDATES - v3_replay_count} candidates are missing."
+            )
+        if role.get("role") == "cache":
+            role["state"] = (
+                f"candidate_cleanup_receipts_available_unbound_for_"
+                f"{v3_replay_count}_of_16"
+            )
+            role["evidence"] = (
+                "The exact hosted v3 replay receipts bind a bounded temporary "
+                "runner cache, expiry, token-free cleanup, and removal for "
+                f"{v3_replay_count} object(s). This is temporary acquisition "
+                "cache evidence, not a durable reader cache or consumer claim."
             )
         if role.get("role") == "source":
             role["state"] = "candidate_receipts_available_unbound_for_13_of_16"
@@ -654,6 +775,19 @@ def _update_summary(
                 "layouts remain unqualified. Two August MBS XML objects and one "
                 "historical archive with a source-period mismatch remain partial; "
                 "the candidate source-role receipts are unbound."
+            )
+        if role.get("role") == "consumers":
+            role["state"] = (
+                f"qualified_consumer_canaries_for_{consumer_canary_count}_of_"
+                f"{admission_count}_current_admissions"
+            )
+            role["evidence"] = (
+                f"{consumer_canary_count} exact admitted M-112 objects have "
+                "successful bounded readbacks through the FederatedReader, "
+                "with remote and consumer-stream digest matches and zero "
+                "reader-cache bytes after close. This is cumulative receipt "
+                "evidence; this candidate-role refresh performed no canary. "
+                "Objects outside the admitted cohort remain untested."
             )
     report["authority_identity"] = {
         "producer_repository": CONTRACT_REPOSITORY,
@@ -681,9 +815,13 @@ def _update_summary(
         "candidates remain unresolved. Location and discovery evidence now cover all 16 paths but "
         "remain unbound until referenced by complete per-object v4 contracts. "
         f"V3 replay evidence is candidate-only for {v3_replay_count} of 16 "
-        "objects. Recovery evidence covers only the 14 utilisation paths; cache evidence "
-        "remains missing. Preserve "
-        "zero v4 admissions and zero M-112 consumer canaries."
+        "objects. Recovery evidence covers only the 14 utilisation paths; "
+        f"hosted cache-cleanup candidates bind {v3_replay_count} of 16 paths. "
+        "Consumer cache behavior remains a post-admission check. Current "
+        "independently evidenced state is "
+        f"{admission_count} v4 admissions and {consumer_canary_count} "
+        "admitted-object consumer canaries; this candidate-role refresh "
+        "performed no admission or canary."
     )
     report["recorded_at"] = ROLE_REPORT_RECORDED_AT
     report["supersedes"] = {
@@ -742,12 +880,34 @@ def _read_v3_replay_section(
     return cast("dict[str, Any]", value)
 
 
-def _validate_v3_replay_receipt(
-    root: Path,
-) -> tuple[dict[str, Any], dict[str, Any], str, str]:
-    """Verify the durable artifact and return its exact candidate identity."""
-    receipt = _read_json(root, V3_REPLAY_REPORT)
-    plan = _read_json(root, V3_REPLAY_PLAN)
+def _validate_v3_replay_receipt(  # ruff: ignore[too-many-locals] -- validate the exact replay artifact closure
+    root: Path, entry: dict[str, Any]
+) -> tuple[dict[str, Any], dict[str, Any], str, str, str, str]:
+    """Verify a manifest entry's exact hosted artifact and deterministic plan."""
+    receipt_ref = entry.get("receipt")
+    plan_ref = entry.get("plan")
+    if not isinstance(receipt_ref, dict) or not isinstance(plan_ref, dict):
+        raise TypeError("v3 replay manifest artifact references are malformed")
+    receipt_ref = cast("dict[str, Any]", receipt_ref)
+    plan_ref = cast("dict[str, Any]", plan_ref)
+    receipt_path = receipt_ref.get("path")
+    plan_path = plan_ref.get("path")
+    if not isinstance(receipt_path, str) or not isinstance(plan_path, str):
+        raise TypeError("v3 replay manifest artifact paths are missing")
+    if not receipt_path.startswith(
+        "quality/qualifications/"
+    ) or not plan_path.startswith("quality/qualifications/"):
+        raise ValueError(
+            "v3 replay artifacts must remain qualification records"
+        )
+    receipt = _read_json(root, receipt_path)
+    plan = _read_json(root, plan_path)
+    if _sha256((root / receipt_path).read_bytes()) != receipt_ref.get(
+        "sha256"
+    ) or _sha256((root / plan_path).read_bytes()) != plan_ref.get("sha256"):
+        raise ValueError(
+            "v3 replay artifact digest differs from readback manifest"
+        )
     scope = _read_v3_replay_section(receipt, "scope")
     workflow = _read_v3_replay_section(receipt, "hosted_workflow")
     replay = _read_v3_replay_section(receipt, "replay")
@@ -764,16 +924,27 @@ def _validate_v3_replay_receipt(
         raise TypeError("v3 replay snapshot is malformed")
     snapshot = cast("dict[str, Any]", snapshot_value)
     expected_scope = {
-        "dataset": DATASET,
-        "revision": PINNED_REVISION,
-        "path": V3_REPLAY_PATH,
-        "sha256": snapshot.get("payload_sha256"),
-        "byte_count": 6_857_437,
+        "dataset": entry.get("dataset"),
+        "revision": entry.get("revision"),
+        "path": entry.get("path"),
+        "sha256": entry.get("sha256"),
+        "byte_count": entry.get("bytes"),
     }
-    expected_url = (
-        "https://github.com/edithatogo/global-medicines-atlas/actions/runs/"
-        f"{V3_REPLAY_RUN_ID}"
+    target_path = expected_scope["path"]
+    if not isinstance(target_path, str):
+        raise TypeError("v3 replay manifest target path is malformed")
+    expected_plan = qualify_m112_v3_replay.qualify(
+        root, target_path=target_path, allow_existing=True
     )
+    if plan != expected_plan:
+        raise ValueError(
+            "v3 replay plan differs from deterministic qualification"
+        )
+    run_id = entry.get("run_id")
+    expected_url = (
+        f"https://github.com/{CONTRACT_REPOSITORY}/actions/runs/{run_id}"
+    )
+    commit = entry.get("commit")
     registration_value = replay.get("registration")
     if not isinstance(registration_value, dict):
         raise TypeError("v3 replay registration is missing")
@@ -785,14 +956,21 @@ def _validate_v3_replay_receipt(
         receipt.get("candidate_only") is True,
         scope == expected_scope,
         workflow.get("repository") == CONTRACT_REPOSITORY,
-        workflow.get("commit") == V3_REPLAY_COMMIT,
-        workflow.get("run_id") == int(V3_REPLAY_RUN_ID),
-        workflow.get("run_attempt") == 1,
+        workflow.get("commit") == commit,
+        workflow.get("run_id") == run_id,
+        workflow.get("run_attempt") == entry.get("attempt"),
         workflow.get("run_url") == expected_url,
         replay.get("vocabulary_version") == "3.0.0",
         replay.get("snapshot_id") == snapshot.get("snapshot_id"),
         replay.get("partition_id") == snapshot.get("partition_id"),
         replay.get("plan_sha256") == _sha256(_canonical_compact(plan)),
+        entry.get("status") == "success",
+        entry.get("completed_at") is not None,
+        entry.get("started_at") is not None,
+        isinstance(snapshot.get("partition_value"), str)
+        and cast("str", snapshot.get("partition_value")).endswith(
+            f":{target_path}"
+        ),
         replay.get("registration_sha256")
         == _sha256(_canonical_compact(registration)),
         registration.get("payload_sha256") == expected_scope["sha256"],
@@ -815,57 +993,331 @@ def _validate_v3_replay_receipt(
         replay,
         expected_scope,
         expected_url,
-        _sha256((root / V3_REPLAY_REPORT).read_bytes()),
+        _sha256((root / receipt_path).read_bytes()),
+        receipt_path,
+        plan_path,
     )
 
 
-def _bind_v3_replay_candidate(
+def _bind_v3_replay_candidate(  # ruff: ignore[too-many-branches,too-many-locals,too-many-statements] -- bind each exact hosted replay receipt
     candidates: list[dict[str, Any]], root: Path
 ) -> int:
-    """Bind one exact hosted replay artifact as unbound v3 role evidence."""
-    replay, expected_scope, expected_url, receipt_sha256 = (
-        _validate_v3_replay_receipt(root)
-    )
+    """Bind each independently verified hosted replay to its frozen object."""
+    manifest = _read_json(root, V3_REPLAY_MANIFEST)
+    entries_value = manifest.get("entries")
+    manifest_scope = manifest.get("scope")
+    manifest_boundaries = manifest.get("boundaries")
+    if (
+        not isinstance(entries_value, list)
+        or not isinstance(manifest_scope, dict)
+        or not isinstance(manifest_boundaries, dict)
+    ):
+        raise TypeError("v3 replay readback manifest sections are malformed")
+    entries_value = cast("list[Any]", entries_value)
+    manifest_scope = cast("dict[str, Any]", manifest_scope)
+    manifest_boundaries = cast("dict[str, Any]", manifest_boundaries)
+    if not all((
+        manifest.get("schema_id")
+        == "global-medicines-atlas.m112-v3-replay-readback-manifest",
+        manifest.get("status") == "successful_exact_hosted_v3_replay_readbacks",
+        manifest_scope.get("approved_denominator") == APPROVED_DENOMINATOR,
+        manifest_scope.get("v4_admissions_added") == 0,
+        manifest_scope.get("consumer_canaries_added") == 0,
+        manifest_boundaries.get("public_dataset_mutated") is False,
+        manifest_boundaries.get("source_values_or_rows_read") is False,
+        manifest_boundaries.get("temporary_source_bytes_removed") is True,
+    )):
+        raise ValueError("v3 replay readback manifest is not qualified")
+    entries = entries_value
+    if len(entries) != manifest.get("scope", {}).get("replay_objects"):
+        raise ValueError("v3 replay manifest object count is inconsistent")
+    # Verify every referenced byte digest first. This prevents later plan
+    # reconstruction from obscuring a tampered hosted receipt with an
+    # unrelated unavailable local lineage input.
+    for entry_value in entries:
+        if not isinstance(entry_value, dict):
+            raise TypeError("v3 replay manifest entry is malformed")
+        entry_value = cast("dict[str, Any]", entry_value)
+        for role in ("receipt", "plan"):
+            reference = entry_value.get(role)
+            if not isinstance(reference, dict):
+                raise TypeError(
+                    "v3 replay manifest artifact reference is malformed"
+                )
+            reference = cast("dict[str, Any]", reference)
+            relative = reference.get("path")
+            expected_sha256 = reference.get("sha256")
+            if (
+                not isinstance(relative, str)
+                or not relative.startswith("quality/qualifications/")
+                or ".." in Path(relative).parts
+                or not isinstance(expected_sha256, str)
+                or _sha256((root / relative).read_bytes()) != expected_sha256
+            ):
+                raise ValueError(
+                    "v3 replay artifact digest differs from readback manifest"
+                )
+    seen: set[tuple[Any, ...]] = set()
+    for entry_value in entries:
+        if not isinstance(entry_value, dict):
+            raise TypeError("v3 replay manifest entry is malformed")
+        entry = cast("dict[str, Any]", entry_value)
+        (
+            replay,
+            expected_scope,
+            expected_url,
+            receipt_sha256,
+            receipt_path,
+            plan_path,
+        ) = _validate_v3_replay_receipt(root, entry)
+        identity = tuple(
+            expected_scope.get(key)
+            for key in ("dataset", "revision", "path", "sha256", "byte_count")
+        )
+        if identity in seen:
+            raise ValueError("v3 replay manifest repeats an object identity")
+        seen.add(identity)
+        matched = [
+            candidate
+            for candidate in candidates
+            if tuple(
+                candidate.get(key)
+                for key in ("dataset", "revision", "path", "sha256", "bytes")
+            )
+            == identity
+        ]
+        if len(matched) != 1:
+            raise ValueError(
+                "v3 replay receipt does not bind one frozen M-112 object"
+            )
+        candidate = matched[0]
+        states_value = candidate.get("contract_role_states")
+        if not isinstance(states_value, dict):
+            raise TypeError("v3 replay candidate lacks contract role states")
+        states = cast("dict[str, Any]", states_value)
+        if states.get("lineage.v3_replay") != "missing":
+            raise ValueError(
+                "v3 replay role state changed before receipt binding"
+            )
+        states["lineage.v3_replay"] = "candidate_receipt_available_unbound"
+        candidate["v3_replay_candidate_receipt"] = {
+            "candidate_only": True,
+            "contract_role_state": "candidate_receipt_available_unbound",
+            "receipt": {"path": receipt_path, "sha256": receipt_sha256},
+            "plan": {
+                "path": plan_path,
+                "sha256": _sha256((root / plan_path).read_bytes()),
+            },
+            "snapshot_id": replay["snapshot_id"],
+            "partition_id": replay["partition_id"],
+            "registration_sha256": replay["registration_sha256"],
+            "workflow_commit": entry["commit"],
+            "workflow_run": expected_url,
+            "anonymous_digest_verified": True,
+            "temporary_source_bytes_removed": True,
+        }
+        started_at = datetime.fromisoformat(
+            cast("str", entry.get("started_at"))
+        )
+        expires_at = started_at + timedelta(minutes=V3_REPLAY_TIMEOUT_MINUTES)
+        states["cache"] = "candidate_receipt_available_unbound"
+        candidate["cache_candidate_receipt"] = {
+            "origin": "github_actions",
+            "state": "removed",
+            "max_bytes": entry["bytes"],
+            "created_at": started_at
+            .astimezone(UTC)
+            .isoformat()
+            .replace("+00:00", "Z"),
+            "expires_at": expires_at
+            .astimezone(UTC)
+            .isoformat()
+            .replace("+00:00", "Z"),
+            "cleanup_receipt": {
+                "path": receipt_path,
+                "sha256": receipt_sha256,
+            },
+            "offline_behavior": "fail_closed",
+            "contract_role_state": "candidate_receipt_available_unbound",
+        }
+    return len(seen)
 
-    matched = [
-        candidate
-        for candidate in candidates
+
+def _current_admission_evidence(  # ruff: ignore[too-many-branches,too-many-statements,too-many-locals] -- verify and count exact per-object admission receipts
+    root: Path,
+) -> tuple[int, int, list[dict[str, Any]]]:
+    """Count only exact contract identities with durable admission reports."""
+    qualification_dir = root / "quality/qualifications"
+    contracts: dict[str, tuple[str, dict[str, Any]]] = {}
+    for contract_path in sorted(
+        qualification_dir.glob("australian-m112-v4-*-raw-b2-contract.json")
+    ):
+        raw = contract_path.read_bytes()
+        contract = json.loads(raw)
+        if not isinstance(contract, dict):
+            raise TypeError("M-112 v4 contract must be a JSON object")
+        contract = cast("dict[str, Any]", contract)
+        digest = _sha256(raw)
+        location = contract.get("location")
+        if not isinstance(location, dict):
+            raise TypeError("M-112 v4 contract location must be an object")
+        if contract.get("evidence_kind") != "live":
+            continue
+        contracts[digest] = (
+            contract_path.relative_to(root).as_posix(),
+            contract,
+        )
+
+    admitted: dict[str, dict[str, Any]] = {}
+    canaried: dict[str, dict[str, Any]] = {}
+    report_paths = sorted(
+        set(
+            qualification_dir.glob(
+                "australian-m112-v4-*-consumer-canary-*.json"
+            )
+        )
+        | set(
+            qualification_dir.glob(
+                "australian-m112-v4-*-admission-qualification-*.json"
+            )
+        )
+    )
+    for report_path in report_paths:
+        report = json.loads(report_path.read_bytes())
+        if not isinstance(report, dict):
+            raise TypeError("M-112 v4 consumer qualification must be an object")
+        report = cast("dict[str, Any]", report)
+        contract_path_value = report.get("contract_path")
+        expected_digest = report.get("contract_sha256")
+        admission = report.get("admission")
         if (
-            candidate.get("dataset") == DATASET
-            and candidate.get("revision") == PINNED_REVISION
-            and candidate.get("path") == V3_REPLAY_PATH
-            and candidate.get("sha256") == expected_scope["sha256"]
-            and candidate.get("bytes") == expected_scope["byte_count"]
-        )
-    ]
-    if len(matched) != 1:
-        raise ValueError(
-            "v3 replay receipt does not bind one frozen M-112 object"
-        )
-    candidate = matched[0]
-    states_value = candidate.get("contract_role_states")
-    if not isinstance(states_value, dict):
-        raise TypeError("v3 replay candidate lacks contract role states")
-    states = cast("dict[str, Any]", states_value)
-    if states.get("lineage.v3_replay") != "missing":
-        raise ValueError("v3 replay role state changed before receipt binding")
-    states["lineage.v3_replay"] = "candidate_receipt_available_unbound"
-    candidate["v3_replay_candidate_receipt"] = {
-        "candidate_only": True,
-        "contract_role_state": "candidate_receipt_available_unbound",
-        "receipt": {
-            "path": V3_REPLAY_REPORT,
-            "sha256": receipt_sha256,
-        },
-        "snapshot_id": replay["snapshot_id"],
-        "partition_id": replay["partition_id"],
-        "registration_sha256": replay["registration_sha256"],
-        "workflow_commit": V3_REPLAY_COMMIT,
-        "workflow_run": expected_url,
-        "anonymous_digest_verified": True,
-        "temporary_source_bytes_removed": True,
-    }
-    return 1
+            report.get("schema_id")
+            != "global-medicines-atlas.m112-v4-admission-qualification"
+            or report.get("status")
+            not in {
+                "admitted_with_consumer_canary",
+                "admitted_pending_consumer_canary",
+            }
+            or not isinstance(contract_path_value, str)
+            or not isinstance(expected_digest, str)
+            or not isinstance(admission, dict)
+        ):
+            continue
+        admission = cast("dict[str, Any]", admission)
+        contract_path = root / contract_path_value
+        if not contract_path.is_file():
+            raise ValueError(
+                "admission report references a missing v4 contract"
+            )
+        actual_digest = _sha256(contract_path.read_bytes())
+        if actual_digest != expected_digest or actual_digest not in contracts:
+            raise ValueError(
+                "admission report does not bind an exact local contract"
+            )
+        contract_relative, contract = contracts[actual_digest]
+        location = cast("dict[str, Any]", contract["location"])
+        closure = report.get("receipt_closure")
+        if not isinstance(closure, dict):
+            raise TypeError("admission receipt closure must be an object")
+        closure = cast("dict[str, Any]", closure)
+        receipt_roles = closure.get("roles")
+        receipt_payloads = closure.get("receipts")
+        if not isinstance(receipt_roles, list) or not isinstance(
+            receipt_payloads, list
+        ):
+            raise TypeError("admission receipt closure arrays are malformed")
+        receipt_roles = cast("list[Any]", receipt_roles)
+        receipt_payloads = cast("list[Any]", receipt_payloads)
+        if not all((
+            report.get("approved_denominator") == APPROVED_DENOMINATOR,
+            report.get("admissions") == 1,
+            report.get("consumer_canaries") in {0, 1},
+            closure.get("contract_sha256") == actual_digest,
+            len(receipt_roles) >= MIN_V4_RECEIPT_ROLES,
+            bool(receipt_payloads),
+            admission.get("contract_sha256") == actual_digest,
+            admission.get("dataset") == location.get("dataset"),
+            admission.get("revision") == location.get("revision"),
+            admission.get("path") == location.get("path"),
+            admission.get("sha256") == location.get("sha256"),
+            admission.get("byte_count") == location.get("bytes"),
+        )):
+            raise ValueError(
+                "independent admission identity differs from contract"
+            )
+        admitted[actual_digest] = {
+            "contract_path": contract_relative,
+            "contract_sha256": actual_digest,
+            "dataset": location.get("dataset"),
+            "revision": location.get("revision"),
+            "path": location.get("path"),
+            "sha256": location.get("sha256"),
+        }
+        canary = report.get("consumer_canary")
+        if canary is None:
+            continue
+        if not isinstance(canary, dict):
+            raise TypeError("consumer canary record is malformed")
+        canary = cast("dict[str, Any]", canary)
+        canary_identity = canary.get("object")
+        boundaries = canary.get("boundaries")
+        verification = canary.get("verification")
+        if (
+            not isinstance(canary_identity, dict)
+            or not isinstance(boundaries, dict)
+            or not isinstance(verification, dict)
+        ):
+            raise TypeError(
+                "consumer canary identity, boundaries, or verification are malformed"
+            )
+        canary_identity = cast("dict[str, Any]", canary_identity)
+        boundaries = cast("dict[str, Any]", boundaries)
+        verification = cast("dict[str, Any]", verification)
+        consumer = canary.get("consumer")
+        workflow = canary.get("hosted_workflow")
+        if not isinstance(consumer, dict) or not isinstance(workflow, dict):
+            raise TypeError("consumer canary provenance is malformed")
+        consumer = cast("dict[str, Any]", consumer)
+        workflow = cast("dict[str, Any]", workflow)
+        workflow_run_id = workflow.get("run_id")
+        if not all((
+            consumer.get("repository") == CONTRACT_REPOSITORY,
+            consumer.get("module")
+            == "global_medicines_atlas.federation_reader.FederatedReader",
+            consumer.get("binding_module")
+            == "global_medicines_atlas.federation_consumer.bind_consumer_contract",
+            isinstance(consumer.get("commit"), str),
+            workflow.get("repository") == CONTRACT_REPOSITORY,
+            workflow.get("commit") == consumer.get("commit"),
+            isinstance(workflow_run_id, int) and workflow_run_id > 0,
+            workflow.get("run_url")
+            == (
+                f"https://github.com/{CONTRACT_REPOSITORY}/actions/runs/"
+                f"{workflow_run_id}"
+            ),
+            canary.get("status") == "passed",
+            canary.get("contract_sha256") == actual_digest,
+            canary_identity.get("dataset") == location.get("dataset"),
+            canary_identity.get("revision") == location.get("revision"),
+            canary_identity.get("path") == location.get("path"),
+            canary_identity.get("sha256") == location.get("sha256"),
+            canary_identity.get("bytes") == location.get("bytes"),
+            boundaries.get("admission_used") is True,
+            boundaries.get("source_values_or_rows_included") is False,
+            boundaries.get("public_dataset_mutated") is False,
+            boundaries.get("source_payload_bytes_retained") is False,
+            verification.get("source_values_or_rows_interpreted") is False,
+            verification.get("origin") == "remote",
+            verification.get("remote_digest_match") is True,
+            verification.get("consumer_stream_digest_match") is True,
+            verification.get("reader_cache_bytes_after_close") == 0,
+        )):
+            raise ValueError(
+                "consumer canary does not verify the admitted identity"
+            )
+        canaried[actual_digest] = admitted[actual_digest]
+
+    return len(admitted), len(canaried), list(admitted.values())
 
 
 def _bind_candidates(
@@ -900,12 +1352,17 @@ def _bind_candidates(
     return matched, source_count
 
 
-def qualify(root: Path = ROOT) -> dict[str, Any]:
+def qualify(root: Path = ROOT) -> dict[str, Any]:  # ruff: ignore[too-many-locals] -- reconcile bounded evidence sets
     """Return a deterministic role report enriched with bound candidate receipts."""
     report = copy.deepcopy(_read_json(root, ROLE_REPORT))
+    report["source_qualification"] = {
+        "path": OVERLAY_REPORT,
+        "sha256": _sha256((root / OVERLAY_REPORT).read_bytes()),
+    }
     digest_report = _read_json(root, DIGEST_REPORT)
     discovery_report = _read_json(root, DISCOVERY_REPORT)
     source_semantics = _read_json(root, SOURCE_SEMANTICS_REPORT)
+    physical_layout = _read_json(root, PHYSICAL_LAYOUT_REPORT)
     candidates = report.get("objects")
     verified_objects = digest_report.get("verified_objects")
     archives = digest_report.get("archives")
@@ -914,15 +1371,17 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:
     candidate_values = cast("list[Any]", candidates)
     if len(candidate_values) != EXPECTED_CANDIDATES:
         raise ValueError("the frozen 16-object exact-rights MBS cohort changed")
-    if report.get("cohort", {}).get("v4_admissions") != 0:
-        raise ValueError(
-            "M-112 admission state changed; requalify before refresh"
-        )
-    if report.get("cohort", {}).get("consumer_canaries") != 0:
-        raise ValueError("M-112 canary state changed; requalify before refresh")
+    if (
+        report.get("cohort", {}).get("approved_denominator")
+        != APPROVED_DENOMINATOR
+    ):
+        raise ValueError("M-112 approved denominator changed")
     _validate_source_semantics_scope(source_semantics)
     if not isinstance(verified_objects, list) or not isinstance(archives, list):
         raise TypeError("digest reconciliation is incomplete")
+    physical_layout_count = _bind_physical_layout_evidence(
+        candidate_values, physical_layout, root
+    )
     if (
         discovery_report.get("scope", {}).get("candidate_objects")
         != EXPECTED_CANDIDATES
@@ -955,6 +1414,12 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:
             f"expected {EXPECTED_PATHS} MBS utilisation candidates, got {len(matched)}"
         )
     v3_replay_count = _bind_v3_replay_candidate(matched, root)
+    admission_count, consumer_canary_count, admitted_objects = (
+        _current_admission_evidence(root)
+    )
+    report["cohort"]["v4_admissions"] = admission_count
+    report["cohort"]["consumer_canaries"] = consumer_canary_count
+    report["current_admission_evidence"] = admitted_objects
     report["discovery_candidate_evidence"] = {
         "path": DISCOVERY_REPORT,
         "sha256": _sha256((root / DISCOVERY_REPORT).read_bytes()),
@@ -968,6 +1433,14 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:
         "state": "candidate_receipts_available_unbound_for_13_of_16",
         "native_schema_layout_qualified": False,
     }
+    report["physical_layout_candidate_evidence"] = {
+        "path": PHYSICAL_LAYOUT_REPORT,
+        "sha256": _sha256((root / PHYSICAL_LAYOUT_REPORT).read_bytes()),
+        "objects": physical_layout_count,
+        "state": "qualified_for_exact_pinned_physical_structure",
+        "source_field_semantics_qualified": False,
+        "formula_semantics_qualified": False,
+    }
     report["location_candidate_evidence"] = {
         "objects": EXPECTED_CANDIDATES,
         "state": "candidate_receipt_available_unbound_for_16_of_16",
@@ -977,12 +1450,28 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:
         "state": "candidate_receipts_available_unbound_for_14_of_16",
     }
     report["v3_replay_candidate_evidence"] = {
-        "path": V3_REPLAY_REPORT,
-        "sha256": _sha256((root / V3_REPLAY_REPORT).read_bytes()),
+        "path": V3_REPLAY_MANIFEST,
+        "sha256": _sha256((root / V3_REPLAY_MANIFEST).read_bytes()),
         "objects": v3_replay_count,
-        "state": "candidate_receipt_available_unbound_for_1_of_16",
+        "state": (
+            f"candidate_receipts_available_unbound_for_{v3_replay_count}_of_16"
+        ),
     }
-    _update_summary(report, root, len(matched), v3_replay_count)
+    report["cache_candidate_evidence"] = {
+        "objects": v3_replay_count,
+        "state": (
+            f"candidate_cleanup_receipts_available_unbound_for_"
+            f"{v3_replay_count}_of_16"
+        ),
+    }
+    _update_summary(
+        report,
+        root,
+        len(matched),
+        v3_replay_count,
+        admission_count,
+        consumer_canary_count,
+    )
     return report
 
 
@@ -1007,7 +1496,9 @@ def main() -> int:
                 f"M-112 v4 role receipt report is stale: {args.output}"
             )
         print(
-            "M-112 v4 receipt reconciliation passed: 14 publication/restore and 1 v3 replay candidate bindings"
+            f"M-112 v4 receipt reconciliation passed: {EXPECTED_PATHS} "
+            f"publication/restore and {qualify()['v3_replay_candidate_evidence']['objects']} "
+            "v3 replay candidate bindings"
         )
         return 0
     args.output.parent.mkdir(parents=True, exist_ok=True)

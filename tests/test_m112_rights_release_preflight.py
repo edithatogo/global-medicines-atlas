@@ -10,7 +10,88 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261020.json"
+    "australian-m112-rights-release-preflight-20261025-95.json"
+)
+PREFLIGHT_SHA256 = (
+    "f83d35dff2786f3427dda72e3636a80f4c1b25f3680812cf3ab41b71e84aa42c"
+)
+PREVIOUS_PREFLIGHT = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-rights-release-preflight-20261025-94.json"
+)
+PRESERVED_MAIN_PREFLIGHT = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-rights-release-preflight-20261020-5.json"
+)
+PRESERVED_MAIN_PREFLIGHT_SHA256 = (
+    "6022ff3ca2b1a5fe8a095bc5ebba48e3ac86297e3b7ddeff63e92ea5af21dc82"
+)
+PRESERVED_AUGUST_RIGHTS_PREFLIGHT = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-rights-release-preflight-20261020-6.json"
+)
+PRESERVED_AUGUST_RIGHTS_PREFLIGHT_SHA256 = (
+    "20cf284b95eb83436fdd437eca1d5075dda1bc6bc23bda7c12f1591d25c9bd3f"
+)
+CURRENT_PREFLIGHT = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-rights-release-preflight-20261025-98.json"
+)
+CURRENT_PREFLIGHT_SHA256 = (
+    "05f365d98b20a7497297a50c138ebd6b09d25d372eb3457d490411a3f9411604"
+)
+SUCCESSOR_PREFLIGHT_99 = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-rights-release-preflight-20261025-99.json"
+)
+SUCCESSOR_PREFLIGHT_99_SHA256 = (
+    "dc4d3e6d760aa8427837fb5c107421f6f21d0c4a6b9573d6f62df3bc2113ca12"
+)
+SUCCESSOR_PREFLIGHT_99_PLAN_SHA256 = (
+    "f05f1adac3f5400c94db5494bbf26a2036038ea99b3864af0fc469fd5cad38ed"
+)
+SUCCESSOR_PREFLIGHT_100 = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-rights-release-preflight-20261025-100.json"
+)
+SUCCESSOR_PREFLIGHT_100_SHA256 = (
+    "49f38311f296cf6b40fb7920b37ea557ed0b657986aab9b9456089cff62945e9"
+)
+SUCCESSOR_PREFLIGHT_100_PLAN_SHA256 = (
+    "55c44cf5674b51d74edede20d00e8c66c6fa45dadbe6d2fa53c41e51d15dd4b1"
+)
+SUCCESSOR_PREFLIGHT_101 = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-rights-release-preflight-20261025-101.json"
+)
+SUCCESSOR_PREFLIGHT_101_SHA256 = (
+    "ef7e7ba6cfb7d7ef8db7161d06403ce7df29aac9db27b4ba8afec40bb201fe09"
+)
+SUCCESSOR_PREFLIGHT_101_PLAN_SHA256 = (
+    "7ba05aa5609078c5b499afe959816beb6d3a71c88dedee42886c5fb04f725b7c"
+)
+SUCCESSOR_PREFLIGHT_102 = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-rights-release-preflight-20261025-102.json"
+)
+SUCCESSOR_PREFLIGHT_102_SHA256 = (
+    "262626c1a30e02e2c5321a43b37b51bf7d6dbcb723c972b40c4c2f533b556d42"
+)
+SUCCESSOR_PREFLIGHT_102_PLAN_SHA256 = (
+    "7ba05aa5609078c5b499afe959816beb6d3a71c88dedee42886c5fb04f725b7c"
+)
+CURRENT_PREFLIGHT_PLAN_SHA256 = (
+    "eafccee8f5befe5ba577056e91a68f51e121983250d1815d78f366c88dd96c99"
+)
+PREVIOUS_CURRENT_PREFLIGHT_SHA256 = (
+    "633c4bdf68e7c67d17e3281f53940413fdfe869e110c6550febf53850d002421"
+)
+PREVIOUS_CURRENT_PREFLIGHT = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-rights-release-preflight-20261025-97.json"
+)
+PREFLIGHT_95_TEST_GOBLIN_SHA256 = (
+    "46f6e42eb79734a5f72759c8bb924331e4ffea094ac80d5a95929cf109709e20"
 )
 
 
@@ -18,23 +99,793 @@ def _json(path: Path) -> dict[str, Any]:
     return cast("dict[str, Any]", json.loads(path.read_text(encoding="utf-8")))
 
 
-def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
+def test_preflight_98_preserves_value_shape_state_and_revision_97() -> None:
+    report = _json(CURRENT_PREFLIGHT)
+    previous_path = ROOT / report["previous_preflight"]["path"]
+    plan_path = (
+        ROOT
+        / "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md"
+    )
+    assert (
+        hashlib.sha256(CURRENT_PREFLIGHT.read_bytes()).hexdigest()
+        == CURRENT_PREFLIGHT_SHA256
+    )
+    assert report["previous_preflight"]["preserved_unchanged"] is True
+    assert report["previous_preflight"]["path"].endswith(
+        "australian-m112-rights-release-preflight-20261025-97.json"
+    )
+    assert (
+        hashlib.sha256(previous_path.read_bytes()).hexdigest()
+        == report["previous_preflight"]["sha256"]
+        == PREVIOUS_CURRENT_PREFLIGHT_SHA256
+    )
+    previous_report = _json(PREVIOUS_CURRENT_PREFLIGHT)
+    assert previous_report["previous_preflight"]["path"].endswith(
+        "australian-m112-rights-release-preflight-20261025-96.json"
+    )
+    assert report["inputs"][str(plan_path.relative_to(ROOT))] == (
+        CURRENT_PREFLIGHT_PLAN_SHA256
+    )
+    assert len(report["inputs"]) == 329
+    assert report["release_and_admission_boundaries"]["v4_admissions"] == 8
+    assert report["release_and_admission_boundaries"]["consumer_canaries"] == 8
+    assert (
+        report["release_and_admission_boundaries"][
+            "new_sources_or_datasets_added"
+        ]
+        is False
+    )
+    shape = report["historical_workbook_value_shape_readback"]
+    assert shape["workflow_run_id"] == 40149410629
+    assert (
+        shape["workflow_commit"] == "7763d510df47e4298175ef5148cbe0998ca09411"
+    )
+    assert shape["workflow_conclusion"] == "success"
+    for binding in (shape["aggregate_report"], shape["field_state_successor"]):
+        path = ROOT / binding["path"]
+        assert (
+            hashlib.sha256(path.read_bytes()).hexdigest()
+            == binding["file_sha256"]
+        )
+        assert report["inputs"][binding["path"]] == binding["file_sha256"]
+    counts = shape["counts"]
+    assert counts["workbooks"] == 91
+    assert counts["source_cell_records_including_headers"] == 310_177_657
+    assert counts["header_cells_separate"] == 728
+    assert counts["non_header_cell_denominator"] == 310_176_929
+    assert counts["non_header_values_interpreted"] == 0
+    assert counts["non_header_values_native_unresolved"] == 310_176_929
+    assert counts["non_header_values_unavailable"] == 0
+    assert (
+        shape["boundaries"]["non_header_cells_remain_native_unresolved"] is True
+    )
+    assert shape["boundaries"]["admissions"] == 0
+    assert shape["boundaries"]["consumer_canaries"] == 0
+    assert shape["boundaries"]["publications"] == 0
+    assert shape["boundaries"]["new_sources"] == 0
+    assert shape["semantic_completion_claimed"] is False
+    field_state = report["historical_workbook_semantic_field_state"]
+    assert field_state["path"] == shape["field_state_successor"]["path"]
+    assert (
+        field_state["sha256"] == shape["field_state_successor"]["file_sha256"]
+    )
+    assert field_state["source_cell_records_including_headers"] == 310_177_657
+    assert field_state["header_cells_separate"] == 728
+    assert field_state["interpreted_header_roles"] == 728
+    assert field_state["non_header_cell_denominator"] == 310_176_929
+    assert field_state["non_header_cells_interpreted"] == 0
+    assert field_state["non_header_cells_native_unresolved"] == 310_176_929
+    assert field_state["unavailable"] == 0
+    assert field_state["whole_workbook_semantics_complete"] is False
+    assert (
+        report["release_and_admission_boundaries"][
+            "external_publications_performed"
+        ]
+        is False
+    )
+
+
+def test_preflight_99_binds_silver_semantic_successors() -> None:
+    report = _json(SUCCESSOR_PREFLIGHT_99)
+    successor_sha = hashlib.sha256(
+        SUCCESSOR_PREFLIGHT_99.read_bytes()
+    ).hexdigest()
+    assert successor_sha == SUCCESSOR_PREFLIGHT_99_SHA256
+    assert report["previous_preflight"]["path"].endswith(
+        "australian-m112-rights-release-preflight-20261025-98.json"
+    )
+    assert report["previous_preflight"]["preserved_unchanged"] is True
+    assert (
+        hashlib.sha256(
+            (ROOT / report["previous_preflight"]["path"]).read_bytes()
+        ).hexdigest()
+        == report["previous_preflight"]["sha256"]
+        == CURRENT_PREFLIGHT_SHA256
+    )
+    plan_path = (
+        "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md"
+    )
+    assert report["inputs"][plan_path] == SUCCESSOR_PREFLIGHT_99_PLAN_SHA256
+    assert len(report["inputs"]) == 333
+
+    p7 = report["p7_internal_date_reconciliation_current"]
+    assert p7["interpreted_values"] == 1_280
+    assert p7["native_unresolved_values"] == 12_365
+    assert p7["unavailable_values"] == 0
+    assert p7["internal_dmy_cells"] == 1_194
+    assert p7["operational_date_conversion_enabled"] is False
+    assert p7["date_domain_meaning_established"] is False
+    assert p7["temporal_comparison_enabled"] is False
+    assert p7["cross_era_equivalence_established"] is False
+
+    workbooks = report["historical_workbook_field_state_local_successor"]
+    assert workbooks["workbooks"] == 91
+    assert workbooks["header_roles_interpreted"] == 728
+    assert workbooks["non_header_cells"] == 310_176_929
+    assert workbooks["interpreted"] == 0
+    assert workbooks["native_unresolved"] == 310_176_929
+    assert workbooks["unavailable"] == 0
+    assert (
+        workbooks["status"]
+        == "local_reconciliation_pending_exact_main_readback"
+    )
+
+    pbs = report["pbs_domain_semantics_v5_readback"]
+    assert pbs["direct_restriction_date_fields"] == 3_028
+    assert pbs["lexical_grammar"] == "XSD YYYY-MM-DD"
+    assert pbs["schema_patch_bound"] is False
+    assert pbs["native_values_inspected"] is False
+    assert pbs["reference_nested_dates_qualified"] is False
+
+    schema = report["pbs_root_schema_version_metadata_readback"]
+    assert schema["run_id"] == 40145730405
+    assert schema["declared_schema_version"] == "3.1"
+    assert schema["schema_major"] == 3
+    assert schema["schema_minor"] == 1
+    assert schema["schema_patch_bound"] is False
+    assert schema["source_field_values_emitted"] is False
+    assert (
+        report["release_and_admission_boundaries"][
+            "new_sources_or_datasets_added"
+        ]
+        is False
+    )
+
+
+def test_preflight_100_binds_pbs_field_state_r14() -> None:
+    report = _json(SUCCESSOR_PREFLIGHT_100)
+    assert (
+        hashlib.sha256(SUCCESSOR_PREFLIGHT_100.read_bytes()).hexdigest()
+        == SUCCESSOR_PREFLIGHT_100_SHA256
+    )
+    assert report["previous_preflight"]["path"].endswith(
+        "australian-m112-rights-release-preflight-20261025-99.json"
+    )
+    assert report["previous_preflight"]["preserved_unchanged"] is True
+    previous = ROOT / report["previous_preflight"]["path"]
+    assert (
+        hashlib.sha256(previous.read_bytes()).hexdigest()
+        == report["previous_preflight"]["sha256"]
+        == SUCCESSOR_PREFLIGHT_99_SHA256
+    )
+    plan_path = (
+        "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md"
+    )
+    assert report["inputs"][plan_path] == SUCCESSOR_PREFLIGHT_100_PLAN_SHA256
+    assert len(report["inputs"]) == 337
+    field_state = report["pbs_native_semantic_reconciliation_r14_readback"]
+    assert field_state["source_fields"] == 18_208_758
+    assert field_state["interpreted_fields"] == 934_628
+    assert field_state["native_unresolved_fields"] == 17_274_130
+    assert field_state["unavailable_fields"] == 0
+    assert field_state["direct_date_grammar_fields"] == 3_028
+    assert field_state["semantic_relationships_qualified"] is False
+    assert field_state["semantic_edges_emitted"] is False
+
+
+def test_preflight_101_binds_xlink_semantics_and_preserves_rdf_uncertainty() -> (
+    None
+):
+    report = _json(SUCCESSOR_PREFLIGHT_101)
+    assert (
+        hashlib.sha256(SUCCESSOR_PREFLIGHT_101.read_bytes()).hexdigest()
+        == SUCCESSOR_PREFLIGHT_101_SHA256
+    )
+    assert report["previous_preflight"]["path"].endswith(
+        "australian-m112-rights-release-preflight-20261025-100.json"
+    )
+    assert report["previous_preflight"]["preserved_unchanged"] is True
+    previous = ROOT / report["previous_preflight"]["path"]
+    assert (
+        hashlib.sha256(previous.read_bytes()).hexdigest()
+        == report["previous_preflight"]["sha256"]
+        == SUCCESSOR_PREFLIGHT_100_SHA256
+    )
+    plan_path = (
+        "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md"
+    )
+    assert report["inputs"][plan_path] == SUCCESSOR_PREFLIGHT_101_PLAN_SHA256
+    assert len(report["inputs"]) == 341
+    field_state = report["pbs_native_semantic_reconciliation_r15_readback"]
+    assert field_state["interpreted_fields"] == 1_927_084
+    assert field_state["native_unresolved_fields"] == 16_281_674
+    assert field_state["unavailable_fields"] == 0
+    assert field_state["xlink_fields_interpreted"] == 992_456
+    assert field_state["rdf_resource_fields_unresolved"] == 1_167_610
+    assert field_state["semantic_precision_or_recall_estimated"] is False
+    assert field_state["edge_payload_emitted"] is False
+    assert (
+        report["pbs_native_source_local_xlink_link_readback"][
+            "generic_link_target_meaning_qualified"
+        ]
+        is True
+    )
+
+
+def test_preflight_102_binds_focused_coverage_repairs() -> None:
+    report = _json(SUCCESSOR_PREFLIGHT_102)
+    assert (
+        hashlib.sha256(SUCCESSOR_PREFLIGHT_102.read_bytes()).hexdigest()
+        == SUCCESSOR_PREFLIGHT_102_SHA256
+    )
+    assert report["previous_preflight"]["path"].endswith(
+        "australian-m112-rights-release-preflight-20261025-101.json"
+    )
+    assert report["previous_preflight"]["preserved_unchanged"] is True
+    previous = ROOT / report["previous_preflight"]["path"]
+    assert (
+        hashlib.sha256(previous.read_bytes()).hexdigest()
+        == report["previous_preflight"]["sha256"]
+        == SUCCESSOR_PREFLIGHT_101_SHA256
+    )
+    plan_path = (
+        "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md"
+    )
+    assert report["inputs"][plan_path] == SUCCESSOR_PREFLIGHT_102_PLAN_SHA256
+    assert len(report["inputs"]) == 343
+    for input_path in (
+        "src/global_medicines_atlas/mbs_workbook_field_reconciliation.py",
+        "tests/test_mbs_workbook_field_reconciliation.py",
+        "src/global_medicines_atlas/pbs_domain_field_semantics.py",
+        "tests/test_pbs_domain_field_semantics.py",
+    ):
+        assert (
+            hashlib.sha256((ROOT / input_path).read_bytes()).hexdigest()
+            == (report["inputs"][input_path])
+        )
+    assert report["status"] == (
+        "preflight_102_rebinds_current_silver_inputs_after_focused_coverage_repair"
+    )
+
+
+def test_preflight_95_preserves_its_historical_snapshot() -> None:
+    report = _json(PREFLIGHT)
+    assert (
+        hashlib.sha256(PREFLIGHT.read_bytes()).hexdigest() == PREFLIGHT_SHA256
+    )
+    assert "tests/test_m112_rights_release_preflight.py" not in report["inputs"]
+    assert (
+        report["inputs"]["scripts/test_goblin.py"]
+        == PREFLIGHT_95_TEST_GOBLIN_SHA256
+    )
+    assert (
+        "conductor/tracks/australian_benefits_silver_gold_20260829/evidence.jsonl"
+        not in report["inputs"]
+    )
+    inventory_correction = report["inventory_correction"]
+    assert (
+        inventory_correction["test_path"]
+        == "tests/test_pbs_reference_review_packet.py"
+    )
+    assert inventory_correction["test_lane"] == "unit"
+    assert inventory_correction["source_semantics_changed"] is False
+    assert report["status"] == (
+        "frozen_m112_exact_object_rights_attested_lineage_and_admission_gaps_open"
+    )
+    assert report["effective_m112_rights"]["resolved_object_count"] == 1759
+    assert report["effective_m112_rights"]["unresolved_object_count"] == 0
+    assert not any(
+        "full PBS utilisation vocabulary exclusion review" in item["work"]
+        for item in report["remaining_rights_work"]
+    )
+    reconciliation = report["current_rights_reconciliation"]
+    assert reconciliation["approved_denominator"] == 1759
+    assert reconciliation["membership_changed"] is False
+    assert reconciliation["v4_admissions"] == 8
+    assert reconciliation["consumer_canaries"] == 8
+    assert reconciliation["deferred_objects"] == 1751
+    assert (
+        hashlib.sha256((ROOT / reconciliation["path"]).read_bytes()).hexdigest()
+        == reconciliation["sha256"]
+    )
+    q2 = report["q2_admission"]
+    assert q2["workflow_run_id"] == 39419974066
+    assert q2["consumer_canary_passed"] is True
+    assert q2["source_values_or_rows_interpreted"] is False
+    assert q2["source_payload_bytes_retained"] is False
+    assert q2["reader_cache_bytes_after_close"] == 0
+    assert (
+        hashlib.sha256((ROOT / q2["receipt_path"]).read_bytes()).hexdigest()
+        == q2["receipt_sha256"]
+    )
+    assert any(
+        run["run_id"] == 39419974066
+        for run in report["m112_admission_canary_readback"][
+            "successful_workflow_runs"
+        ]
+    )
+    raw = report["mbs_raw_object_rights_attestation"]
+    assert raw["object_count"] == 6
+    assert raw["public_release_rights_attested"] is True
+    assert raw["permission_instrument_existence_and_applicability"] == (
+        "maintainer_attested_not_independently_reviewed"
+    )
+    assert raw["b1_b2_lineage_or_admission_inferred"] is False
+    assert raw["v4_admission"] is False
+    assert raw["consumer_canary"] is False
+    q3 = report["q3_admission"]
+    assert q3["workflow_run_id"] == 39356792827
+    assert q3["consumer_canary_passed"] is True
+    assert (
+        hashlib.sha256((ROOT / q3["receipt_path"]).read_bytes()).hexdigest()
+        == q3["receipt_sha256"]
+    )
+    projection = report["pbs_source_archive_exact_publication"][
+        "source_projection"
+    ]
+    assert projection["public_release_rights_attested"] is True
+    assert projection["permission_instrument_independently_reviewed"] is False
+    assert projection["release_performed_by_this_reconciliation"] is False
+
+
+def test_preflight_records_bounded_exact_main_p7_reconciliation() -> None:
+    report = _json(PREFLIGHT)
+    p7 = report["mbs_p7_bounded_file_consistency_implementation"]
+    assert p7["implementation_commit"] == (
+        "e586d665bb94631d1bdc5c00f0314a6036a14433"
+    )
+    assert p7["focused_tests"] == 209
+    assert p7["exact_main_typed_requalification_pending"] is False
+    assert p7["candidate_hosted_qualification_claimed"] is True
+    assert p7["date_semantic_completion_claimed"] is False
+    assert p7["hosted_exact_main_qualification"]["run_id"] == 40143990472
+    assert p7["hosted_exact_main_qualification"]["conclusion"] == "success"
+    reconciliation = p7["current_field_state_reconciliation"]
+    assert reconciliation["interpreted_values"] == 1280
+    assert reconciliation["native_unresolved_values"] == 12365
+    assert reconciliation["temporal_comparison_enabled"] is False
+    assert p7["new_sources"] == 0
+    assert p7["admissions"] == p7["canaries"] == p7["publications"] == 0
+
+
+def test_preflight_binds_pending_pbs_root_version_metadata_route() -> None:
+    report = _json(PREFLIGHT)
+    route = report["pbs_root_schema_version_metadata"]
+    assert route["status"] == "implemented_exact_main_execution_pending"
+    assert route["workflow_path"] == (
+        ".github/workflows/pbs-root-schema-version-metadata.yml"
+    )
+    assert route["profile_script_path"] == (
+        "scripts/profile_pbs_root_version_metadata.py"
+    )
+    assert route["hosted_module_path"] == (
+        "src/global_medicines_atlas/pbs_hosted_qualification.py"
+    )
+    assert route["focused_test_path"] == "tests/test_pbs_schema_hosted.py"
+    assert route["dataset"] == "edithatogo/australian-pbs-source-archive"
+    assert route["revision"] == "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7"
+    assert route["archive_sha256"] == (
+        "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20"
+    )
+    assert route["member_sha256"] == (
+        "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43"
+    )
+    assert route["exact_main_run_completed"] is False
+    assert route["declared_schema_version"] is None
+    assert route["schema_major"] is None
+    assert route["schema_minor"] is None
+    assert route["schema_minor_bound"] is False
+    assert route["source_field_values_emitted"] is False
+    assert route["new_sources"] == 0
+    assert report["inputs"][route["workflow_path"]] == route["workflow_sha256"]
+    assert (
+        report["inputs"][route["profile_script_path"]]
+        == route["profile_script_sha256"]
+    )
+    assert (
+        report["inputs"][route["hosted_module_path"]]
+        == route["hosted_module_sha256"]
+    )
+    assert (
+        report["inputs"][route["focused_test_path"]]
+        == route["focused_test_sha256"]
+    )
+
+
+def test_preflight_binds_current_silver_semantics_readbacks() -> None:
+    report = _json(PREFLIGHT)
+    pbs_screen = report["pbs_native_reference_screen_actual_readback"]
+    assert pbs_screen["run_id"] == 40076190245
+    assert pbs_screen["native_fields"] == 18_208_758
+    assert pbs_screen["reference_fields"] == 2_160_066
+    assert pbs_screen["per_kind_counts"]["rdf:resource"]["occurrences"] == (
+        1_167_610
+    )
+    assert pbs_screen["per_kind_counts"]["xlink:href"]["occurrences"] == (
+        992_456
+    )
+    assert pbs_screen["semantic_relationships_qualified"] is False
+    assert pbs_screen["domain_semantics_qualified"] is False
+    assert pbs_screen["source_context_screen_included"] is True
+    assert pbs_screen["context_screen_implementation_present"] is True
+    assert pbs_screen["source_context_review_pending"] is True
+    assert (
+        hashlib.sha256((ROOT / pbs_screen["receipt"]).read_bytes()).hexdigest()
+        == pbs_screen["receipt_sha256"]
+    )
+    header = report["historical_workbook_header_profile_actual_readback"]
+    assert header["run_id"] == 40040624592
+    assert header["workbooks"] == 91
+    assert header["interpreted_header_column_bindings"] == 728
+    assert header["non_header_cells"] == 310_177_657
+    assert header["non_header_cells_state"] == "native_unresolved"
+    assert header["whole_workbook_semantics_complete"] is False
+
+
+def test_preflight_binds_p7_per_cell_calendar_readback() -> None:
+    report = _json(PREFLIGHT)
+    p7 = report["mbs_p7_value_era_rules_actual_readback"]
+    assert p7["date_cells"] == 1_280
+    assert p7["date_cells_ambiguous_dmy_mdy"] == 1_194
+    assert p7["uniquely_determined_calendar_dates_interpreted"] == 86
+    assert p7["native_unresolved_cells"] == 13_656
+    assert p7["date_profile_selected"] is False
+    assert p7["formula_evaluation"] is False
+    calendar = report["mbs_p7_calendar_profile_actual_readback"]
+    assert calendar["run_id"] == 40086831574
+    assert calendar["populated_date_cells"] == 1_280
+    assert calendar["ambiguous_calendar_order"] == 1_194
+    assert calendar["unique_calendar_date"] == 86
+    assert calendar["invalid"] == 0
+    assert calendar["unsupported_serial_date"] == 0
+    assert calendar["date_order_selected"] is False
+    assert calendar["source_values_emitted"] is False
+    assert (
+        hashlib.sha256((ROOT / calendar["receipt"]).read_bytes()).hexdigest()
+        == calendar["receipt_sha256"]
+    )
+    p7_run = report["mbs_p7_exact_main_field_state"]
+    assert p7_run["workflow_run_id"] == 40094025412
+    assert (
+        p7_run["workflow_commit"] == "11be72e328affc0df87395fd59165ef4f5bf9055"
+    )
+    assert p7_run["interpreted_unique_calendar_date_cells"] == 86
+    assert p7_run["header_cells"] == 97
+    assert p7_run["interpreted_header_cells"] == 97
+    assert p7_run["value_cells"] == 13_645
+    assert p7_run["interpreted_value_cells"] == 86
+    assert p7_run["native_unresolved_value_cells"] == 13_559
+    assert p7_run["unavailable_value_cells"] == 0
+    assert p7_run["native_unresolved_cells"] == 13_559
+    assert p7_run["field_state_report"] == (
+        "quality/qualifications/"
+        "mbs-workbook-field-state-reconciliation-20261025.json"
+    )
+    assert p7_run["field_state_report_sha256"] == (
+        "9cf68711d80142d248bea04eb6ef62c1a768e116891e10c1208a07249bd1481d"
+    )
+
+
+def test_preflight_binds_exact_main_p7_consistency_inference() -> None:
+    report = _json(PREFLIGHT)
+    inference = report["mbs_p7_date_consistency_actual_readback"]
+    assert inference["workflow_run_id"] == 40139026116
+    assert inference["workflow_commit"] == (
+        "cc5c6615be033b60a2e1bf6c50dc64d2cae9763c"
+    )
+    assert inference["selected_profile"] == "mbs-dmy"
+    assert inference["selection_status"] == (
+        "selected_internal_file_consistency_inference"
+    )
+    assert inference["expected_cells_per_field"] == 320
+    assert inference["complete_date_fields"] == 4
+    assert inference["ambiguous_calendar_order"] == 1_194
+    assert inference["date_semantic_promotion"] is False
+    assert inference["department_provenance_or_attestation"] == (
+        "not_established"
+    )
+    assert inference["other_workbooks_or_eras"] is False
+    assert inference["workbook_wide_date_order_selected"] is False
+
+
+def test_preflight_binds_bounded_pbs_semantics_and_packet() -> None:
+    report = _json(PREFLIGHT)
+    pbs_semantics = report["pbs_native_domain_semantic_adjudication"]
+    assert pbs_semantics["source_fields"] == 18_208_758
+    assert pbs_semantics["interpreted_fields"] == 40_667
+    assert pbs_semantics["native_unresolved_fields"] == 18_168_091
+    assert pbs_semantics["native_values_interpreted"] is False
+    pbs_packet = report["pbs_native_reference_review_packet"]
+    assert pbs_packet["workflow_run_id"] == 40103169910
+    assert pbs_packet["context_examples"] == 46
+    assert pbs_packet["source_cases_reviewed"] == 0
+    assert pbs_packet["semantic_relationships_qualified"] is False
+    current = report["pbs_native_semantic_reconciliation_current_readback"]
+    assert current["interpreted_fields"] == 40_667
+    assert current["native_unresolved_fields"] == 18_168_091
+    assert current["unavailable_fields"] == 0
+    assert current["source_fields"] == 18_208_758
+    assert current["semantic_links_promoted"] == 0
+
+
+def test_preflight_binds_pbs_context_screen_attempt_and_readback() -> None:
+    report = _json(PREFLIGHT)
+    context_screen = report[
+        "pbs_native_reference_context_screen_latest_attempt"
+    ]
+    assert context_screen["run_id"] == 40103169910
+    assert context_screen["status"] == "success"
+    assert context_screen["source_values_emitted"] is False
+    assert context_screen["semantic_relationships_qualified"] is False
+    assert context_screen["source_cases_reviewed"] == 0
+    assert context_screen["uri_resolution_performed"] is False
+    assert (
+        hashlib.sha256(
+            (ROOT / context_screen["receipt"]).read_bytes()
+        ).hexdigest()
+        == context_screen["receipt_sha256"]
+    )
+    context_readback = report[
+        "pbs_native_reference_context_screen_actual_readback"
+    ]
+    assert context_readback["run_id"] == 40091358786
+    assert context_readback["context_schema_version"] == 3
+    assert context_readback["structural_strata"] == 184
+    assert context_readback["value_free_examples"] == 61
+    assert context_readback["omitted_occurrences"] == 2_160_005
+    assert context_readback["examples_by_status"] == {
+        "no_exact_literal": 52,
+        "unique_exact_literal": 9,
+    }
+    assert context_readback["example_reference_kinds"] == {"rdf_resource": 61}
+    assert context_readback["examples_with_nearest_subject"] == 0
+    assert (
+        context_readback["screen_is_sufficient_for_semantic_calibration"]
+        is False
+    )
+    assert context_readback["source_cases_reviewed"] == 0
+    assert context_readback["semantic_relationships_qualified"] is False
+    assert context_readback["consumer_canaries"] == 0
+    assert (
+        hashlib.sha256(
+            (ROOT / context_readback["receipt"]).read_bytes()
+        ).hexdigest()
+        == context_readback["receipt_sha256"]
+    )
+    latest = report["pbs_native_reference_context_current_readback"]
+    assert latest["run_id"] == 40103169910
+    assert latest["strata"] == 184
+    assert latest["examples"] == 46
+    assert latest["examples_by_kind"] == {"rdf_resource": 29, "xlink_href": 17}
+    assert latest["omitted_occurrences"] == 2_160_020
+    assert latest["uri_resolution_performed"] is False
+    assert latest["source_cases_reviewed"] == 0
+    assert latest["semantic_relationships_qualified"] is False
+    prior_failure = report["pbs_native_reference_context_screen_prior_failure"]
+    assert prior_failure["run_id"] == 40052770374
+    assert prior_failure["status"] == "failed"
+
+
+def test_preflight_binds_context_sampler_fairness_followup() -> None:
+    report = _json(PREFLIGHT)
+    followup = report["pbs_native_reference_context_sampling_followup"]
+    assert followup["implementation_commit"] == "555d013c"
+    assert followup["example_selection_policy"] == (
+        "one_example_per_stratum_round_robin_by_kind_status"
+    )
+    assert followup["staging_byte_limit"] == 4_194_304
+    assert followup["final_example_byte_limit"] == 64_000
+    assert followup["final_example_count_limit"] == 1_000
+    assert followup["exact_main_source_rerun_pending"] is False
+    assert followup["exact_main_source_run_id"] == 40103169910
+    assert followup["source_cases_reviewed"] == 0
+    assert followup["semantic_relationships_qualified"] is False
+
+
+def test_preflight_binds_uri_context_v3_candidate_without_source_claims() -> (
+    None
+):
+    candidate = _json(PREFLIGHT)["pbs_native_reference_context_v3_candidate"]
+    assert candidate["schema_version"] == 3
+    assert candidate["implementation_commit"] == "48c2a7c5"
+    assert candidate["validation_commit"] == "ecdd34e8"
+    assert candidate["exact_main_run_status"] == "passed"
+    assert candidate["exact_main_run_id"] == 40091358786
+    assert candidate["source_cases_reviewed"] == 0
+    assert candidate["semantic_relationships_qualified"] is False
+    assert candidate["source_values_emitted"] is False
+    assert candidate["external_targets_fetched"] is False
+
+
+def test_preflight_successor_preserves_the_snapshot_chain() -> None:
+    report = _json(PREFLIGHT)
+    encoding = report["pbs_reference_context_receipt_encoding"]
+    assert encoding["encoding"] == "zlib-base64-json"
+    assert encoding["uncompressed_context_byte_limit"] == 4_194_304
+    assert encoding["compressed_receipt_byte_limit"] == 32_000
+    assert encoding["value_free_complete_profile_preserved"] is True
+    assert encoding["semantic_relationships_qualified"] is False
+    assert (
+        report["reference_packet_coverage_followup"]["hosted_recheck"]
+        == "exact-main context run 40103169910 passed; 46 value-free examples across RDF and XLink strata prepared; source cases remain unreviewed"
+    )
+    previous = report["previous_preflight"]
+    assert previous["path"].endswith(
+        "australian-m112-rights-release-preflight-20261025-94.json"
+    )
+    assert previous["preserved_unchanged"] is True
+    assert (
+        previous["sha256"]
+        == hashlib.sha256(PREVIOUS_PREFLIGHT.read_bytes()).hexdigest()
+    )
+    assert (
+        hashlib.sha256(PREVIOUS_PREFLIGHT.read_bytes()).hexdigest()
+        == previous["sha256"]
+    )
+    previous_report = _json(PREVIOUS_PREFLIGHT)
+    assert previous_report["previous_preflight"]["path"].endswith(
+        "australian-m112-rights-release-preflight-20261025-93.json"
+    )
+    assert (
+        previous_report["release_and_admission_boundaries"]["v4_admissions"]
+        == 8
+    )
+    assert (
+        previous_report["release_and_admission_boundaries"]["consumer_canaries"]
+        == 8
+    )
+    predecessor_path = ROOT / previous_report["previous_preflight"]["path"]
+    predecessor = _json(predecessor_path)
+    assert predecessor["previous_preflight"]["path"].endswith(
+        "australian-m112-rights-release-preflight-20261025-92.json"
+    )
+    older_path = ROOT / predecessor["previous_preflight"]["path"]
+    older = _json(older_path)
+    assert older["previous_preflight"]["path"].endswith(
+        "australian-m112-rights-release-preflight-20261025-91.json"
+    )
+
+
+def test_full_local_profile_failure_and_recovery_are_explicit() -> None:
+    report = _json(PREFLIGHT)
+    profile = report["local_full_profile"]
+    assert profile["status"] == "failed_preserved"
+    assert profile["passed"] == 7_960
+    assert profile["failed"] == 5
+    assert profile["skipped"] == 4
+    assert 96.82 < profile["coverage_percent"] < 96.84
+    assert profile["failure_only_recheck"] == "4 passed"
+    assert profile["pbs_date_isolated_recheck"] == "1 passed"
+    latest = report["latest_local_full_profile_attempt"]
+    assert latest["passed"] == 8073
+    assert latest["failed"] == 10
+    assert latest["skipped"] == 4
+    assert 96.93 < latest["coverage_percent"] < 96.95
+    assert latest["status"] == (
+        "failed_full_profile_with_exact_input_hash_mismatch_and_transient_environment_failures"
+    )
+    assert len(latest["failure_nodes"]) == 10
+
+
+def test_pbs_native_silver_field_state_is_candidate_only() -> None:
+    report = _json(PREFLIGHT)
+    pbs_silver = report["pbs_native_silver_field_state_current_readback"]
+    assert pbs_silver["source_fields"] == 18_208_758
+    assert pbs_silver["native_unresolved_fields"] == 18_168_091
+    assert pbs_silver["interpreted_fields"] == 40_667
+    assert pbs_silver["unavailable_fields"] == 0
+    assert pbs_silver["native_values_remain_unresolved"] is True
+    assert pbs_silver["candidate_only"] is True
+    assert pbs_silver["rights_qualified"] is True
+    assert pbs_silver["admitted"] is False
+    assert pbs_silver["published"] is False
+    assert pbs_silver["report_sha256"] == (
+        "dd75a90151ee5c4be608fe534c1ef6ab0f84244e792521ab4dc4fb378f8cd0b7"
+    )
+    assert (
+        hashlib.sha256((ROOT / pbs_silver["receipt"]).read_bytes()).hexdigest()
+        == pbs_silver["receipt_sha256"]
+    )
+
+
+def test_preflight_binds_exact_main_pbs_uri_outcomes_without_semantics() -> (
     None
 ):
     report = _json(PREFLIGHT)
-    for path, expected_digest in report["inputs"].items():
-        assert (
-            hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
-            == expected_digest
-        )
-    historical = report["historical_preflight"]
-    assert historical["superseded"] is True
-    assert historical["preserved_unchanged"] is True
-    assert historical["path"].endswith("preflight-20261019.json")
-    assert report["frozen_inventory"]["object_count"] == 1759
-    assert report["frozen_inventory"]["membership_changed"] is False
-    assert report["effective_m112_rights"]["resolved_object_count"] == 28
-    assert report["effective_m112_rights"]["unresolved_object_count"] == 1731
+    uri = report["pbs_native_uri_resolution_current_readback"]
+    assert uri["run_id"] == "40110616327"
+    assert uri["workflow_commit"] == "e5145eca0698bbc275c3497431ba0f179261e458"
+    assert uri["source_revision"] == "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7"
+    assert uri["xml_elements"] == 7_730_684
+    assert uri["reference_counts_by_kind"] == {
+        "rdf_resource": 1_167_610,
+        "xlink_href": 992_456,
+    }
+    assert uri["review_case_count"] == 46
+    assert uri["review_case_outcome_counts"] == {
+        "absolute_uri_no_member_definition": 11,
+        "absolute_uri_unique_candidate": 18,
+        "same_member_unique_id": 17,
+    }
+    assert uri["source_cases_reviewed"] == 0
+    assert uri["semantic_relationships_qualified"] is False
+    assert uri["source_values_emitted"] is False
+    assert uri["external_targets_fetched"] == 0
+    assert (
+        hashlib.sha256((ROOT / uri["receipt"]).read_bytes()).hexdigest()
+        == uri["receipt_file_sha256"]
+    )
+
+
+def test_preflight_records_unresolved_pbs_date_denominator_variance() -> None:
+    report = _json(PREFLIGHT)
+    dates = report["pbs_date_denominator_reconciliation"]
+    assert dates["restriction_date_path_fields"] == 3_028
+    assert dates["date_role_slots"] == 2_800
+    assert dates["item_effective_date_roles"] == 2_798
+    assert dates["observed_difference"] == 230
+    assert dates["occurrence_crosswalk_available"] is False
+    assert dates["date_values_interpreted"] is False
+    assert (
+        hashlib.sha256((ROOT / dates["path"]).read_bytes()).hexdigest()
+        == dates["receipt_sha256"]
+    )
+
+
+def test_pbs_native_silver_exact_derived_rights_attestation() -> None:
+    binding = _json(PREFLIGHT)[
+        "pbs_native_silver_exact_derived_rights_attestation"
+    ]
+    attestation_path = ROOT / binding["path"]
+    assert (
+        hashlib.sha256(attestation_path.read_bytes()).hexdigest()
+        == binding["sha256"]
+    )
+    attestation = _json(attestation_path)
+    report_binding = attestation["source_report"]
+    source_report_path = ROOT / report_binding["path"]
+    assert (
+        hashlib.sha256(source_report_path.read_bytes()).hexdigest()
+        == report_binding["sha256"]
+        == binding["report_sha256"]
+    )
+    source_report = _json(source_report_path)
+    output = source_report["candidate_output"]
+    assert attestation["authorized_output"] == {
+        "dataset": source_report["dataset"],
+        "revision": source_report["revision"],
+        **{
+            key: output[key]
+            for key in (
+                "output_id",
+                "parquet_sha256",
+                "parquet_bytes",
+                "archive_sha256",
+                "member_sha256",
+                "native_core_sha256",
+            )
+        },
+    }
+    assert attestation["maintainer_response"] == "Attest exact output"
+    assert attestation["public_release_rights_attested"] is True
+    assert binding["instrument_independently_reviewed"] is False
+    assert all(value is False for value in attestation["boundaries"].values())
+    assert (
+        binding["new_admissions"]
+        == binding["consumer_canaries"]
+        == binding["publications"]
+        == 0
+    )
 
 
 def test_scoped_rights_do_not_cross_object_or_release_boundaries() -> None:
@@ -43,24 +894,284 @@ def test_scoped_rights_do_not_cross_object_or_release_boundaries() -> None:
     assert len(july["objects"]) == 6
     assert july["public_release_authorized"] is True
     assert july["public_release_performed"] is False
+    current_public = july["current_public_tree_readback"]
+    assert current_public["dataset"] == (
+        "edithatogo/australian-mbs-source-archive"
+    )
+    assert current_public["revision"] == (
+        "42d73b6facac016f14a335d36d83f1a3b630add8"
+    )
+    assert current_public["anonymous_metadata_identity_verified"] is True
+    assert current_public["exact_object_count"] == 6
+    assert current_public["public_release_observed"] is True
+    assert current_public["current_revision_payload_bytes_reverified"] is False
     assert july["permission_instrument_existence_and_applicability"] == (
         "maintainer_attested_not_independently_reviewed_or_located_at_maintainer_direction"
     )
     august = report["august_2026_mbs_bronze_projections"]
     assert len(august["objects"]) == 4
-    assert august["derived_output_authority"] == "absent"
+    assert august["rights_state"] == (
+        "maintainer_attested_exact_public_release_permission_for_bronze_projection"
+    )
+    assert august["public_release_rights_attested"] is True
+    assert august["public_release_performed_by_this_action"] is False
+    assert august["m108_assessment_derived_output_authority"] == "absent"
     assert all(obj["lineage_complete"] for obj in august["objects"])
+    assert all(
+        obj["rights_state"] == august["rights_state"]
+        for obj in august["objects"]
+    )
     cms = report["cms_hcpcs_reference"]
     assert cms["rights_state"] == "permitted"
     assert cms["reviewer_status"] == "approved"
     assert cms["acquisition_time_rights_state_preserved"] == "unknown"
     assert cms["external_publication_authorized"] is False
     assert cms["derived_table_rights_concluded"] is False
-    assert report["pbs_utilisation_raw_objects"][
-        "full_object_release_requires_exclusion_review"
-    ]
     gates = report["release_and_admission_boundaries"]
-    assert gates["all_1759_deferrals_preserved"] is True
-    assert gates["v4_admissions"] == 0
-    assert gates["consumer_canaries"] == 0
+    assert gates["all_remaining_deferrals_preserved"] is True
+    assert gates["deferred_objects"] == 1751
+    assert gates["v4_admissions"] == 8
+    assert gates["consumer_canaries"] == 8
     assert gates["external_publications_performed"] is False
+
+
+def test_out_of_denominator_mbs_outputs_remain_a_separate_rights_exception() -> (
+    None
+):
+    report = _json(PREVIOUS_PREFLIGHT)
+    exception = report["august_2026_mbs_out_of_denominator_scope_exception"]
+    scope = _json(ROOT / exception["path"])
+    assert exception["object_count"] == 4
+    assert exception["dataset_revision"] == scope["revision"]
+    assert exception["outside_frozen_inventory"] is True
+    assert exception["frozen_inventory_membership_changed"] is False
+    assert scope["scope"]["rights_authorized_by_this_record"] is True
+    assert scope["scope"]["rights_state"] == (
+        "maintainer_attested_exact_public_release_permission_for_bronze_projection"
+    )
+    assert scope["scope"]["frozen_m112_object_count"] == 1759
+    assert all(
+        not item["in_frozen_m112_inventory"] for item in scope["objects"]
+    )
+    assert all(
+        item["rights_state"] == scope["scope"]["rights_state"]
+        for item in scope["objects"]
+    )
+    assert all(
+        not item["in_frozen_m112_inventory"] for item in scope["objects"]
+    )
+    assert scope["scope"]["public_release_performed_by_this_action"] is False
+
+
+def test_reimbursement_projection_rights_are_bounded_and_do_not_admit() -> None:
+    report = _json(PREVIOUS_PREFLIGHT)
+    projections = report["reimbursement_atlas_medallion_projections"]
+    assert projections["object_count"] == 12
+    assert projections["public_redistribution_rights_attested"] is True
+    assert projections["public_release_performed"] is False
+    assert projections["v4_admissions"] == 0
+    assert projections["consumer_canaries"] == 0
+    assert all(
+        item["rights_state"] == projections["rights_state"]
+        for item in projections["objects"]
+    )
+    assert all(item["lineage_complete"] for item in projections["objects"])
+    assert all(not item["v4_admission"] for item in projections["objects"])
+    assert all(not item["consumer_canary"] for item in projections["objects"])
+
+
+def test_main_cms_rights_readback_is_preserved_separately_from_m112_counts() -> (
+    None
+):
+    report = _json(PRESERVED_MAIN_PREFLIGHT)
+
+    assert (
+        hashlib.sha256(PRESERVED_MAIN_PREFLIGHT.read_bytes()).hexdigest()
+        == PRESERVED_MAIN_PREFLIGHT_SHA256
+    )
+    assert report["cms_hcpcs_reference"]["latest_admission_state"] == "landed"
+    assert (
+        report["cms_hcpcs_reference"]["latest_admission_reviewer_status"]
+        == "approved"
+    )
+    assert (
+        report["cms_hcpcs_reference"]["acquisition_time_rights_state_preserved"]
+        == "unknown"
+    )
+    assert report["release_and_admission_boundaries"]["v4_admissions"] == 3
+    assert report["release_and_admission_boundaries"]["consumer_canaries"] == 3
+
+
+def test_latest_main_rights_snapshot_is_preserved_without_replacing_q3_delta() -> (
+    None
+):
+    report = _json(PRESERVED_AUGUST_RIGHTS_PREFLIGHT)
+
+    assert (
+        hashlib.sha256(
+            PRESERVED_AUGUST_RIGHTS_PREFLIGHT.read_bytes()
+        ).hexdigest()
+        == PRESERVED_AUGUST_RIGHTS_PREFLIGHT_SHA256
+    )
+    assert report["previous_preflight"]["sha256"] == (
+        PRESERVED_MAIN_PREFLIGHT_SHA256
+    )
+    assert report["august_2026_mbs_bronze_projections"][
+        "attestation_sha256"
+    ] == ("d746b166b6c9de75b0ff00c1a709c8929535dc3373f4bfd574a8727e789b8b9f")
+    assert report["cms_hcpcs_reference"][
+        "latest_admission_reviewer_status"
+    ] == ("approved")
+    assert report["release_and_admission_boundaries"]["v4_admissions"] == 3
+    assert report["release_and_admission_boundaries"]["consumer_canaries"] == 3
+
+
+def test_pbs_rights_attestation_is_exact_and_keeps_other_gates_open() -> None:
+    report = _json(PREFLIGHT)
+    pbs = report["pbs_utilisation_raw_objects"]
+    assert pbs["full_object_release_requires_exclusion_review"] is False
+    assert pbs["rights_exclusion_fully_resolved_by_exact_attestation"] is True
+    assert pbs["permission_instrument_existence_and_applicability"] == (
+        "maintainer_attested_not_independently_reviewed"
+    )
+    assert pbs["exact_rights_attestation_path"].endswith(
+        "australian-pbs-utilisation-six-object-rights-attestation-20261020.json"
+    )
+    assert pbs["public_release_performed_by_this_reconciliation"] is False
+    assert pbs["v4_admission"] is False
+    assert pbs["consumer_canary"] is False
+    assert len(pbs["objects"]) == 6
+    assert all(
+        obj["rights_state"] == pbs["rights_state"] for obj in pbs["objects"]
+    )
+    limited_screen = pbs["limited_vocabulary_screen"]
+    assert (
+        limited_screen["results"]["full_vocabulary_exclusion_review_complete"]
+        is False
+    )
+    assert (
+        limited_screen["full_object_release_requires_exclusion_review"] is False
+    )
+    assert (
+        limited_screen["rights_exclusion_fully_resolved_by_exact_attestation"]
+        is True
+    )
+
+
+def test_q1_hr_exact_hosted_identity_is_in_current_preflight() -> None:
+    report = _json(PREFLIGHT)
+    q1 = report["q1_hr_admission"]
+    assert q1["workflow_run_id"] == 39575404598
+    assert q1["workflow_commit"] == "b6e8a8e4f6d633dfea0056104b62972a669c1b3e"
+    assert q1["admissions"] == q1["consumer_canaries"] == 1
+    assert q1["source_values_or_rows_interpreted"] is False
+    assert q1["reader_cache_bytes_after_close"] == 0
+    receipt_path = ROOT / q1["path"]
+    assert hashlib.sha256(receipt_path.read_bytes()).hexdigest() == q1["sha256"]
+
+
+def test_historical_workbook_timeout_retry_scope_is_exact_and_qualified() -> (
+    None
+):
+    report = _json(PREFLIGHT)
+    workbook_retry = report["historical_workbook_six_member_runtime_retry"]
+    assert workbook_retry["original_run_id"] == 39724026209
+    assert workbook_retry["successful_members"] == 91
+    assert workbook_retry["cancelled_groups"] == [65, 71, 80, 84, 86, 87]
+    assert workbook_retry["retry_job_timeout_minutes"] == 60
+    assert workbook_retry["retry_qualified"] is True
+    assert workbook_retry["new_sources"] == 0
+    assert workbook_retry["new_admissions"] == 0
+    for item in workbook_retry["incomplete_receipts"]:
+        assert _json(ROOT / item["path"])["status"] == "incomplete"
+        assert (
+            hashlib.sha256((ROOT / item["path"]).read_bytes()).hexdigest()
+            == item["sha256"]
+        )
+
+
+def test_two_run_reconciler_qualifies_exact_candidate_cohort() -> None:
+    report = _json(PREFLIGHT)["historical_workbook_two_run_reconciler"]
+    assert report["original_successes"] == 85
+    assert report["required_retry_groups"] == [65, 71, 80, 84, 86, 87]
+    assert report["requires_distinct_run_and_commit_per_group"] is True
+    assert report["actual_retry_qualified"] is True
+    assert report["all_91_qualified"] is True
+    assert report["new_admissions"] == 0
+
+
+def test_historical_workbook_candidate_output_inventory_keeps_gates_closed() -> (
+    None
+):
+    report = _json(PREFLIGHT)["historical_workbook_candidate_output_inventory"]
+    assert report["original_run_id"] == 39724026209
+    assert report["retry_run_id"] == 39891918206
+    assert report["all_91_qualified"] is True
+    assert report["candidate_output_count"] == 91
+    assert report["native_unresolved_cells"] == 310_177_657
+    assert report["interpreted_cells"] == 0
+    assert (
+        hashlib.sha256((ROOT / report["receipt"]).read_bytes()).hexdigest()
+        == report["receipt_sha256"]
+    )
+    assert report["field_state"] == "native_unresolved"
+    assert report["rights_qualified"] is True
+    assert report["admitted"] is False
+    assert report["published"] is False
+
+
+def test_historical_workbook_rights_attestation_binds_exact_91_outputs() -> (
+    None
+):
+    preflight = _json(PREFLIGHT)
+    binding = preflight["historical_workbook_91_derived_rights_attestation"]
+    attestation_path = ROOT / binding["path"]
+    assert (
+        hashlib.sha256(attestation_path.read_bytes()).hexdigest()
+        == binding["sha256"]
+    )
+    attestation = _json(attestation_path)
+    cohort_binding = attestation["cohort_report"]
+    cohort_path = ROOT / cohort_binding["path"]
+    assert (
+        hashlib.sha256(cohort_path.read_bytes()).hexdigest()
+        == cohort_binding["sha256"]
+    )
+    cohort = _json(cohort_path)
+    expected = {
+        int(group): {
+            "group": int(group),
+            **{
+                key: entry[key]
+                for key in (
+                    "output_id",
+                    "parquet_sha256",
+                    "parquet_bytes",
+                    "source_sha256",
+                    "member_sha256",
+                    "member_path_sha256",
+                )
+            },
+        }
+        for group, entry in cohort["candidate_outputs_by_group"].items()
+    }
+    authorized_outputs = attestation["authorized_outputs"]
+    assert len(authorized_outputs) == binding["output_count"] == 91
+    assert len({entry["group"] for entry in authorized_outputs}) == 91
+    assert len({entry["output_id"] for entry in authorized_outputs}) == 91
+    actual = {entry["group"]: entry for entry in authorized_outputs}
+    assert len(expected) == len(actual) == binding["output_count"] == 91
+    assert actual == expected
+    assert len({entry["output_id"] for entry in actual.values()}) == 91
+    assert (
+        attestation["maintainer_response"] == "Attest permission covers all 91"
+    )
+    assert attestation["public_release_rights_attested"] is True
+    assert binding["instrument_independently_reviewed"] is False
+    assert all(value is False for value in attestation["boundaries"].values())
+    assert (
+        binding["new_admissions"]
+        == binding["consumer_canaries"]
+        == binding["publications"]
+        == 0
+    )

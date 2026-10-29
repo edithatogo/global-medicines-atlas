@@ -16,9 +16,13 @@ from typing import Any, cast
 from jsonschema import Draft202012Validator
 
 if __package__:
+    from . import m112_pbs_utilisation_replay as pbs_replay
+    from . import qualify_m112_v3_replay as qualification
     from .qualify_m112_v3_replay import OUTPUT as PLAN_PATH
     from .qualify_m112_v3_replay import ROOT, V3_SCHEMA
 else:
+    import m112_pbs_utilisation_replay as pbs_replay
+    import qualify_m112_v3_replay as qualification
     from qualify_m112_v3_replay import OUTPUT as PLAN_PATH
     from qualify_m112_v3_replay import ROOT, V3_SCHEMA
 
@@ -27,6 +31,10 @@ DATASET = "edithatogo/australian-mbs-utilisation-archive"
 REVISION = "dee9a5b0580dfe394474dc26b372559462e157e7"
 TARGET_PATH = "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx"
 COMMIT_LENGTH = 40
+SUPPORTED_SOURCE_IDS = frozenset({
+    "au-data-gov-mbs-group",
+    "au-data-gov-mbs-demographics",
+})
 
 
 def _canonical(value: Any) -> bytes:
@@ -54,6 +62,36 @@ def _read_json(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise TypeError(f"expected JSON object: {path}")
     return cast("dict[str, Any]", value)
+
+
+def _target_identity(snapshot: dict[str, Any]) -> tuple[str, str, str]:
+    """Parse the pinned MBS locator or exact-six PBS candidate locator."""
+    prefix = f"{DATASET}@{REVISION}:"
+    partition_value = snapshot.get("partition_value")
+    pbs_prefix = f"{pbs_replay.DATASET}@{pbs_replay.REVISION}:"
+    if isinstance(partition_value, str) and partition_value.startswith(
+        pbs_prefix
+    ):
+        return (
+            pbs_replay.DATASET,
+            pbs_replay.REVISION,
+            partition_value[len(pbs_prefix) :],
+        )
+    if not isinstance(partition_value, str) or not partition_value.startswith(
+        prefix
+    ):
+        raise ValueError(
+            "replay plan differs from the approved M-112 dataset pin"
+        )
+    target_path = partition_value[len(prefix) :]
+    if (
+        not target_path.startswith("raw/mbs/utilisation/")
+        or ".." in Path(target_path).parts
+        or "\\" in target_path
+        or not target_path
+    ):
+        raise ValueError("replay plan target must be an approved raw B2 path")
+    return DATASET, REVISION, target_path
 
 
 def execute(
@@ -102,6 +140,11 @@ def execute(
         raise TypeError("replay step must be an object")
     snapshot = cast("dict[str, Any]", snapshots[0])
     step = cast("dict[str, Any]", steps[0])
+    dataset, revision, target_path = _target_identity(snapshot)
+    if dataset == pbs_replay.DATASET and plan != qualification.qualify(
+        target_path=target_path
+    ):
+        raise ValueError("plan differs from bound PBS replay evidence")
     validator = cast("Any", Draft202012Validator(_read_json(ROOT / V3_SCHEMA)))
     validator.validate({
         key: value for key, value in plan.items() if key != "scope"
@@ -118,19 +161,38 @@ def execute(
     }
     if _sha256(_canonical(plan_content)) != replay_plan.get("plan_sha256"):
         raise ValueError("replay plan digest is invalid")
-    if (
-        snapshot.get("source_id") != "au-data-gov-mbs-group"
-        or snapshot.get("payload_sha256") is None
-        or snapshot.get("replay_eligible") is not True
-        or step.get("candidate_only") is not True
-        or step.get("hosted_replay_status") != "pending"
-    ):
+    contracts_value = plan.get("contracts")
+    if not isinstance(contracts_value, list):
+        raise TypeError("replay plan contracts must be an array")
+    contracts = cast("list[Any]", contracts_value)
+    if len(contracts) != 1:
+        raise ValueError("replay plan must contain exactly one v3 contract")
+    contract_value = contracts[0]
+    if not isinstance(contract_value, dict):
+        raise TypeError("replay contract must be an object")
+    contract = cast("dict[str, Any]", contract_value)
+    source_id = snapshot.get("source_id")
+    supported_sources = (
+        pbs_replay.SOURCE_IDS
+        if dataset == pbs_replay.DATASET
+        else SUPPORTED_SOURCE_IDS
+    )
+    replay_identity_is_valid = all((
+        source_id in supported_sources,
+        contract.get("source_id") == source_id,
+        contract.get("contract_id")
+        == f"{source_id}:historical-backfill-replay:v1",
+        snapshot.get("payload_sha256") is not None,
+        snapshot.get("replay_eligible") is True,
+        step.get("candidate_only") is True,
+        step.get("hosted_replay_status") == "pending",
+    ))
+    if not replay_identity_is_valid:
         raise ValueError("replay plan target is not eligible for hosted replay")
     expected_digest = snapshot.get("payload_sha256")
     expected_bytes = step.get("expected_byte_count")
     if (
-        snapshot.get("partition_value") != f"{DATASET}@{REVISION}:{TARGET_PATH}"
-        or step.get("expected_payload_sha256") != expected_digest
+        step.get("expected_payload_sha256") != expected_digest
         or not isinstance(expected_digest, str)
         or not isinstance(expected_bytes, int)
         or expected_bytes < 1
@@ -167,10 +229,10 @@ def execute(
     work_dir.mkdir(parents=True, exist_ok=True)
     try:
         retrieved = download(
-            repo_id=DATASET,
+            repo_id=dataset,
             repo_type="dataset",
-            filename=TARGET_PATH,
-            revision=REVISION,
+            filename=target_path,
+            revision=revision,
             token=False,
             local_dir=str(work_dir),
             force_download=True,
@@ -224,9 +286,9 @@ def execute(
         "status": "passed",
         "candidate_only": True,
         "scope": {
-            "dataset": DATASET,
-            "revision": REVISION,
-            "path": TARGET_PATH,
+            "dataset": dataset,
+            "revision": revision,
+            "path": target_path,
             "sha256": observed_digest,
             "byte_count": observed_bytes,
         },

@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-10-28T14:34:48.348831+00:00",
+  "status": "historical_writer_not_qualified_on_local_python315",
+  "purpose": "Investigate exact older serialization reproduction without extending rights or replacing the working environment.",
+  "historical_producer_commit": "17494b52c90f35189d2540caf0cd2638c117e4ba",
+  "historical_locked_pyarrow": "25.0.0",
+  "historical_lock_cp315_wheels": 0,
+  "attempt": {
+    "route": "uv run --locked --isolated --python <qualified-repo-local-python> --with pyarrow==25.0.0 python <bounded-version-and-import-probe>",
+    "exit_code": 1,
+    "failure": "PyArrow source build CMake configuration could not locate ArrowConfig.cmake or arrow-config.cmake; the required Arrow SDK was not configured.",
+    "scope": "This is a local isolated build failure, not proof that every other platform or source-build route is unavailable."
+  },
+  "readback": {
+    "qualified_repo_python": "3.15.1",
+    "repo_pyarrow": "26.0.0",
+    "working_environment_replaced": false
+  },
+  "boundaries": {
+    "python_downgraded": false,
+    "default_dependency_changed": false,
+    "source_payloads_read": false,
+    "new_sources": 0,
+    "native_qualification_redispatches": 0,
+    "admissions": 0,
+    "publications": 0,
+    "rights_scope_changed": false
+  }
+}

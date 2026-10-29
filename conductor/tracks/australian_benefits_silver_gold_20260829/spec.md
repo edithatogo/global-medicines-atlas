@@ -115,6 +115,22 @@ not negative evidence.
   provenance, rights, coverage, performance, full harness where supported,
   hosted review, and requirement/evidence gates pass.
 
+## Approved field-level completion policy (2026-10-21)
+
+The maintainer-approved bounded scope preserves every source-native record and
+field while assigning field/capability interpretation as `interpreted`,
+`native_unresolved`, or `unavailable`. Missing semantic definitions remain
+explicit limitations. Typed parsing alone is not interpretation qualification.
+Native unresolved values may be displayed and counted as source observations;
+unsupported pooling, substitution, temporal/current-status claims and patient
+rates must be rejected or returned explicitly unavailable. Unknown age labels
+retain their native form and an unresolved relationship to suppression.
+
+All frozen MBS/PBS source families remain in the qualification denominator.
+An explicit field limitation is accounted for without inventing meaning or
+silently dropping source records. Exact-output qualification, rights, admission,
+restore and consumer evidence remain independent gates under AC-07/AC-08.
+
 ## Non-goals and gates
 
 - No individual clinical advice, therapeutic equivalence, or patient pathway

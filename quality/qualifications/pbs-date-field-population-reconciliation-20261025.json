@@ -1,0 +1,121 @@
+{
+  "recorded_at": "2026-10-25",
+  "report": {
+    "date_populations": {
+      "date_profile": {
+        "converted": 2799,
+        "format": "XSD YYYY-MM-DD",
+        "profile_id": "pbs-v3-pinned-2026-04-01-v1",
+        "recognized_slot_missing": 1,
+        "restriction_effective_date_in_profile": false,
+        "role_counts": {
+          "pbs_effective_date": 2798,
+          "schedule_dct_valid": 1,
+          "schedule_effective_date": 1,
+          "unmapped": 7727884
+        },
+        "role_slots": 2800
+      },
+      "domain_role_counts": {
+        "direct_restriction_effective_date_literal": 3028,
+        "document_valid_date_separate": 1,
+        "item_and_schedule_effective_date": 2799,
+        "restriction_date_grammar_qualified": false
+      },
+      "exact_occurrence_crosswalk": {
+        "direct_restriction_effective_date_path_fields": 3028,
+        "identity": "source_field_id_exact_match",
+        "item_effective_date_profile_fields": 2798,
+        "item_identity_set_sha256": "eaae559e6e033f3b99dbf094e855d06c3f8301458d529ab040f968395a305743",
+        "overlap_fields": 0,
+        "restriction_identity_set_sha256": "aa24735d649a8e77307bab125308b17d81827c21caa266c123e8b24af582584a",
+        "run_id": "40121732132",
+        "source_values_emitted": false,
+        "unmatched_total": 5826,
+        "workflow_commit": "a91ce7f994391a6d7aae182618c92049fcf088d2"
+      },
+      "resolution": {
+        "date_profile_denominator": "2,800 date-role slots are 2,798 item effective dates plus one schedule effective-date slot plus one document-valid slot; the profile converts 2,799 and records one recognized missing slot",
+        "domain_description_count_conflict": "resolved in domain semantics v3 by restricting the date-grammar-qualified effective_date count to the 2,798 item plus one schedule role and recording the 3,028 direct restriction date literal path separately without claiming profile grammar",
+        "prior_230_difference": "resolved_as_non_comparable_disjoint_occurrence_sets; 3,028 direct restriction-path fields and 2,798 item-profile fields have zero exact-ID overlap"
+      }
+    },
+    "evidence": {
+      "date_crosswalk": {
+        "file_sha256": "8eb6fee47f50b61ed93963d6261f5b1b7cbb366cdb5de9e8c4da3bac013cf592",
+        "path": "quality/qualifications/pbs-date-occurrence-crosswalk-20261025-40121732132.json"
+      },
+      "date_profile": {
+        "file_sha256": "383f69a7e69e62527b07d45d0833ce21ccaea07e2d7a0b7fbc3d1b9a0f97ecfb",
+        "path": "quality/qualifications/pbs-v3-2026-04-01-date-profile-qualification-20260929.json"
+      },
+      "domain_semantics": {
+        "file_sha256": "99f25e70b860777b844716bd495690345fed112e54cdce3f8627b9f9404db720",
+        "path": "quality/qualifications/pbs-domain-field-semantics-20261025-v3.json"
+      },
+      "field_state": {
+        "file_sha256": "942db270550595c24486db48c5095bad92308dc7f7ac0a6afce3d4306232ada1",
+        "path": "quality/qualifications/pbs-native-silver-field-reconciliation-20261025-r12.json"
+      },
+      "superseded_date_reconciliation": {
+        "file_sha256": "5bf120a13a77b8bf407978c30da960ec894d7f55c6ac3ea512290932b75912f6",
+        "path": "quality/qualifications/pbs-date-denominator-reconciliation-20261025.json"
+      }
+    },
+    "field_state_partition": {
+      "all_native_values_remain_unresolved": true,
+      "conserved": true,
+      "interpretation_counts": {
+        "amt_literal_reference": 8328,
+        "amt_literal_reference_resource": 8328,
+        "item_effective_date_literal": 2798,
+        "item_identity_literal": 2798,
+        "pbs_dollar_amount": 71668,
+        "pbs_patient_contribution_dollar_amount": 2279,
+        "pbs_product_price_dollar_amount": 817216,
+        "product_presentation_label": 12128,
+        "restriction_effective_date_literal": 3028,
+        "restriction_text": 6056,
+        "schedule_metadata_valid_date_literal": 1
+      },
+      "interpreted": 934628,
+      "limits": [
+        "The partition is exact-member path and QName semantics; it does not interpret native value lexemes.",
+        "unavailable=0 means no inventory field is classified unavailable; it does not mean every source value is present.",
+        "structural destinations and date-role overlays are not additive field states."
+      ],
+      "native_unresolved": 17274130,
+      "source_fields": 18208758,
+      "unavailable": 0
+    },
+    "non_claims": {
+      "admissions": 0,
+      "clinical_eligibility": false,
+      "consumer_canaries": 0,
+      "cross_era_equivalence": false,
+      "current_listing_status": false,
+      "date_interval_or_precedence": false,
+      "date_values_or_missing_slot_identity_inferred": false,
+      "new_sources": 0,
+      "publication": false,
+      "source_values_emitted": false
+    },
+    "profile_id": "pbs-v3-pinned-2026-04-01-date-fields-reconciliation-v1",
+    "schema_id": "global-medicines-atlas.pbs-date-field-population-reconciliation",
+    "schema_version": 1,
+    "source": {
+      "archive_sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+      "dataset": "edithatogo/australian-pbs-source-archive",
+      "member_path": "bronze/2026-04-01/sch-2026-04-01-r1.xml",
+      "member_sha256": "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43",
+      "native_digest": "890c607f0e8c9de95c37770610fdc51fd241ea97210ef5ea61d7ad22fd228a25",
+      "native_fields": 18208758,
+      "revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7"
+    },
+    "status": "field_state_and_date_role_reconciliation_complete_with_semantic_limits"
+  },
+  "report_sha256": "5c21da626b8e2f2c24c319b5e9a355e2ddd7fe8ae907f8ddd420b626f57052c1",
+  "schema_id": "global-medicines-atlas.pbs-date-field-population-reconciliation",
+  "schema_version": 1,
+  "status": "field_state_and_date_role_reconciliation_complete_with_semantic_limits"
+}

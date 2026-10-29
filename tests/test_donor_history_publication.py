@@ -576,7 +576,12 @@ def test_history_bad_receipt_prevents_completion(execution_case, stage):
         )
 
     execution_case = (*execution_case[:2], bad_receipt, receipts)
-    with pytest.raises(ValueError, match="durable"):
+    expected_error = {
+        "intent": "intent receipt URL missing or invalid",
+        "cas_acknowledged": "durable acknowledgement URL missing",
+        "anonymously_verified": "verification receipt URL missing or invalid",
+    }[stage]
+    with pytest.raises(ValueError, match=expected_error):
         execute_case(execution_case)
     assert transport.writes == int(stage != "intent")
 

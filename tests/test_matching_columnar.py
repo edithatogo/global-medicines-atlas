@@ -2,7 +2,9 @@ from datetime import UTC, datetime
 
 import duckdb
 import pyarrow.parquet as pq
+import pytest
 
+from global_medicines_atlas import matching_columnar
 from global_medicines_atlas.matching_columnar import (
     DISCLAIMER,
     write_matching_outputs,
@@ -88,7 +90,7 @@ def test_outputs_are_sorted_and_expose_duckdb_views(tmp_path):
     ]
     connection = duckdb.connect(str(tmp_path / "matching.duckdb"))
     try:
-        assert connection.sql(
+        assert connection.execute(
             "select sum(candidate_count) from matching_review_summary"
         ).fetchone() == (2,)
     finally:
@@ -111,13 +113,60 @@ def test_output_manifest_and_jsonl_are_reproducible(tmp_path):
     second = write_matching_outputs(entries, tmp_path)
     assert first.input_digest == second.input_digest
     assert first.files == second.files
+    assert first.database_logical_sha256 == second.database_logical_sha256
+    assert "matching.duckdb" not in first.files
     assert first_queue == (tmp_path / "review_queue.jsonl").read_bytes()
     assert b'"clinical_equivalence_claim":false' in first_queue
     assert b'"confidence":null' in first_queue
     assert b'"confidence_state":"not_calibrated"' in first_queue
 
 
+def test_database_logical_digest_binds_view_definitions() -> None:
+    candidate_rows = [{"candidate_id": "candidate-1"}]
+    feature_rows = [{"candidate_id": "candidate-1", "position": 1}]
+    view_definitions = [
+        ("matching_candidates", "SELECT * FROM candidate_data"),
+    ]
+
+    initial = matching_columnar._database_logical_digest(
+        candidate_rows, feature_rows, view_definitions
+    )
+    changed = matching_columnar._database_logical_digest(
+        candidate_rows,
+        feature_rows,
+        [("matching_candidates", "SELECT * FROM candidate_data WHERE TRUE")],
+    )
+
+    assert initial != changed
+
+
 def test_empty_queue_has_stable_schemas(tmp_path):
     manifest = write_matching_outputs([], tmp_path)
     assert manifest.candidate_count == 0
     assert pq.read_table(tmp_path / "matching_candidates.parquet").schema.names
+
+
+@pytest.mark.unit
+def test_matching_output_rejects_missing_database_arrow_readback(
+    tmp_path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    class Result:
+        def to_arrow_table(self) -> None:
+            return None
+
+    class Connection:
+        def register(self, _name: str, _table: object) -> None:
+            pass
+
+        def execute(self, *_args: object) -> Result:
+            return Result()
+
+        def close(self) -> None:
+            pass
+
+    monkeypatch.setattr(
+        duckdb, "connect", lambda *_args, **_kwargs: Connection()
+    )
+
+    with pytest.raises(RuntimeError, match="no Arrow readback tables"):
+        write_matching_outputs([sample_entry()], tmp_path)

@@ -679,5 +679,5 @@ def test_hosted_runner_is_protected_bounded_and_metadata_only() -> None:
     assert "group: australian-mbs-utilisation-harvest" in workflow
     assert "environment: australian-hf-publication" in workflow
     assert "contents: read" in workflow
-    assert "issues: write" in workflow
+    assert "issues: write" not in workflow
     assert "type: string" in workflow

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Mapping, Sequence
 from datetime import UTC, datetime
-from typing import Annotated, Any, Protocol
+from typing import Annotated, Any, Literal, Protocol
 from uuid import uuid4
 
 from fastapi import FastAPI, Path, Query, Request
@@ -17,8 +17,13 @@ from .platinum_identity_service import (
     DatasetIdentityV2Lookup,
     UnknownPlatinumResourceError,
 )
+from .platinum_structure import (
+    SourceStructureLookup,
+    SourceStructurePage,
+    SourceStructureQuery,
+)
 from .platinum_surface_contracts import DatasetIdentityV2Envelope
-from .platinum_types import RESOURCE_ID_PATTERN
+from .platinum_types import MAX_QUERY_OFFSET, RESOURCE_ID_PATTERN
 from .platinum_v2_contracts import (
     V2_API_BASE_PATH,
     V2_API_VERSION,
@@ -181,6 +186,7 @@ def create_v2_app(
     service: V2ComparisonService,
     *,
     dataset_identities: DatasetIdentityV2Lookup | None = None,
+    source_structure: SourceStructureLookup | None = None,
 ) -> FastAPI:
     """Create an isolated additive V2 API without changing the V1 schema."""
 
@@ -214,6 +220,71 @@ def create_v2_app(
         )
 
     app.add_exception_handler(RequestValidationError, request_validation_error)
+
+    @app.get(
+        f"{V2_API_BASE_PATH}/source-structure/{{resource_id}}",
+        response_model=SourceStructurePage,
+        responses=_ERROR_RESPONSES,
+        tags=["source structure"],
+    )
+    def source_structure_rows(  # pyright: ignore[reportUnusedFunction]
+        request: Request,
+        response: Response,
+        resource_id: Annotated[
+            str, Path(min_length=1, max_length=256, pattern=RESOURCE_ID_PATTERN)
+        ],
+        columns: Annotated[list[str], Query(min_length=1, max_length=64)],
+        view: Literal["records", "fields"] = "records",
+        limit: Annotated[int, Query(ge=1, le=100)] = 100,
+        offset: Annotated[int, Query(ge=0, le=MAX_QUERY_OFFSET)] = 0,
+        *,
+        offline: bool = False,
+    ) -> SourceStructurePage | JSONResponse:
+        if source_structure is None:
+            return _error_response(
+                request,
+                status_code=503,
+                code=ErrorCode.SERVICE_UNAVAILABLE,
+                message="The source-structure service is unavailable",
+            )
+        try:
+            result = source_structure.query(
+                resource_id,
+                SourceStructureQuery(
+                    columns=tuple(columns),
+                    view=view,
+                    limit=limit,
+                    offset=offset,
+                    offline=offline,
+                ),
+            )
+        except UnknownPlatinumResourceError:
+            return _error_response(
+                request,
+                status_code=404,
+                code=ErrorCode.NOT_FOUND,
+                message="The admitted source-structure resource was not found",
+            )
+        except ValueError:
+            return _error_response(
+                request,
+                status_code=422,
+                code=ErrorCode.INVALID_REQUEST,
+                message="The source-structure query is invalid",
+            )
+        except OSError, QueryServiceError:
+            return _error_response(
+                request,
+                status_code=503,
+                code=ErrorCode.SERVICE_UNAVAILABLE,
+                message="The source-structure evidence is unavailable",
+                retryable=True,
+            )
+        if result.status == "available":
+            _identity_cache_headers(response, result.identity)
+        else:
+            response.headers["cache-control"] = "no-store"
+        return result
 
     @app.api_route(
         f"{V2_API_BASE_PATH}/datasets/{{resource_id:path}}",

@@ -1,0 +1,80 @@
+{
+  "schema_id": "global-medicines-atlas.mbs-p7-date-profile-reconciliation",
+  "schema_version": 1,
+  "status": "internal_exact_copy_dmy_inference_reconciled_conversion_disabled",
+  "source": {
+    "source_id": "au-mbs-p7-legacy-workbook",
+    "source_revision": "legacy-donor-20260829",
+    "path": "raw/mbs/legacy/2024-07/MBS-2024.07-Group-P7-Genetics.xlsx",
+    "sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
+    "byte_count": 87727,
+    "schema_era": "mbs-p7-2024-07-headers-v1"
+  },
+  "reconciliation": {
+    "inferred_profile": "mbs-dmy",
+    "inference_scope": "internal_file_consistency_for_this_exact_donor_archived_copy_only",
+    "profile_selection_status": "selected_as_internal_consistency_inference",
+    "evidence_counts": {
+      "populated_date_fields": 4,
+      "profiled_cells": 1280,
+      "ambiguous_calendar_order_cells_before_inference": 1194,
+      "unique_dmy_calendar_date_cells": 4,
+      "unique_mdy_calendar_date_cells": 0,
+      "unique_calendar_date_cells": 86
+    },
+    "interpretation": "The four unique DMY-only calendar values distinguish DMY from MDY for the exact-copy internal consistency profile. The other 1194 date-shaped cells remain unresolved for operational conversion; no source values are emitted.",
+    "prior_unselected_reports": [
+      {
+        "path": "quality/qualifications/mbs-p7-value-era-rules-20261024.json",
+        "sha256": "b7e8e91e13b76840689f5cf6e9733bb58a9d1633f01df8f6f5b8e27fc2f61d47",
+        "prior_statement": "No workbook-wide profile selected; 1194 cells ambiguous under DMY/MDY compatibility.",
+        "reconciliation": "Superseded only as to whether an internal exact-copy consistency profile can be selected. Its source-semantic, conversion, and cross-era limits remain in force."
+      },
+      {
+        "path": "quality/qualifications/mbs-p7-xml-field-era-crosswalk-20261025.json",
+        "sha256": "dbdd2f709d518ff1abf5186aca2679aa86727a47b3163babe0744b700220c751",
+        "prior_statement": "P7 date convention remains unset.",
+        "reconciliation": "Clarified: internal exact-copy DMY consistency is inferred, but an official/source-owner convention remains unconfirmed. No P7-to-XML date-era transfer is made."
+      }
+    ]
+  },
+  "operational_limits": {
+    "operational_date_conversion_enabled": false,
+    "conversion_gate": "Keep conversion disabled pending source-owner confirmation of provenance and date convention for this exact archived copy.",
+    "source_owner_confirmation": false,
+    "official_provenance_confirmed": false,
+    "domain_date_meaning_qualified": false,
+    "temporal_comparison_enabled": false,
+    "cross_era_equivalence_promoted": false,
+    "other_workbooks_or_eras_in_scope": false,
+    "source_values_emitted": false,
+    "rights_changed": false,
+    "admission_performed": false,
+    "publication_performed": false,
+    "consumer_canary_performed": false
+  },
+  "supporting_evidence": [
+    {
+      "path": "quality/qualifications/mbs-p7-date-consistency-inference-20261025-40139026116.json",
+      "sha256": "a9df045f3893c0f2774d80a2a0d806ad19c17c4d7173da64bde57d1169e06486",
+      "role": "exact-copy internal DMY consistency inference and value-free counts"
+    },
+    {
+      "path": "quality/qualifications/mbs-workbook-date-source-owner-clarification-20261017.json",
+      "sha256": "3a51ff9c8cb6ce66e7e3ea31b561de0524f00a4c487568c05d012afa99ebf599",
+      "role": "source owner did not confirm provenance or convention and requires conversion to remain disabled"
+    },
+    {
+      "path": "quality/qualifications/mbs-workbook-date-source-doc-review-20260929.json",
+      "sha256": "3d0c7234092cd7a8e51abc20cd69389010e0a54b019058c9ae2832bd2c63a4b9",
+      "role": "current XML date documentation does not apply to the legacy workbook"
+    },
+    {
+      "path": "quality/qualifications/mbs-p7-exact-main-run-receipt-20261025-40143990472.json",
+      "sha256": "40abb1d235d97802af35e0af3458e32ffb8071a8e296f1e2f61e9e55f9437e09",
+      "role": "exact-main workflow receipt for the same source copy"
+    }
+  ],
+  "qualification": "exact_copy_internal_profile_reconciled_operational_conversion_still_unqualified",
+  "report_sha256": "899b0989d724b0d9130779ac2dffb85446586a9e0334049696e9ee8dcc9fe4c5"
+}

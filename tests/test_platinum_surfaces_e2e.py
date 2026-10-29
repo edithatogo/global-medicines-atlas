@@ -46,13 +46,12 @@ def test_synthetic_benefits_query_agrees_across_cli_api_and_atlas(
     trust_file.write_text("{}", encoding="utf-8")
     schema_file.write_text("{}", encoding="utf-8")
     metadata_root.mkdir()
-    resolver = benefits._resolver  # pyright: ignore[reportPrivateUsage] -- fixture shares the resolver configured by the service helper.
 
     def load_test_resolver(
         *, trust_file: Path, metadata_root: Path, schema_file: Path
     ) -> StorageNeutralResolver:
         del trust_file, metadata_root, schema_file
-        return resolver
+        return service(source=source)._resolver  # pyright: ignore[reportPrivateUsage] -- each CLI invocation owns its independent fixture resolver.
 
     monkeypatch.setattr(
         "global_medicines_atlas.platinum_configuration.load_benefits_resolver",

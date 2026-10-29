@@ -35,7 +35,7 @@ is not final-v1 approval.
 
 ## Initial support boundary
 
-Python 3.14 is the authoritative engine. Mojo remains experimental. Windows,
+Python 3.15.1 is the authoritative engine. Mojo remains experimental. Windows,
 Linux, and macOS are candidate support targets until clean-wheel and sdist
 consumer rehearsals verify them. LanceDB is derived acceleration; stable core
 installation must remain usable through deterministic fallback without it.
@@ -64,10 +64,13 @@ the structural schema migration.
 
 `quality/qualifications/stable-v1-support-readiness.json` is the authoritative
 register for platforms, documentation readiness, limitations, and residual
-risks. Its support boundaries pass. The register remains blocked only because
-maintainer-confirmed Renovate activation has not yet produced an observable
-Dashboard or update pull request. Production DR remains unqualified but is a
-separate, accepted limitation of a software-only stable release.
+risks. Its runtime boundary is CPython 3.15.1, verified with the exact-main
+cross-platform consumer run recorded in
+`quality/qualifications/stable-v1-python-runtime-validation-20261027.md`.
+The support readiness register is verified because all support boundaries
+pass and it contains no blocking unresolved risk. The accepted production DR
+limitation remains a separate non-acceptance gate for a software-only stable
+release. Australian federation remains the unresolved Stable v1 gate.
 
 `quality/qualifications/publication-identities.json` is the authoritative
 publication-surface registry. GitHub identifies software source/releases,

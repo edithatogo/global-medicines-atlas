@@ -7,6 +7,10 @@ on:
         description: Exact merged main commit containing this replay plan
         required: true
         type: string
+      target_path:
+        description: Exact MBS raw B2 path or one of the six frozen PBS raw B2 paths
+        required: true
+        type: string
 
 permissions: {}
 
@@ -34,17 +38,24 @@ jobs:
           test "${GITHUB_REF}" = 'refs/heads/main'
           test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
       - name: Validate the exact one-object replay plan
+        env:
+          TARGET_PATH: ${{ inputs.target_path }}
+          PLAN_PATH: ${{ runner.temp }}/gma-m112-v3-plan-${{ github.run_id }}-${{ github.run_attempt }}.json
         run: |
           set -euo pipefail
-          uv run --locked --python 3.14.6 python scripts/qualify_m112_v3_replay.py --check
+          uv run --locked --python 3.15.1 python scripts/qualify_m112_v3_replay.py \
+            --target-path "$TARGET_PATH" \
+            --output "$PLAN_PATH"
       - name: Verify anonymous pinned bytes and rebuild metadata registration
         env:
           WORK_DIR: ${{ runner.temp }}/gma-m112-v3-replay-${{ github.run_id }}-${{ github.run_attempt }}
           RECEIPT_PATH: ${{ runner.temp }}/gma-m112-v3-replay-receipt-${{ github.run_id }}-${{ github.run_attempt }}.json
+          PLAN_PATH: ${{ runner.temp }}/gma-m112-v3-plan-${{ github.run_id }}-${{ github.run_attempt }}.json
         run: |
           set -euo pipefail
-          uv run --locked --python 3.14.6 --with huggingface-hub==1.14.0 \
+          uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 \
             python scripts/execute_m112_v3_replay.py \
+              --plan "$PLAN_PATH" \
               --work-dir "$WORK_DIR" \
               --output "$RECEIPT_PATH" \
               --workflow-commit "$GITHUB_SHA" \
@@ -62,4 +73,5 @@ jobs:
         env:
           WORK_DIR: ${{ runner.temp }}/gma-m112-v3-replay-${{ github.run_id }}-${{ github.run_attempt }}
           RECEIPT_PATH: ${{ runner.temp }}/gma-m112-v3-replay-receipt-${{ github.run_id }}-${{ github.run_attempt }}.json
-        run: rm -rf "$WORK_DIR" "$RECEIPT_PATH"
+          PLAN_PATH: ${{ runner.temp }}/gma-m112-v3-plan-${{ github.run_id }}-${{ github.run_attempt }}.json
+        run: rm -rf "$WORK_DIR" "$RECEIPT_PATH" "$PLAN_PATH"

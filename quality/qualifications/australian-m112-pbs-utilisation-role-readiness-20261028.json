@@ -1,0 +1,310 @@
+{
+  "schema_id": "global-medicines-atlas.m112-pbs-utilisation-role-readiness",
+  "schema_version": 1,
+  "recorded_at": "2026-10-28T11:51:20.761009+00:00",
+  "purpose": "Bind existing exact-source role evidence and resolve generic header-token flags without conflating raw admission, source semantics and independent recovery.",
+  "inputs": {
+    "identity_rights_lineage": {
+      "path": "quality/qualifications/australian-m112-pbs-utilisation-rights-lineage-reconciliation-20261028.json",
+      "sha256": "5050236f8aa68491f490ca35dd4425c3173eb54673c5072e6dcfac712cf62775"
+    },
+    "private_pattern_screen": {
+      "path": "quality/qualifications/australian-pbs-utilisation-private-pattern-screen-20261021.json",
+      "sha256": "43c1c2a80adb86bb215dbd2340645fee1ce20d4c17a2a0545c9134c2d4c86f33"
+    },
+    "csv_header_context": {
+      "path": "quality/qualifications/australian-pbs-dos-sensitive-header-context-20261021.json",
+      "sha256": "a5046bae17eb24a63e286f0c083ca0a2269c997bc2918b7fe3bf97324ee40654"
+    },
+    "workbook_marker_context": {
+      "path": "quality/qualifications/australian-pbs-expenditure-marker-context-screen-20261021.json",
+      "sha256": "150c92ae5a2e488243b3bb324651ba946593246b548eb17c25694c7f0de149a1"
+    },
+    "summary_header_context": {
+      "path": "quality/qualifications/australian-pbs-utilisation-summary-workbook-header-resolution-20261021.json",
+      "sha256": "f717d2bda385a1dc7080b3493de9430998172146c03b5f8252f21e6f61ae71dd"
+    },
+    "v1_conformance": {
+      "path": "quality/qualifications/australian-m112-pbs-utilisation-v1-conformance-20261028.json",
+      "sha256": "8e1e783f1e24288645f4b2895933e17dd0db9fdc846b1ee5f842615ca66fd100"
+    },
+    "v3_replays": {
+      "path": "quality/qualifications/australian-m112-pbs-v3-replays-20261028/replay-manifest.json",
+      "sha256": "181877c25380042f277ae7e652b178cea50f3b59f0fcb82f4b38923ee380a770"
+    },
+    "discovery": {
+      "path": "quality/qualifications/australian-m112-pbs-utilisation-v4-discovery-role-candidate-20261028.json",
+      "sha256": "e3179343d02b56c997f7d7053779f5612e0c3b2a74012e6c30f7a88a4467de10"
+    }
+  },
+  "publisher_documentation_observations": [
+    {
+      "url": "https://www.pbs.gov.au/statistics/dos-and-dop/dos-and-dop",
+      "observed_on": "2026-10-28",
+      "observation": "Publisher describes summarised prescription counts, costs and contribution measures by item, patient category and month; supplementary reports add dispensing pharmacy type. Item map supplies generic drug names. Current downloadable file sizes differ from frozen objects, so documentation is used for family context only."
+    },
+    {
+      "url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/pbs-expenditure-and-prescriptions",
+      "observed_on": "2026-10-28",
+      "observation": "Publisher describes summaries of PBS processing by drug, prescription volume and cost and lists the 2023-24 and 2024-25 annual reports."
+    }
+  ],
+  "scope": {
+    "objects": 6,
+    "bytes": 191047619,
+    "frozen_inventory_objects": 1759,
+    "layer": "bronze_b2_raw"
+  },
+  "objects": [
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+      "sha256": "32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b",
+      "byte_count": 372149,
+      "source_profile": "aggregate_annual_expenditure_workbook",
+      "sensitivity_assessment": {
+        "data_sensitivity": "non_sensitive",
+        "assessment_basis": "source_specific_aggregate_or_reference_profile_and_exact_retained_screen",
+        "assessed_by": "implementing_agent",
+        "rationale": "Publisher describes annual prescription-volume and expenditure summaries; exact bounded screen records zero email-shaped values or sensitive header-label hits. Narrative tokens alone do not establish personal data.",
+        "evidence_roles": [
+          "private_pattern_screen",
+          "workbook_marker_context"
+        ],
+        "exhaustive_personal_data_clearance": false,
+        "personal_data_absence_proven": false,
+        "current_publisher_download_identical_to_frozen_object_claimed": false
+      },
+      "role_readiness": {
+        "identity_rights_b1_b2": "exact_evidence_bound",
+        "v1_conformance": "candidate_available_not_bound_in_v4",
+        "v2_field_lineage": "not_applicable_raw_b2",
+        "v3_replay": "hosted_passed_exact_object",
+        "discovery": "candidate_available_not_bound_in_v4",
+        "sensitivity": "source_profile_assessed_non_sensitive",
+        "raw_schema": "unqualified_native_schema_permitted_for_raw_b2",
+        "primary_restore": "prior_anonymous_digest_readback_available",
+        "independent_recovery": "blocked_no_approved_independent_target",
+        "complete_contract": "not_assembled",
+        "receipt_closure": "not_executed",
+        "typed_admission": "not_executed",
+        "consumer_canary": "not_executed"
+      },
+      "hosted_replay_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40677682866",
+      "v4_admitted": false,
+      "disposition": "candidate_role_evidence_only"
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+      "sha256": "147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99",
+      "byte_count": 468764,
+      "source_profile": "aggregate_annual_expenditure_workbook",
+      "sensitivity_assessment": {
+        "data_sensitivity": "non_sensitive",
+        "assessment_basis": "source_specific_aggregate_or_reference_profile_and_exact_retained_screen",
+        "assessed_by": "implementing_agent",
+        "rationale": "Publisher describes annual prescription-volume and expenditure summaries; exact bounded screen records zero email-shaped values or sensitive header-label hits. Narrative tokens alone do not establish personal data.",
+        "evidence_roles": [
+          "private_pattern_screen",
+          "workbook_marker_context"
+        ],
+        "exhaustive_personal_data_clearance": false,
+        "personal_data_absence_proven": false,
+        "current_publisher_download_identical_to_frozen_object_claimed": false
+      },
+      "role_readiness": {
+        "identity_rights_b1_b2": "exact_evidence_bound",
+        "v1_conformance": "candidate_available_not_bound_in_v4",
+        "v2_field_lineage": "not_applicable_raw_b2",
+        "v3_replay": "hosted_passed_exact_object",
+        "discovery": "candidate_available_not_bound_in_v4",
+        "sensitivity": "source_profile_assessed_non_sensitive",
+        "raw_schema": "unqualified_native_schema_permitted_for_raw_b2",
+        "primary_restore": "prior_anonymous_digest_readback_available",
+        "independent_recovery": "blocked_no_approved_independent_target",
+        "complete_contract": "not_assembled",
+        "receipt_closure": "not_executed",
+        "typed_admission": "not_executed",
+        "consumer_canary": "not_executed"
+      },
+      "hosted_replay_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40678419501",
+      "v4_admitted": false,
+      "disposition": "candidate_role_evidence_only"
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+      "sha256": "4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4",
+      "byte_count": 35384567,
+      "source_profile": "aggregate_date_of_supply_supplementary_csv",
+      "sensitivity_assessment": {
+        "data_sensitivity": "non_sensitive",
+        "assessment_basis": "source_specific_aggregate_or_reference_profile_and_exact_retained_screen",
+        "assessed_by": "implementing_agent",
+        "rationale": "Exact prior header review identifies aggregate patient category and contribution fields; patient token hits do not identify an individual.",
+        "evidence_roles": [
+          "private_pattern_screen",
+          "csv_header_context"
+        ],
+        "exhaustive_personal_data_clearance": false,
+        "personal_data_absence_proven": false,
+        "current_publisher_download_identical_to_frozen_object_claimed": false
+      },
+      "role_readiness": {
+        "identity_rights_b1_b2": "exact_evidence_bound",
+        "v1_conformance": "candidate_available_not_bound_in_v4",
+        "v2_field_lineage": "not_applicable_raw_b2",
+        "v3_replay": "hosted_passed_exact_object",
+        "discovery": "candidate_available_not_bound_in_v4",
+        "sensitivity": "source_profile_assessed_non_sensitive",
+        "raw_schema": "unqualified_native_schema_permitted_for_raw_b2",
+        "primary_restore": "prior_anonymous_digest_readback_available",
+        "independent_recovery": "blocked_no_approved_independent_target",
+        "complete_contract": "not_assembled",
+        "receipt_closure": "not_executed",
+        "typed_admission": "not_executed",
+        "consumer_canary": "not_executed"
+      },
+      "hosted_replay_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40678703243",
+      "v4_admitted": false,
+      "disposition": "candidate_role_evidence_only"
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+      "sha256": "f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8",
+      "byte_count": 36381946,
+      "source_profile": "aggregate_date_of_supply_supplementary_csv",
+      "sensitivity_assessment": {
+        "data_sensitivity": "non_sensitive",
+        "assessment_basis": "source_specific_aggregate_or_reference_profile_and_exact_retained_screen",
+        "assessed_by": "implementing_agent",
+        "rationale": "Exact prior header review identifies aggregate patient category and contribution fields; patient token hits do not identify an individual.",
+        "evidence_roles": [
+          "private_pattern_screen",
+          "csv_header_context"
+        ],
+        "exhaustive_personal_data_clearance": false,
+        "personal_data_absence_proven": false,
+        "current_publisher_download_identical_to_frozen_object_claimed": false
+      },
+      "role_readiness": {
+        "identity_rights_b1_b2": "exact_evidence_bound",
+        "v1_conformance": "candidate_available_not_bound_in_v4",
+        "v2_field_lineage": "not_applicable_raw_b2",
+        "v3_replay": "hosted_passed_exact_object",
+        "discovery": "candidate_available_not_bound_in_v4",
+        "sensitivity": "source_profile_assessed_non_sensitive",
+        "raw_schema": "unqualified_native_schema_permitted_for_raw_b2",
+        "primary_restore": "prior_anonymous_digest_readback_available",
+        "independent_recovery": "blocked_no_approved_independent_target",
+        "complete_contract": "not_assembled",
+        "receipt_closure": "not_executed",
+        "typed_admission": "not_executed",
+        "consumer_canary": "not_executed"
+      },
+      "hosted_replay_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40679077698",
+      "v4_admitted": false,
+      "disposition": "candidate_role_evidence_only"
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/utilisation/reference/pbs-item-drug-map.csv",
+      "sha256": "51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8",
+      "byte_count": 1063694,
+      "source_profile": "item_drug_reference_map",
+      "sensitivity_assessment": {
+        "data_sensitivity": "non_sensitive",
+        "assessment_basis": "source_specific_aggregate_or_reference_profile_and_exact_retained_screen",
+        "assessed_by": "implementing_agent",
+        "rationale": "Publisher describes a PBS item-to-generic-drug-name reference map; exact screen records zero email-shaped values, sensitive header-label hits or sensitive token values.",
+        "evidence_roles": [
+          "private_pattern_screen"
+        ],
+        "exhaustive_personal_data_clearance": false,
+        "personal_data_absence_proven": false,
+        "current_publisher_download_identical_to_frozen_object_claimed": false
+      },
+      "role_readiness": {
+        "identity_rights_b1_b2": "exact_evidence_bound",
+        "v1_conformance": "candidate_available_not_bound_in_v4",
+        "v2_field_lineage": "not_applicable_raw_b2",
+        "v3_replay": "hosted_passed_exact_object",
+        "discovery": "candidate_available_not_bound_in_v4",
+        "sensitivity": "source_profile_assessed_non_sensitive",
+        "raw_schema": "unqualified_native_schema_permitted_for_raw_b2",
+        "primary_restore": "prior_anonymous_digest_readback_available",
+        "independent_recovery": "blocked_no_approved_independent_target",
+        "complete_contract": "not_assembled",
+        "receipt_closure": "not_executed",
+        "typed_admission": "not_executed",
+        "consumer_canary": "not_executed"
+      },
+      "hosted_replay_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40679177671",
+      "v4_admitted": false,
+      "disposition": "candidate_role_evidence_only"
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx",
+      "sha256": "48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca",
+      "byte_count": 117376499,
+      "source_profile": "aggregate_multiyear_date_of_supply_workbook",
+      "sensitivity_assessment": {
+        "data_sensitivity": "non_sensitive",
+        "assessment_basis": "source_specific_aggregate_or_reference_profile_and_exact_retained_screen",
+        "assessed_by": "implementing_agent",
+        "rationale": "Publisher describes summarised date-of-supply measures; exact bounded screen and retained workbook profile support that aggregate report classification. Narrative tokens alone do not establish personal data.",
+        "evidence_roles": [
+          "private_pattern_screen",
+          "summary_header_context"
+        ],
+        "exhaustive_personal_data_clearance": false,
+        "personal_data_absence_proven": false,
+        "current_publisher_download_identical_to_frozen_object_claimed": false
+      },
+      "role_readiness": {
+        "identity_rights_b1_b2": "exact_evidence_bound",
+        "v1_conformance": "candidate_available_not_bound_in_v4",
+        "v2_field_lineage": "not_applicable_raw_b2",
+        "v3_replay": "hosted_passed_exact_object",
+        "discovery": "candidate_available_not_bound_in_v4",
+        "sensitivity": "source_profile_assessed_non_sensitive",
+        "raw_schema": "unqualified_native_schema_permitted_for_raw_b2",
+        "primary_restore": "prior_anonymous_digest_readback_available",
+        "independent_recovery": "blocked_no_approved_independent_target",
+        "complete_contract": "not_assembled",
+        "receipt_closure": "not_executed",
+        "typed_admission": "not_executed",
+        "consumer_canary": "not_executed"
+      },
+      "hosted_replay_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40679271451",
+      "v4_admitted": false,
+      "disposition": "candidate_role_evidence_only"
+    }
+  ],
+  "limitations": [
+    "Source-profile sensitivity assessment is distinct from rights. Existing exact six-object rights attestation is reused; its permission instrument has not been independently reviewed.",
+    "No new source bytes or data values were read. Existing screen limitations remain: bounded detectors are not exhaustive privacy clearance or vocabulary membership validation.",
+    "No value meanings, patient counts, clinical or funding relationships, date conventions, vocabulary membership, cross-era equivalence or current status are qualified.",
+    "A complete v4 contract must still bind exact durable receipts, source/acquisition identity, retrieval time, primary restoration and bounded cache lifecycle; then independent receipt closure and trusted admission must execute.",
+    "Primary-copy raw admission and independent disaster recovery are different roles. This report supplies no independent destination or recovery authority and cannot close that track requirement."
+  ],
+  "boundaries": {
+    "new_sources": 0,
+    "source_payloads_read": false,
+    "rights_changed": false,
+    "outbound_communications": 0,
+    "public_dataset_mutation": false,
+    "v4_admissions": 0,
+    "consumer_canaries": 0,
+    "federation_gate_closed": false
+  }
+}

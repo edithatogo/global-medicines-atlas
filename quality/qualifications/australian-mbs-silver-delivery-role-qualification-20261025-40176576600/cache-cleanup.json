@@ -1,0 +1,17 @@
+{
+  "cache_kind": "explicit_in_memory_object_cache",
+  "created_at": "2026-10-25T08:26:05.677420+00:00",
+  "disk_cache_exercised": false,
+  "evicted_paths": [
+    "silver/mbs/v4/2025-07-v3/services.parquet",
+    "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+    "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+    "silver/mbs/v4/2025-07-v3/fees.parquet",
+    "silver/mbs/v4/2025-07-v3/benefits.parquet",
+    "silver/mbs/v4/2025-07-v3/caps.parquet"
+  ],
+  "expires_at": "2026-10-25T08:26:36.214593+00:00",
+  "remaining_entries": 0,
+  "source_payload_written_to_disk": false,
+  "status": "passed"
+}

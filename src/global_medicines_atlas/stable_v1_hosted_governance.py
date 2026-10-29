@@ -43,28 +43,28 @@ MAIN_PUSH_MANDATORY_CHECKS = frozenset({
     "Dependency audit and SBOM",
     "CodeQL",
     "Mojo nightly / smoke",
-    "Consumer / linux / Python 3.14",
-    "Consumer / macos / Python 3.14",
-    "Consumer / windows / Python 3.14",
-    "Python 3.14 / unit",
-    "Python 3.14 / integration",
-    "Python 3.14 / e2e",
-    "Python 3.14 / smoke",
-    "Python 3.14 / property",
-    "Python 3.14 / edge",
-    "Python 3.14 / routine",
-    "Python 3.14 / strict",
-    "Python 3.14 / package",
-    "Python 3.14 / coverage",
-    "Python 3.14 / mutation",
-    "Python 3.14 / gremlins",
-    "Python 3.14 / dependencies",
-    "Python 3.14 / profile",
+    "Consumer / linux / Python 3.15",
+    "Consumer / macos / Python 3.15",
+    "Consumer / windows / Python 3.15",
+    "Python 3.15 / unit",
+    "Python 3.15 / integration",
+    "Python 3.15 / e2e",
+    "Python 3.15 / smoke",
+    "Python 3.15 / property",
+    "Python 3.15 / edge",
+    "Python 3.15 / routine",
+    "Python 3.15 / strict",
+    "Python 3.15 / package",
+    "Python 3.15 / coverage",
+    "Python 3.15 / mutation",
+    "Python 3.15 / gremlins",
+    "Python 3.15 / dependencies",
+    "Python 3.15 / profile",
     "Repository and history leak detection",
-    "Python 3.14 / regeneration",
-    "Python 3.14 / representative performance",
-    "Python 3.14 / governed recovery rehearsal",
-    "Python 3.14 / operational exercises",
+    "Python 3.15 / regeneration",
+    "Python 3.15 / representative performance",
+    "Python 3.15 / governed recovery rehearsal",
+    "Python 3.15 / operational exercises",
 })
 
 PULL_REQUEST_ONLY_MANDATORY_CHECKS = frozenset({"Dependency review"})
@@ -325,13 +325,13 @@ def make_observation(
 def _mapping(value: JsonValue, label: str) -> dict[str, JsonValue]:
     if not isinstance(value, dict):
         raise TypeError(f"{label} must be an object")
-    return cast("dict[str, JsonValue]", value)
+    return value
 
 
 def _sequence(value: JsonValue, label: str) -> list[JsonValue]:
     if not isinstance(value, list):
         raise TypeError(f"{label} must be an array")
-    return cast("list[JsonValue]", value)
+    return value
 
 
 def _text(value: JsonValue, label: str) -> str:

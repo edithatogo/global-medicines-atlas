@@ -459,8 +459,47 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   `quality/qualifications/provider-outreach-receipts-20260929.json` and
   `mbs-workbook-date-convention-request.md`.
 - [~] Keep the date profile unset and semantic promotion disabled pending
-  source-specific documentation or confirmation. No source bytes or cell
-  values were sent; no response has yet been observed.
+  source-specific documentation or confirmation. Earlier value-free outreach
+  did not establish the exact workbook's date order; no further contact is in
+  scope.
+
+## MBS P7 value-level calendar dates (2026-10-24)
+
+- [x] Add a standalone aggregate-only profile that classifies a dotted date
+  only when its components yield one possible calendar date. Values valid
+  under both DMY and MDY remain ambiguous; invalid dates stay invalid; numeric
+  Excel serials and source errors remain explicit. Keep the shared MBS XML
+  conversion contract and existing M-112 pinned preflight inputs unchanged.
+- [x] Add a `workflow_dispatch`-only main workflow that reads the existing
+  exact pinned public P7 object and uploads a value-free aggregate report.
+- [x] Validate the focused P7 domain/value and M-112 invariant tests (72
+  passed) on Python 3.15.1, Ruff, format, `ty`, BasedPyright, context and
+  ecosystem validation, and `git diff --check`. Hosted unit CI exposed a
+  coupling to pinned admission inputs in the first implementation; the
+  standalone profile design removes that coupling.
+- [x] Close the hosted patch-coverage findings for malformed date text,
+  null/missing values, and source-error cells with focused aggregate-profile
+  regressions. The four directly affected test nodes pass with 100% statement
+  and branch coverage for the new profiler; no repository-wide local suite was
+  rerun.
+- [x] Dispatch the main-only aggregate profile against the exact pinned P7
+  source. Run `40086831574` binds the exact 87,727-byte, SHA-256
+  `2f1cbc2d...e27b8` object and reports 86 uniquely resolvable dotted dates,
+  1,194 ambiguous dates, and no invalid or numeric-serial date cells among the
+  1,280 populated date cells. The artifact is value-free at
+  `quality/qualifications/mbs-p7-calendar-profile-20261024-40086831574.json`.
+- [x] Preserve the prior date-order report unchanged and identify its
+  `1,276 both / 4 DMY-only / 0 MDY-only` aggregate as inconsistent with the
+  newer exact-source profile; do not carry the old count into a selected
+  semantic rule.
+- [x] Extend profile schema v2 to separate uniquely DMY-valid, uniquely
+  MDY-valid, and same-components-valid dates while keeping order ambiguous
+  dates distinct. Focused profile tests pass with 100% statement and branch
+  coverage; the exact-source profile must be rerun after this change reaches
+  main before updating the rule receipt.
+- [~] Select only the per-cell unique-date rule after the order-partitioned
+  exact-source report is reconciled. Keep workbook-wide order and current
+  candidate-output promotion unresolved until then.
 
 ## M-106 item-demographic source discovery (2026-09-29)
 
@@ -1097,8 +1136,10 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
 - [x] Record the refreshed result in
   `quality/qualifications/australian-m112-per-object-gate-reconciliation-20261018.json`:
   two exact-source-rights rows, one complete raw B1/B2 row, zero v4 admissions,
-  and zero consumer canaries. This does not create or expand rights, read or
-  upload source bytes, admit objects, or accept M-112.
+  and zero consumer canaries at this 2026-10-18 checkpoint. The 2026-10-21
+  readback in the federated data-plane plan records seven admissions and seven
+  canaries. This does not create or expand rights, read or upload source bytes,
+  admit objects, or accept M-112.
 - [x] Validate the refresh with the focused M-112 tests (9 passed), the broader
   M-112/rights suite (81 passed), Ruff, `ty`, BasedPyright, context validation,
   and `git diff --check`. The full Test-Goblin run recorded 6,665 passed, 3
@@ -1154,7 +1195,9 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   from the preserved prior report. Reconcile four additional exact source
   rights decisions and raw B1/B2 lineages while preserving all 1,759
   deferrals, the approved denominator, zero v4 admissions, and zero consumer
-  canaries. Producer projection lineage remains separate and unqualified.
+  canaries at this 2026-10-18 checkpoint. The 2026-10-21 readback in the
+  federated data-plane plan records seven admissions and seven canaries.
+  Producer projection lineage remains separate and unqualified.
 - [x] Address review findings by requiring successful B1 retrieval status and
   binding each B2 external reference to the exact dataset, parent revision, and
   raw object path. Add adversarial cases for failed retrieval and incorrect
@@ -1339,3 +1382,41 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   pre-correction four-failure result is superseded for current local status.
   All 28 required hosted checks passed on this exact head; later local Goblin
   lanes were not reached after the coverage-profile failure.
+
+## 2026-10-23 current M-105 and M-107 dispositions
+
+- [x] Reconcile the current M-105 state to the maintainer's 2026-10-23
+  instruction: M-105 remains blocked because required pre-archive parity
+  evidence cannot be established retroactively. Preserve D-006-10 as a
+  historical approval, but do not use its prior qualification state to claim
+  current M-105 acceptance. The current disposition is recorded in
+  `quality/qualifications/australian-donor-m105-current-disposition-20261023.json`
+  and D-006-12.
+- [x] Reconcile the current M-107 delivery state to the exact-main
+  HEAD-only receipt from run [36452243269](https://github.com/edithatogo/global-medicines-atlas/actions/runs/36452243269):
+  quarterly, annual, and year-to-date Health.gov workbook requests all timed
+  out before response bodies were read. No payload, receipt, or new source was
+  acquired. Do not repeat the unchanged probe or contact the source owner.
+- [x] Bind any future M-105 promotion to a later, exact decision-register
+  entry that explicitly records acceptance; arbitrary disposition JSON edits
+  fail closed. Date the readiness receipt at the current contract observation.
+  The review-correction suite passes on Python 3.15.1; exact-head hosted checks
+  are rerunning before merge.
+- [~] Keep the gates distinct and open. M-105's historical ordering cannot be
+  repaired by post-archive evidence; M-107 requires delivery of the already
+  authorized Health.gov workbook families and the remaining historical
+  denominator. Neither status closes or expands no-new-sources semantic work.
+
+## System completion execution focus (2026-10-25)
+
+Select the next task through the [system completion charter](../../system-completion.md)
+and [validated scheduling plan](../../system-completion.json). Name its shared
+capability or gate, concrete failure, bounded frozen-inventory scope, expected
+proof, and targeted validation. Advance the system lanes when prerequisites
+permit; perform dataset semantics or coverage work only when needed for a
+named gate. Preserve unresolved fields and all mandatory eligible-object
+identity, lineage, rights, admission, recovery, and consumer evidence. Broader
+coverage, new sources/terminology, and optional experiments remain deferred.
+This scheduling direction changes no acceptance criterion, current M-105/M-107
+disposition, or conditional release approval; current states come from the
+authoritative contract, reconciliation, and bound receipts.

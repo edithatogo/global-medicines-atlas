@@ -1,0 +1,100 @@
+{
+  "$id": "https://global-medicines-atlas.example/schemas/mbs-patient-denominator-definition-v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Declared source-specific definition; construction does not review it.",
+  "properties": {
+    "coverage": {
+      "minLength": 1,
+      "title": "Coverage",
+      "type": "string"
+    },
+    "deduplication": {
+      "minLength": 1,
+      "title": "Deduplication",
+      "type": "string"
+    },
+    "evidence_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Evidence Sha256",
+      "type": "string"
+    },
+    "geography_code": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Geography Code"
+    },
+    "item_number": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Item Number"
+    },
+    "native_measure_name": {
+      "minLength": 1,
+      "title": "Native Measure Name",
+      "type": "string"
+    },
+    "period_end": {
+      "format": "date",
+      "title": "Period End",
+      "type": "string"
+    },
+    "period_start": {
+      "format": "date",
+      "title": "Period Start",
+      "type": "string"
+    },
+    "population": {
+      "minLength": 1,
+      "title": "Population",
+      "type": "string"
+    },
+    "source_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Source Sha256",
+      "type": "string"
+    },
+    "suppression_policy": {
+      "minLength": 1,
+      "title": "Suppression Policy",
+      "type": "string"
+    },
+    "time_basis": {
+      "enum": [
+        "claim_processing_date",
+        "service_date",
+        "source_defined"
+      ],
+      "title": "Time Basis",
+      "type": "string"
+    }
+  },
+  "required": [
+    "source_sha256",
+    "native_measure_name",
+    "evidence_sha256",
+    "population",
+    "deduplication",
+    "coverage",
+    "suppression_policy",
+    "time_basis",
+    "period_start",
+    "period_end",
+    "geography_code",
+    "item_number"
+  ],
+  "title": "PatientDenominatorDefinition",
+  "type": "object"
+}

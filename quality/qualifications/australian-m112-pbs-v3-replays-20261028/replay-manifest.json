@@ -1,0 +1,432 @@
+{
+  "boundaries": {
+    "consumer_canaries_performed": 0,
+    "federation_gate_closed": false,
+    "new_sources": 0,
+    "outbound_communications": 0,
+    "public_dataset_mutation": false,
+    "source_values_parsed": false,
+    "v4_admissions_performed": 0
+  },
+  "candidate_only": true,
+  "identity_evidence": {
+    "path": "quality/qualifications/australian-m112-pbs-utilisation-rights-lineage-reconciliation-20261028.json",
+    "sha256": "5050236f8aa68491f490ca35dd4425c3173eb54673c5072e6dcfac712cf62775"
+  },
+  "limitations": [
+    "Qualification verifies immutable raw B2 byte identity and metadata-registration replay; native schemas and domain meanings are not qualified.",
+    "Cleanup evidence concerns the temporary replay workspace; it is not a durable reader-cache or independent-recovery qualification.",
+    "Each source permission remains bound to the existing exact-file maintainer attestation, whose instrument was not independently reviewed."
+  ],
+  "objects": [
+    {
+      "artifact": {
+        "digest": "sha256:741a81f143ef254c080551c3614521596a8a47bda739f499f421b25cfa8d4405",
+        "id": 12811760012,
+        "name": "australian-m112-v3-replay-40677682866-1",
+        "size_in_bytes": 1359
+      },
+      "byte_count": 372149,
+      "candidate_only": true,
+      "consumer_canary": false,
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "hosted_workflow": {
+        "commit": "8343d511179e71adea825a5f46e7c6cd60b16373",
+        "repository": "edithatogo/global-medicines-atlas",
+        "run_attempt": 1,
+        "run_id": 40677682866,
+        "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40677682866"
+      },
+      "native_job": {
+        "completed_at": "2026-10-28T11:09:21Z",
+        "conclusion": "success",
+        "id": 122780154151,
+        "name": "Verify one immutable raw B2 object and rebuild its registration",
+        "started_at": "2026-10-28T11:08:59Z",
+        "verification_step": {
+          "completed_at": "2026-10-28T11:09:17Z",
+          "conclusion": "success",
+          "name": "Verify anonymous pinned bytes and rebuild metadata registration",
+          "number": 6,
+          "started_at": "2026-10-28T11:09:13Z",
+          "status": "completed"
+        }
+      },
+      "native_run": {
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "head_branch": "main",
+        "head_sha": "8343d511179e71adea825a5f46e7c6cd60b16373",
+        "id": 40677682866,
+        "path": ".github/workflows/australian-m112-v3-replay.yml",
+        "run_attempt": 1,
+        "run_started_at": "2026-10-28T11:08:56Z",
+        "status": "completed",
+        "updated_at": "2026-10-28T11:09:21Z",
+        "workflow_id": 389637373
+      },
+      "partition_id": "8fd01208a1ef1e8709d088b86b2c6b559d71b7a327a5e27c1b48cebe6223d3e1",
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+      "plan_sha256": "edfdcad0445b4b68578d354f179cdb394bbf2d6f4a4ea173b617c0eea2e0c725",
+      "receipt": {
+        "path": "quality/qualifications/australian-m112-pbs-v3-replays-20261028/40677682866/gma-m112-v3-replay-receipt-40677682866-1.json",
+        "sha256": "18f0101937e34aaa10f19387cd1d5b1fcc67933bd9bf4928ca9fab561d89754a"
+      },
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "sha256": "32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b",
+      "snapshot_id": "36e86044dd52044ca04f92a5cb008b79594b14122cc3f485de03dd42ba6461e1",
+      "source_id": "au-pbs-expenditure",
+      "status": "passed",
+      "v4_admission": false,
+      "verification": {
+        "anonymous": true,
+        "payload_values_read": false,
+        "temporary_source_bytes_removed": true,
+        "token_free": true
+      }
+    },
+    {
+      "artifact": {
+        "digest": "sha256:5829db89e26f7e724a43d8f59fe8aa73e1d205071c99d45734a9c37751edfc3f",
+        "id": 12812020416,
+        "name": "australian-m112-v3-replay-40678419501-1",
+        "size_in_bytes": 1361
+      },
+      "byte_count": 468764,
+      "candidate_only": true,
+      "consumer_canary": false,
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "hosted_workflow": {
+        "commit": "8343d511179e71adea825a5f46e7c6cd60b16373",
+        "repository": "edithatogo/global-medicines-atlas",
+        "run_attempt": 1,
+        "run_id": 40678419501,
+        "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40678419501"
+      },
+      "native_job": {
+        "completed_at": "2026-10-28T11:15:00Z",
+        "conclusion": "success",
+        "id": 122782632484,
+        "name": "Verify one immutable raw B2 object and rebuild its registration",
+        "started_at": "2026-10-28T11:14:40Z",
+        "verification_step": {
+          "completed_at": "2026-10-28T11:14:57Z",
+          "conclusion": "success",
+          "name": "Verify anonymous pinned bytes and rebuild metadata registration",
+          "number": 6,
+          "started_at": "2026-10-28T11:14:54Z",
+          "status": "completed"
+        }
+      },
+      "native_run": {
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "head_branch": "main",
+        "head_sha": "8343d511179e71adea825a5f46e7c6cd60b16373",
+        "id": 40678419501,
+        "path": ".github/workflows/australian-m112-v3-replay.yml",
+        "run_attempt": 1,
+        "run_started_at": "2026-10-28T11:14:37Z",
+        "status": "completed",
+        "updated_at": "2026-10-28T11:15:00Z",
+        "workflow_id": 389637373
+      },
+      "partition_id": "9708e26d2a8d0cfa7a5ec3a7d012975500f2df543a0718ef9e368ee815d58f53",
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+      "plan_sha256": "cbe1ff4e8ab837c4e1cc88c723ab35c7463a4cc2c09bee67c0d7964848bd4e1a",
+      "receipt": {
+        "path": "quality/qualifications/australian-m112-pbs-v3-replays-20261028/40678419501/gma-m112-v3-replay-receipt-40678419501-1.json",
+        "sha256": "499ccc5f6a22f9d34da12504466b4246a14eb1228a31796bc8adf5586f40f95d"
+      },
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "sha256": "147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99",
+      "snapshot_id": "c8e60a8896dfde9ac65053f3e235ba5c658c474ce1ed87c003ec6a3fff2772ed",
+      "source_id": "au-pbs-expenditure",
+      "status": "passed",
+      "v4_admission": false,
+      "verification": {
+        "anonymous": true,
+        "payload_values_read": false,
+        "temporary_source_bytes_removed": true,
+        "token_free": true
+      }
+    },
+    {
+      "artifact": {
+        "digest": "sha256:299dcaf340555328724170bef12c4baa66eef6905d2d952f6818d479d64873a9",
+        "id": 12811129324,
+        "name": "australian-m112-v3-replay-40678703243-1",
+        "size_in_bytes": 1334
+      },
+      "byte_count": 35384567,
+      "candidate_only": true,
+      "consumer_canary": false,
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "hosted_workflow": {
+        "commit": "8343d511179e71adea825a5f46e7c6cd60b16373",
+        "repository": "edithatogo/global-medicines-atlas",
+        "run_attempt": 1,
+        "run_id": 40678703243,
+        "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40678703243"
+      },
+      "native_job": {
+        "completed_at": "2026-10-28T11:17:07Z",
+        "conclusion": "success",
+        "id": 122783584765,
+        "name": "Verify one immutable raw B2 object and rebuild its registration",
+        "started_at": "2026-10-28T11:16:50Z",
+        "verification_step": {
+          "completed_at": "2026-10-28T11:17:03Z",
+          "conclusion": "success",
+          "name": "Verify anonymous pinned bytes and rebuild metadata registration",
+          "number": 6,
+          "started_at": "2026-10-28T11:17:00Z",
+          "status": "completed"
+        }
+      },
+      "native_run": {
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "head_branch": "main",
+        "head_sha": "8343d511179e71adea825a5f46e7c6cd60b16373",
+        "id": 40678703243,
+        "path": ".github/workflows/australian-m112-v3-replay.yml",
+        "run_attempt": 1,
+        "run_started_at": "2026-10-28T11:16:46Z",
+        "status": "completed",
+        "updated_at": "2026-10-28T11:17:08Z",
+        "workflow_id": 389637373
+      },
+      "partition_id": "83794d08f2d4614b5797191ea58e2a1d68c87df342aeeaf05de7cee2921cd346",
+      "path": "raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+      "plan_sha256": "2fbd2c985e5793c7c5e7b214aef693becf182bc5db9cc8c21ff169da0af1f13b",
+      "receipt": {
+        "path": "quality/qualifications/australian-m112-pbs-v3-replays-20261028/40678703243/gma-m112-v3-replay-receipt-40678703243-1.json",
+        "sha256": "f810698bea1996661b412d76e09b9f908a1631f20d76b2a4d34f633535f53616"
+      },
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "sha256": "4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4",
+      "snapshot_id": "987b21f63df5ad4c971b4f4929b68ca32bcf011c96e12fcf1344124910885bb8",
+      "source_id": "au-pbs-dos-utilisation",
+      "status": "passed",
+      "v4_admission": false,
+      "verification": {
+        "anonymous": true,
+        "payload_values_read": false,
+        "temporary_source_bytes_removed": true,
+        "token_free": true
+      }
+    },
+    {
+      "artifact": {
+        "digest": "sha256:4a68201d67c6432bf88791780f66f18d4056c23dfd999248eaeb8e560891b80b",
+        "id": 12812595292,
+        "name": "australian-m112-v3-replay-40679077698-1",
+        "size_in_bytes": 1336
+      },
+      "byte_count": 36381946,
+      "candidate_only": true,
+      "consumer_canary": false,
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "hosted_workflow": {
+        "commit": "8343d511179e71adea825a5f46e7c6cd60b16373",
+        "repository": "edithatogo/global-medicines-atlas",
+        "run_attempt": 1,
+        "run_id": 40679077698,
+        "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40679077698"
+      },
+      "native_job": {
+        "completed_at": "2026-10-28T11:20:07Z",
+        "conclusion": "success",
+        "id": 122784859406,
+        "name": "Verify one immutable raw B2 object and rebuild its registration",
+        "started_at": "2026-10-28T11:19:44Z",
+        "verification_step": {
+          "completed_at": "2026-10-28T11:20:02Z",
+          "conclusion": "success",
+          "name": "Verify anonymous pinned bytes and rebuild metadata registration",
+          "number": 6,
+          "started_at": "2026-10-28T11:19:58Z",
+          "status": "completed"
+        }
+      },
+      "native_run": {
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "head_branch": "main",
+        "head_sha": "8343d511179e71adea825a5f46e7c6cd60b16373",
+        "id": 40679077698,
+        "path": ".github/workflows/australian-m112-v3-replay.yml",
+        "run_attempt": 1,
+        "run_started_at": "2026-10-28T11:19:40Z",
+        "status": "completed",
+        "updated_at": "2026-10-28T11:20:08Z",
+        "workflow_id": 389637373
+      },
+      "partition_id": "d77378e523ee7c94cbbc887e28b9758bc6d7a0c23cb3bd59b4931fe99143faf9",
+      "path": "raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+      "plan_sha256": "3ffb81d8dfa8a4bd9c1047a2e9dd99a0376b7e8ecee9654ff2c2f37c9f9f05be",
+      "receipt": {
+        "path": "quality/qualifications/australian-m112-pbs-v3-replays-20261028/40679077698/gma-m112-v3-replay-receipt-40679077698-1.json",
+        "sha256": "7ff834aa16bf056f7120b00d7e30ea5f978443619b0198ec8a07bbfe547403f6"
+      },
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "sha256": "f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8",
+      "snapshot_id": "7392ff526ca3b84ffa3300dc8ab382b34110cbf7de00cd1787c39db9d58ff5e9",
+      "source_id": "au-pbs-dos-utilisation",
+      "status": "passed",
+      "v4_admission": false,
+      "verification": {
+        "anonymous": true,
+        "payload_values_read": false,
+        "temporary_source_bytes_removed": true,
+        "token_free": true
+      }
+    },
+    {
+      "artifact": {
+        "digest": "sha256:286f21d4de961f84ff8d1b5bd00a8d5c24a5890adb688acb35b0dbddc5cd63cc",
+        "id": 12812241086,
+        "name": "australian-m112-v3-replay-40679177671-1",
+        "size_in_bytes": 1322
+      },
+      "byte_count": 1063694,
+      "candidate_only": true,
+      "consumer_canary": false,
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "hosted_workflow": {
+        "commit": "8343d511179e71adea825a5f46e7c6cd60b16373",
+        "repository": "edithatogo/global-medicines-atlas",
+        "run_attempt": 1,
+        "run_id": 40679177671,
+        "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40679177671"
+      },
+      "native_job": {
+        "completed_at": "2026-10-28T11:20:52Z",
+        "conclusion": "success",
+        "id": 122785190020,
+        "name": "Verify one immutable raw B2 object and rebuild its registration",
+        "started_at": "2026-10-28T11:20:28Z",
+        "verification_step": {
+          "completed_at": "2026-10-28T11:20:46Z",
+          "conclusion": "success",
+          "name": "Verify anonymous pinned bytes and rebuild metadata registration",
+          "number": 6,
+          "started_at": "2026-10-28T11:20:44Z",
+          "status": "completed"
+        }
+      },
+      "native_run": {
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "head_branch": "main",
+        "head_sha": "8343d511179e71adea825a5f46e7c6cd60b16373",
+        "id": 40679177671,
+        "path": ".github/workflows/australian-m112-v3-replay.yml",
+        "run_attempt": 1,
+        "run_started_at": "2026-10-28T11:20:24Z",
+        "status": "completed",
+        "updated_at": "2026-10-28T11:20:52Z",
+        "workflow_id": 389637373
+      },
+      "partition_id": "c7fdc8443990c73a23051bf4eaf3aa2dbdffcf347488f6f8d276044f83c24ecb",
+      "path": "raw/pbs/utilisation/reference/pbs-item-drug-map.csv",
+      "plan_sha256": "d5970c77e8fc4dc12d67bc5f2bdfc7cfc9df29cabc0035f870234dbc6159a24f",
+      "receipt": {
+        "path": "quality/qualifications/australian-m112-pbs-v3-replays-20261028/40679177671/gma-m112-v3-replay-receipt-40679177671-1.json",
+        "sha256": "121efc1d1b1f02185af6bab0d9badd0be990c2389b835c7dc0b4d8be965170c4"
+      },
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "sha256": "51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8",
+      "snapshot_id": "53ba34d58ce289ca2b95d5adef3b33c286959e8ee82e582728bb3e5344e20534",
+      "source_id": "au-pbs-dos-utilisation",
+      "status": "passed",
+      "v4_admission": false,
+      "verification": {
+        "anonymous": true,
+        "payload_values_read": false,
+        "temporary_source_bytes_removed": true,
+        "token_free": true
+      }
+    },
+    {
+      "artifact": {
+        "digest": "sha256:c1040f24630f5f41a4c4681a395276f245f177af64be43623fbfd01a825db665",
+        "id": 12811174877,
+        "name": "australian-m112-v3-replay-40679271451-1",
+        "size_in_bytes": 1331
+      },
+      "byte_count": 117376499,
+      "candidate_only": true,
+      "consumer_canary": false,
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "hosted_workflow": {
+        "commit": "8343d511179e71adea825a5f46e7c6cd60b16373",
+        "repository": "edithatogo/global-medicines-atlas",
+        "run_attempt": 1,
+        "run_id": 40679271451,
+        "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40679271451"
+      },
+      "native_job": {
+        "completed_at": "2026-10-28T11:21:45Z",
+        "conclusion": "success",
+        "id": 122785504236,
+        "name": "Verify one immutable raw B2 object and rebuild its registration",
+        "started_at": "2026-10-28T11:21:10Z",
+        "verification_step": {
+          "completed_at": "2026-10-28T11:21:41Z",
+          "conclusion": "success",
+          "name": "Verify anonymous pinned bytes and rebuild metadata registration",
+          "number": 6,
+          "started_at": "2026-10-28T11:21:23Z",
+          "status": "completed"
+        }
+      },
+      "native_run": {
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "head_branch": "main",
+        "head_sha": "8343d511179e71adea825a5f46e7c6cd60b16373",
+        "id": 40679271451,
+        "path": ".github/workflows/australian-m112-v3-replay.yml",
+        "run_attempt": 1,
+        "run_started_at": "2026-10-28T11:21:06Z",
+        "status": "completed",
+        "updated_at": "2026-10-28T11:21:46Z",
+        "workflow_id": 389637373
+      },
+      "partition_id": "114456be3c60b14484a42145619fb36f420ff26cdd4ff0e364a382935bd65802",
+      "path": "raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx",
+      "plan_sha256": "28c1fee80a47056947f430d3dba76e71fe7c3dc5e016f407799ca589701c2427",
+      "receipt": {
+        "path": "quality/qualifications/australian-m112-pbs-v3-replays-20261028/40679271451/gma-m112-v3-replay-receipt-40679271451-1.json",
+        "sha256": "e035b6fea7dd5dd581abd612b8880e53fafd43841040349116948dec18554bef"
+      },
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "sha256": "48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca",
+      "snapshot_id": "747a6da7ce57dc10da35defecf7db1e2f918f8872dbae5e79ec9fbe33d41d32b",
+      "source_id": "au-pbs-dos-utilisation",
+      "status": "passed",
+      "v4_admission": false,
+      "verification": {
+        "anonymous": true,
+        "payload_values_read": false,
+        "temporary_source_bytes_removed": true,
+        "token_free": true
+      }
+    }
+  ],
+  "producer_commit": "8343d511179e71adea825a5f46e7c6cd60b16373",
+  "recorded_at": "2026-10-28T11:24:05.653752+00:00",
+  "schema_id": "global-medicines-atlas.m112-pbs-utilisation-v3-replay-manifest",
+  "schema_version": 1,
+  "scope": {
+    "dataset": "edithatogo/australian-pbs-utilisation-archive",
+    "expected_objects": 6,
+    "frozen_denominator": 1759,
+    "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+    "verified_bytes": 191047619,
+    "verified_objects": 6
+  },
+  "status": "passed"
+}

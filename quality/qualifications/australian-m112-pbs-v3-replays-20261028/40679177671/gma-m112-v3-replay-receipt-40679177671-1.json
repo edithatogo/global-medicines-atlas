@@ -1,0 +1,55 @@
+{
+  "boundaries": {
+    "m112_consumer_canary_performed": false,
+    "public_dataset_mutation": false,
+    "source_values_or_rows_included": false,
+    "v4_admission_performed": false
+  },
+  "candidate_only": true,
+  "hosted_workflow": {
+    "commit": "8343d511179e71adea825a5f46e7c6cd60b16373",
+    "repository": "edithatogo/global-medicines-atlas",
+    "run_attempt": 1,
+    "run_id": 40679177671,
+    "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40679177671"
+  },
+  "replay": {
+    "partition_id": "c7fdc8443990c73a23051bf4eaf3aa2dbdffcf347488f6f8d276044f83c24ecb",
+    "plan_sha256": "d5970c77e8fc4dc12d67bc5f2bdfc7cfc9df29cabc0035f870234dbc6159a24f",
+    "registration": {
+      "archive_period": "filename-derived:pbs-item-drug-map.csv",
+      "byte_count": 1063694,
+      "idempotency_key": "17e67855ba638c55d45a9678ad09713e6d81582620b492a525dbb4b312399537",
+      "logical_asset_id": "52df95c97583219be877814bace94cc732924b1535d8b23881efee39551d1800",
+      "metadata_sha256": "9a029bd283e926856c7a644e028c5e83ad70868bff3d10f125e018af302cc9b0",
+      "operation": "append_only_idempotent_raw_b2_registration",
+      "partition_id": "c7fdc8443990c73a23051bf4eaf3aa2dbdffcf347488f6f8d276044f83c24ecb",
+      "payload_sha256": "51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8",
+      "payload_values_read": false,
+      "rights_state": "maintainer_attested_exact_public_release_permission_for_pbs_utilisation_raw_object",
+      "schema_version": "m112-raw-b2-replay-registration-v1",
+      "snapshot_id": "53ba34d58ce289ca2b95d5adef3b33c286959e8ee82e582728bb3e5344e20534",
+      "source_id": "au-pbs-dos-utilisation",
+      "source_version_id": "reference"
+    },
+    "registration_sha256": "6a8b97e115edf335bf6952e64f83246d5c45b9a79609a1b0df91a308138c7915",
+    "snapshot_id": "53ba34d58ce289ca2b95d5adef3b33c286959e8ee82e582728bb3e5344e20534",
+    "vocabulary_version": "3.0.0"
+  },
+  "schema_id": "global-medicines-atlas.m112-v3-replay-execution-receipt",
+  "schema_version": 1,
+  "scope": {
+    "byte_count": 1063694,
+    "dataset": "edithatogo/australian-pbs-utilisation-archive",
+    "path": "raw/pbs/utilisation/reference/pbs-item-drug-map.csv",
+    "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+    "sha256": "51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8"
+  },
+  "status": "passed",
+  "verification": {
+    "anonymous": true,
+    "payload_values_read": false,
+    "temporary_source_bytes_removed": true,
+    "token_free": true
+  }
+}

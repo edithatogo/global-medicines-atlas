@@ -464,6 +464,12 @@ def test_consumer_probe_creates_and_reinstalls_exact_artifact(
             python = Path(arguments[-1]) / "bin/python"
             python.parent.mkdir(parents=True)
             python.write_bytes(b"")
+        if (
+            arguments
+            and arguments[0].endswith("python")
+            and any("platform.python_version()" in item for item in arguments)
+        ):
+            return b"3.15.1"
         if arguments and arguments[0].endswith("python") and "-c" in arguments:
             return json.dumps({
                 "api": "passed",
@@ -478,7 +484,7 @@ def test_consumer_probe_creates_and_reinstalls_exact_artifact(
     )
     monkeypatch.setattr(
         "scripts.build_stable_v1_release_candidate._verify_build_toolchain",
-        lambda root: (root / "constraints.txt", "uv"),
+        lambda root: (root / "constraints.txt", "uv", "3.15.1"),
     )
 
     evidence = consume_candidate(
@@ -491,6 +497,10 @@ def test_consumer_probe_creates_and_reinstalls_exact_artifact(
 
     assert evidence["state"] == "passed"
     assert evidence["artifact_role"] == "wheel"
+    assert any(
+        call[:3] == ("uv", "venv", "--python") and "3.15.1" in call
+        for call in calls
+    )
     assert sum(call[:3] == ("uv", "pip", "install") for call in calls) == 2
     assert any("--reinstall" in call for call in calls)
     assert any(
@@ -557,6 +567,12 @@ def test_consumer_probe_rejects_changed_reinstall_result(
             python = Path(arguments[-1]) / "bin/python"
             python.parent.mkdir(parents=True)
             python.write_bytes(b"")
+        if (
+            arguments
+            and arguments[0].endswith("python")
+            and any("platform.python_version()" in item for item in arguments)
+        ):
+            return b"3.15.1"
         if arguments and arguments[0].endswith("python") and "-c" in arguments:
             probe_count += 1
             return json.dumps({
@@ -571,7 +587,7 @@ def test_consumer_probe_rejects_changed_reinstall_result(
     monkeypatch.setattr(
         candidate_script,
         "_verify_build_toolchain",
-        lambda root: (root / "constraints.txt", "uv"),
+        lambda root: (root / "constraints.txt", "uv", "3.15.1"),
     )
 
     with pytest.raises(ReleaseCandidateError, match="changed after reinstall"):
@@ -1183,9 +1199,15 @@ def test_documentation_and_script_preserve_external_gates() -> None:
     assert "unsigned and unattested" in guide
     assert "stable release, production deployment" in guide.replace("\n", " ")
     assert (
-        "signing/attestation and the remaining external qualification gates"
+        "stable promotion remains blocked by the australian health federation qualification gate"
         in guide.replace("\n", " ")
     )
+    assert "after the gates pass" in guide
+    assert "protected signing and attestation workflow" in guide.replace(
+        "\n", " "
+    )
+    assert "3.15.1" in guide
+    assert "3.14.6" not in guide
     assert "subprocess.run" in script
     assert "gh release create" not in script
     assert "git tag" not in script

@@ -18,8 +18,10 @@ from typing import Any, BinaryIO
 
 from publish_source_metadata import (
     HubTransport,
-    persist_receipt,
+    IntentPreparedError,
+    persist_transaction_receipt,
     read_acknowledgement,
+    read_artifact_acknowledgement,
 )
 
 from global_medicines_atlas.donor_delta import (
@@ -440,6 +442,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--exact-commit", required=True)
     parser.add_argument("--recovery-receipt", default="")
+    parser.add_argument("--recovery-run-id", default="")
+    parser.add_argument("--prepare-intent", action="store_true")
+    parser.add_argument("--prepublished-intent", type=Path)
     args = parser.parse_args()
     require_hosted_main(args.exact_commit)
     contract = DonorHistoryPublicationContract.model_validate_json(
@@ -451,21 +456,43 @@ def main() -> None:
     require_donor_history_hosted_authority(contract)
     if gh(f"repos/{REPOSITORY}/commits/main")["sha"] != args.exact_commit:
         raise ValueError("reviewed main has advanced")
+    receipts = ROOT / "build/donor-history-receipts"
+    receipts.mkdir(parents=True, exist_ok=True)
+    if args.recovery_receipt and args.recovery_run_id:
+        raise ValueError("select only one recovery receipt source")
     acknowledgement = (
         read_acknowledgement(args.recovery_receipt)
         if args.recovery_receipt
+        else read_artifact_acknowledgement(
+            args.recovery_run_id,
+            ROOT / "build/recovery-receipts",
+        )
+        if args.recovery_run_id
         else None
     )
-    receipts = ROOT / "build/donor-history-receipts"
-    receipts.mkdir(parents=True, exist_ok=True)
     workspace = Path(tempfile.mkdtemp(prefix="gma-donor-history-"))
-    result = execute_history_append(
-        contract,
-        exact_commit=args.exact_commit,
-        transport=DonorTransport(workspace, contract),
-        persist=lambda document: persist_receipt(document, receipts),
-        acknowledgement=acknowledgement,
-    )
+    if args.prepare_intent and (args.prepublished_intent or acknowledgement):
+        raise ValueError(
+            "intent preparation cannot use an artifact or recovery"
+        )
+    if args.prepublished_intent and acknowledgement:
+        raise ValueError("select prepublished intent or recovery, not both")
+    try:
+        result = execute_history_append(
+            contract,
+            exact_commit=args.exact_commit,
+            transport=DonorTransport(workspace, contract),
+            persist=lambda document: persist_transaction_receipt(
+                document,
+                receipts,
+                prepare_only=args.prepare_intent,
+                prepublished_intent=args.prepublished_intent,
+            ),
+            acknowledgement=acknowledgement,
+        )
+    except IntentPreparedError:
+        shutil.rmtree(workspace)
+        return
     shutil.rmtree(workspace)
     (receipts / "result.json").write_text(
         json.dumps({**result, "temporary_cache_removed": True}, indent=2) + "\n"
