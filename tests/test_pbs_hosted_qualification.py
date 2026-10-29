@@ -1921,3 +1921,441 @@ def test_pbs_live_parent_rejects_drift_and_collision():
     plan["parquet_sha256"] = "0" * 64
     with pytest.raises(ValueError, match="exact candidate"):
         delivery.verify_live_publication_parent(public, plan)
+
+
+def test_pbs_publication_intent_requires_exact_retained_artifact(
+    monkeypatch, tmp_path
+):
+    import io  # ruff: ignore[import-outside-top-level]
+    import zipfile  # ruff: ignore[import-outside-top-level]
+
+    from scripts import pbs_publication_intent as intent  # ruff: ignore[import-outside-top-level]
+
+    monkeypatch.setenv("PUBLICATION_INTENT_ARTIFACT_ID", "99")
+    monkeypatch.setenv("GITHUB_REPOSITORY", intent.REPOSITORY)
+    monkeypatch.setenv("GITHUB_RUN_ID", "123")
+    monkeypatch.setenv("GITHUB_RUN_ATTEMPT", "1")
+    path = tmp_path / "intent.json"
+    path.write_bytes(b'{"candidate":true}\n')
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w") as archive:
+        archive.writestr("intent.json", path.read_bytes())
+    metadata = {
+        "id": 99,
+        "name": "pbs-silver-publication-intent-123-1",
+        "expired": False,
+        "size_in_bytes": len(buffer.getvalue()),
+        "workflow_run": {"id": 123, "head_sha": SHA},
+    }
+
+    def run(command, **_kwargs):
+        if command[-1].endswith("/zip"):
+            return SimpleNamespace(stdout=buffer.getvalue())
+        return SimpleNamespace(stdout=json.dumps(metadata))
+
+    monkeypatch.setattr(intent.subprocess, "run", run)
+    intent.verify_retained_intent(SHA, path)
+    metadata["workflow_run"]["head_sha"] = "b" * 40
+    with pytest.raises(ValueError, match="differs from this run"):
+        intent.verify_retained_intent(SHA, path)
+    metadata["workflow_run"]["head_sha"] = SHA
+    path.write_bytes(b"changed")
+    with pytest.raises(ValueError, match="intent bytes differ"):
+        intent.verify_retained_intent(SHA, path)
+    monkeypatch.setenv("PUBLICATION_ATTEMPT_ARTIFACT_ID", "99")
+    path.write_bytes(b"attempt")
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w") as archive:
+        archive.writestr("append-attempt.json", path.read_bytes())
+    metadata["name"] = "pbs-silver-publication-attempt-123-1"
+    metadata["size_in_bytes"] = len(buffer.getvalue())
+    intent.verify_retained_intent(SHA, path, attempt_artifact=True)
+
+
+def test_pbs_publication_intent_binds_preparation_and_run(monkeypatch):
+    from scripts import pbs_publication_intent as intent  # ruff: ignore[import-outside-top-level]
+
+    candidate, readback, tree = _publication_plan_inputs()
+    plan = delivery.build_publication_plan(candidate, readback, tree)
+    for name, value in {
+        "GITHUB_ACTIONS": "true",
+        "GITHUB_REPOSITORY": intent.REPOSITORY,
+        "GITHUB_REF": "refs/heads/main",
+        "GITHUB_SHA": SHA,
+        "GITHUB_RUN_ID": "123",
+        "GITHUB_RUN_ATTEMPT": "1",
+        "GITHUB_EVENT_NAME": "workflow_dispatch",
+    }.items():
+        monkeypatch.setenv(name, value)
+    result = intent.build_intent(plan)
+    assert result["output_id"] == delivery.OUTPUT_ID
+    assert result["candidate_only"] is True
+    assert result["publication_performed"] is False
+    plan["run_id"] = "124"
+    with pytest.raises(ValueError, match="prepared candidate"):
+        intent.build_intent(plan)
+
+
+def test_pbs_hosted_intent_stages_after_parent_readback(monkeypatch, tmp_path):
+    from scripts import prepare_pbs_publication_intent as staged  # ruff: ignore[import-outside-top-level]
+
+    candidate, _, _ = _publication_plan_inputs()
+    for name, value in {
+        "GITHUB_ACTIONS": "true",
+        "GITHUB_REPOSITORY": intent_repository(),
+        "GITHUB_REF": "refs/heads/main",
+        "GITHUB_SHA": SHA,
+        "GITHUB_RUN_ID": "123",
+        "GITHUB_RUN_ATTEMPT": "1",
+        "GITHUB_EVENT_NAME": "workflow_dispatch",
+        "RUNNER_TEMP": str(tmp_path),
+    }.items():
+        monkeypatch.setenv(name, value)
+
+    def prepare(_commit, output):
+        manifest_path = output / "first/manifest.json"
+        manifest_path.parent.mkdir(parents=True)
+        manifest_path.write_text(
+            json.dumps({
+                "output_id": delivery.OUTPUT_ID,
+                "parquet": {
+                    "bytes": delivery.PARQUET_BYTES,
+                    "sha256": delivery.PARQUET_SHA256,
+                },
+                "coverage": {"native_core_sha256": delivery.NATIVE_SHA256},
+                "member_binding": {
+                    "member_payload": {"sha256": delivery.MEMBER_SHA256}
+                },
+            })
+        )
+        return candidate
+
+    monkeypatch.setattr(staged.preparation, "prepare", prepare)
+    info = SimpleNamespace(
+        sha=delivery.PUBLIC_PARENT_REVISION,
+        private=False,
+        gated=False,
+        siblings=[SimpleNamespace(rfilename="existing")],
+    )
+    public = SimpleNamespace(dataset_info=lambda *_args, **_kwargs: info)
+    result = staged.prepare_intent(SHA, tmp_path, public)
+    assert json.loads((tmp_path / "intent.json").read_text()) == result
+    assert (
+        json.loads((tmp_path / "preparation.json").read_text())[
+            "complete_source_reparse_and_restore"
+        ]
+        is True
+    )
+    assert result["publication_performed"] is False
+    with pytest.raises(ValueError, match="already exists"):
+        staged.prepare_intent(SHA, tmp_path, public)
+
+
+def intent_repository():
+    return "edithatogo/global-medicines-atlas"
+
+
+def test_pbs_append_binds_intent_parent_bytes_and_one_attempt(  # ruff: ignore[too-many-locals, too-many-statements]
+    monkeypatch, tmp_path
+):
+    from scripts import pbs_publication_intent as intent  # ruff: ignore[import-outside-top-level]
+    from scripts import publish_pbs_reproduced as publisher  # ruff: ignore[import-outside-top-level]
+
+    for name, value in {
+        "GITHUB_ACTIONS": "true",
+        "GITHUB_REPOSITORY": intent.REPOSITORY,
+        "GITHUB_REF": "refs/heads/main",
+        "GITHUB_SHA": SHA,
+        "GITHUB_RUN_ID": "123",
+        "GITHUB_RUN_ATTEMPT": "1",
+        "GITHUB_EVENT_NAME": "workflow_dispatch",
+        "RUNNER_TEMP": str(tmp_path),
+        "HF_TOKEN": "synthetic-token",
+    }.items():
+        monkeypatch.setenv(name, value)
+    payload = b"synthetic parquet"
+    monkeypatch.setattr(delivery, "PARQUET_BYTES", len(payload))
+    monkeypatch.setattr(
+        delivery, "PARQUET_SHA256", hashlib.sha256(payload).hexdigest()
+    )
+    candidate, readback, tree = _publication_plan_inputs()
+    observation = json.loads(readback)
+    observation["target_parquet_sha256"] = delivery.PARQUET_SHA256
+    readback = json.dumps(observation).encode()
+    monkeypatch.setattr(
+        delivery, "PUBLIC_READBACK_SHA256", hashlib.sha256(readback).hexdigest()
+    )
+    plan = delivery.build_publication_plan(candidate, readback, tree)
+    document = intent.build_intent(plan)
+    (tmp_path / "intent.json").write_text(json.dumps(document))
+    staged = tmp_path / "candidate/first/values.parquet"
+    staged.parent.mkdir(parents=True)
+    staged.write_bytes(payload)
+    authority = tmp_path / "authority.json"
+    authority.write_text(
+        json.dumps({
+            "schema_id": "global-medicines-atlas.pbs-reproduced-publication-authority",
+            "publication_approved": True,
+            "dataset": delivery.DATASET,
+            "output_id": delivery.OUTPUT_ID,
+            "parquet_sha256": delivery.PARQUET_SHA256,
+            "parquet_bytes": delivery.PARQUET_BYTES,
+            "remote_path": plan["remote_path"],
+        })
+    )
+    monkeypatch.setattr(publisher, "AUTHORITY", authority)
+    monkeypatch.setattr(delivery, "verify_checkout", lambda *_args: None)
+    monkeypatch.setattr(
+        intent, "verify_retained_intent", lambda *_args, **_kwargs: None
+    )
+    info = SimpleNamespace(
+        sha=delivery.PUBLIC_PARENT_REVISION,
+        private=False,
+        gated=False,
+        siblings=[SimpleNamespace(rfilename="existing")],
+    )
+    calls = []
+
+    class API:
+        def dataset_info(self, *_args, **_kwargs):
+            return info
+
+        def create_commit(self, **kwargs):
+            calls.append(kwargs)
+            return SimpleNamespace(oid="b" * 40)
+
+    sdk = SimpleNamespace(
+        HfApi=lambda **_kwargs: API(),
+        CommitOperationAdd=lambda **kwargs: kwargs,
+    )
+    publisher.prepare_attempt(tmp_path)
+    approved = json.loads(authority.read_text())
+    denied = {**approved, "publication_approved": False}
+    authority.write_text(json.dumps(denied))
+    with pytest.raises(ValueError, match="publication authority"):
+        publisher.append_once(tmp_path, sdk)
+    assert calls == []
+    assert not (tmp_path / "append-started.json").exists()
+    authority.write_text(json.dumps(approved))
+    ack = publisher.append_once(tmp_path, sdk)
+    assert ack["status"] == "cas_acknowledged_not_yet_verified"
+    assert calls[0]["parent_commit"] == delivery.PUBLIC_PARENT_REVISION
+    assert (tmp_path / "append-attempt.json").is_file()
+    with pytest.raises(ValueError, match="already been attempted"):
+        publisher.append_once(tmp_path, sdk)
+    assert len(calls) == 1
+    prior = [entry for entry in json.loads(tree) if entry["type"] == "file"]
+    info.sha = "b" * 40
+    info.siblings = [
+        SimpleNamespace(rfilename=entry["path"], blob_id=entry["oid"])
+        for entry in prior
+    ]
+    info.siblings.append(
+        SimpleNamespace(rfilename=plan["remote_path"], blob_id="new")
+    )
+    transport = SimpleNamespace(public=API())
+    monkeypatch.setattr(
+        delivery,
+        "verify_anonymous_published_candidate",
+        lambda *_args: {
+            "dataset": delivery.DATASET,
+            "revision": "b" * 40,
+            "anonymous_digest_verification": "passed",
+        },
+    )
+    receipt = publisher.verify_append(tmp_path, transport)
+    assert receipt["prior_file_blobs_preserved"] is True
+    assert receipt["v4_admission_performed"] is False
+    info.siblings[0].blob_id = "changed"
+    with pytest.raises(ValueError, match="prior file inventory"):
+        publisher.verify_append(tmp_path, transport)
+
+
+def test_pbs_v4_rejects_mismatched_publication_receipt():
+    from scripts import qualify_pbs_reproduced_v4 as admission  # ruff: ignore[import-outside-top-level]
+
+    document = {
+        "schema_id": "global-medicines-atlas.pbs-silver-publication-receipt",
+        "status": "anonymous_verification_passed_not_admitted",
+        "dataset": delivery.DATASET,
+        "parent_revision": delivery.PUBLIC_PARENT_REVISION,
+        "revision": "b" * 40,
+        "path": f"silver/pbs/v4/2026-04-01/{delivery.OUTPUT_ID}/values.parquet",
+        "sha256": delivery.PARQUET_SHA256,
+        "bytes": delivery.PARQUET_BYTES,
+        "prior_file_count": 9,
+        "prior_file_blobs_preserved": True,
+        "anonymous_digest_verification": "passed",
+        "v4_admission_performed": False,
+        "workflow_commit": SHA,
+        "run_id": "123",
+        "run_attempt": "1",
+    }
+
+    def check(obj):
+        return admission.validate_publication_receipt(
+            json.dumps(obj).encode(),
+            workflow_commit=SHA,
+            run_id="123",
+            run_attempt="1",
+        )
+
+    assert check(document)["revision"] == "b" * 40
+    for key, value in (
+        ("sha256", "0" * 64),
+        ("v4_admission_performed", 0),
+        ("revision", "main"),
+    ):
+        with pytest.raises(ValueError, match="PBS publication receipt"):
+            check({**document, key: value})
+
+
+def test_pbs_receipt_artifact_requires_exact_successful_run(monkeypatch):
+    import io  # ruff: ignore[import-outside-top-level]
+    import subprocess  # ruff: ignore[import-outside-top-level, suspicious-subprocess-import]
+    import zipfile  # ruff: ignore[import-outside-top-level]
+
+    from scripts import qualify_pbs_reproduced_v4 as admission  # ruff: ignore[import-outside-top-level]
+
+    run = {
+        "id": 123,
+        "repository": {"full_name": "edithatogo/global-medicines-atlas"},
+        "head_branch": "main",
+        "head_sha": SHA,
+        "event": "workflow_dispatch",
+        "status": "completed",
+        "conclusion": "success",
+        "run_attempt": 1,
+        "path": ".github/workflows/australian-pbs-reproduced-publication.yml",
+    }
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w") as archive:
+        archive.writestr("hosted-receipt.json", b"{}")
+    artifact = {
+        "id": 99,
+        "name": "pbs-silver-publication-receipt-123-1",
+        "expired": False,
+        "size_in_bytes": len(buffer.getvalue()),
+        "workflow_run": {"id": 123, "head_sha": SHA},
+    }
+
+    def fake_run(command, **_kwargs):
+        path = command[-1]
+        if path.endswith("/zip"):
+            return SimpleNamespace(stdout=buffer.getvalue())
+        return SimpleNamespace(
+            stdout=json.dumps(
+                artifact if "/artifacts/" in path else run
+            ).encode()
+        )
+
+    monkeypatch.setattr(subprocess, "run", fake_run)
+    monkeypatch.setattr(
+        admission,
+        "validate_publication_receipt",
+        lambda *_args, **_kwargs: {"validated": True},
+    )
+    raw, result = admission.authenticate_publication_artifact(
+        workflow_commit=SHA, run_id="123", artifact_id="99"
+    )
+    assert raw == b"{}"
+    assert result == {"validated": True}
+    run["conclusion"] = "failure"
+    with pytest.raises(ValueError, match="successful main workflow"):
+        admission.authenticate_publication_artifact(
+            workflow_commit=SHA, run_id="123", artifact_id="99"
+        )
+    run["conclusion"] = "success"
+    artifact["workflow_run"]["head_sha"] = "b" * 40
+    with pytest.raises(ValueError, match="differs from the exact run"):
+        admission.authenticate_publication_artifact(
+            workflow_commit=SHA, run_id="123", artifact_id="99"
+        )
+
+
+def test_pbs_preparation_artifact_binds_manifest_and_native_core(monkeypatch):
+    import io  # ruff: ignore[import-outside-top-level]
+    import zipfile  # ruff: ignore[import-outside-top-level]
+
+    from scripts import qualify_pbs_reproduced_v4 as admission  # ruff: ignore[import-outside-top-level]
+
+    manifest = json.dumps({
+        "output_id": delivery.OUTPUT_ID,
+        "parquet": {
+            "bytes": delivery.PARQUET_BYTES,
+            "sha256": delivery.PARQUET_SHA256,
+        },
+        "coverage": {"native_core_sha256": delivery.NATIVE_SHA256},
+        "member_binding": {
+            "member_payload": {"sha256": delivery.MEMBER_SHA256}
+        },
+    }).encode()
+    candidate, _, _ = _publication_plan_inputs()
+    receipt = {
+        **candidate,
+        "package_manifest_sha256": hashlib.sha256(manifest).hexdigest(),
+        "complete_source_reparse_and_restore": True,
+        "parquet_bytes_identical": True,
+        "independent_pipeline_builds": False,
+    }
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w") as archive:
+        archive.writestr("preparation.json", json.dumps(receipt))
+        archive.writestr("candidate/first/manifest.json", manifest)
+    monkeypatch.setattr(
+        admission, "_authenticated_archive", lambda **_kwargs: buffer.getvalue()
+    )
+    raw, saved_manifest = admission.authenticate_preparation_artifact(
+        workflow_commit=SHA, run_id="123", artifact_id="99"
+    )
+    assert json.loads(raw)["complete_source_reparse_and_restore"] is True
+    assert saved_manifest == manifest
+    receipt["package_manifest_sha256"] = "0" * 64
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w") as archive:
+        archive.writestr("preparation.json", json.dumps(receipt))
+        archive.writestr("candidate/first/manifest.json", manifest)
+    with pytest.raises(ValueError, match="preparation receipt differs"):
+        admission.authenticate_preparation_artifact(
+            workflow_commit=SHA, run_id="123", artifact_id="99"
+        )
+
+
+def test_pbs_authenticated_receipts_are_retained_without_admission(
+    monkeypatch, tmp_path
+):
+    from scripts import qualify_pbs_reproduced_v4 as admission  # ruff: ignore[import-outside-top-level]
+
+    monkeypatch.setattr(
+        admission,
+        "authenticate_publication_artifact",
+        lambda **_kwargs: (b"publication", {"revision": "b" * 40}),
+    )
+    monkeypatch.setattr(
+        admission,
+        "authenticate_preparation_artifact",
+        lambda **_kwargs: (b"preparation", b"manifest"),
+    )
+    output = tmp_path / "receipts"
+    summary = admission.retain_authenticated_receipts(
+        output,
+        workflow_commit=SHA,
+        run_id="123",
+        publication_artifact_id="98",
+        preparation_artifact_id="99",
+    )
+    assert summary["v4_admission_performed"] is False
+    assert summary["consumer_canaries_run"] is False
+    assert (output / "publication.json").read_bytes() == b"publication"
+    assert (
+        summary["files"]["package-manifest.json"]
+        == hashlib.sha256(b"manifest").hexdigest()
+    )
+    with pytest.raises(FileExistsError, match="already exists"):
+        admission.retain_authenticated_receipts(
+            output,
+            workflow_commit=SHA,
+            run_id="123",
+            publication_artifact_id="98",
+            preparation_artifact_id="99",
+        )

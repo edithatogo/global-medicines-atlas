@@ -15,7 +15,7 @@ from contextlib import ExitStack
 from html.parser import HTMLParser
 from http import HTTPStatus
 from pathlib import Path
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Literal, cast
 from urllib.parse import urlencode, urlsplit
 
 from fastapi.testclient import TestClient
@@ -112,6 +112,8 @@ def _qualify_browser_pages(
             tuple[str, ...],
         ]
     ],
+    *,
+    source_structure_view: Literal["records", "fields"] | None = None,
 ) -> list[dict[str, object]]:
     """Render bounded Atlas responses in Chromium without retaining values."""
     from playwright.sync_api import sync_playwright  # ruff: ignore[import-outside-top-level] -- browser mode is optional
@@ -141,14 +143,22 @@ def _qualify_browser_pages(
             page = browser.new_page()
             page.route("**/*", fulfill)
             for request, expected_rows, identity_bindings in cases:
-                query = urlencode({
+                parameters = {
                     "resource_id": request.resource_id,
                     "columns": ",".join(request.columns),
                     "limit": request.limit,
                     "offline": "false",
-                })
+                }
+                if source_structure_view is not None:
+                    parameters["view"] = source_structure_view
+                query = urlencode(parameters)
+                route = (
+                    "/federated/source-structure"
+                    if source_structure_view is not None
+                    else "/federated/benefits"
+                )
                 response = page.goto(
-                    f"http://atlas.test/federated/benefits?{query}",
+                    f"http://atlas.test{route}?{query}",
                     wait_until="domcontentloaded",
                 )
                 if response is None or response.status != HTTPStatus.OK:

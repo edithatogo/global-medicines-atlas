@@ -1,0 +1,19 @@
+{
+  "all_file_paths_and_git_blob_ids_match": true,
+  "anonymous": true,
+  "dataset": "edithatogo/australian-pbs-source-archive",
+  "file_count": 9,
+  "limits": [
+    "Metadata observation of this exact revision only; no candidate bytes, publication, or consumer qualification were verified."
+  ],
+  "metadata_response_sha256": "9ab10dd3e30922953680fa5cadffafa376d1b9a37beccb9f6ab2990cb2c8830b",
+  "metadata_url": "https://huggingface.co/api/datasets/edithatogo/australian-pbs-source-archive/revision/208f0b0f1db7768018b3c50929596d63d16e3392?blobs=true",
+  "observed_at": "2026-10-29T07:23:46.834545+00:00",
+  "publication_performed": false,
+  "retained_tree_sha256": "8f38b87b6dee2d0d65275f29695dfcb52726b3df330835467f6a83e767e2bea3",
+  "revision": "208f0b0f1db7768018b3c50929596d63d16e3392",
+  "schema_id": "global-medicines-atlas.pbs-public-parent-blob-parity",
+  "schema_version": 1,
+  "source_payload_read": false,
+  "v4_admission_performed": false
+}

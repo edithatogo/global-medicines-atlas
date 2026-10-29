@@ -125,7 +125,11 @@ def test_source_structure_cli_uses_operator_trust_and_bounded_query(
     metadata_root.mkdir()
     schema_file = tmp_path / "schema.json"
     schema_file.write_text("{}")
-    resolver = type("Resolver", (), {"resource_ids": ("au.pbs.synthetic",)})()
+    resolver = type(
+        "Resolver",
+        (),
+        {"resource_ids": ("au.pbs.synthetic",), "close": lambda _self: None},
+    )()
     loader_args: dict[str, object] = {}
     query_args: dict[str, object] = {}
 
@@ -227,7 +231,11 @@ def test_source_structure_cli_reports_bounded_errors(
     metadata_root.mkdir()
     schema_file = tmp_path / "schema.json"
     schema_file.write_text("{}")
-    resolver = type("Resolver", (), {"resource_ids": ("au.pbs.synthetic",)})()
+    resolver = type(
+        "Resolver",
+        (),
+        {"resource_ids": ("au.pbs.synthetic",), "close": lambda _self: None},
+    )()
 
     class Service:
         def __init__(self, *_args: object, **_kwargs: object) -> None:
