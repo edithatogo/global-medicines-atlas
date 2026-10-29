@@ -1,0 +1,81 @@
+name: Append verified MBS source identity to the root manifest
+
+on:
+  workflow_dispatch:
+    inputs:
+      exact_contract_commit:
+        description: Exact reviewed main commit containing this one-object append contract
+        required: true
+        type: string
+
+# Historical uv builds use the patched, content-bound custom CA store.
+env:
+  SSL_CERT_FILE: ${{ github.workspace }}/.ci/trust/cacert.pem
+
+permissions: {}
+
+concurrency:
+  group: australian-mbs-root-manifest-append
+  cancel-in-progress: false
+
+jobs:
+  append:
+    name: Append one existing object identity and anonymously verify
+    runs-on: ubuntu-24.04
+    environment: australian-hf-publication
+    timeout-minutes: 10
+    env:
+      HF_HOME: ${{ github.workspace }}/build/m112-root-manifest-cache
+      HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
+      HF_HUB_DISABLE_XET: "1"
+      PYTHONUNBUFFERED: "1"
+    permissions:
+      contents: read
+      issues: write # Durable intent and verification receipts.
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.29"
+
+      - name: Bind main head, append contract and publication authority
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_COMMIT: ${{ inputs.exact_contract_commit }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/main
+          test "$GITHUB_SHA" = "$REQUESTED_COMMIT"
+          test "$GITHUB_SHA" = "$(gh api repos/edithatogo/global-medicines-atlas/commits/main --jq .sha)"
+          uv run --locked --python 3.14.6 python - <<'PY'
+          import json
+          from pathlib import Path
+          from jsonschema import Draft202012Validator
+          contract = json.loads(Path('quality/qualifications/australian-m112-root-manifest-append-contract-20261017.json').read_bytes())
+          schema = json.loads(Path('schemas/australian-m112-root-manifest-append-contract-v1.json').read_bytes())
+          Draft202012Validator(schema).validate(contract)
+          print(json.dumps({'contract_sha256': __import__('hashlib').sha256(Path('quality/qualifications/australian-m112-root-manifest-append-contract-20261017.json').read_bytes()).hexdigest(), 'dataset': contract['dataset'], 'expected_parent_revision': contract['expected_parent_revision'], 'path': contract['object']['path'], 'sha256': contract['object']['sha256'], 'bytes': contract['object']['bytes']}, sort_keys=True))
+          PY
+          gh issue comment 340 --body "M-112 root-manifest append intent: exact_commit=$GITHUB_SHA; contract=quality/qualifications/australian-m112-root-manifest-append-contract-20261017.json; object=raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml; operation=manifest.json-only compare-and-swap; source bytes are not read or uploaded; existing alias and all other manifest rows are preserved."
+
+      - name: Append metadata and verify anonymously
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          set -euo pipefail
+          uv run --locked --python 3.14.6 --with huggingface-hub==1.14.0 python scripts/append_australian_mbs_root_manifest.py \
+            --exact-commit "$GITHUB_SHA" \
+            --receipt-output build/m112-root-manifest-receipt.json
+          cat build/m112-root-manifest-receipt.json
+          gh issue comment 340 --body-file build/m112-root-manifest-receipt.json
+
+      - name: Record fail-honest outcome
+        if: failure() || cancelled()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment 340 --body "M-112 root-manifest append did not complete: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID at $GITHUB_SHA. No acceptance claim is made; inspect the exact readback and failure before retrying."

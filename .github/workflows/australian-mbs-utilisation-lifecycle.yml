@@ -22,7 +22,6 @@ jobs:
     timeout-minutes: 45
     permissions:
       contents: read
-      issues: write # Durable intent, CAS, verification and cleanup receipts.
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
@@ -37,7 +36,7 @@ jobs:
           REQUESTED_COMMIT: ${{ inputs.exact_contract_commit }}
         run: |
           set -euo pipefail
-          uv run --frozen --python 3.15.0 --with huggingface-hub==1.14.0 \
+          uv run --frozen --python 3.15.1 --with huggingface-hub==1.14.0 \
             python scripts/publish_mbs_utilisation_lifecycle.py \
             --exact-commit "$REQUESTED_COMMIT"
       - name: Record fail-honest outcome
@@ -45,4 +44,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh issue comment 340 --body "Exact MBS lifecycle append did not complete: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID at $GITHUB_SHA. Any published revision is preserved; reconcile durable receipts before retrying."
+          : # Outbound comments prohibited; retain workflow artifacts instead.
+      - name: Retain metadata-only lifecycle receipts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: mbs-utilisation-lifecycle-receipts-${{ github.run_id }}
+          path: build/mbs-utilisation-lifecycle-receipts/*.json
+          if-no-files-found: ignore
+          retention-days: 90

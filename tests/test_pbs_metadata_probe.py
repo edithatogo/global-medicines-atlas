@@ -236,7 +236,7 @@ def test_diagnostic_workflow_has_only_scoped_read_and_receipt_paths():
     assert "HF_TOKEN" not in workflow
     assert "schedule:" not in workflow
     assert "timeout-minutes: 6" in workflow
-    assert "gh issue comment 341" in workflow
+    assert "gh issue comment 341" not in workflow
     assert "path: pbs-metadata-diagnostic-receipt.json" in workflow
 
 

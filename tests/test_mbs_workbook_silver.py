@@ -14,6 +14,10 @@ from hypothesis import given
 from hypothesis import strategies as st
 from pydantic import AnyUrl
 
+from global_medicines_atlas.mbs_p7_date_consistency import (
+    classify_p7_cell_status,
+    decide_p7_date_consistency,
+)
 from global_medicines_atlas.mbs_workbook_silver import (
     iter_workbook_silver_batches,
 )
@@ -315,3 +319,192 @@ def test_inline_text_is_not_interpreted_as_a_number_or_formula(
     assert result["text_value"] == value
     assert result["decimal_value"] is None
     assert result["value_origin"] == "literal"
+
+
+def _p7_consistency_profile(
+    *,
+    statuses: dict[str, int] | None = None,
+    lexical: dict[str, int] | None = None,
+    source_sha256: str = (
+        "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8"
+    ),
+) -> dict[str, object]:
+    return {
+        "schema_version": 1,
+        "source_sha256": source_sha256,
+        "source_byte_count": 87727,
+        "date_order_selected": False,
+        "source_values_emitted": False,
+        "by_field": {
+            "BenefitStartDate": {
+                "ambiguous_calendar_order": 310,
+                "unique_calendar_date": 10,
+            },
+            "DescriptionStartDate": {
+                "ambiguous_calendar_order": 310,
+                "unique_calendar_date": 8,
+                "unique_dmy_calendar_date": 2,
+            },
+            "FeeStartDate": {
+                "ambiguous_calendar_order": 262,
+                "unique_calendar_date": 56,
+                "unique_dmy_calendar_date": 2,
+            },
+            "ItemStartDate": statuses
+            or {
+                "ambiguous_calendar_order": 312,
+                "unique_calendar_date": 8,
+            },
+        },
+        "lexical_profile_by_field": {
+            **{
+                field: {"dd_mm_yyyy_dotted": 320}
+                for field in (
+                    "BenefitStartDate",
+                    "DescriptionStartDate",
+                    "FeeStartDate",
+                )
+            },
+            "ItemStartDate": lexical or {"dd_mm_yyyy_dotted": 320},
+        },
+    }
+
+
+def test_p7_dmy_consistency_selects_exact_copy_internal_inference() -> None:
+    source_sha256 = str(_p7_consistency_profile()["source_sha256"])
+    decision = decide_p7_date_consistency(
+        _p7_consistency_profile(), expected_source_sha256=source_sha256
+    )
+
+    assert decision["selected_profile"] == "mbs-dmy"
+    assert decision["evidence_counts"]["unique_dmy_calendar_date"] == 4
+    assert decision["date_fields_with_populated_values"] == [
+        "BenefitStartDate",
+        "DescriptionStartDate",
+        "FeeStartDate",
+        "ItemStartDate",
+    ]
+    assert decision["department_provenance_or_attestation"] == "not_established"
+    assert decision["scope"] == {
+        "source_sha256": source_sha256,
+        "other_workbooks": False,
+        "other_mbs_eras": False,
+        "domain_meaning": False,
+    }
+    assert decision["source_values_emitted"] is False
+
+
+@pytest.mark.parametrize(
+    ("statuses", "lexical", "expected_digest"),
+    [
+        ({"unique_mdy_calendar_date": 1}, {"dd_mm_yyyy_dotted": 1}, None),
+        ({"invalid": 1}, {"dd_mm_yyyy_dotted": 1}, None),
+        ({"unsupported_serial_date": 1}, {}, None),
+        ({"formula_unresolved": 1}, {"dd_mm_yyyy_dotted": 1}, None),
+        ({"source_error": 1}, {}, None),
+        ({"ambiguous_calendar_order": 2}, {"other_text_profile": 2}, None),
+        (
+            {"unique_dmy_calendar_date": 1},
+            {"dd_mm_yyyy_dotted": 1},
+            "wrong-digest",
+        ),
+    ],
+)
+def test_p7_dmy_consistency_abstains_on_negative_controls(
+    statuses: dict[str, int],
+    lexical: dict[str, int],
+    expected_digest: str | None,
+) -> None:
+    profile = _p7_consistency_profile(statuses=statuses, lexical=lexical)
+    digest = expected_digest or str(profile["source_sha256"])
+
+    decision = decide_p7_date_consistency(
+        profile, expected_source_sha256=digest
+    )
+
+    assert decision["selected_profile"] is None
+
+
+def test_p7_dmy_consistency_needs_at_least_one_dmy_only_value() -> None:
+    profile = _p7_consistency_profile()
+    by_field = profile["by_field"]
+    assert isinstance(by_field, dict)
+    by_field["DescriptionStartDate"] = {"ambiguous_calendar_order": 320}
+    by_field["FeeStartDate"] = {"ambiguous_calendar_order": 320}
+
+    decision = decide_p7_date_consistency(
+        profile, expected_source_sha256=str(profile["source_sha256"])
+    )
+
+    assert decision["selected_profile"] is None
+    assert decision["selection_status"] == "unresolved"
+
+
+@pytest.mark.parametrize(
+    ("cell_type", "formula_state", "display_value", "present", "expected"),
+    [
+        ("e", "missing_field", None, ["display_value"], "source_error"),
+        ("s", "formula", None, ["display_value"], "formula_unresolved"),
+        ("s", "missing_field", None, ["display_value"], "null"),
+        ("s", "missing_field", None, [], "missing_value"),
+    ],
+)
+def test_p7_cell_state_precedes_null_display_value(
+    cell_type: str,
+    formula_state: str,
+    display_value: str | None,
+    present: list[str],
+    expected: str,
+) -> None:
+    assert (
+        classify_p7_cell_status({
+            "cell_type": cell_type,
+            "formula_state": formula_state,
+            "display_value": display_value,
+            "present_properties": present,
+        })
+        == expected
+    )
+
+
+@pytest.mark.parametrize("field", ["ItemStartDate", "FeeStartDate"])
+def test_p7_dmy_consistency_rejects_missing_or_truncated_field_inventory(
+    field: str,
+) -> None:
+    profile = _p7_consistency_profile()
+    by_field = profile["by_field"]
+    assert isinstance(by_field, dict)
+    if field == "FeeStartDate":
+        del by_field[field]
+    else:
+        field_counts = by_field[field]
+        assert isinstance(field_counts, dict)
+        field_counts["ambiguous_calendar_order"] -= 1
+
+    decision = decide_p7_date_consistency(
+        profile, expected_source_sha256=str(profile["source_sha256"])
+    )
+
+    assert decision["selected_profile"] is None
+    assert decision["selection_status"] == "unresolved"
+
+
+def test_p7_dmy_consistency_requires_one_profile_across_populated_fields() -> (
+    None
+):
+    profile = _p7_consistency_profile()
+    by_field = profile["by_field"]
+    lexical_by_field = profile["lexical_profile_by_field"]
+    assert isinstance(by_field, dict)
+    assert isinstance(lexical_by_field, dict)
+    by_field["FeeStartDate"] = {
+        "ambiguous_calendar_order": 3,
+        "unique_dmy_calendar_date": 1,
+    }
+    lexical_by_field["FeeStartDate"] = {"other_text_profile": 4}
+
+    decision = decide_p7_date_consistency(
+        profile, expected_source_sha256=str(profile["source_sha256"])
+    )
+
+    assert decision["selected_profile"] is None

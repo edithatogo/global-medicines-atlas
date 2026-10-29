@@ -2,6 +2,19 @@ name: Qualify pinned historical PBS projections
 on:
   workflow_dispatch:
     inputs:
+      qualification_scope:
+        description: Existing qualification, native values, or reference screens
+        required: true
+        type: choice
+        options:
+          - structural
+          - native-values
+          - observed-domain-values
+          - native-value-package
+          - native-schema-inventory
+          - native-reference-screen
+          - native-reference-uri-screen
+        default: structural
       exact_commit:
         description: Exact merged main commit containing the reviewed qualifier
         required: true
@@ -17,14 +30,14 @@ on:
         default: none
 permissions: {}
 concurrency:
-  group: pbs-historical-projection-qualification
+  group: pbs-historical-projection-${{ inputs.qualification_scope == 'native-schema-inventory' && 'schema-inventory' || 'qualification' }}
   cancel-in-progress: false
 jobs:
   prepare-reference-index:
     name: Prepare streaming PBS global reference index
     # Independent of projection qualification so a slow or failed phase does
     # not extend/suppress reference preparation; aggregation remains fail closed.
-    if: always() && github.ref == 'refs/heads/main'
+    if: inputs.qualification_scope != 'native-values' && inputs.qualification_scope != 'native-value-package' && inputs.qualification_scope != 'native-schema-inventory' && inputs.qualification_scope != 'observed-domain-values' && inputs.qualification_scope != 'native-reference-screen' && inputs.qualification_scope != 'native-reference-uri-screen' && always() && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 65
     permissions:
@@ -39,7 +52,7 @@ jobs:
         env:
           REQUESTED_COMMIT: ${{ inputs.exact_commit }}
         run: |
-          uv run --locked --python 3.15.0 python scripts/prepare_historical_pbs_reference_node.py \
+          uv run --locked --python 3.15.1 python scripts/prepare_historical_pbs_reference_node.py \
             --exact-commit "$REQUESTED_COMMIT" --reference-shards 16 --global-index \
             --output node --receipt reference-index-receipt.json
       - name: Retain only the derived index and bounded receipt
@@ -55,7 +68,7 @@ jobs:
   prepare:
     name: Assemble verified transient PBS shard inputs
     needs: [prepare-reference-index, prepare-reference-pairs]
-    if: always() && needs.prepare-reference-index.result == 'success' && needs.prepare-reference-pairs.result == 'success' && github.ref == 'refs/heads/main'
+    if: inputs.qualification_scope != 'native-values' && inputs.qualification_scope != 'native-value-package' && inputs.qualification_scope != 'native-schema-inventory' && inputs.qualification_scope != 'observed-domain-values' && inputs.qualification_scope != 'native-reference-screen' && inputs.qualification_scope != 'native-reference-uri-screen' && always() && needs.prepare-reference-index.result == 'success' && needs.prepare-reference-pairs.result == 'success' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 65
     permissions:
@@ -77,7 +90,7 @@ jobs:
       - name: Assemble exact index and partition coverage
         timeout-minutes: 55
         run: |
-          uv run --locked --python 3.15.0 python scripts/assemble_historical_pbs_reference_manifest.py \
+          uv run --locked --python 3.15.1 python scripts/assemble_historical_pbs_reference_manifest.py \
             --input nodes --output prepared/references --reference-shards 16
           cp prepared/references/preparation-receipt.json pbs-preparation.json
       - name: Retain transient verified reference inputs
@@ -96,6 +109,7 @@ jobs:
           if-no-files-found: error
           retention-days: 30
   qualify:
+    if: inputs.qualification_scope != 'native-values' && inputs.qualification_scope != 'native-value-package' && inputs.qualification_scope != 'native-schema-inventory' && inputs.qualification_scope != 'observed-domain-values' && inputs.qualification_scope != 'native-reference-screen' && inputs.qualification_scope != 'native-reference-uri-screen'
     name: Verify PBS phase / ${{ matrix.projection }}
     strategy:
       fail-fast: false
@@ -123,7 +137,7 @@ jobs:
           if [[ "$DATE_PROFILE" != "none" ]]; then
             args+=(--date-profile "$DATE_PROFILE")
           fi
-          uv run --locked --python 3.15.0 python scripts/qualify_historical_pbs_public.py \
+          uv run --locked --python 3.15.1 python scripts/qualify_historical_pbs_public.py \
             "${args[@]}" --output "pbs-$PROJECTION-receipt-$GITHUB_RUN_ATTEMPT.json"
       - name: Retain immutable phase receipt
         if: always()
@@ -135,7 +149,7 @@ jobs:
           retention-days: 30
   qualify-references:
     name: Verify PBS references / ${{ matrix.shard }}
-    if: always() && needs.prepare.result == 'success'
+    if: inputs.qualification_scope != 'native-values' && inputs.qualification_scope != 'native-value-package' && inputs.qualification_scope != 'native-schema-inventory' && inputs.qualification_scope != 'observed-domain-values' && inputs.qualification_scope != 'native-reference-screen' && inputs.qualification_scope != 'native-reference-uri-screen' && always() && needs.prepare.result == 'success'
     needs: prepare
     strategy:
       fail-fast: false
@@ -183,7 +197,7 @@ jobs:
           if [[ "$DATE_PROFILE" != "none" ]]; then
             args+=(--date-profile "$DATE_PROFILE")
           fi
-          uv run --locked --python 3.15.0 python scripts/qualify_prepared_pbs_shard.py \
+          uv run --locked --python 3.15.1 python scripts/qualify_prepared_pbs_shard.py \
             "${args[@]}" --output "pbs-references-$SHARD-receipt-$GITHUB_RUN_ATTEMPT.json"
       - name: Retain immutable reference receipt
         if: always()
@@ -195,13 +209,12 @@ jobs:
           retention-days: 30
   aggregate:
     name: Verify complete PBS shard aggregate
-    if: always() && github.ref == 'refs/heads/main'
+    if: inputs.qualification_scope != 'native-values' && inputs.qualification_scope != 'native-value-package' && inputs.qualification_scope != 'native-schema-inventory' && inputs.qualification_scope != 'observed-domain-values' && inputs.qualification_scope != 'native-reference-screen' && inputs.qualification_scope != 'native-reference-uri-screen' && always() && github.ref == 'refs/heads/main'
     needs: [prepare, qualify, qualify-references]
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: read
-      issues: write # One durable bounded aggregate receipt only.
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
@@ -218,18 +231,10 @@ jobs:
           REQUESTED_COMMIT: ${{ inputs.exact_commit }}
         run: |
           set -euo pipefail
-          uv run --locked --python 3.15.0 python scripts/aggregate_historical_pbs_qualification.py \
+          uv run --locked --python 3.15.1 python scripts/aggregate_historical_pbs_qualification.py \
             --receipts receipts --exact-commit "$REQUESTED_COMMIT" \
             --reference-shards 16 \
             --output pbs-qualification-receipt.json
-      - name: Persist the sole aggregate receipt in the track issue
-        if: always()
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          gh issue comment 341 --repo "$GITHUB_REPOSITORY" \
-            --body-file pbs-qualification-receipt.json
       - name: Retain aggregate receipt without source material
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
@@ -242,7 +247,7 @@ jobs:
     name: Prepare PBS reference pair / ${{ matrix.group }}
     # Eight two-shard units reduce both wall time and the retry failure domain.
     # Each child retains its own artifact and fail-fast remains disabled.
-    if: always() && github.ref == 'refs/heads/main'
+    if: inputs.qualification_scope != 'native-values' && inputs.qualification_scope != 'native-value-package' && inputs.qualification_scope != 'native-schema-inventory' && inputs.qualification_scope != 'observed-domain-values' && inputs.qualification_scope != 'native-reference-screen' && inputs.qualification_scope != 'native-reference-uri-screen' && always() && github.ref == 'refs/heads/main'
     strategy:
       fail-fast: false
       max-parallel: 8
@@ -263,7 +268,7 @@ jobs:
           GROUP: ${{ matrix.group }}
           REQUESTED_COMMIT: ${{ inputs.exact_commit }}
         run: |
-          uv run --locked --python 3.15.0 python scripts/prepare_historical_pbs_reference_node.py \
+          uv run --locked --python 3.15.1 python scripts/prepare_historical_pbs_reference_node.py \
             --exact-commit "$REQUESTED_COMMIT" --reference-shards 16 \
             --group-index "$GROUP" --group-count 8 \
             --output node --receipt "reference-group-$GROUP-receipt.json"
@@ -277,3 +282,197 @@ jobs:
             reference-group-${{ matrix.group }}-receipt.json
           if-no-files-found: error
           retention-days: 1
+
+  native-values:
+    if: inputs.qualification_scope == 'native-values'
+    name: Verify pinned PBS native value candidates
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Qualify complete pinned archive member values and native parity
+        timeout-minutes: 55
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.15.1 python scripts/qualify_historical_pbs_public.py \
+            --exact-commit "$REQUESTED_COMMIT" --projection values \
+            --output pbs-native-values-receipt.json
+      - name: Retain aggregate qualification receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-native-values-receipt-${{ github.run_id }}
+          path: pbs-native-values-receipt.json
+          if-no-files-found: error
+          retention-days: 30
+
+  native-value-package:
+    if: inputs.qualification_scope == 'native-value-package'
+    name: Verify pinned PBS complete value package
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Qualify complete pinned value package and source restore
+        timeout-minutes: 55
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.15.1 python scripts/qualify_historical_pbs_public.py \
+            --exact-commit "$REQUESTED_COMMIT" --projection value-package \
+            --output pbs-native-value-package-receipt.json
+      - name: Retain aggregate qualification receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-native-value-package-receipt-${{ github.run_id }}
+          path: pbs-native-value-package-receipt.json
+          if-no-files-found: error
+          retention-days: 30
+
+  native-schema-inventory:
+    if: inputs.qualification_scope == 'native-schema-inventory'
+    name: Inventory pinned PBS native schema paths
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Count complete pinned native field paths without values
+        timeout-minutes: 55
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.15.1 python scripts/profile_historical_pbs_schema.py \
+            --exact-commit "$REQUESTED_COMMIT" --inventory-output pbs-native-schema-path-inventory.json \
+            --output pbs-native-schema-inventory-receipt.json
+      - name: Retain aggregate qualification receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-native-schema-inventory-receipt-${{ github.run_id }}
+          path: |
+            pbs-native-schema-inventory-receipt.json
+            pbs-native-schema-path-inventory.json
+          if-no-files-found: error
+          retention-days: 30
+
+  observed-domain-values:
+    if: inputs.qualification_scope == 'observed-domain-values'
+    name: Verify pinned PBS observed structural value candidates
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Qualify complete pinned archive member values and native parity
+        timeout-minutes: 55
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.15.1 python scripts/qualify_observed_pbs_values.py \
+            --exact-commit "$REQUESTED_COMMIT" \
+            --output pbs-observed-domain-values-receipt.json
+      - name: Retain aggregate qualification receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-observed-domain-values-receipt-${{ github.run_id }}
+          path: pbs-observed-domain-values-receipt.json
+          if-no-files-found: error
+          retention-days: 30
+
+  native-reference-screen:
+    if: inputs.qualification_scope == 'native-reference-screen'
+    name: Screen pinned PBS source-local native references
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Screen exact source-local reference literals
+        timeout-minutes: 55
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.15.1 python scripts/screen_historical_pbs_references.py \
+            --exact-commit "$REQUESTED_COMMIT" \
+            --output pbs-native-reference-screen-receipt.json
+      - name: Retain aggregate reference-screen receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-native-reference-screen-receipt-${{ github.run_id }}
+          path: pbs-native-reference-screen-receipt.json
+          if-no-files-found: error
+          retention-days: 30
+
+  native-reference-uri-screen:
+    if: inputs.qualification_scope == 'native-reference-uri-screen'
+    name: Screen pinned PBS source-local URI candidates
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Resolve exact source-local URI candidates only
+        timeout-minutes: 55
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.15.1 python scripts/screen_historical_pbs_uri_references.py \
+            --exact-commit "$REQUESTED_COMMIT" \
+            --output pbs-native-reference-uri-screen-receipt.json
+      - name: Retain aggregate URI-screen receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-native-reference-uri-screen-receipt-${{ github.run_id }}
+          path: pbs-native-reference-uri-screen-receipt.json
+          if-no-files-found: error
+          retention-days: 30

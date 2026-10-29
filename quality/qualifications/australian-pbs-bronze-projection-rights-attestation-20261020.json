@@ -1,0 +1,24 @@
+{
+  "boundaries": {
+    "consumer_canary_performed": false,
+    "derived_rights_inferred_from_raw_source_permission": false,
+    "frozen_inventory_membership_changed": false,
+    "new_publication_performed": false,
+    "source_payload_values_inspected": false,
+    "v4_admission_performed": false
+  },
+  "maintainer_response": "Attest exact projection",
+  "permission_instrument_existence_and_applicability": "maintainer_attested_not_independently_reviewed_or_located",
+  "public_release_rights_attested": true,
+  "recorded_at": "2026-10-20",
+  "rights_state": "maintainer_attested_exact_public_release_permission_for_bronze_projection",
+  "schema_id": "global-medicines-atlas.australian-pbs-bronze-projection-rights-attestation",
+  "schema_version": 1,
+  "scope": {
+    "byte_count": 158134,
+    "dataset": "edithatogo/australian-pbs-source-archive",
+    "path": "bronze/2026-04-01/pbs-v3-source.parquet",
+    "revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
+    "sha256": "9e9facc336b47c5a9d514388a95c9797ba3e03474806fba00b6f03c0e601e97d"
+  }
+}

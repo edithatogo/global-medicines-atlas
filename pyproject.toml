@@ -23,7 +23,7 @@ dependencies = [
   "jinja2>=3.1",
   "orjson>=3.11",
   "polars[pyarrow]>=1.35",
-  "pyarrow>=26",
+  "pyarrow>=21",
   "pydantic>=2.12",
   "pydantic-settings>=2.11",
   "rich>=14.2",
@@ -42,6 +42,10 @@ semantic = [
 ]
 iceberg = [
   "pyiceberg>=0.10",
+]
+demo = [
+  "jsonschema[format-nongpl]>=4.25",
+  "uvicorn>=0.54,<0.55",
 ]
 
 [project.scripts]
@@ -99,6 +103,9 @@ security = [
 [tool.uv]
 package = true
 default-groups = ["test-goblin"]
+# Temporary edgetest compatibility override: its uv ceiling predates the CA fix.
+# Keep the three dependency environments qualified before removing this bound.
+override-dependencies = ["uv==0.13.5"]
 
 [tool.uv.dependency-groups]
 test = { requires-python = ">=3.15,<3.16" }
@@ -122,6 +129,9 @@ version-file = "src/global_medicines_atlas/_version.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/global_medicines_atlas"]
+
+[tool.hatch.build.targets.sdist]
+only-include = ["LICENSE", "README.md", "pyproject.toml", "src"]
 
 [tool.pytest.ini_options]
 addopts = [
@@ -182,19 +192,19 @@ command = "pytest -q tests/test_columnar.py tests/test_settings.py tests/test_pr
 [[tool.edgetest.env]]
 name = "contracts"
 upgrade = ["pydantic", "pydantic-settings"]
-deps = ["pytest", "pytest-timeout"]
+deps = ["beautifulsoup4", "hypothesis", "jsonschema[format-nongpl]", "pytest", "pytest-timeout"]
 python_version = "3.15"
 
 [[tool.edgetest.env]]
 name = "columnar"
 upgrade = ["duckdb", "polars", "pyarrow"]
-deps = ["pytest", "pytest-timeout"]
+deps = ["beautifulsoup4", "hypothesis", "jsonschema[format-nongpl]", "pytest", "pytest-timeout"]
 python_version = "3.15"
 
 [[tool.edgetest.env]]
 name = "product"
 upgrade = ["fastapi", "httpx", "jinja2", "pydantic", "rich", "typer"]
-deps = ["beautifulsoup4", "pytest", "pytest-playwright", "pytest-timeout"]
+deps = ["beautifulsoup4", "hypothesis", "jsonschema[format-nongpl]", "pytest", "pytest-playwright", "pytest-timeout"]
 python_version = "3.15"
 
 [tool.coverage.run]

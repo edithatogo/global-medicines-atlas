@@ -1,0 +1,98 @@
+{
+  "boundaries": {
+    "consumer_canary_performed": false,
+    "external_publication_performed": false,
+    "frozen_inventory_membership_changed": false,
+    "new_sources_or_datasets_added": false,
+    "source_payload_bytes_read": true,
+    "source_payload_files_written": false,
+    "source_payload_values_emitted": false,
+    "source_payload_values_inspected": true,
+    "v4_admission_performed": false
+  },
+  "dataset": "edithatogo/australian-pbs-utilisation-archive",
+  "method": {
+    "csv": "Parsed all rows and fields in memory; hashed the stream; scanned text cells and headers for explicit vocabulary markers and exact UMLS CUI pattern.",
+    "raw_values_emitted": false,
+    "raw_values_written_to_disk": false,
+    "xlsx": "Parsed workbook cell text and headers in memory; hashed original bytes; scanned text cells and headers for explicit vocabulary markers and exact UMLS CUI pattern; ignored formatting metadata."
+  },
+  "objects": [
+    {
+      "byte_count": 372149,
+      "exact_umls_cui_occurrences": 0,
+      "marker_occurrences": 0,
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+      "row_or_sheet_count": 1895,
+      "sha256": "32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b"
+    },
+    {
+      "byte_count": 468764,
+      "exact_umls_cui_occurrences": 0,
+      "marker_occurrences": 0,
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+      "row_or_sheet_count": 2056,
+      "sha256": "147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99"
+    },
+    {
+      "byte_count": 35384567,
+      "exact_umls_cui_occurrences": 0,
+      "header_field_count": 12,
+      "marker_occurrences": 0,
+      "path": "raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+      "row_or_sheet_count": 389051,
+      "sha256": "4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4"
+    },
+    {
+      "byte_count": 36381946,
+      "exact_umls_cui_occurrences": 0,
+      "header_field_count": 12,
+      "marker_occurrences": 0,
+      "path": "raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+      "row_or_sheet_count": 399661,
+      "sha256": "f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8"
+    },
+    {
+      "byte_count": 1063694,
+      "exact_umls_cui_occurrences": 0,
+      "header_field_count": 4,
+      "marker_occurrences": 0,
+      "path": "raw/pbs/utilisation/reference/pbs-item-drug-map.csv",
+      "row_or_sheet_count": 12163,
+      "sha256": "51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8"
+    },
+    {
+      "byte_count": 117376499,
+      "exact_umls_cui_occurrences": 0,
+      "marker_occurrences": 0,
+      "path": "raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx",
+      "row_or_sheet_count": 1378316,
+      "sha256": "48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca"
+    }
+  ],
+  "results": {
+    "all_object_digests_and_byte_counts_match_pinned_lineage": true,
+    "exact_umls_cui_text_occurrences": 0,
+    "explicit_vocabulary_marker_header_occurrences": 0,
+    "explicit_vocabulary_marker_occurrences": 0,
+    "full_vocabulary_exclusion_review_complete": false,
+    "remaining_limit": "This marker screen cannot classify unlabeled numeric identifiers, source-native medicine names, or other unenumerated vocabulary content; the authorization exclusion is broader than the tested markers.",
+    "rights_exclusion_fully_resolved": false
+  },
+  "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+  "schema_id": "global-medicines-atlas.australian-pbs-utilisation-limited-vocabulary-screen",
+  "schema_version": 1,
+  "scope": {
+    "identifier_pattern_explicitly_checked": "UMLS CUI text form: C followed by seven decimal digits",
+    "lineage_receipt": "quality/qualifications/australian-pbs-utilisation-landed-lineage-20261019.json",
+    "object_count": 6,
+    "source_authorization": "quality/qualifications/australian-pbs-utilisation-publication-authorization.json",
+    "vocabularies_explicitly_checked": [
+      "SNOMED CT-AU",
+      "AMT",
+      "UMLS",
+      "RxNorm"
+    ]
+  },
+  "screened_at": "2026-10-20"
+}

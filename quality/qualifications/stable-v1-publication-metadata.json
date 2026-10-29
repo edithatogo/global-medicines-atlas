@@ -167,8 +167,8 @@
     },
     {
       "path": "uv.lock",
-      "sha256": "78d3ae8a0bf963f424c6a975922fb3a26e2cc4c5a5d77d5290e5c96cee7051b2",
-      "size": 288333
+      "sha256": "e59914a6d21ee322ed6560dbcd4f005e2b33015b17a66a32fc2fdcbd98d05ed2",
+      "size": 292535
     }
   ],
   "inputs": [
@@ -184,7 +184,7 @@
     },
     {
       "path": "release-inputs/publication-qualification.json",
-      "sha256": "6d397bf87ae5d8b4f1b8bc94d67107d620bd64cc1b9933f644c3a8f593a4124a",
+      "sha256": "72de53fca38c760cf7eb7b7dbc0efdc9c22c816de153970c6623c629d8fd5c73",
       "size": 2825
     },
     {
@@ -194,22 +194,22 @@
     }
   ],
   "package": {
-    "checksums_sha256": "0d4a2ec0f7580bac8457b6c50588750840bec37609deb75d330fdc1fc2d72072",
+    "checksums_sha256": "fb6130f6f3a5c880c4f86ad4b6d398846ff15ca223649fdfefd990906f9e902b",
     "contract_sha256": "617aa047ca16ed352e1512c6f0d099e6522caa80ae988dd0b2a8c8c753212385",
     "contract_version": "fixture-dry-run-v1",
-    "croissant_sha256": "543ac410cae60d8d8afe3cad8d03648bf46e250426f33a3d92d57b536b57a6aa",
+    "croissant_sha256": "7d95e0420fb85be535630a3e77253e6b6f2c87fd5a8c390203a413ad46ed5bc6",
     "dataset_card_sha256": "bc2f20043fa7ca10ae4e3996ba2ade19fa5b7a949bd36b75d5c8b89957926680",
     "dataset_title": "Synthetic medicines dry-run fixture",
     "dataset_version": "0.7.0",
     "files": [
       {
         "path": "SHA256SUMS",
-        "sha256": "0d4a2ec0f7580bac8457b6c50588750840bec37609deb75d330fdc1fc2d72072",
+        "sha256": "fb6130f6f3a5c880c4f86ad4b6d398846ff15ca223649fdfefd990906f9e902b",
         "size": 641
       },
       {
         "path": "data/medicines.parquet",
-        "sha256": "cc609e06bf668751cf51bad77c5b1e76f69aed0a7b2135bcbeb8b44eccaf8616",
+        "sha256": "d95cf19bbe7e5ebbb814d0f8f9f8e9077d6a3d4124b1bfa0b370707c5c39e338",
         "size": 1075
       },
       {
@@ -224,7 +224,7 @@
       },
       {
         "path": "metadata/croissant.json",
-        "sha256": "543ac410cae60d8d8afe3cad8d03648bf46e250426f33a3d92d57b536b57a6aa",
+        "sha256": "7d95e0420fb85be535630a3e77253e6b6f2c87fd5a8c390203a413ad46ed5bc6",
         "size": 552
       },
       {
@@ -239,23 +239,23 @@
       },
       {
         "path": "metadata/qualification.json",
-        "sha256": "285c71cac28772e9df46e00933f214af26f397d9fcf6dd00330fe987a1188fd2",
+        "sha256": "501e5a8e9ef7c0a223d93cddd3a732ccec3c50da5b7bc050e4f9ed8c8adeb7ab",
         "size": 2383
       },
       {
         "path": "package-manifest.json",
-        "sha256": "496511da67cf679549099049cc08b4779b98ddf5e3df720325e3cc56281d0c07",
+        "sha256": "a738e29bc908319529674df4f6742c20c0c5294eb9372ce0ba97ee4a135cc738",
         "size": 1178
       }
     ],
     "fixture_only": true,
-    "generated_package_sha256": "75c0b4b75e7e330c1634fd64fb5fdbf728c7197f8b83b5de1e6b7c9dd672e22f",
-    "manifest_sha256": "496511da67cf679549099049cc08b4779b98ddf5e3df720325e3cc56281d0c07",
+    "generated_package_sha256": "fee86c8af5432e37d404e2c60126ef98c9bcccb8583f423f40a51fb9e97e120d",
+    "manifest_sha256": "a738e29bc908319529674df4f6742c20c0c5294eb9372ce0ba97ee4a135cc738",
     "restricted_data_included": false
   },
   "qualification_id": "stable-v1-release-candidate-publication-metadata",
   "ready_for_publication": false,
-  "receipt_sha256": "fd000ae54b95f4a449dfcd7766ad46088e461ba0106092ec23605dcb5337f4a0",
+  "receipt_sha256": "b5341448240e8d46ecbb1927b03c5d89b3563c02f5d00e6306f614dd004649d6",
   "result": "metadata_qualified_external_gates_blocked",
   "schema_id": "global-medicines-atlas.stable-v1-publication-metadata",
   "schema_version": 1

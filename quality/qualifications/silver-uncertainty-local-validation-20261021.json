@@ -1,0 +1,55 @@
+{
+  "focused_recheck": {
+    "duration_seconds": 692.92,
+    "failed": 1,
+    "passed": 3,
+    "remaining_failure": "Product fixture test exceeded pytest 30-second wall limit; budget unchanged"
+  },
+  "full_profile": {
+    "command": "uv run python scripts/test_goblin.py full",
+    "coverage_percent": 97,
+    "duration_seconds": 1362.99,
+    "exit_code": 1,
+    "failed": 4,
+    "failures": {
+      "tests/test_bronze_three_strata.py::test_qualification_is_deterministic": "Local asynchronous test exceeded existing 30-second wall limit",
+      "tests/test_product_release.py::test_runner_qualifies_fixture_gates_and_binds_receipts": "PERF-EXPORT-PAGE p95 1000.476ms exceeded unchanged 1000ms budget",
+      "tests/test_stable_v1_release_candidate_reproducibility.py::test_clean_clones_match_and_consume_artifacts": "Historical uv 0.11.29 unavailable on initial PATH",
+      "tests/test_stable_v1_release_candidate_reproducibility.py::test_committed_receipt_reproduces_from_durable_source_commit": "Historical uv 0.11.29 unavailable on initial PATH"
+    },
+    "full_pass_claimed": false,
+    "passed": 7125,
+    "skipped": 3
+  },
+  "goal_complete": false,
+  "new_sources_added": false,
+  "outreach_sent": false,
+  "protected_ci": {
+    "head": "54e802b171aa6a1f35385c5e8a9763b9f958249c",
+    "pull_request": 1251,
+    "reported_checks_passed": 40,
+    "required_checks_passed": 29
+  },
+  "runtime": {
+    "historical_release_uv_for_recheck": "0.11.29 in isolated temporary environment",
+    "initial_uv": "0.13.4",
+    "python": "3.14.6"
+  },
+  "schema_id": "global-medicines-atlas.silver-uncertainty-local-validation",
+  "schema_version": 1,
+  "standalone_product_fixture": {
+    "command": "scripts/run_product_qualification.py --output <temporary>/evidence.json --receipts <temporary>/receipts",
+    "exit_code": 0,
+    "internal_budgets_unchanged": true,
+    "live_deployment_verified": false,
+    "performance_p95_ms": {
+      "PERF-CONTRACT": 0.012680599999999997,
+      "PERF-EXPORT-PAGE": 912.04191875,
+      "PERF-QUERY": 150.97001875
+    },
+    "production_data_verified": false,
+    "sample_size_per_budget": 20,
+    "state": "fixture_qualified"
+  },
+  "tested_commit": "54e802b171aa6a1f35385c5e8a9763b9f958249c"
+}

@@ -1,0 +1,113 @@
+{
+  "admission_performed": false,
+  "input_documents": {
+    "quality/qualifications/australian-m112-july-mbs-silver-lineage-reviewed-20261019.json": "d64612270ed9d392cac47981732142c890c295a48fbec29a0bedb2b408c88273",
+    "quality/qualifications/australian-mbs-silver-semantic-manifest-20261017.json": "9ad5e2747949b8b7142819e981241c1f74105b3570d78025e654e780241c5882",
+    "quality/qualifications/australian-mbs-v4-candidate-2025-07/manifest.json": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
+    "quality/qualifications/australian-mbs-v4-public-release-rights-attestation-20261019.json": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327"
+  },
+  "producer_commit": "8558ba0ee07c459f41030ee254d068e0b77b062b",
+  "publication_performed": false,
+  "published_producer_commit": "decdeca1f3724405b0e085eb77d8ff11b6944ef9",
+  "replay_code_commit": "8558ba0ee07c459f41030ee254d068e0b77b062b",
+  "role_report_sha256": {
+    "cache-cleanup": "c3ff4b19575ec1e72d0006a88cd70e9ac5b12b776a11d6cc093f242b9ad19961",
+    "primary-restore": "db2fff17a6615c6f3741496b2fdfd6b19ecfb40425a0b91f34d912e1d5c49016",
+    "silver-promotion": "1f5560b5de32bbd9e5a438fc2b3af5d34410f44e7a2cf2ecab54368796be559e",
+    "v1-conformance": "5b7cdd6672794d37fbc784a3487f51797220fbcca90e67910e631fb9b8ca70d4",
+    "v2-field-lineage": "a9f7f7a6c88130d18eb4e5eeb4584700d5020426bd02b8a47deeb5b532d58391",
+    "v3-backfill-replay": "318afd0e617601b7d8d750806f1a18b0a2e7a4488fb922616eace51e6b96d9e0"
+  },
+  "schema_id": "global-medicines-atlas.mbs-silver-delivery-qualification",
+  "schema_version": 1,
+  "scope": "Exact July 2025 source-native Silver fields; no current-status, payable-benefit, clinical, cross-era, or Gold relationship assertion.",
+  "source_sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+  "source_values_included": false,
+  "status": "passed",
+  "tables": [
+    {
+      "byte_count": 100062,
+      "deterministic_replay": true,
+      "field_count": 17,
+      "native_values_preserved": true,
+      "passed": true,
+      "path": "silver/mbs/v4/2025-07-v3/services.parquet",
+      "replay_sha256": "279b66271a2004befc0b6355932402af2bf3c829d2f5be88578636c4bdf4e27d",
+      "row_count": 5989,
+      "row_values_equal": true,
+      "schema_equal": true,
+      "sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535",
+      "table": "services"
+    },
+    {
+      "byte_count": 51851,
+      "deterministic_replay": true,
+      "field_count": 8,
+      "native_values_preserved": true,
+      "passed": true,
+      "path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+      "replay_sha256": "9125882d086992a6bfa9a4840e089022ce35b413baea86479389261c79a0b0ec",
+      "row_count": 5989,
+      "row_values_equal": true,
+      "schema_equal": true,
+      "sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756",
+      "table": "hierarchy"
+    },
+    {
+      "byte_count": 620348,
+      "deterministic_replay": true,
+      "field_count": 7,
+      "native_values_preserved": true,
+      "passed": true,
+      "path": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+      "replay_sha256": "081ac9fd8f135376c170793a3a330ba8d50abc917b18cbe2c032d948786f3967",
+      "row_count": 5989,
+      "row_values_equal": true,
+      "schema_equal": true,
+      "sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733",
+      "table": "descriptions"
+    },
+    {
+      "byte_count": 93072,
+      "deterministic_replay": true,
+      "field_count": 10,
+      "native_values_preserved": true,
+      "passed": true,
+      "path": "silver/mbs/v4/2025-07-v3/fees.parquet",
+      "replay_sha256": "47ce64c8031fcd8de48718d008db9d08b86925d58f975057ffe355b4731ab2e7",
+      "row_count": 5989,
+      "row_values_equal": true,
+      "schema_equal": true,
+      "sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420",
+      "table": "fees"
+    },
+    {
+      "byte_count": 114493,
+      "deterministic_replay": true,
+      "field_count": 9,
+      "native_values_preserved": true,
+      "passed": true,
+      "path": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+      "replay_sha256": "ea8ad1a4d04c4c82c11fecb2c07728cbc7529532ce4f634ee8cfaa4a3ef8ce9b",
+      "row_count": 5989,
+      "row_values_equal": true,
+      "schema_equal": true,
+      "sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f",
+      "table": "benefits"
+    },
+    {
+      "byte_count": 60259,
+      "deterministic_replay": true,
+      "field_count": 13,
+      "native_values_preserved": true,
+      "passed": true,
+      "path": "silver/mbs/v4/2025-07-v3/caps.parquet",
+      "replay_sha256": "5d9b08e5c24c0ded2676345e742a4dc5a146421c3130afff4296c755dfc92d61",
+      "row_count": 5989,
+      "row_values_equal": true,
+      "schema_equal": true,
+      "sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb",
+      "table": "caps"
+    }
+  ]
+}

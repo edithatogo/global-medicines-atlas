@@ -10,7 +10,7 @@ its phase subissues.
 
 | Version | Product outcome | Principal features | Conductor track |
 |---|---|---|---|
-| v0.1 Foundation | Governed monorepository | Python 3.15, Mojo canary, Test-Goblin, protected CI, source registry | `nzmedicines_migration_20260727` |
+| v0.1 Foundation | Governed monorepository | Python 3.14, Mojo canary, Test-Goblin, protected CI, source registry | `nzmedicines_migration_20260727` |
 | v0.2 NZ evidence alpha | Traceable NZ comparison slice | Preserved NZULM/NZMT FHIR fixtures, Medsafe/PHARMAC separation, RxNorm fallback | `nzmedicines_migration_20260727` |
 | v0.3 First-cohort alpha | Repeatable jurisdiction onboarding | NZL, AUS, USA, GBR, CAN, JPN and EU source contracts and receipt-backed ingestors | `global_country_adapters_20260729` |
 | v0.4 Evidence beta | Historical, conflict-aware canonical evidence | Bitemporal assertions, immutable snapshots, conflicts, coverage denominators | `canonical_temporal_evidence_20260729` |

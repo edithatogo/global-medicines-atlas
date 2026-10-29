@@ -1,0 +1,127 @@
+{
+  "boundaries": {
+    "consumer_canary_performed": false,
+    "date_values_inferred": false,
+    "formula_results_evaluated": false,
+    "public_dataset_mutated": false,
+    "silver_promotion_performed": false,
+    "source_bytes_persisted_locally": false,
+    "source_values_or_rows_emitted": false,
+    "v4_admission_performed": false
+  },
+  "columns": [
+    {
+      "counts": {
+        "data_type_n": 545070,
+        "data_type_s": 4,
+        "nonempty_cells": 545074
+      },
+      "formula_function_counts": {},
+      "header": "Year",
+      "number_format_hash_counts": {
+        "c910d474dcd724bf": 545074
+      }
+    },
+    {
+      "counts": {
+        "data_type_s": 545072,
+        "nonempty_cells": 545072
+      },
+      "formula_function_counts": {},
+      "header": "Month",
+      "number_format_hash_counts": {
+        "c910d474dcd724bf": 545072
+      }
+    },
+    {
+      "counts": {
+        "data_type_n": 545070,
+        "data_type_s": 2,
+        "nonempty_cells": 545072
+      },
+      "formula_function_counts": {},
+      "header": "Item_Number",
+      "number_format_hash_counts": {
+        "c910d474dcd724bf": 545072
+      }
+    },
+    {
+      "counts": {
+        "data_type_s": 545072,
+        "nonempty_cells": 545072
+      },
+      "formula_function_counts": {},
+      "header": "State",
+      "number_format_hash_counts": {
+        "c910d474dcd724bf": 545072
+      }
+    },
+    {
+      "counts": {
+        "data_type_f": 171477,
+        "data_type_s": 373595,
+        "formula_cells": 171477,
+        "nonempty_cells": 545072
+      },
+      "formula_function_counts": {},
+      "header": "Age_Range",
+      "number_format_hash_counts": {
+        "0efee4257c1628e4": 1,
+        "c910d474dcd724bf": 545071
+      }
+    },
+    {
+      "counts": {
+        "data_type_s": 545072,
+        "nonempty_cells": 545072
+      },
+      "formula_function_counts": {},
+      "header": "Gender",
+      "number_format_hash_counts": {
+        "c910d474dcd724bf": 545072
+      }
+    },
+    {
+      "counts": {
+        "data_type_n": 545070,
+        "data_type_s": 2,
+        "nonempty_cells": 545072
+      },
+      "formula_function_counts": {},
+      "header": "Services",
+      "number_format_hash_counts": {
+        "62bf8c5c750529f0": 377161,
+        "c910d474dcd724bf": 167911
+      }
+    },
+    {
+      "counts": {
+        "data_type_n": 545070,
+        "data_type_s": 2,
+        "nonempty_cells": 545072
+      },
+      "formula_function_counts": {},
+      "header": "Benefits ($)",
+      "number_format_hash_counts": {
+        "62bf8c5c750529f0": 545072
+      }
+    }
+  ],
+  "interpretation": "Counts and formula function names are descriptive only. Formula results were not evaluated; date formatting does not establish period semantics; numeric and text values are not included. Preserve source-native cells and formulas until an approved loss-aware transform contract exists.",
+  "schema_id": "global-medicines-atlas.mbs-demographics-q1hr-formula-and-column-profile",
+  "schema_version": 1,
+  "scope": {
+    "data_rows": 545074,
+    "header_row": 3,
+    "sheet": "MBS Demographics 2016 Qtr1",
+    "source_values_emitted": false,
+    "source_values_retained": false
+  },
+  "source": {
+    "byte_count": 21966140,
+    "dataset": "edithatogo/australian-mbs-utilisation-archive",
+    "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+    "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+    "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d"
+  }
+}

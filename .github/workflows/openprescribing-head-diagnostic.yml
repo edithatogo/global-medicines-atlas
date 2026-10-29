@@ -46,7 +46,7 @@ jobs:
           DATE_PARTITION: ${{ inputs.date_partition }}
         run: |
           set -euo pipefail
-          uv run --locked --python 3.15.0 python scripts/probe_openprescribing_head_availability.py \
+          uv run --locked --python 3.15.1 python scripts/probe_openprescribing_head_availability.py \
             --date-partition "$DATE_PARTITION" \
             --output build/openprescribing-head-diagnostic.json
       - name: Preserve failure-only receipt if probe was interrupted

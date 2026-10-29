@@ -21,13 +21,13 @@ jobs:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
       - name: Install Chromium for the authorized source export
-        run: uv run --python 3.15.0 playwright install --with-deps chromium
+        run: uv run --python 3.15.1 playwright install --with-deps chromium
       - name: Acquire and retain without publishing
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           set -euo pipefail
-          uv run --python 3.15.0 --with huggingface-hub==1.14.0 \
+          uv run --python 3.15.1 --with huggingface-hub==1.14.0 \
             python scripts/acquire_medstat_private.py \
             | tee medstat-private-acquisition-receipt.json
       - name: Retain redacted acquisition receipt

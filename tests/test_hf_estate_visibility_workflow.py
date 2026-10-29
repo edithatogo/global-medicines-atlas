@@ -56,7 +56,7 @@ def test_workflow_changes_only_visibility_and_verifies_every_payload() -> None:
     assert "workflow_dispatch:" in workflow
     assert "schedule:" in workflow
     assert "permissions: {}" in workflow
-    assert "issues: write" in workflow
+    assert "issues: write" not in workflow
     assert "REQUESTED_REVISION" in workflow
     assert "requested revision differs from exact authorization" in workflow
     assert "candidate and public manifests differ" in workflow
@@ -82,7 +82,7 @@ def test_workflow_changes_only_visibility_and_verifies_every_payload() -> None:
     assert "anonymous_digest_match_count': len(files)" in workflow
     assert "hf-legacy-composite-visibility-receipt.json" in workflow
     assert "durable_receipt_issue" in workflow
-    assert "gh issue comment 340" in workflow
+    assert "gh issue comment 340" not in workflow
     assert "github-actions[bot]" in workflow
     assert "durable_success_receipt_found" in workflow
     assert "head_matches_authorization" in workflow

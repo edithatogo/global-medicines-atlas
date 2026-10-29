@@ -40,7 +40,7 @@ jobs:
         timeout-minutes: 3
         run: |
           set -euo pipefail
-          uv run --locked --python 3.15.0 python scripts/diagnose_mbs_publication_page.py \
+          uv run --locked --python 3.15.1 python scripts/diagnose_mbs_publication_page.py \
             --output build/mbs-page-transport-diagnostic.json
       - name: Preserve failure-only receipt if probe was interrupted
         if: always()

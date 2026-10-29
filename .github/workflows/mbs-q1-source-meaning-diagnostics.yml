@@ -1,0 +1,542 @@
+name: Qualify exact Q1 source meaning diagnostics
+
+on:
+  workflow_dispatch:
+    inputs:
+      qualification_scope:
+        description: Bounded qualification to run
+        required: false
+        type: choice
+        default: meaning-diagnostics
+        options:
+          - meaning-diagnostics
+          - native-silver
+          - quarterly-csv
+          - group-csv
+          - quarterly-workbooks
+          - group-workbook-layout
+          - group-workbook-silver
+          - sidecar-layout
+          - sidecar-package
+          - archive-members
+          - archive-formats
+          - historical-csv-packages
+          - historical-workbook-packages
+          - historical-workbook-header-profiles
+      workbook_selection:
+        description: Historical workbook scope after native performance qualification
+        required: false
+        type: choice
+        default: largest-native-workbook
+        options:
+          - largest-native-workbook
+          - all
+          - timeout-retry-six
+      exact_commit:
+        description: Exact merged main commit to qualify
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: mbs-q1-source-meaning-diagnostics
+  cancel-in-progress: false
+
+jobs:
+  qualify:
+    if: inputs.qualification_scope != 'native-silver' && inputs.qualification_scope != 'quarterly-csv' && inputs.qualification_scope != 'group-csv' && inputs.qualification_scope != 'quarterly-workbooks' && inputs.qualification_scope != 'group-workbook-layout' && inputs.qualification_scope != 'group-workbook-silver' && inputs.qualification_scope != 'sidecar-layout' && inputs.qualification_scope != 'sidecar-package' && inputs.qualification_scope != 'archive-members' && inputs.qualification_scope != 'archive-formats' && inputs.qualification_scope != 'historical-csv-packages' && inputs.qualification_scope != 'historical-workbook-packages' && inputs.qualification_scope != 'historical-workbook-header-profiles'
+    name: Verify exact Q1 age marker and decimal diagnostics
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Read exact existing objects and emit aggregates
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.15.1 python scripts/qualify_mbs_q1_source_meanings.py \
+            --exact-commit "$REQUESTED_COMMIT" --output q1-source-meaning-diagnostics.json
+      - name: Retain aggregate receipt
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: q1-source-meaning-diagnostics
+          path: q1-source-meaning-diagnostics.json
+          if-no-files-found: error
+          retention-days: 30
+
+  native-silver:
+    if: inputs.qualification_scope == 'native-silver'
+    name: Verify Q1 complete-source extraction and candidate rebuild
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Read exact existing objects and emit aggregates
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.15.1 python scripts/qualify_mbs_q1_native_silver.py \
+            --exact-commit "$REQUESTED_COMMIT" --output q1-native-silver-candidate.json
+      - name: Retain aggregate receipt
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: q1-native-silver-candidate
+          path: q1-native-silver-candidate.json
+          if-no-files-found: error
+          retention-days: 30
+
+  quarterly-csv:
+    if: inputs.qualification_scope == 'quarterly-csv'
+    name: Verify quarterly CSV candidate rebuild
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        quarter: [1, 2, 3]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Read exact existing objects and emit aggregates
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+          SELECTED_QUARTER: ${{ matrix.quarter }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.15.1 python scripts/qualify_mbs_demographic_csv_cohort.py \
+            --quarter "$SELECTED_QUARTER" --exact-commit "$REQUESTED_COMMIT" --output demographic-csv-candidate.json
+      - name: Retain aggregate receipt
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: demographic-csv-candidate-${{ matrix.quarter }}
+          path: demographic-csv-candidate.json
+          if-no-files-found: error
+          retention-days: 30
+
+  group-csv:
+    if: inputs.qualification_scope == 'group-csv'
+    name: Verify exact MBS group CSV candidate rebuild
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Read exact existing objects and emit aggregates
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.15.1 python scripts/qualify_mbs_group_native_silver.py \
+            --exact-commit "$REQUESTED_COMMIT" --output group-native-silver-candidate.json
+      - name: Retain aggregate receipt
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: group-native-silver-candidate
+          path: group-native-silver-candidate.json
+          if-no-files-found: error
+          retention-days: 30
+
+  quarterly-workbooks:
+    if: inputs.qualification_scope == 'quarterly-workbooks'
+    name: Verify quarterly workbook candidate rebuild
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        quarter: [1, 2, 3]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Read exact existing objects and emit aggregates
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+          SELECTED_QUARTER: ${{ matrix.quarter }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.15.1 python scripts/qualify_mbs_demographic_workbook_cohort.py \
+            --quarter "$SELECTED_QUARTER" --exact-commit "$REQUESTED_COMMIT" --output demographic-workbook-candidate.json
+      - name: Retain aggregate receipt
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: demographic-workbook-candidate-${{ matrix.quarter }}
+          path: demographic-workbook-candidate.json
+          if-no-files-found: error
+          retention-days: 30
+
+  group-workbook-layout:
+    if: inputs.qualification_scope == 'group-workbook-layout'
+    name: Inspect exact frozen MBS group workbook layout
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Read exact existing objects and emit aggregates
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.15.1 python scripts/qualify_mbs_group_workbook_layout.py \
+            --exact-commit "$REQUESTED_COMMIT" --output group-workbook-layout.json
+      - name: Retain aggregate receipt
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: group-workbook-layout
+          path: group-workbook-layout.json
+          if-no-files-found: error
+          retention-days: 30
+
+  group-workbook-silver:
+    if: inputs.qualification_scope == 'group-workbook-silver'
+    name: Qualify complete frozen MBS group workbook package
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Read exact existing objects and emit aggregates
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.15.1 python scripts/qualify_mbs_group_workbook.py \
+            --exact-commit "$REQUESTED_COMMIT" --output group-workbook-silver.json
+      - name: Retain aggregate receipt
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: group-workbook-silver
+          path: group-workbook-silver.json
+          if-no-files-found: error
+          retention-days: 30
+
+  sidecar-layout:
+    if: inputs.qualification_scope == 'sidecar-layout'
+    name: Inventory exact frozen MBS BSD and RVG native layouts
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Read exact existing objects and emit aggregates
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.15.1 python scripts/profile_frozen_mbs_sidecars.py \
+            --exact-commit "$REQUESTED_COMMIT" --output sidecar-layout.json
+      - name: Retain aggregate receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: sidecar-layout
+          path: sidecar-layout.json
+          if-no-files-found: error
+          retention-days: 30
+
+  sidecar-package:
+    if: inputs.qualification_scope == 'sidecar-package'
+    name: Qualify complete frozen MBS BSD and RVG native packages
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Read exact existing objects and emit aggregates
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.15.1 python scripts/profile_frozen_mbs_sidecars.py \
+            --package --exact-commit "$REQUESTED_COMMIT" --output sidecar-package.json
+      - name: Retain aggregate receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: sidecar-package
+          path: sidecar-package.json
+          if-no-files-found: error
+          retention-days: 30
+
+  archive-members:
+    if: inputs.qualification_scope == 'archive-members'
+    name: Inventory frozen historical archive / ${{ matrix.archive }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        archive: [0, 1, 2, 3, 4, 5]
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Read exact existing objects and emit aggregates
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+          ARCHIVE_INDEX: ${{ matrix.archive }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.15.1 python scripts/profile_frozen_mbs_archives.py \
+            --exact-commit "$REQUESTED_COMMIT" --archive-index "$ARCHIVE_INDEX" --output archive-members.json
+      - name: Retain aggregate receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: archive-members-${{ matrix.archive }}
+          path: archive-members.json
+          if-no-files-found: error
+          retention-days: 30
+
+  archive-formats:
+    if: inputs.qualification_scope == 'archive-formats'
+    name: Profile frozen historical member formats / ${{ matrix.archive }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        archive: [0, 1, 2, 3, 4, 5]
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Read exact existing objects and emit aggregates
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+          ARCHIVE_INDEX: ${{ matrix.archive }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.15.1 python scripts/profile_frozen_mbs_archives.py \
+            --formats --exact-commit "$REQUESTED_COMMIT" --archive-index "$ARCHIVE_INDEX" --output archive-formats.json
+      - name: Retain aggregate receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: archive-formats-${{ matrix.archive }}
+          path: archive-formats.json
+          if-no-files-found: error
+          retention-days: 30
+
+  historical-csv-packages:
+    if: inputs.qualification_scope == 'historical-csv-packages'
+    name: Qualify complete frozen historical CSV packages / ${{ matrix.group }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        group: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Read exact existing objects and emit aggregates
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+          CSV_GROUP: ${{ matrix.group }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.15.1 python scripts/qualify_mbs_historical_csv_packages.py \
+            --exact-commit "$REQUESTED_COMMIT" --group "$CSV_GROUP" --output historical-csv-packages.json
+      - name: Retain aggregate receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: historical-csv-packages-${{ matrix.group }}
+          path: historical-csv-packages.json
+          if-no-files-found: error
+          retention-days: 30
+
+  historical-workbook-packages:
+    if: inputs.qualification_scope == 'historical-workbook-packages'
+    name: Qualify complete frozen historical workbook packages / ${{ matrix.group }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: ${{ fromJSON(inputs.workbook_selection == 'timeout-retry-six' && '60' || '30') }}
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        group: ${{ fromJSON((inputs.workbook_selection == 'all' && '[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90]') || (inputs.workbook_selection == 'timeout-retry-six' && '[65,71,80,84,86,87]') || '[76]') }}
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Read exact existing objects and emit aggregates
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+          WORKBOOK_GROUP: ${{ matrix.group }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.15.1 python scripts/qualify_mbs_historical_workbook_packages.py \
+            --exact-commit "$REQUESTED_COMMIT" --group "$WORKBOOK_GROUP" --output historical-workbook-packages.json
+      - name: Retain aggregate receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: historical-workbook-packages-${{ matrix.group }}
+          path: historical-workbook-packages.json
+          if-no-files-found: error
+          retention-days: 30
+
+  historical-workbook-header-profiles:
+    if: inputs.qualification_scope == 'historical-workbook-header-profiles'
+    name: Profile frozen historical workbook headers / archive ${{ matrix.archive_index }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        archive_index: [0, 1, 2, 3, 4, 5]
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Read exact existing objects and emit digest-bound profiles
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+          ARCHIVE_INDEX: ${{ matrix.archive_index }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.15.1 python scripts/profile_mbs_historical_workbook_headers.py \
+            --exact-commit "$REQUESTED_COMMIT" --archive-index "$ARCHIVE_INDEX" --output historical-workbook-header-profiles.json
+      - name: Retain bounded profile receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: historical-workbook-header-profiles-${{ matrix.archive_index }}
+          path: historical-workbook-header-profiles.json
+          if-no-files-found: error
+          retention-days: 30
+
+  aggregate-historical-workbook-header-profiles:
+    if: inputs.qualification_scope == 'historical-workbook-header-profiles'
+    needs: [historical-workbook-header-profiles]
+    name: Reconcile complete 91-workbook header cohort
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          pattern: historical-workbook-header-profiles-*
+          path: input
+      - name: Bind all six archive reports to their fixed indices
+        run: |
+          set -euo pipefail
+          for archive_index in 0 1 2 3 4 5; do
+            source="input/historical-workbook-header-profiles-${archive_index}/historical-workbook-header-profiles.json"
+            test -f "$source"
+            cp "$source" "input/historical-workbook-header-profiles-${archive_index}.json"
+          done
+      - name: Reconcile exact 91-member header cohort
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.15.1 python scripts/reconcile_mbs_historical_workbook_header_profiles.py \
+            --exact-commit "$REQUESTED_COMMIT" --input-dir input --output historical-workbook-header-cohort.json
+      - name: Retain complete cohort receipt
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: historical-workbook-header-cohort
+          path: historical-workbook-header-cohort.json
+          if-no-files-found: error
+          retention-days: 30

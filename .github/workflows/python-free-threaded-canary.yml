@@ -11,6 +11,10 @@ on:
   schedule:
     - cron: "17 3 * * 1"
 
+# Historical uv builds use the patched, content-bound custom CA store.
+env:
+  SSL_CERT_FILE: ${{ github.workspace }}/.ci/trust/cacert.pem
+
 permissions:
   contents: read
 
@@ -20,7 +24,7 @@ concurrency:
 
 jobs:
   canary:
-    name: CPython 3.14t / advisory smoke
+    name: CPython 3.15.1t / advisory smoke
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     continue-on-error: true
@@ -30,15 +34,15 @@ jobs:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
-          version: "0.13.1"
+          version: "0.13.5"
           enable-cache: true
       - name: Run deterministic core smoke tests without the GIL
         env:
           PYTHON_GIL: "0"
           PYTHONPATH: src
         run: >-
-          uv run --python 3.14t --no-project
+          uv run --python 3.15.1t --no-project
           --with pytest==9.1.0 --with pytest-timeout==2.4.0
-          --with pydantic==2.12.5
+          --with pydantic==2.14.1
           pytest -q
           tests/test_matching_normalization.py

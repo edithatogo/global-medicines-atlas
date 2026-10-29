@@ -54,7 +54,9 @@ def _synthetic_curve(prefix: str, count: int) -> tuple[ScoreOutcome, ...]:
     return tuple(observations)
 
 
-def _matcher_cases(partition: str, count: int) -> tuple[EvaluationCase, ...]:
+def generated_matcher_cases(
+    partition: str, count: int
+) -> tuple[EvaluationCase, ...]:
     """Generate disjoint, invented-name cases with labels fixed by construction."""
     cases: list[EvaluationCase] = []
     for index in range(count):
@@ -222,10 +224,10 @@ def build_receipt() -> dict[str, Any]:
         calibration_version=CALIBRATION_VERSION,
     )
     matcher_train = score_synthetic_candidate_cases(
-        _matcher_cases("train", 400)
+        generated_matcher_cases("train", 400)
     )
     matcher_holdout = score_synthetic_candidate_cases(
-        _matcher_cases("holdout", 400)
+        generated_matcher_cases("holdout", 400)
     )
     matcher_calibration = calibrate_scores(
         matcher_train,

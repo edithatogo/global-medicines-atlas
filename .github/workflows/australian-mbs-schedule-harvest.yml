@@ -39,7 +39,6 @@ jobs:
       PYTHONUNBUFFERED: "1"
     permissions:
       contents: read
-      issues: write # Durable public intent and all-object verification receipts.
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
@@ -56,7 +55,7 @@ jobs:
           test "$GITHUB_REF" = refs/heads/main
           test "$GITHUB_SHA" = "$REQUESTED_COMMIT"
           test "$GITHUB_SHA" = "$(gh api repos/edithatogo/global-medicines-atlas/commits/main --jq .sha)"
-          gh issue comment 340 --body "MBS schedule harvest intent: exact_commit=$GITHUB_SHA; run=https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID; contract=quality/qualifications/australian-mbs-harvest-publication-authorization.json; destination=edithatogo/australian-mbs-source-archive; failure_policy=retain-published-revision-and-report-failure"
+          : # Outbound comments prohibited; retain workflow artifacts instead.
 
       - name: Acquire, publish and verify using anonymous reads
         env:
@@ -66,13 +65,20 @@ jobs:
           RELEASE_PAGES: ${{ inputs.release_pages || '' }}
         run: |
           set -euo pipefail
-          uv run --locked --python 3.15.0 --with huggingface-hub==1.14.0 python scripts/harvest_australian_mbs_schedule.py \
+          uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 python scripts/harvest_australian_mbs_schedule.py \
             --publish-hosted \
             --max-releases "$MAX_RELEASES" \
             --release-pages "$RELEASE_PAGES" \
             --receipt-output build/mbs-schedule-harvest-receipt.json
-          gh issue comment 340 --body-file build/mbs-schedule-harvest-receipt.json
+          : # Outbound comments prohibited; retain workflow artifacts instead.
 
+      - name: Retain verification artifact 10 without outbound messages
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: retained-verification-10-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/mbs-schedule-harvest-receipt.json
+          if-no-files-found: error
+          retention-days: 30
       - name: Remove verified hosted temporary materializations
         env:
           GH_TOKEN: ${{ github.token }}
@@ -92,11 +98,18 @@ jobs:
           receipt['temporary_source_bytes_removed'] = True
           path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + '\n')
           PY
-          gh issue comment 340 --body-file build/mbs-schedule-harvest-receipt.json
+          : # Outbound comments prohibited; retain workflow artifacts instead.
 
+      - name: Retain verification artifact 11 without outbound messages
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: retained-verification-11-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/mbs-schedule-harvest-receipt.json
+          if-no-files-found: error
+          retention-days: 30
       - name: Record fail-honest run outcome
         if: failure() || cancelled()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh issue comment 340 --body "MBS schedule harvest did not complete: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID at $GITHUB_SHA. Consult logs; any published revision is retained."
+          : # Outbound comments prohibited; retain workflow artifacts instead.

@@ -1,0 +1,106 @@
+{
+  "$defs": {
+    "DemographicCell": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "else": {
+            "properties": {
+              "value": {
+                "type": "null"
+              }
+            }
+          },
+          "if": {
+            "properties": {
+              "state": {
+                "enum": [
+                  "value",
+                  "source_error"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ],
+      "description": "A native field value, explicit presence, and retained parser properties.",
+      "properties": {
+        "name": {
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "native_properties": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Native Properties",
+          "type": "object"
+        },
+        "state": {
+          "enum": [
+            "absent",
+            "null",
+            "value",
+            "source_error"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "maxLength": 65536,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "name",
+        "state",
+        "value"
+      ],
+      "title": "DemographicCell",
+      "type": "object"
+    },
+    "JsonValue": {}
+  },
+  "$id": "https://global-medicines-atlas.example/schemas/mbs-demographic-row-v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "One logical CSV record or physical workbook primary-table row.",
+  "properties": {
+    "cells": {
+      "items": {
+        "$ref": "#/$defs/DemographicCell"
+      },
+      "maxItems": 8,
+      "minItems": 8,
+      "title": "Cells",
+      "type": "array"
+    },
+    "row_index": {
+      "minimum": 1,
+      "title": "Row Index",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "row_index",
+    "cells"
+  ],
+  "title": "DemographicRow",
+  "type": "object"
+}

@@ -1,11 +1,28 @@
 # Global Medicines Atlas agent contract
 
 This is a single-maintainer, evidence-first repository. Automation may prepare,
-test, document, commit, push, and open pull requests within an approved task.
-It must not invent a second reviewer or silently cross the gates below.
-Within those boundaries it continues autonomously; routine task, phase, review,
-pull-request, merge, archive, and next-track transitions do not require a
-separate “proceed”.
+test, document, commit, push, open and update technical pull requests, check CI,
+and merge within an approved task. It must not invent a second reviewer or
+silently cross the gates below. Within those boundaries it continues
+autonomously; routine task, phase, review, pull-request, merge, and archive
+transitions do not require a separate “proceed”.
+
+## Absolute email and messaging exclusion
+
+- Never send, schedule, reply to, forward, post, comment, or otherwise transmit
+  an email or message from the maintainer's account or any account connected to
+  this session. This includes email, chat, direct messages, outreach, standalone
+  issue or pull-request comments, invitations, and other messaging channels.
+- Never ask the maintainer to send a message or email, or ask for approval or an
+  exception to send one.
+- Do not use another account, service, tool, person, or workflow to bypass this
+  exclusion.
+- Authorized technical repository operations are permitted: commits, pushes,
+  technical pull-request creation and updates, CI/workflow execution, and merges.
+  Technical PR titles and descriptions are permitted repository metadata; this
+  permission does not extend to standalone comments, outreach, or other messages.
+- This exclusion overrides any generic workflow instruction to contact someone
+  or request send approval. Repository operations retain all human gates below.
 
 ## Read first
 
@@ -19,6 +36,19 @@ separate “proceed”.
 Repository state, source receipts, tests, hosted checks, and external artifacts
 take precedence over checklist summaries.
 
+## System completion priority
+
+Read `conductor/system-completion.md` and its scheduling JSON before selecting
+work. Complete the existing system through the declared frozen inventory.
+Choose the next task by shared capability and existing acceptance gate, with
+a concrete blocking failure, bounded scope, expected evidence and stop condition.
+Dataset-specific work must resolve that named system prerequisite; batch common
+profiles through existing machinery. Preserve explicit unresolved fields and
+all mandatory per-object evidence. New sources, inventory expansion, universal
+interpretation of every value, and optional preview promotion are outside this
+execution focus. The scheduling plan grants no qualification or release and
+does not waive M-105, M-107, rights, admission, recovery or conditional approval.
+
 The pinned Conductor agent plugin is the Git submodule at
 `.agents/plugins/conductor`. Cursor loads those protocols through
 `.cursor/skills/`. After clone, run `git submodule update --init --recursive`.
@@ -28,7 +58,8 @@ The pinned Conductor agent plugin is the Git submodule at
 - Regulatory, funding, formulary, and terminology assertions are independent.
 - Missing coverage is not negative evidence.
 - Preserve source-native identifiers, provenance, dates, rights, and uncertainty.
-- Python 3.15 is the complete fallback; Mojo promotion requires parity evidence.
+- CPython 3.15.1 is the supported runtime; Mojo remains optional and requires
+  parity evidence before promotion.
 - The immutable source payload and its content-addressed receipt are
   evidentiary truth; source-faithful Parquet is the portable analytical
   representation; table/catalogue layers are rebuildable metadata over those
@@ -52,6 +83,16 @@ The pinned Conductor agent plugin is the Git submodule at
   it must fail closed on local upload attempts. Remove temporary local source
   bytes only after the hosted workflow records anonymous digest verification.
 - Preserve dirty work and imported history; do not use destructive Git recovery.
+- **Absolute outbound communications prohibition:** never send, schedule, queue,
+  or otherwise cause an email or message to be sent from the user's account,
+  using any application, connector, API, browser, CLI, automation, or other
+  route. This applies to every recipient and message type, including email,
+  chat, direct messages, standalone comments, and invitations. The authorized
+  technical repository operations defined above remain permitted. Never ask the
+  user to send a message, authorize a send, or provide information for the
+  purpose of sending one. Do not treat earlier drafts, approvals, instructions, or
+  account state as an exception. This is a standing account-level restriction
+  and must be observed in all repository tasks and agent workflows.
 
 ## Human gates
 
@@ -61,17 +102,24 @@ of compatibility repositories, and consequential clinical or policy claims.
 
 When a decision is required, ask exactly one decision at a time, provide two
 or three options, label the recommended option first, and explain the rationale
-and material trade-offs. Apply the bounded self-correction and recovery rules
-in `conductor/autonomy.md` before escalating a technical blocker.
+and material trade-offs. This decision process never permits outbound
+communications or a request that the user send or authorize a message. Apply
+the bounded self-correction and recovery rules in `conductor/autonomy.md` before
+escalating a technical blocker.
 
 ## Completion
 
-Use a scoped `codex/` branch and pull request. Run the focused tests followed by
-one broader affected check. Run `uv run python scripts/test_goblin.py full`
-for production-behavior or release-gate changes where platform support permits.
-For a test-only follow-up after current full-suite evidence, rerun the affected
-tests and routine checks; do not repeat the local full profile solely because
-the test changed. Complete protected CI lanes still run on every pull request.
+Use a scoped `codex/` branch and technical pull request. Check required CI
+before merging. The email and messaging exclusion above remains in effect.
+Start with exact affected test files/nodes and static checks. Broaden only for
+a demonstrated shared impact, new failure or unresolved risk. Reuse unchanged
+evidence; policy, report, receipt, and test-only edits do not trigger the local
+full profile. At coherent system milestones, run required integration, package,
+coverage, security and release checks, including
+`uv run python scripts/test_goblin.py full` where the applicable contract and
+changed behavior require it and platform support permits. Do not run or repeat
+a full profile for each dataset or routine integration. Complete protected CI
+lanes still run on every pull request.
 Linux CI is authoritative for mutmut and Mojo. Record evidence in the active
 track and reconcile plan markers only with observable results.
 
@@ -93,10 +141,10 @@ changes, and the Python and uv versions. Use the runtime required by the
 affected release/reproducibility contract, including child-process PATH, and
 keep executable inputs fixed until the run exits. A remote `main` advance
 does not invalidate evidence for that tested state. After integration, check
-the actual delta: documentation, receipts, or test-only changes require affected
-and routine checks; changed production behavior or release gates require the
-applicable full profile. Preserve failed invocations separately from successful
-recovery checks. Required hosted checks must pass on the final PR head.
+the actual delta and apply the proportional validation rules above; run the
+applicable full profile at required system milestones. Preserve failed
+invocations separately from successful recovery checks. Required hosted checks
+must pass on the final PR head.
 
 Record the checked PR head, required CI results, merge commit and resulting
 tree as observable completion evidence. GitHub provides the immediate merge

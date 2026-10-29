@@ -9,9 +9,10 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 
 SUPPORTED_GROUPING_SIZE = 3
+MAX_OOXML_TOKEN_CHARS = 256
 
 _ASCII_DIGITS = re.compile(r"[0-9]+\Z")
 
@@ -106,3 +107,29 @@ def _normalize_integer(integer_part: str, policy: ExactNumericPolicy) -> str:
     ):
         raise NumericTokenError("numeric token violates explicit policy")
     return "".join(groups)
+
+
+_OOXML_NUMBER = re.compile(
+    r"[+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?\Z"
+)
+
+
+def parse_ooxml_numeric_token(token: str) -> Decimal:
+    """Parse declared OOXML numeric storage without selecting source meaning.
+
+    This grammar applies to numeric OOXML cells, including exponent notation.
+    It must not be selected merely because a CSV/text token looks numeric.
+    Arrow writers still check representability and retain the native token.
+    """
+    if (
+        not token
+        or len(token) > MAX_OOXML_TOKEN_CHARS
+        or not _OOXML_NUMBER.fullmatch(token)
+    ):
+        raise NumericTokenError("OOXML numeric token violates storage grammar")
+    try:
+        return Decimal(token)
+    except InvalidOperation as error:
+        raise NumericTokenError(
+            "OOXML numeric exponent is unsupported"
+        ) from error

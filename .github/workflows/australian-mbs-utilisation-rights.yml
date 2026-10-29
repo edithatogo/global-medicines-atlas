@@ -22,13 +22,12 @@ jobs:
     timeout-minutes: 45
     permissions:
       contents: read
-      issues: write # Durable intent, CAS, verification and cleanup receipts.
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
-      - name: Append the reviewed supplement using exact parent CAS
+      - name: Prepare exact intent before append
         env:
           GH_TOKEN: ${{ github.token }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
@@ -37,12 +36,46 @@ jobs:
           REQUESTED_COMMIT: ${{ inputs.exact_contract_commit }}
         run: |
           set -euo pipefail
-          uv run --frozen --python 3.15.0 --with huggingface-hub==1.14.0 \
+          uv run --frozen --python 3.15.1 --with huggingface-hub==1.14.0 \
             python scripts/publish_mbs_utilisation_rights.py \
-            --exact-commit "$REQUESTED_COMMIT"
+            --exact-commit "$REQUESTED_COMMIT" --prepare-intent
+      - name: Retain pre-append rights intent
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: mbs-utilisation-rights-intent-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/mbs-utilisation-rights-receipts/intent-*.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Read back hosted pre-append rights intent
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: mbs-utilisation-rights-intent-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/prepublished-intent
+      - name: Append the reviewed supplement using exact parent CAS
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
+          HF_HUB_DISABLE_XET: "1"
+          REQUESTED_COMMIT: ${{ inputs.exact_contract_commit }}
+          PREPUBLISHED_INTENT: build/prepublished-intent
+        run: |
+          set -euo pipefail
+          uv run --frozen --python 3.15.1 --with huggingface-hub==1.14.0 \
+            python scripts/publish_mbs_utilisation_rights.py \
+            --exact-commit "$REQUESTED_COMMIT" \
+            --prepublished-intent "$PREPUBLISHED_INTENT"
       - name: Record fail-honest outcome
         if: failure() || cancelled()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh issue comment 340 --body "Exact MBS rights append did not complete: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID at $GITHUB_SHA. Any published revision is preserved; reconcile durable receipts before retrying."
+          : # Outbound comments prohibited; retain workflow artifacts instead.
+      - name: Retain metadata-only rights receipts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: mbs-utilisation-rights-receipts-${{ github.run_id }}
+          path: build/mbs-utilisation-rights-receipts/*.json
+          if-no-files-found: ignore
+          retention-days: 90

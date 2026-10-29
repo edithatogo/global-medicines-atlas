@@ -1,0 +1,78 @@
+{
+  "schema_id": "global-medicines-atlas.pbs-date-denominator-reconciliation",
+  "schema_version": 1,
+  "recorded_at": "2026-10-25",
+  "status": "denominators_distinguished_variance_unresolved",
+  "report": {
+    "source": {
+      "dataset": "edithatogo/australian-pbs-source-archive",
+      "member_path": "bronze/2026-04-01/sch-2026-04-01-r1.xml",
+      "member_sha256": "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43",
+      "native_digest": "890c607f0e8c9de95c37770610fdc51fd241ea97210ef5ea61d7ad22fd228a25",
+      "revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7"
+    },
+    "evidence": {
+      "field_reconciliation": {
+        "path": "quality/qualifications/pbs-native-silver-field-reconciliation-20261025-r8.json",
+        "sha256": "4ffa3fc4b8824cbb3166e714a4ee5830928cd32c4d48ab1ecbfb0f1cbe687251"
+      },
+      "semantic_adjudication": {
+        "path": "quality/qualifications/pbs-domain-semantic-adjudication-20261024.json",
+        "sha256": "5229b4563c53725ae5339ccc0b9e05cb56be2aff49797276a5d5fd23e6671df5"
+      },
+      "domain_field_semantics": {
+        "path": "quality/qualifications/pbs-domain-field-semantics-20261023.json",
+        "sha256": "c6f4c1fbb97f220041e839fee5f458d7aee02f6f1310e03edc04a22c24ed8389"
+      },
+      "date_profile": {
+        "path": "quality/qualifications/pbs-v3-2026-04-01-date-profile-qualification-20260929.json",
+        "sha256": "383f69a7e69e62527b07d45d0833ce21ccaea07e2d7a0b7fbc3d1b9a0f97ecfb"
+      }
+    },
+    "counting_contracts": {
+      "date_role_profile": "src/global_medicines_atlas/pbs_dates.py:24-67 recognizes item effective/date text, schedule effective-date attributes, document dct:valid text, and restriction effective-date attributes. It does not assign the direct restriction/effective/date/text path a date-profile role.",
+      "domain_effective_date": "src/global_medicines_atlas/pbs_domain_field_semantics.py:196-202 sums only pbs_effective_date and schedule_effective_date counters, despite the broader meaning string.",
+      "restriction_path_interpretation": "src/global_medicines_atlas/pbs_field_reconciliation.py:245-264 recognizes direct restriction/effective/date/text path as a source date literal, separately from the attribute path."
+    },
+    "denominators": {
+      "restriction_effective_date_semantic_fields": {
+        "count": 3028,
+        "basis": "Exact direct path /root/prescribing-texts-list/restriction/effective/date/text in the value-free semantic path reconciliation.",
+        "interpretation": "Source-path role only. The 3,028 count does not establish date grammar, temporal interval, precedence, current status, or date-value validity."
+      },
+      "pinned_date_profile": {
+        "role_counts": {
+          "pbs_effective_date": 2798,
+          "schedule_effective_date": 1,
+          "schedule_dct_valid": 1,
+          "unmapped": 7727884
+        },
+        "role_slots": 2800,
+        "date_values_converted": 2799,
+        "recognized_slot_missing": 1,
+        "basis": "The exact-source date-profile receipt counts item-level pbs_effective_date and schedule-level effective-date and dct:valid roles. It reports no restriction_effective_date role count."
+      },
+      "domain_field_semantics_effective_date": {
+        "count": 2799,
+        "algebra": "2798 pbs_effective_date + 1 schedule_effective_date",
+        "basis": "The domain report derives this count from the pinned date-profile role counters; document_valid_date is a separate count of 1.",
+        "description_conflict": "The report meaning says source schedule, item-effectivity, and restriction-effective date roles, but its count algebra includes only item and schedule roles."
+      }
+    },
+    "reconciliation": {
+      "observed_difference": 230,
+      "difference_expression": "3028 restriction-path text fields minus 2798 item-level pbs_effective_date roles",
+      "classification": "unresolved_non_comparable_path_denominators",
+      "finding": "The counts are bound to the same pinned source member, but they count different exact source-path/role populations. The existing reports do not provide an occurrence-level crosswalk that would support subtracting one population from the other or assigning the 230 difference to missing identities.",
+      "required_follow_up": "A value-free occurrence-level join between the exact restriction/effective/date/text path inventory and the date-profile roles is needed to determine whether any fields overlap or were omitted from a profile. Until then the difference and the domain-report description/count conflict remain unresolved."
+    },
+    "limits": [
+      "No raw PBS source bytes or values were inspected for this reconciliation.",
+      "Counts and path names were read from existing value-free receipts, schemas, code contracts, and tests.",
+      "The 2800 date-role overlay is non-additive to the 18208758-field denominator and includes one recognized slot reported missing.",
+      "No field identities were inferred from aggregate counts.",
+      "No value interpretation, date grammar qualification, current-status claim, cross-era pooling, admission, rights, or release conclusion is added."
+    ]
+  },
+  "report_sha256": "68d7dc511804798173e497552e89a8af3b1adf0a2e3d0298df896083b685ba05"
+}

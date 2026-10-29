@@ -15,7 +15,16 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 BASELINE = ROOT / "contracts/openapi-v1.json"
+TOOL_VERSIONS = ROOT / "quality/tool-versions.json"
 EXPECTED_ARTIFACTS = 2
+
+
+def _expected_python_version() -> str:
+    document = json.loads(TOOL_VERSIONS.read_text(encoding="utf-8"))
+    version = document["versions"]["python"]
+    if not isinstance(version, str) or not version:
+        raise ValueError("the governed Python runtime is not recorded")
+    return version
 
 
 def _run(command: list[str], *, environment: Path | None = None) -> str:
@@ -40,7 +49,11 @@ def _run(command: list[str], *, environment: Path | None = None) -> str:
         text=True,
     )
     if completed.returncode:
-        raise RuntimeError(f"{command[0]} failed ({completed.returncode})")
+        output = completed.stderr.strip() or completed.stdout.strip()
+        diagnostic = output.splitlines()[-1] if output else "no output"
+        raise RuntimeError(
+            f"{command[0]} failed ({completed.returncode}): {diagnostic}"
+        )
     return completed.stdout.strip()
 
 
@@ -56,6 +69,7 @@ def _consumer_probe() -> str:
     template = """
 import json
 import importlib.util
+import platform
 from pathlib import Path
 from typing import cast
 from global_medicines_atlas import __version__
@@ -65,6 +79,7 @@ from global_medicines_atlas.consumer_qualification import (
 )
 from global_medicines_atlas.query_service import ReadOnlyQueryService
 identity = installed_package_identity()
+assert platform.python_version() == __PYTHON_VERSION__
 app = create_app(cast(ReadOnlyQueryService, object()))
 schema = app.openapi()
 baseline = json.loads(Path(__BASELINE__).read_text(encoding='utf-8'))
@@ -74,7 +89,9 @@ assert importlib.util.find_spec('jsonschema') is None
 assert importlib.util.find_spec('lancedb') is None
 print(json.dumps({'metadata': identity.__dict__, 'openapi_paths': len(schema['paths']), 'api': 'passed', 'core_fallback': 'passed'}, sort_keys=True))
 """
-    return template.replace("__BASELINE__", repr(str(BASELINE)))
+    return template.replace("__BASELINE__", repr(str(BASELINE))).replace(
+        "__PYTHON_VERSION__", repr(_expected_python_version())
+    )
 
 
 def _v2_cli_probe(database: Path) -> str:
@@ -221,10 +238,24 @@ def qualify(
             "exactly one wheel and one source archive are required"
         )
     results: list[dict[str, Any]] = []
+    python_version = _expected_python_version()
     for artifact in artifacts:
         with tempfile.TemporaryDirectory(prefix="gma-consumer-") as temporary:
             environment = Path(temporary) / "venv"
-            _run(["uv", "venv", "--python", "3.15", str(environment)])
+            _run(["uv", "venv", "--python", python_version, str(environment)])
+            observed_python = _run(
+                [
+                    "python",
+                    "-c",
+                    "import platform; print(platform.python_version())",
+                ],
+                environment=environment,
+            )
+            if observed_python != python_version:
+                raise RuntimeError(
+                    f"consumer runtime requires Python {python_version}, "
+                    f"got {observed_python}"
+                )
             _run([
                 "uv",
                 "pip",
@@ -294,6 +325,7 @@ def qualify(
             )
             results.append({
                 "artifact": artifact.name,
+                "consumer_python": observed_python,
                 "sha256": _sha256(artifact),
                 "probe": {**probe, **v2_cli_probe},
                 "cli": "passed",

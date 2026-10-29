@@ -55,6 +55,8 @@ AUSTRALIAN_HEALTH_REQUIREMENTS = {
     "M-113",
 }
 M105_WAIVER = "quality/qualifications/australian-donor-m105-chronology-waiver-20261018.json"
+M105_CURRENT_DISPOSITION = "quality/qualifications/australian-donor-m105-current-disposition-20261023.json"
+M105_CURRENT_DECISION_NUMBER = 12
 M105_DISPOSITIONS = (
     "quality/qualifications/australian-donor-m105-dispositions.json"
 )
@@ -93,6 +95,43 @@ M105_NOT_WAIVED = (
 )
 M105_BASELINE_ROWS = 54
 M105_DELTA_ROWS = 10
+AUSTRALIAN_PHASE4_CURRENT = "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028-3.json"
+AUSTRALIAN_M111_CONSUMER_CURRENT = "quality/qualifications/platinum-actual-consumer-reconciliation-20261028.json"
+AUSTRALIAN_M111_REMOTE_RECEIPT = "quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261028-40653807510/admission-remote-read.json"
+AUSTRALIAN_M111_ARTIFACT_MANIFEST = "quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261028-40653807510/artifact-manifest.json"
+AUSTRALIAN_M112_CURRENT_ROLE_EVIDENCE = (
+    "quality/qualifications/"
+    "australian-m112-v4-contract-role-evidence-qualification-20261021.json"
+)
+AUSTRALIAN_M112_MBS_UTIL_LINEAGE = (
+    "quality/qualifications/"
+    "australian-m112-per-object-gate-reconciliation-20261019-mbs-util-lineages.json"
+)
+AUSTRALIAN_M112_PBS_UTIL_RIGHTS_LINEAGE = (
+    "quality/qualifications/"
+    "australian-m112-pbs-utilisation-rights-lineage-reconciliation-20261028.json"
+)
+AUSTRALIAN_M112_PBS_NATIVE_COHORT = (
+    "quality/qualifications/"
+    "australian-m112-pbs-v4-admission-readers-20261028/manifest.json"
+)
+AUSTRALIAN_M112_EFFECTIVE_RAW_DELIVERY = (
+    "quality/qualifications/"
+    "australian-m112-effective-raw-delivery-reconciliation-20261028.json"
+)
+AUSTRALIAN_AUGUST_CURRENT_TREE = "quality/qualifications/australian-mbs-august-projection-current-tree-readback-20261028.json"
+AUSTRALIAN_AUGUST_F9F9_DISPOSITION = (
+    "quality/qualifications/"
+    "australian-mbs-august-f9f9-prefix-disposition-20261028.json"
+)
+AUSTRALIAN_PBS_RDF_FIELD_STATE = (
+    "quality/qualifications/"
+    "pbs-native-silver-field-reconciliation-20261028-r19.json"
+)
+AUSTRALIAN_MBS_HISTORICAL_WORKBOOK_SEMANTICS = (
+    "quality/qualifications/"
+    "mbs-historical-workbook-source-column-semantics-20261028.json"
+)
 
 TECHNICAL_GATE_EVIDENCE = {
     "stable-v1-canonical-schema-v2": [
@@ -387,6 +426,41 @@ def _m105_qualification_with_approved_waiver() -> bool:
     )
 
 
+def _m105_currently_blocked() -> bool:
+    """Keep M-105 blocked under the latest explicit maintainer disposition."""
+    try:
+        disposition = json.loads(
+            (ROOT / M105_CURRENT_DISPOSITION).read_text(encoding="utf-8")
+        )
+        decision_text = (ROOT / M105_DECISION_REGISTER).read_text(
+            encoding="utf-8"
+        )
+    except OSError, json.JSONDecodeError:
+        return True
+    decision_id = disposition.get("decision_id")
+    if (
+        disposition.get("schema_id")
+        != "global-medicines-atlas.australian-donor-m105-current-disposition"
+        or disposition.get("schema_version") != 1
+        or disposition.get("requirement") != "M-105"
+        or disposition.get("status") != "accepted_after_new_maintainer_decision"
+    ):
+        return True
+    if not isinstance(decision_id, str) or not decision_id.startswith("D-006-"):
+        return True
+    suffix = decision_id.removeprefix("D-006-")
+    if not suffix.isdigit() or int(suffix) <= M105_CURRENT_DECISION_NUMBER:
+        return True
+    heading = f"{decision_id} — M-105 acceptance"
+    sections = decision_text.split("\n## ")
+    return not any(
+        section.startswith(heading)
+        and "**Status:** maintainer instruction recorded" in section
+        and "M-105 is accepted under this decision." in section
+        for section in sections
+    )
+
+
 def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
     raw: dict[str, Any],
 ) -> dict[str, Any]:
@@ -455,7 +529,8 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
                 AUSTRALIAN_HEALTH_GATE
             }
             if (
-                _m105_qualification_with_approved_waiver()
+                not _m105_currently_blocked()
+                and _m105_qualification_with_approved_waiver()
                 and not adverse
                 and not other_blockers
             ):
@@ -472,7 +547,12 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
                 )
             requirement["evidence"] = _append_unique(
                 requirement["evidence"],
-                [M105_WAIVER, M105_DISPOSITIONS, M105_PARITY_GAP],
+                [
+                    M105_CURRENT_DISPOSITION,
+                    M105_WAIVER,
+                    M105_DISPOSITIONS,
+                    M105_PARITY_GAP,
+                ],
             )
         elif requirement_id == "M-113":
             adverse = requirement["state"] in {"failed", "unverified"}
@@ -500,6 +580,46 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
             requirement["blocker_ids"] = _append_unique(
                 requirement["blocker_ids"], [AUSTRALIAN_HEALTH_GATE]
             )
+            if requirement_id == "M-108":
+                requirement["evidence"] = _append_unique(
+                    requirement["evidence"],
+                    [
+                        AUSTRALIAN_PHASE4_CURRENT,
+                        AUSTRALIAN_AUGUST_CURRENT_TREE,
+                        AUSTRALIAN_AUGUST_F9F9_DISPOSITION,
+                    ],
+                )
+            elif requirement_id == "M-109":
+                requirement["evidence"] = _append_unique(
+                    requirement["evidence"],
+                    [
+                        AUSTRALIAN_PHASE4_CURRENT,
+                        AUSTRALIAN_PBS_RDF_FIELD_STATE,
+                        AUSTRALIAN_MBS_HISTORICAL_WORKBOOK_SEMANTICS,
+                    ],
+                )
+            elif requirement_id == "M-111":
+                requirement["evidence"] = _append_unique(
+                    requirement["evidence"],
+                    [
+                        AUSTRALIAN_PHASE4_CURRENT,
+                        AUSTRALIAN_M111_CONSUMER_CURRENT,
+                        AUSTRALIAN_M111_REMOTE_RECEIPT,
+                        AUSTRALIAN_M111_ARTIFACT_MANIFEST,
+                    ],
+                )
+            elif requirement_id == "M-112":
+                requirement["evidence"] = _append_unique(
+                    requirement["evidence"],
+                    [
+                        AUSTRALIAN_PHASE4_CURRENT,
+                        AUSTRALIAN_M112_CURRENT_ROLE_EVIDENCE,
+                        AUSTRALIAN_M112_MBS_UTIL_LINEAGE,
+                        AUSTRALIAN_M112_PBS_UTIL_RIGHTS_LINEAGE,
+                        AUSTRALIAN_M112_PBS_NATIVE_COHORT,
+                        AUSTRALIAN_M112_EFFECTIVE_RAW_DELIVERY,
+                    ],
+                )
         elif requirement["evidence"] == ["conductor/requirements.md"]:
             requirement["evidence"] = _append_unique(
                 requirement["evidence"], [STABLE_LEDGER]
@@ -592,7 +712,22 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
         gate["evidence"] = _append_unique(gate["evidence"], evidence)
     gates[AUSTRALIAN_HEALTH_GATE]["evidence"] = _append_unique(
         gates[AUSTRALIAN_HEALTH_GATE]["evidence"],
-        [AUSTRALIAN_ACCEPTANCE, SCRAPER_ARCHIVE, GRAPH_ARCHIVE, M105_WAIVER],
+        [
+            AUSTRALIAN_ACCEPTANCE,
+            SCRAPER_ARCHIVE,
+            GRAPH_ARCHIVE,
+            M105_WAIVER,
+            AUSTRALIAN_PHASE4_CURRENT,
+            AUSTRALIAN_M112_CURRENT_ROLE_EVIDENCE,
+            AUSTRALIAN_M112_MBS_UTIL_LINEAGE,
+            AUSTRALIAN_M112_PBS_UTIL_RIGHTS_LINEAGE,
+            AUSTRALIAN_M112_PBS_NATIVE_COHORT,
+            AUSTRALIAN_M112_EFFECTIVE_RAW_DELIVERY,
+            AUSTRALIAN_AUGUST_CURRENT_TREE,
+            AUSTRALIAN_AUGUST_F9F9_DISPOSITION,
+            AUSTRALIAN_PBS_RDF_FIELD_STATE,
+            AUSTRALIAN_MBS_HISTORICAL_WORKBOOK_SEMANTICS,
+        ],
     )
 
     source_gate_id = (
@@ -719,7 +854,18 @@ def build_support(raw: dict[str, Any]) -> dict[str, Any]:
                 "gate_id": "renovate-output-verification",
                 "evidence": [QUALITY_CLOSURE],
             })
-    support["readiness_state"] = "blocked"
+    support["readiness_state"] = (
+        "verified"
+        if all(
+            boundary["state"] == "passed"
+            for boundary in support["support_boundaries"]
+        )
+        and not any(
+            risk["blocking"] and risk["disposition"] == "unresolved"
+            for risk in support["residual_risks"]
+        )
+        else "blocked"
+    )
     return support
 
 

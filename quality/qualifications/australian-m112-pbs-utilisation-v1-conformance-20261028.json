@@ -1,0 +1,350 @@
+{
+  "artifacts": [
+    {
+      "artifact_id": "m112:edithatogo/australian-pbs-utilisation-archive@9f1d53cd50eea251b326da42a96f3ac72ebce97a:raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+      "layer": "bronze_b2",
+      "lineage": {
+        "input_artifact_ids": [
+          "b1-acquisition:e73b23d9bb37156da60ef23eb796fded72be04dd9e3b6ef149288fc78b159a45"
+        ],
+        "input_sha256": [
+          "32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b"
+        ]
+      },
+      "promotion_status": "candidate",
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-pbs-utilisation-archive:raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX:32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b",
+        "reason_codes": [
+          "maintainer_attested_exact_scope_permission_not_independently_reviewed"
+        ],
+        "scope": "edithatogo/australian-pbs-utilisation-archive@9f1d53cd50eea251b326da42a96f3ac72ebce97a:raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX sha256:32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b",
+        "status": "approved"
+      },
+      "sha256": "32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b"
+    },
+    {
+      "artifact_id": "m112:edithatogo/australian-pbs-utilisation-archive@9f1d53cd50eea251b326da42a96f3ac72ebce97a:raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+      "layer": "bronze_b2",
+      "lineage": {
+        "input_artifact_ids": [
+          "b1-acquisition:70cd297ddd1ffb1aa74862be93ff57363f78dff4cf839c65212e152c915f1041"
+        ],
+        "input_sha256": [
+          "147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99"
+        ]
+      },
+      "promotion_status": "candidate",
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-pbs-utilisation-archive:raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX:147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99",
+        "reason_codes": [
+          "maintainer_attested_exact_scope_permission_not_independently_reviewed"
+        ],
+        "scope": "edithatogo/australian-pbs-utilisation-archive@9f1d53cd50eea251b326da42a96f3ac72ebce97a:raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX sha256:147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99",
+        "status": "approved"
+      },
+      "sha256": "147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99"
+    },
+    {
+      "artifact_id": "m112:edithatogo/australian-pbs-utilisation-archive@9f1d53cd50eea251b326da42a96f3ac72ebce97a:raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+      "layer": "bronze_b2",
+      "lineage": {
+        "input_artifact_ids": [
+          "b1-acquisition:24922c3670bd6a9243cdb4d081bd04662f7e4b9c31fd76b220aabe643d221002"
+        ],
+        "input_sha256": [
+          "4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4"
+        ]
+      },
+      "promotion_status": "candidate",
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-pbs-utilisation-archive:raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv:4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4",
+        "reason_codes": [
+          "maintainer_attested_exact_scope_permission_not_independently_reviewed"
+        ],
+        "scope": "edithatogo/australian-pbs-utilisation-archive@9f1d53cd50eea251b326da42a96f3ac72ebce97a:raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv sha256:4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4",
+        "status": "approved"
+      },
+      "sha256": "4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4"
+    },
+    {
+      "artifact_id": "m112:edithatogo/australian-pbs-utilisation-archive@9f1d53cd50eea251b326da42a96f3ac72ebce97a:raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+      "layer": "bronze_b2",
+      "lineage": {
+        "input_artifact_ids": [
+          "b1-acquisition:4ea5ea1cd261f393c883d542647951e54f443a8923215cefaf102f071d5acf0d"
+        ],
+        "input_sha256": [
+          "f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8"
+        ]
+      },
+      "promotion_status": "candidate",
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-pbs-utilisation-archive:raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv:f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8",
+        "reason_codes": [
+          "maintainer_attested_exact_scope_permission_not_independently_reviewed"
+        ],
+        "scope": "edithatogo/australian-pbs-utilisation-archive@9f1d53cd50eea251b326da42a96f3ac72ebce97a:raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv sha256:f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8",
+        "status": "approved"
+      },
+      "sha256": "f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8"
+    },
+    {
+      "artifact_id": "m112:edithatogo/australian-pbs-utilisation-archive@9f1d53cd50eea251b326da42a96f3ac72ebce97a:raw/pbs/utilisation/reference/pbs-item-drug-map.csv",
+      "layer": "bronze_b2",
+      "lineage": {
+        "input_artifact_ids": [
+          "b1-acquisition:17465d4ef0f95c1b74d529ae13a99d5b099c26a0950b9cf1c1b25e61e482b285"
+        ],
+        "input_sha256": [
+          "51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8"
+        ]
+      },
+      "promotion_status": "candidate",
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-pbs-utilisation-archive:raw/pbs/utilisation/reference/pbs-item-drug-map.csv:51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8",
+        "reason_codes": [
+          "maintainer_attested_exact_scope_permission_not_independently_reviewed"
+        ],
+        "scope": "edithatogo/australian-pbs-utilisation-archive@9f1d53cd50eea251b326da42a96f3ac72ebce97a:raw/pbs/utilisation/reference/pbs-item-drug-map.csv sha256:51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8",
+        "status": "approved"
+      },
+      "sha256": "51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8"
+    },
+    {
+      "artifact_id": "m112:edithatogo/australian-pbs-utilisation-archive@9f1d53cd50eea251b326da42a96f3ac72ebce97a:raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx",
+      "layer": "bronze_b2",
+      "lineage": {
+        "input_artifact_ids": [
+          "b1-acquisition:dca1d05c85ce4a1bbdb11cd68a69cf88c2bd65f4763e51828f9be4e4882470e4"
+        ],
+        "input_sha256": [
+          "48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca"
+        ]
+      },
+      "promotion_status": "candidate",
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-pbs-utilisation-archive:raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx:48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca",
+        "reason_codes": [
+          "maintainer_attested_exact_scope_permission_not_independently_reviewed"
+        ],
+        "scope": "edithatogo/australian-pbs-utilisation-archive@9f1d53cd50eea251b326da42a96f3ac72ebce97a:raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx sha256:48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca",
+        "status": "approved"
+      },
+      "sha256": "48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca"
+    }
+  ],
+  "promotion_decisions": [
+    {
+      "decision_id": "m112-v4-blocked:147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99:raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99"
+      ],
+      "passed_gate_ids": [
+        "exact_scope_rights",
+        "b1_b2_lineage",
+        "anonymous_digest_readback"
+      ],
+      "reason_codes": [
+        "v4_contract_roles_incomplete"
+      ],
+      "required_gate_ids": [
+        "v4_publication",
+        "v4_clean_room_verification",
+        "v1_v3_lineage",
+        "v4_discovery",
+        "v4_recovery_cache",
+        "consumer_canary"
+      ],
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-pbs-utilisation-archive:raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX:147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99",
+        "reason_codes": [
+          "maintainer_attested_exact_scope_permission_not_independently_reviewed"
+        ],
+        "scope": "edithatogo/australian-pbs-utilisation-archive@9f1d53cd50eea251b326da42a96f3ac72ebce97a:raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX sha256:147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99",
+        "status": "approved"
+      },
+      "status": "blocked",
+      "subject_artifact_id": "m112:edithatogo/australian-pbs-utilisation-archive@9f1d53cd50eea251b326da42a96f3ac72ebce97a:raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+      "to_layer": "silver"
+    },
+    {
+      "decision_id": "m112-v4-blocked:32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b:raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b"
+      ],
+      "passed_gate_ids": [
+        "exact_scope_rights",
+        "b1_b2_lineage",
+        "anonymous_digest_readback"
+      ],
+      "reason_codes": [
+        "v4_contract_roles_incomplete"
+      ],
+      "required_gate_ids": [
+        "v4_publication",
+        "v4_clean_room_verification",
+        "v1_v3_lineage",
+        "v4_discovery",
+        "v4_recovery_cache",
+        "consumer_canary"
+      ],
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-pbs-utilisation-archive:raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX:32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b",
+        "reason_codes": [
+          "maintainer_attested_exact_scope_permission_not_independently_reviewed"
+        ],
+        "scope": "edithatogo/australian-pbs-utilisation-archive@9f1d53cd50eea251b326da42a96f3ac72ebce97a:raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX sha256:32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b",
+        "status": "approved"
+      },
+      "status": "blocked",
+      "subject_artifact_id": "m112:edithatogo/australian-pbs-utilisation-archive@9f1d53cd50eea251b326da42a96f3ac72ebce97a:raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+      "to_layer": "silver"
+    },
+    {
+      "decision_id": "m112-v4-blocked:48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca:raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca"
+      ],
+      "passed_gate_ids": [
+        "exact_scope_rights",
+        "b1_b2_lineage",
+        "anonymous_digest_readback"
+      ],
+      "reason_codes": [
+        "v4_contract_roles_incomplete"
+      ],
+      "required_gate_ids": [
+        "v4_publication",
+        "v4_clean_room_verification",
+        "v1_v3_lineage",
+        "v4_discovery",
+        "v4_recovery_cache",
+        "consumer_canary"
+      ],
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-pbs-utilisation-archive:raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx:48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca",
+        "reason_codes": [
+          "maintainer_attested_exact_scope_permission_not_independently_reviewed"
+        ],
+        "scope": "edithatogo/australian-pbs-utilisation-archive@9f1d53cd50eea251b326da42a96f3ac72ebce97a:raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx sha256:48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca",
+        "status": "approved"
+      },
+      "status": "blocked",
+      "subject_artifact_id": "m112:edithatogo/australian-pbs-utilisation-archive@9f1d53cd50eea251b326da42a96f3ac72ebce97a:raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx",
+      "to_layer": "silver"
+    },
+    {
+      "decision_id": "m112-v4-blocked:4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4:raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4"
+      ],
+      "passed_gate_ids": [
+        "exact_scope_rights",
+        "b1_b2_lineage",
+        "anonymous_digest_readback"
+      ],
+      "reason_codes": [
+        "v4_contract_roles_incomplete"
+      ],
+      "required_gate_ids": [
+        "v4_publication",
+        "v4_clean_room_verification",
+        "v1_v3_lineage",
+        "v4_discovery",
+        "v4_recovery_cache",
+        "consumer_canary"
+      ],
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-pbs-utilisation-archive:raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv:4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4",
+        "reason_codes": [
+          "maintainer_attested_exact_scope_permission_not_independently_reviewed"
+        ],
+        "scope": "edithatogo/australian-pbs-utilisation-archive@9f1d53cd50eea251b326da42a96f3ac72ebce97a:raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv sha256:4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4",
+        "status": "approved"
+      },
+      "status": "blocked",
+      "subject_artifact_id": "m112:edithatogo/australian-pbs-utilisation-archive@9f1d53cd50eea251b326da42a96f3ac72ebce97a:raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+      "to_layer": "silver"
+    },
+    {
+      "decision_id": "m112-v4-blocked:51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8:raw/pbs/utilisation/reference/pbs-item-drug-map.csv",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8"
+      ],
+      "passed_gate_ids": [
+        "exact_scope_rights",
+        "b1_b2_lineage",
+        "anonymous_digest_readback"
+      ],
+      "reason_codes": [
+        "v4_contract_roles_incomplete"
+      ],
+      "required_gate_ids": [
+        "v4_publication",
+        "v4_clean_room_verification",
+        "v1_v3_lineage",
+        "v4_discovery",
+        "v4_recovery_cache",
+        "consumer_canary"
+      ],
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-pbs-utilisation-archive:raw/pbs/utilisation/reference/pbs-item-drug-map.csv:51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8",
+        "reason_codes": [
+          "maintainer_attested_exact_scope_permission_not_independently_reviewed"
+        ],
+        "scope": "edithatogo/australian-pbs-utilisation-archive@9f1d53cd50eea251b326da42a96f3ac72ebce97a:raw/pbs/utilisation/reference/pbs-item-drug-map.csv sha256:51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8",
+        "status": "approved"
+      },
+      "status": "blocked",
+      "subject_artifact_id": "m112:edithatogo/australian-pbs-utilisation-archive@9f1d53cd50eea251b326da42a96f3ac72ebce97a:raw/pbs/utilisation/reference/pbs-item-drug-map.csv",
+      "to_layer": "silver"
+    },
+    {
+      "decision_id": "m112-v4-blocked:f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8:raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8"
+      ],
+      "passed_gate_ids": [
+        "exact_scope_rights",
+        "b1_b2_lineage",
+        "anonymous_digest_readback"
+      ],
+      "reason_codes": [
+        "v4_contract_roles_incomplete"
+      ],
+      "required_gate_ids": [
+        "v4_publication",
+        "v4_clean_room_verification",
+        "v1_v3_lineage",
+        "v4_discovery",
+        "v4_recovery_cache",
+        "consumer_canary"
+      ],
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-pbs-utilisation-archive:raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv:f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8",
+        "reason_codes": [
+          "maintainer_attested_exact_scope_permission_not_independently_reviewed"
+        ],
+        "scope": "edithatogo/australian-pbs-utilisation-archive@9f1d53cd50eea251b326da42a96f3ac72ebce97a:raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv sha256:f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8",
+        "status": "approved"
+      },
+      "status": "blocked",
+      "subject_artifact_id": "m112:edithatogo/australian-pbs-utilisation-archive@9f1d53cd50eea251b326da42a96f3ac72ebce97a:raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+      "to_layer": "silver"
+    }
+  ],
+  "repository": "edithatogo/global-medicines-atlas",
+  "vocabulary_version": "1.0.0"
+}

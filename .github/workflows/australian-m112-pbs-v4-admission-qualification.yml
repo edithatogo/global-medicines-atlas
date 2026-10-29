@@ -1,0 +1,64 @@
+name: Australian M-112 exact PBS raw-B2 v4 admission and reader
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_commit:
+        description: Exact merged main commit to qualify
+        required: true
+        type: string
+      target_path:
+        description: One exact existing PBS raw-B2 object
+        required: true
+        type: choice
+        options:
+          - raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX
+          - raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX
+          - raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv
+          - raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv
+          - raw/pbs/utilisation/reference/pbs-item-drug-map.csv
+          - raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx
+
+permissions:
+  contents: read
+
+concurrency:
+  group: australian-m112-pbs-v4-${{ inputs.target_commit }}-${{ inputs.target_path }}
+  cancel-in-progress: false
+
+jobs:
+  qualify-exact-pbs-object:
+    name: Qualify exact PBS raw-B2 admission and bounded reader
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Require exact default-branch identity
+        env:
+          REQUESTED_COMMIT: ${{ inputs.target_commit }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = 'refs/heads/main'
+          test "$GITHUB_SHA" = "$REQUESTED_COMMIT"
+      - name: Verify exact receipts, admit and exercise bounded reader
+        env:
+          TARGET_PATH: ${{ inputs.target_path }}
+          HF_HUB_DISABLE_IMPLICIT_TOKEN: '1'
+        run: |
+          set -euo pipefail
+          uv run --locked --python 3.15.1 python scripts/qualify_m112_pbs_v4_admission.py \
+            --target-path "$TARGET_PATH" \
+            --verify \
+            --workflow-commit "$GITHUB_SHA" \
+            --report "$RUNNER_TEMP/australian-m112-pbs-v4-admission-reader.json"
+      - name: Retain metadata-only admission and reader receipt
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: australian-m112-pbs-v4-admission-reader-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/australian-m112-pbs-v4-admission-reader.json
+          if-no-files-found: error
+          retention-days: 90

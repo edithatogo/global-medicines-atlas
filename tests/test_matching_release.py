@@ -45,6 +45,7 @@ def manifest() -> MatchingOutputManifest:
         feature_count=80,
         files={"matching_candidates.parquet": DIGEST},
         input_digest=DIGEST,
+        database_logical_sha256=DIGEST,
         clinical_equivalence_disclaimer=DISCLAIMER,
     )
 

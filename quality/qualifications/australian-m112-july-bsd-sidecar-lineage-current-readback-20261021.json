@@ -1,0 +1,146 @@
+{
+  "boundaries": {
+    "admission_performed": false,
+    "canary_performed": false,
+    "raw_source_values_read_or_emitted": false,
+    "release_performed": false,
+    "rights_attestation_independently_reviewed": false,
+    "rights_inferred_from_lineage": false
+  },
+  "inputs": {
+    "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-july-mbs-source-lineage-reviewed.json": "cf62413bd6edecedd1cb7178393526921f3a35125789e0dbfdbdb1a2853fb243",
+    "quality/qualifications/australian-m112-raw-b2-metadata-reconciliation-20261018.json": "026fa22ceae824ba5570b515057402b2e303b488bed63b1b6b6437f8fce05853",
+    "quality/qualifications/australian-m112-rights-release-preflight-20261021-5.json": "d071d3274b2338ccbdb15d8d602261810e35f4e0d1cfdfa74606eb80600cf7e1",
+    "quality/qualifications/australian-mbs-six-raw-object-rights-attestation-20261020.json": "79f3cd76786fbb13ef5607085ee97a69a21bb361b52025f886256093dd5e4f3d"
+  },
+  "lineage_report": {
+    "complete_raw_lineages_after": 22,
+    "path": "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-july-mbs-source-lineage-reviewed.json",
+    "sha256": "cf62413bd6edecedd1cb7178393526921f3a35125789e0dbfdbdb1a2853fb243"
+  },
+  "metadata_readback_report": {
+    "hosted_readbacks": 29,
+    "path": "quality/qualifications/australian-m112-raw-b2-metadata-reconciliation-20261018.json",
+    "sha256": "026fa22ceae824ba5570b515057402b2e303b488bed63b1b6b6437f8fce05853"
+  },
+  "objects": [
+    {
+      "b1_b2_lineage": {
+        "acquisition_id": "6c69df9385a42832716be30975e824a0715414f6b3bbfb3ac9cc630372611f1c",
+        "b2_locator_revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
+        "complete": true,
+        "receipt_roles": {
+          "acquisition": true,
+          "b2_reference": true,
+          "landed_admission": true,
+          "path_receipt": true,
+          "source_receipt": true
+        }
+      },
+      "byte_count": 135983,
+      "consumer_canary": false,
+      "current_dataset_revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+      "current_tree_identity_match": true,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "hosted_metadata_readbacks": {
+        "acquisition": {
+          "byte_count": 2534,
+          "path": "bronze/acquisitions/au-mbs/6c69df9385a42832716be30975e824a0715414f6b3bbfb3ac9cc630372611f1c.json",
+          "sha256": "e423e77239310e6fdba6dca577f167e0e35c28b360805be2186234a1d737cf15"
+        },
+        "b2_manifest": {
+          "byte_count": 1002,
+          "path": "bronze/raw-evidence/au-mbs/6c69df9385a42832716be30975e824a0715414f6b3bbfb3ac9cc630372611f1c/manifest.json",
+          "sha256": "e14cdfbef33e72d0336dd719d71cb87ac63348cbe99d80f35e8ad5f69dd21318"
+        },
+        "landed_admission": {
+          "byte_count": 902,
+          "path": "bronze/admissions/au-mbs/6c69df9385a42832716be30975e824a0715414f6b3bbfb3ac9cc630372611f1c/bfc36be2a9cc3361dd017783e0260a090303d6f8bf0f61a6768435d0e70b59f0.json",
+          "sha256": "d6eeb9822f15c341521938087089e257988a28837d02e69cb31d88ac7840bb99"
+        },
+        "path_receipt": {
+          "byte_count": 1087,
+          "path": "bronze/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.csv.receipt.json",
+          "sha256": "813cd05fa18d9f6b4bf5f8d21973d3f1478e2f6dfcedbb09728e35d28a1ad9cd"
+        },
+        "source_receipt": {
+          "byte_count": 2904,
+          "path": "bronze/receipts/au-mbs/6c69df9385a42832716be30975e824a0715414f6b3bbfb3ac9cc630372611f1c.json",
+          "sha256": "9c6a437bc5999a8ed5889b69331ca72f4bca0a6c42ac98eb1f2553afd5fdae48"
+        }
+      },
+      "landed_decision_state": "landed_unreviewed",
+      "metadata_receipt_revision": "42d73b6facac016f14a335d36d83f1a3b630add8",
+      "path": "raw/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.csv",
+      "sha256": "07563bbba8bad0a8e5b51cf383edcf21f347b8dd3880757df6e19ef0ee3eb5b6",
+      "v4_admission": false
+    },
+    {
+      "b1_b2_lineage": {
+        "acquisition_id": "581821a762f9c4f0fccddabfd2682280666b2ac623041db9fde29cfb4a4c1295",
+        "b2_locator_revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
+        "complete": true,
+        "receipt_roles": {
+          "acquisition": true,
+          "b2_reference": true,
+          "landed_admission": true,
+          "path_receipt": true,
+          "source_receipt": true
+        }
+      },
+      "byte_count": 615386,
+      "consumer_canary": false,
+      "current_dataset_revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+      "current_tree_identity_match": true,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "hosted_metadata_readbacks": {
+        "acquisition": {
+          "byte_count": 2534,
+          "path": "bronze/acquisitions/au-mbs/581821a762f9c4f0fccddabfd2682280666b2ac623041db9fde29cfb4a4c1295.json",
+          "sha256": "3f67ea39a0e45670115fe8bb8fb46bdec2250f03a9d45d6bb4adf214ee69e778"
+        },
+        "b2_manifest": {
+          "byte_count": 1002,
+          "path": "bronze/raw-evidence/au-mbs/581821a762f9c4f0fccddabfd2682280666b2ac623041db9fde29cfb4a4c1295/manifest.json",
+          "sha256": "c558fd93e162b4b0df4247b962cebb224593d5a76ee701a29bb002eef3b5a4df"
+        },
+        "landed_admission": {
+          "byte_count": 902,
+          "path": "bronze/admissions/au-mbs/581821a762f9c4f0fccddabfd2682280666b2ac623041db9fde29cfb4a4c1295/70fccee415201c6562f627f8dc6e73055c52718a36f207ad0b6eb75a59f7087c.json",
+          "sha256": "efc6e3770630ecfc627d2784ead5939625c7c81ed75d7de933e27bb6b5c40ac2"
+        },
+        "path_receipt": {
+          "byte_count": 1087,
+          "path": "bronze/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.xml.receipt.json",
+          "sha256": "fc60bfc4b3ae99f2cfd34c5290fe7ed8fb5e276a32e63ea2ccda82e2dd64bd08"
+        },
+        "source_receipt": {
+          "byte_count": 2904,
+          "path": "bronze/receipts/au-mbs/581821a762f9c4f0fccddabfd2682280666b2ac623041db9fde29cfb4a4c1295.json",
+          "sha256": "4d7585d5c54e9aeee721806cb0ebb80c80d47ac05c3ef1e515ea78aa6d62fdec"
+        }
+      },
+      "landed_decision_state": "landed_unreviewed",
+      "metadata_receipt_revision": "42d73b6facac016f14a335d36d83f1a3b630add8",
+      "path": "raw/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.xml",
+      "sha256": "b71f1f540e5441ca18bb93b7ac9b23b4edfa37dcb096d37682e5db936be9f4a3",
+      "v4_admission": false
+    }
+  ],
+  "observed_at": "2026-10-21T04:02:00Z",
+  "schema_id": "global-medicines-atlas.australian-m112-july-bsd-sidecar-lineage-current-readback",
+  "schema_version": 1,
+  "scope": {
+    "frozen_denominator_changed": false,
+    "new_sources_added": false,
+    "object_count": 2,
+    "public_dataset_mutated": false
+  },
+  "status": "both_exact_sidecar_b1_b2_lineages_verified_preflight_note_superseded",
+  "superseded_preflight_statement": {
+    "disposition": "preserved_as_historical_snapshot; its lineage claim is superseded by the later exact path/digest/revision joins and pinned B1/B2 metadata readbacks",
+    "path": "quality/qualifications/australian-m112-rights-release-preflight-20261021-5.json",
+    "sha256": "d071d3274b2338ccbdb15d8d602261810e35f4e0d1cfdfa74606eb80600cf7e1",
+    "statement": "rights attested for the exact objects; two sidecar B1 bindings remain incomplete"
+  }
+}

@@ -28,8 +28,9 @@ def test_hosted_mbs_workflow_preserves_archive_and_verifies_before_cleanup() -> 
     assert text.index("receipt = publish_mbs_stage") < text.index(
         "lifecycle = publish_verified_mbs_lifecycle"
     )
-    assert text.index(
-        "gh issue comment 340 --body-file build/mbs-hosted-receipt.json"
-    ) < text.index("shutil.rmtree(target)")
+    assert "gh issue comment" not in text
+    assert text.index("path: build/mbs-hosted-receipt.json") < text.index(
+        "shutil.rmtree(target)"
+    )
     assert "huggingface-hub==1.14.0" in text
-    assert "--python 3.14.6" in text
+    assert "--python 3.15.1" in text

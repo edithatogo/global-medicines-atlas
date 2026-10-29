@@ -8,18 +8,18 @@ date.
 
 ## Install core or semantic retrieval
 
-The authoritative runtime is Python 3.15. From a source checkout, install the
+The authoritative runtime is Python 3.15.1. From a source checkout, install the
 locked core environment without development groups:
 
 ```console
-uv sync --python 3.15.0 --locked --no-dev
+uv sync --python 3.15.1 --locked --no-dev
 ```
 
 LanceDB-backed semantic retrieval is optional. Install it explicitly when that
 capability is required:
 
 ```console
-uv sync --python 3.15.0 --locked --no-dev --extra semantic
+uv sync --python 3.15.1 --locked --no-dev --extra semantic
 ```
 
 Core operation must remain usable without LanceDB. Mojo is an experimental
@@ -67,6 +67,21 @@ path, a deployment-owned cursor secret, and an allowed root, then pass it to
 deployment authentication, TLS, rate limiting, monitoring, and recovery remain
 operator responsibilities rather than claims made by this repository.
 
+For a one-command local walk-through, install the demo extra and run its
+explicitly synthetic fixture:
+
+```console
+uv sync --python 3.14.6 --locked --no-dev --extra demo
+uv run --extra demo global-medicines-atlas demo
+```
+
+Open `http://127.0.0.1:8765/`. The landing page, Atlas, and API responses label
+the records as synthetic fixture data. The records are self-authored and do
+not establish live source coverage, regulatory status, funding, formulary
+status, or a clinical conclusion. The server binds only to loopback and stores
+its temporary DuckDB fixture in a temporary directory removed when the server
+exits. Choose another local port with `--port`.
+
 To expose the pinned benefits evidence view in the source-backed Atlas, pass an
 already-configured `BenefitsLookup` to
 `create_source_backed_v2_atlas_app(..., federated_benefits=reader)`. The home
@@ -103,9 +118,9 @@ Install the complete locked development environment and run the routine local
 harness:
 
 ```console
-uv sync --python 3.15.0 --locked --all-groups
-uv run python scripts/test_goblin.py quick
-uv run ruff check .
+uv sync --python 3.14.6 --locked --all-groups
+uv run --python 3.15.1 python scripts/test_goblin.py quick
+uv run --python 3.15.1 ruff check .
 uv run ruff format --check .
 ```
 

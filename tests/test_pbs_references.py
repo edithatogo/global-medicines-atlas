@@ -1,13 +1,19 @@
 """Synthetic source-local PBS identifier/reference diagnostics."""
 
+import base64
+import hashlib
 import json
+import zlib
 from collections.abc import Iterator
 from io import BytesIO
+from pathlib import Path
 from typing import Any
 
+import pbs_uri_review_packet_reconciler_cases as _uri_packet_cases
 import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
+from scripts.qualify_pbs_uri_review_context import qualify_context
 from test_au_pbs_v3 import (
     _production_xml,  # ruff: ignore[import-private-name] -- synthetic fixture
     _xml,  # ruff: ignore[import-private-name] -- synthetic fixture
@@ -18,6 +24,114 @@ from test_australian_source_contracts import (
 
 from global_medicines_atlas import pbs_references
 from global_medicines_atlas.pbs_entities import iter_pbs_entity_batches
+from global_medicines_atlas.pbs_uri_context_enrichment import (
+    ContextEnrichmentError,
+    enrich_uri_review_packet,
+)
+from global_medicines_atlas.pbs_uri_review_packet_reconciler import (
+    PACKET_FILENAME as URI_REVIEW_PACKET_FILENAME,
+)
+from global_medicines_atlas.pbs_uri_review_packet_reconciler import (
+    ReconciliationError as UriPacketReconciliationError,
+)
+from global_medicines_atlas.pbs_uri_review_packet_reconciler import (
+    reconcile_uri_review_packet,
+)
+
+_QUALIFICATIONS = Path(__file__).parents[1] / "quality/qualifications"
+
+
+def _load_context_artifact(name: str) -> tuple[dict[str, Any], str]:
+    raw = (_QUALIFICATIONS / name).read_bytes()
+    return json.loads(raw), hashlib.sha256(raw).hexdigest()
+
+
+def _enrich_context(
+    packet: dict[str, Any],
+    packet_sha: str,
+    screen: dict[str, Any],
+    screen_sha: str,
+    reconciliation: dict[str, Any],
+) -> dict[str, Any]:
+    return enrich_uri_review_packet(
+        packet,
+        screen,
+        reconciliation,
+        packet_file_sha256=packet_sha,
+        screen_file_sha256=screen_sha,
+    )
+
+
+def _context_inputs() -> tuple[
+    dict[str, Any], str, dict[str, Any], str, dict[str, Any]
+]:
+    packet, packet_sha = _load_context_artifact(
+        "pbs-native-reference-review-packet-20261025-40103169910.json"
+    )
+    screen, screen_sha = _load_context_artifact(
+        "pbs-native-reference-screen-20261025-40103169910.json"
+    )
+    reconciliation, _ = _load_context_artifact(
+        "pbs-native-reference-uri-review-reconciliation-20261025-40120162365.json"
+    )
+    return packet, packet_sha, screen, screen_sha, reconciliation
+
+
+def _replace_compressed_context(screen: dict[str, Any], transform: Any) -> None:
+    compressed = screen["report"]["qualification"]["reference_context"]
+    context = json.loads(
+        zlib.decompress(base64.b64decode(compressed["payload"]))
+    )
+    transform(context)
+    raw = json.dumps(context, separators=(",", ":")).encode("utf-8")
+    compressed["payload"] = base64.b64encode(zlib.compress(raw)).decode("ascii")
+    compressed["payload_sha256"] = hashlib.sha256(raw).hexdigest()
+
+
+test_uri_packet_never_overwrites_existing_output = (
+    _uri_packet_cases.test_never_overwrites_existing_derived_packet
+)
+test_uri_packet_reconciles_pending_cases = _uri_packet_cases.test_reconciles_all_cases_to_value_free_pending_structural_packet
+test_uri_packet_rejects_bad_digests = _uri_packet_cases.test_rejects_bad_canonical_digest_and_wrong_expected_receipt_bytes
+test_uri_packet_rejects_v1_receipt = (
+    _uri_packet_cases.test_rejects_current_pinned_v1_actions_receipt
+)
+test_uri_packet_rejects_bad_case_binding = (
+    _uri_packet_cases.test_rejects_non_bijective_or_escalated_case_binding
+)
+test_uri_packet_rejects_changed_packet = (
+    _uri_packet_cases.test_rejects_packet_bytes_that_differ_from_pinned_identity
+)
+test_uri_packet_rejects_contract_mismatch = (
+    _uri_packet_cases.test_rejects_receipt_contract_mismatch
+)
+test_uri_packet_rejects_malformed_envelopes = (
+    _uri_packet_cases.test_load_envelope_rejects_malformed_inputs
+)
+test_uri_packet_rejects_missing_envelope = (
+    _uri_packet_cases.test_load_envelope_rejects_missing_file
+)
+test_uri_packet_rejects_non_json_digest = (
+    _uri_packet_cases.test_report_digest_rejects_non_json_value
+)
+test_uri_packet_rejects_required_mapping = (
+    _uri_packet_cases.test_required_rejects_invalid_mapping
+)
+test_uri_packet_rejects_invalid_expected_arguments = (
+    _uri_packet_cases.test_rejects_invalid_expected_arguments
+)
+test_uri_packet_rejects_wrong_packet_filename = (
+    _uri_packet_cases.test_rejects_wrong_packet_filename
+)
+test_uri_packet_rejects_invalid_pinned_cases = (
+    _uri_packet_cases.test_rejects_invalid_pinned_packet_cases
+)
+test_uri_packet_rejects_missing_case_binding_structures = (
+    _uri_packet_cases.test_rejects_missing_uri_case_binding_structures
+)
+test_uri_packet_rejects_invalid_uri_case_rows = (
+    _uri_packet_cases.test_rejects_invalid_uri_case_rows
+)
 
 
 @pytest.mark.parametrize(
@@ -440,3 +554,299 @@ def test_foreign_codes_and_unknown_item_wrappers_stay_unmapped() -> None:
 def test_invalid_batch_size(size: int) -> None:
     with pytest.raises(ValueError, match="batch size"):
         table(_xml(), size)
+
+
+def test_exact_retained_context_is_bound_without_values_or_semantic_promotion():
+    packet, packet_sha = _load_context_artifact(
+        "pbs-native-reference-review-packet-20261025-40103169910.json"
+    )
+    screen, screen_sha = _load_context_artifact(
+        "pbs-native-reference-screen-20261025-40103169910.json"
+    )
+    reconciliation, _ = _load_context_artifact(
+        "pbs-native-reference-uri-review-reconciliation-20261025-40120162365.json"
+    )
+
+    report = _enrich_context(
+        packet, packet_sha, screen, screen_sha, reconciliation
+    )["report"]
+
+    saved_envelope, _ = _load_context_artifact(
+        "pbs-native-reference-uri-context-packet-20261025-195638.json"
+    )
+    assert saved_envelope["report"] == report
+    assert report["context_examples_bound"] == 46
+    reconciled_cases = {
+        case["case_id"]: case for case in reconciliation["report"]["cases"]
+    }
+    assert all(
+        {key: value for key, value in case.items() if key != "source_context"}
+        == reconciled_cases[case["case_id"]]
+        for case in report["cases"]
+    )
+    assert report["source_values_emitted"] is False
+    assert report["semantic_relationships_qualified"] is False
+    assert report["precision_claimed"] is False
+    assert report["recall_claimed"] is False
+    assert (
+        sum(
+            case["source_context"]["nearest_subject_element"] is not None
+            for case in report["cases"]
+        )
+        == 8
+    )
+    assert (
+        sum(
+            case["source_context"]["nearest_identifier_element"] is not None
+            for case in report["cases"]
+        )
+        == 38
+    )
+    assert (
+        sum(
+            case["source_context"]["same_member_literal_candidate_target_count"]
+            for case in report["cases"]
+        )
+        == 35
+    )
+
+
+def test_exact_main_uri_context_qualification_binds_same_run_commit_and_packet(
+    tmp_path: Path,
+) -> None:
+    uri_path = _QUALIFICATIONS / (
+        "pbs-native-reference-uri-screen-20261025-40120162365.json"
+    )
+    uri_bytes = uri_path.read_bytes()
+    uri = json.loads(uri_bytes)["report"]
+    packet_output = tmp_path / "context-packet.json"
+    receipt_output = tmp_path / "qualification-receipt.json"
+
+    packet, receipt = qualify_context(
+        root=Path(__file__).parents[1],
+        uri_receipt_path=uri_path,
+        expected_uri_receipt_sha256=hashlib.sha256(uri_bytes).hexdigest(),
+        expected_uri_run_id=uri["run_id"],
+        expected_uri_run_attempt=uri["run_attempt"],
+        expected_commit=uri["workflow_commit"],
+        integration_run_id="40130000000",
+        integration_commit="1d53292ad8792e143f862993e7c79eac643697f0",
+        context_packet_output=packet_output,
+        qualification_receipt_output=receipt_output,
+    )
+    packet_report = packet["report"]
+    receipt_report = receipt["report"]
+    assert packet_report["uri_run_id"] == uri["run_id"]
+    assert packet_report["uri_workflow_commit"] == uri["workflow_commit"]
+    assert (
+        packet_report["uri_receipt_sha256"]
+        == hashlib.sha256(uri_bytes).hexdigest()
+    )
+    assert packet_report["context_examples_bound"] == 46
+    assert len(packet_report["cases"]) == 46
+    assert all(
+        case["uri_resolution"] != "not_performed"
+        and case["source_context"]
+        and case["adjudication"] == "unreviewed"
+        and case["semantic_review_state"] == "pending"
+        and case["semantic_relationship_qualified"] is False
+        for case in packet_report["cases"]
+    )
+    assert receipt_report["integration_run_id"] == "40130000000"
+    assert receipt_report["integration_workflow_commit"] == (
+        "1d53292ad8792e143f862993e7c79eac643697f0"
+    )
+    assert (
+        receipt_report["source_packet_sha256"]
+        == (packet_report["source_packet_sha256"])
+    )
+    assert (
+        receipt_report["context_screen_receipt_sha256"]
+        == (packet_report["context_screen_receipt_sha256"])
+    )
+    reconciliation = reconcile_uri_review_packet(
+        _QUALIFICATIONS / URI_REVIEW_PACKET_FILENAME,
+        uri_path,
+        expected_run_id=uri["run_id"],
+        expected_commit=uri["workflow_commit"],
+        expected_uri_receipt_sha256=hashlib.sha256(uri_bytes).hexdigest(),
+    )
+    assert (
+        receipt_report["uri_reconciliation_report_sha256"]
+        == (reconciliation["report_sha256"])
+    )
+    assert packet_output.is_file()
+    assert receipt_output.is_file()
+    assert receipt_report["source_values_emitted"] is False
+    assert receipt_report["external_targets_fetched"] == 0
+    assert receipt_report["semantic_relationships_qualified"] is False
+    assert receipt_report["edges_emitted"] is False
+
+
+def test_uri_context_qualification_rejects_wrong_receipt_digest(
+    tmp_path: Path,
+) -> None:
+    uri_path = _QUALIFICATIONS / (
+        "pbs-native-reference-uri-screen-20261025-40120162365.json"
+    )
+    uri = json.loads(uri_path.read_bytes())["report"]
+    with pytest.raises(
+        UriPacketReconciliationError, match="URI receipt file digest differs"
+    ):
+        qualify_context(
+            root=Path(__file__).parents[1],
+            uri_receipt_path=uri_path,
+            expected_uri_receipt_sha256="0" * 64,
+            expected_uri_run_id=uri["run_id"],
+            expected_uri_run_attempt=uri["run_attempt"],
+            expected_commit=uri["workflow_commit"],
+            integration_run_id="40130000000",
+            integration_commit="1d53292ad8792e143f862993e7c79eac643697f0",
+            context_packet_output=tmp_path / "context-packet.json",
+            qualification_receipt_output=tmp_path
+            / "qualification-receipt.json",
+        )
+    assert not (tmp_path / "context-packet.json").exists()
+    assert not (tmp_path / "qualification-receipt.json").exists()
+
+
+def test_context_enrichment_rejects_wrong_screen_receipt_digest():
+    packet, packet_sha = _load_context_artifact(
+        "pbs-native-reference-review-packet-20261025-40103169910.json"
+    )
+    screen, _screen_sha = _load_context_artifact(
+        "pbs-native-reference-screen-20261025-40103169910.json"
+    )
+    reconciliation, _ = _load_context_artifact(
+        "pbs-native-reference-uri-review-reconciliation-20261025-40120162365.json"
+    )
+
+    with pytest.raises(ContextEnrichmentError, match="receipt digests differ"):
+        _enrich_context(packet, packet_sha, screen, "0" * 64, reconciliation)
+
+
+@pytest.mark.parametrize(
+    "scenario",
+    [
+        "malformed_payload",
+        "run_id",
+        "receipt_digest",
+        "reconciliation_digest",
+        "payload_digest",
+        "literal_values",
+        "raw_source",
+        "invalid_context_occurrence",
+        "duplicate_context_occurrence",
+        "duplicate_uri_case_id",
+        "uri_case_count",
+        "missing_packet_address",
+        "missing_uri_case",
+        "uri_occurrence_digest",
+        "missing_context_occurrence",
+        "invalid_target_path",
+        "invalid_target_qname",
+        "mismatched_target_path",
+        "invalid_predicate_ancestry",
+        "invalid_subject_ancestry_address",
+    ],
+)
+def test_context_enrichment_rejects_invalid_evidence(  # ruff: ignore[too-many-branches, too-many-statements] -- one mutation matrix exercises each fail-closed evidence guard
+    scenario: str,
+) -> None:
+    packet, packet_sha, screen, screen_sha, reconciliation = _context_inputs()
+    packet_report = packet["report"]
+    reconciliation_report = reconciliation["report"]
+    compressed = screen["report"]["qualification"]["reference_context"]
+
+    if scenario == "malformed_payload":
+        compressed["payload"] = "!"
+    elif scenario == "run_id":
+        packet_report["source"]["screen_run_id"] = "different-run"
+    elif scenario == "receipt_digest":
+        packet_report["source"]["screen_receipt_sha256"] = "0" * 64
+    elif scenario == "reconciliation_digest":
+        reconciliation_report["source_packet_sha256"] = "0" * 64
+    elif scenario == "payload_digest":
+        compressed["payload_sha256"] = "0" * 64
+    elif scenario in {"literal_values", "raw_source"}:
+        key = (
+            "literal_values_emitted"
+            if scenario == "literal_values"
+            else "raw_source_emitted"
+        )
+        _replace_compressed_context(
+            screen, lambda context: context.update({key: True})
+        )
+    elif scenario == "invalid_context_occurrence":
+
+        def invalidate_occurrence(context: dict[str, Any]) -> None:
+            context["strata"][0]["examples"][0]["reference_occurrence"] = None
+
+        _replace_compressed_context(screen, invalidate_occurrence)
+    elif scenario == "duplicate_context_occurrence":
+
+        def duplicate_occurrence(context: dict[str, Any]) -> None:
+            example = context["strata"][0]["examples"][0]
+            context["strata"][0]["examples"].append(example)
+
+        _replace_compressed_context(screen, duplicate_occurrence)
+    elif scenario == "duplicate_uri_case_id":
+        reconciliation_report["cases"][1]["case_id"] = reconciliation_report[
+            "cases"
+        ][0]["case_id"]
+    elif scenario == "uri_case_count":
+        reconciliation_report["cases"].pop()
+    elif scenario == "missing_packet_address":
+        packet_report["cases"][0]["reference_occurrence"] = None
+    elif scenario == "missing_uri_case":
+        packet_report["cases"][0]["case_id"] = "missing-case"
+    elif scenario == "uri_occurrence_digest":
+        reconciliation_report["cases"][0]["reference_occurrence_sha256"] = (
+            "0" * 64
+        )
+    elif scenario == "missing_context_occurrence":
+
+        def remove_examples(context: dict[str, Any]) -> None:
+            for stratum in context["strata"]:
+                stratum["examples"] = []
+
+        _replace_compressed_context(screen, remove_examples)
+    elif scenario in {"invalid_target_path", "invalid_target_qname"}:
+
+        def invalidate_target(context: dict[str, Any]) -> None:
+            example = next(
+                example
+                for stratum in context["strata"]
+                for example in stratum["examples"]
+                if example["targets"]
+            )
+            target = example["targets"][0]
+            target[
+                "occurrence" if scenario == "invalid_target_path" else "qname"
+            ] = None
+
+        _replace_compressed_context(screen, invalidate_target)
+    elif scenario == "mismatched_target_path":
+        row = next(
+            row
+            for row in reconciliation_report["cases"]
+            if row.get("target_occurrence_sha256") is not None
+        )
+        row["target_occurrence_sha256"] = "0" * 64
+    elif scenario == "invalid_predicate_ancestry":
+
+        def invalidate_predicate(context: dict[str, Any]) -> None:
+            context["strata"][0]["examples"][0]["predicate_element"] = []
+
+        _replace_compressed_context(screen, invalidate_predicate)
+    elif scenario == "invalid_subject_ancestry_address":
+
+        def invalidate_subject_address(context: dict[str, Any]) -> None:
+            context["strata"][0]["examples"][0]["nearest_subject_element"] = {
+                "qname": "subject"
+            }
+
+        _replace_compressed_context(screen, invalidate_subject_address)
+
+    with pytest.raises(ContextEnrichmentError):
+        _enrich_context(packet, packet_sha, screen, screen_sha, reconciliation)

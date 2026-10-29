@@ -1,0 +1,159 @@
+{
+  "schema_id": "global-medicines-atlas.mbs-p7-value-era-rules",
+  "schema_version": 2,
+  "status": "partially_qualified_unique_per_cell_calendar_dates_other_values_unresolved",
+  "source": {
+    "source_id": "au-mbs-p7-legacy-workbook",
+    "source_revision": "legacy-donor-20260829",
+    "path": "raw/mbs/legacy/2024-07/MBS-2024.07-Group-P7-Genetics.xlsx",
+    "sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
+    "byte_count": 87727,
+    "schema_era": "mbs-p7-2024-07-headers-v1"
+  },
+  "rules": {
+    "dates": {
+      "selected_profile": null,
+      "profile_selected": false,
+      "projection": "Interpret only per-cell values with exactly one valid calendar date under the retained DMY/MDY compatibility check. This does not select a workbook-wide date order. Preserve all ambiguous date-shaped values and numeric serials in native form.",
+      "lexical_date_cells": 1280,
+      "uniquely_determined_calendar_date_cells": 86,
+      "ambiguous_date_shaped_cells": 1194,
+      "unique_calendar_date_cells": 82,
+      "unique_dmy_calendar_date_cells": 4,
+      "calendar_compatibility": {
+        "both_dmy_and_mdy_valid": 1276,
+        "dmy_only": 4,
+        "mdy_only": 0,
+        "source_values_emitted": false,
+        "profile_selected": false
+      },
+      "field_profile": {
+        "path": "quality/qualifications/mbs-p7-calendar-profile-20261024-40088209026.json",
+        "sha256": "c9b49f60a9a608bc77674a2094b8fd4439115fc17bb200b04fc202c6b463d1bf",
+        "field_counts": {
+          "BenefitStartDate": {
+            "ambiguous_calendar_order": 310,
+            "unique_calendar_date": 10
+          },
+          "DescriptionStartDate": {
+            "ambiguous_calendar_order": 310,
+            "unique_calendar_date": 8,
+            "unique_dmy_calendar_date": 2
+          },
+          "FeeStartDate": {
+            "ambiguous_calendar_order": 262,
+            "unique_calendar_date": 56,
+            "unique_dmy_calendar_date": 2
+          },
+          "ItemStartDate": {
+            "ambiguous_calendar_order": 312,
+            "unique_calendar_date": 8
+          },
+          "DerivedFeeStartDate": {
+            "missing_value": 320
+          },
+          "EMSNChangeDate": {
+            "missing_value": 320
+          },
+          "EMSNEndDate": {
+            "missing_value": 320
+          },
+          "EMSNStartDate": {
+            "missing_value": 320
+          },
+          "ItemEndDate": {
+            "missing_value": 320
+          },
+          "QFEEndDate": {
+            "missing_value": 320
+          },
+          "QFEStartDate": {
+            "missing_value": 320
+          }
+        },
+        "source_values_emitted": false
+      },
+      "consumer_state": "86 uniquely determined calendar values interpreted; 1194 ambiguous date-shaped values and all remaining cells stay native_unresolved",
+      "temporal_comparison_enabled": false,
+      "semantic_promotion": false,
+      "per_cell_unique_calendar_interpretation": true,
+      "profile_wide_semantic_promotion": false
+    },
+    "currency_and_amounts": {
+      "currency_rule": "AUD only for fields typed aud_decimal by the existing MBS field contract.",
+      "decimal_rule": "Convert exactly; preserve native values and mark decimal128(38,9) scale loss or overflow unrepresentable without rounding.",
+      "unrepresentable_cells": 36,
+      "semantic_promotion": false
+    },
+    "benefits": {
+      "amount_fields": [
+        "Benefit75",
+        "Benefit85"
+      ],
+      "benefit_type": "Preserve the native BenefitType code; do not calculate or infer payable amount, eligibility, or clinical meaning.",
+      "formula_rule": "Do not evaluate formulas. Preserve formula text, cached value, and value origin as separate source evidence.",
+      "formula_cells": 4,
+      "error_rule": "Preserve OOXML error codes as source errors and never replace them with cached or computed values.",
+      "error_cells": 2
+    },
+    "schema_eras": {
+      "historical_workbook": "mbs-p7-2024-07-headers-v1",
+      "current_xml": "mbs-xml-v3-2025-07",
+      "comparison_rule": "Keep native fields and row identity within their source era. Cross-era comparison requires an explicit field mapping and dated change evidence; shared labels alone do not establish equivalence."
+    }
+  },
+  "evidence": {
+    "date_order_compatibility": {
+      "path": "quality/qualifications/mbs-workbook-date-order-compatibility-20260928.json",
+      "sha256": "93fe23c5ecc1f5e89a273a2293ac00272a04ce5c6dcde66fdbeee8e420085452"
+    },
+    "date_source_document_review": {
+      "path": "quality/qualifications/mbs-workbook-date-source-doc-review-20260929.json",
+      "sha256": "3d0c7234092cd7a8e51abc20cd69389010e0a54b019058c9ae2832bd2c63a4b9"
+    },
+    "date_source_owner_clarification": {
+      "path": "quality/qualifications/mbs-workbook-date-source-owner-clarification-20261017.json",
+      "sha256": "3a51ff9c8cb6ce66e7e3ea31b561de0524f00a4c487568c05d012afa99ebf599"
+    },
+    "typed_candidate_qualification": {
+      "path": "quality/qualifications/mbs-p7-typed-qualification-20261022-39636095527.json",
+      "sha256": "26b8952a41dacc2a88df23f6bd2b4c0df7cd9ba91fe29d580e0a5e46016d9929"
+    },
+    "exact_main_run_receipt": {
+      "path": "quality/qualifications/mbs-p7-exact-main-run-receipt-20261024-40094025412.json",
+      "sha256": "190053465ca3d2722cf9f9f9bd8c78eaf296ab0c8973862e4b3f2834bdd91dde"
+    },
+    "calendar_profile": {
+      "path": "quality/qualifications/mbs-p7-calendar-profile-20261024-40088209026.json",
+      "sha256": "c9b49f60a9a608bc77674a2094b8fd4439115fc17bb200b04fc202c6b463d1bf"
+    },
+    "prior_typed_candidate_qualification": {
+      "path": "quality/qualifications/mbs-p7-typed-qualification-20261022-39636095527.json",
+      "sha256": "26b8952a41dacc2a88df23f6bd2b4c0df7cd9ba91fe29d580e0a5e46016d9929"
+    },
+    "exact_main_storage_qualification": {
+      "path": "quality/qualifications/mbs-p7-workbook-storage-qualification-20261024-40094025412.json",
+      "sha256": "c31dbc2b6d166dbefdfa5f95fe33a231fdbecfa05ab502ea91f198771e4f0690",
+      "workflow_run": 40094025412,
+      "exact_commit": "11be72e328affc0df87395fd59165ef4f5bf9055",
+      "source_values_emitted": false
+    }
+  },
+  "gates": {
+    "existing_source_only": true,
+    "new_sources_added": false,
+    "date_profile_selected": false,
+    "all_13742_cells_remain_native_unresolved": false,
+    "rights_changed": false,
+    "output_admitted": false,
+    "publication_performed": false,
+    "consumer_canary_performed": false,
+    "per_cell_unique_calendar_dates_interpreted": true,
+    "remaining_unresolved_cells": 13656
+  },
+  "supersedes": {
+    "path": "quality/qualifications/mbs-p7-value-era-rules-20261024.json",
+    "sha256": "e5703612c96b37d968fe4cce8db5831b9e9dcb7ca476febebde9eb9a12c3fe5a",
+    "reason": "Exact-main workflow 40094025412 binds 86 uniquely determined calendar dates while retaining ambiguous date cells and other values unresolved."
+  }
+}

@@ -7,6 +7,7 @@ import importlib.util
 import json
 import re
 import sqlite3
+import ssl
 import sys
 import tomllib
 from pathlib import Path
@@ -29,6 +30,28 @@ SPEC.loader.exec_module(HARNESS)
 def test_m109_release_note_reconciliation_is_in_unit_lane() -> None:
     assert (
         "tests/test_australian_m109_release_note_delta_reconciliation.py"
+        in HARNESS.TEST_LANES["unit"]
+    )
+
+
+def test_mbs_historical_value_shape_tests_are_in_unit_lane() -> None:
+    assert {
+        "tests/test_mbs_historical_workbook_value_shapes.py",
+        "tests/test_profile_mbs_historical_workbook_value_shapes.py",
+        "tests/test_mbs_historical_value_shape_field_overlay.py",
+    } <= set(HARNESS.TEST_LANES["unit"])
+
+
+def test_p7_date_profile_reconciliation_is_in_unit_lane() -> None:
+    assert (
+        "tests/test_mbs_p7_date_profile_reconciliation.py"
+        in HARNESS.TEST_LANES["unit"]
+    )
+
+
+def test_pbs_reference_case_adjudication_is_in_unit_lane() -> None:
+    assert (
+        "tests/test_pbs_reference_case_adjudication.py"
         in HARNESS.TEST_LANES["unit"]
     )
 
@@ -467,7 +490,7 @@ def test_coverage_reads_machine_readable_threshold(monkeypatch) -> None:
 
 def test_contract_profile_validates_before_running_pytest(monkeypatch) -> None:
     """The contract profile performs collection but no test execution."""
-    commands: list[object] = []
+    commands: list[list[str]] = []
     monkeypatch.setattr(HARNESS, "run", commands.append)
 
     HARNESS.contracts()
@@ -533,9 +556,9 @@ def test_tool_versions_match_governed_workflow_literals() -> None:
     """Workflow setup literals remain aligned with one governed manifest."""
     versions = HARNESS.validate_tool_versions()
 
-    assert versions["python"] == "3.15.0"
-    assert versions["uv"] == "0.13.1"
-    assert versions["pixi"] == "0.73.0"
+    assert versions["python"] == "3.15.1"
+    assert versions["uv"] == "0.13.5"
+    assert versions["pixi"] == "0.82.1"
     assert versions["gitleaks"] == "8.30.1"
     assert versions["mojo"] == "1.0.0b3.dev2026072806"
     assert versions["runner"] == "ubuntu-24.04"
@@ -668,12 +691,16 @@ def test_supply_chain_manages_tool_literals_and_scans_history() -> None:
     )
     assert "fetch-depth: 0" in security
     assert "./gitleaks git --redact" in security
+    assert "GITLEAKS_BASE_SHA HEAD --diff-filter=tuxdb" in security
+    assert 'log_opts="--full-history HEAD --diff-filter=tuxdb"' in security
+    assert '--log-opts="$log_opts"' in security
+    assert "--all" not in security
     assert "GITLEAKS_SHA256:" in security
     assert "GITLEAKS_ASSET:" in security
 
 
 def test_gitleaks_allowlist_is_limited_to_verified_public_evidence() -> None:
-    """Only exact public revision and graph digest evidence are allowed."""
+    """Only exact public evidence identities are allowlisted."""
     config = tomllib.loads(
         (ROOT / ".gitleaks.toml").read_text(encoding="utf-8")
     )
@@ -683,7 +710,7 @@ def test_gitleaks_allowlist_is_limited_to_verified_public_evidence() -> None:
     allowlist = allowlists[0]
     assert allowlist["targetRules"] == ["generic-api-key"]
     assert allowlist["regexTarget"] == "match"
-    assert len(allowlist["regexes"]) == 2
+    assert len(allowlist["regexes"]) == 19
     assert not (ROOT / ".gitleaksignore").exists()
 
     revision = json.loads(
@@ -725,6 +752,92 @@ def test_gitleaks_allowlist_is_limited_to_verified_public_evidence() -> None:
         "does not exclude a rule, directory, filename, source record, or class of values."
         in normalized_disposition
     )
+
+
+def test_m112_gitleaks_allowlist_is_exact_to_public_sha256_fields() -> None:
+    """New M-112 findings stay scoped to their exact public digest fields."""
+    config = tomllib.loads((ROOT / ".gitleaks.toml").read_text())
+    regexes = config["allowlists"][0]["regexes"][2:]
+    expected = [
+        (regexes[:2], "dataset_access_response_sha256", 2),
+        (regexes[2:], "idempotency_key", 15),
+    ]
+    for values, field, expected_count in expected:
+        patterns = [re.compile(value) for value in values]
+        assert len(patterns) == expected_count
+        digests = []
+        for pattern in patterns:
+            assert pattern.pattern.startswith(rf'^{field}"\s*:\s*"')
+            assert pattern.pattern.endswith(r'"\s*$')
+            match = re.search(r'"([0-9a-f]{64})"', pattern.pattern)
+            assert match is not None
+            digest = match.group(1)
+            digests.append(digest)
+            assert pattern.fullmatch(f'{field}": "{digest}"')
+            changed_digest = digest[:-1] + ("0" if digest[-1] != "0" else "1")
+            assert not pattern.fullmatch(f'{field}": "{changed_digest}"')
+            assert not pattern.fullmatch(f'api_key": "{digest}"')
+        assert len(set(digests)) == expected_count
+
+    q3_hr_plan = json.loads(
+        (
+            ROOT / "quality/qualifications/"
+            "australian-m112-v3-replay-plan-20261020-39431880718.json"
+        ).read_text(encoding="utf-8")
+    )
+    q3_hr_idempotency_key = q3_hr_plan["snapshots"][0]["idempotency_key"]
+    assert q3_hr_idempotency_key in digests
+    q1_hr_plan = json.loads(
+        (
+            ROOT / "quality/qualifications/"
+            "australian-m112-v3-replay-plan-20261021-39533443472.json"
+        ).read_text()
+    )
+    q1_snapshot = q1_hr_plan["snapshots"][0]
+    expected_q1_key = hashlib.sha256(
+        json.dumps(
+            [q1_snapshot["partition_id"], q1_snapshot["snapshot_id"]],
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+    ).hexdigest()
+    assert q1_snapshot["idempotency_key"] == expected_q1_key
+    assert expected_q1_key in digests
+
+    disposition = (
+        ROOT
+        / "docs/qualification/gitleaks-history-false-positive-disposition-20261017.md"
+    ).read_text(encoding="utf-8")
+    assert "dataset_access_response_sha256" in disposition
+    assert "idempotency_key" in disposition
+
+
+def test_pbs_replay_gitleaks_allowlist_binds_the_computed_key() -> None:
+    """Every PBS exception is a reproducible identity, never a credential."""
+    config = tomllib.loads((ROOT / ".gitleaks.toml").read_text())
+    receipts = sorted(
+        (
+            ROOT
+            / "quality/qualifications/australian-m112-pbs-v3-replays-20261028"
+        ).glob("*/gma-m112-v3-replay-receipt-*.json")
+    )
+    assert len(receipts) == 6
+    for path in receipts:
+        registration = json.loads(path.read_text())["replay"]["registration"]
+        expected_key = hashlib.sha256(
+            json.dumps(
+                [registration["partition_id"], registration["snapshot_id"]],
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode()
+        ).hexdigest()
+        assert registration["idempotency_key"] == expected_key
+        assert any(
+            re.fullmatch(pattern, f'idempotency_key": "{expected_key}"')
+            for pattern in config["allowlists"][0]["regexes"]
+        )
 
 
 def test_gitleaks_rejects_publisher_checksum_mismatch(monkeypatch) -> None:
@@ -1077,3 +1190,69 @@ def test_mutmut_observations_reject_missing_or_non_numeric_results(
     malformed.write_text(json.dumps({"killed": True}))
     with pytest.raises(ValueError, match="unexpected Mutmut"):
         HARNESS.load_mutmut_observations(malformed)
+
+
+def test_historical_uv_uses_patched_content_bound_ca_store() -> None:
+    bundle = ROOT / ".ci/trust/cacert.pem"
+    provenance = json.loads((ROOT / ".ci/trust/provenance.json").read_text())
+    assert provenance["package"] == "certifi"
+    assert provenance["version"] == "2026.10.19"
+    assert (
+        hashlib.sha256(bundle.read_bytes()).hexdigest()
+        == provenance["bundle_sha256"]
+    )
+    roots = ssl.create_default_context(cafile=str(bundle)).get_ca_certs()
+    assert roots
+    assert all(
+        value != "emSign ECC Root CA - G3"
+        for cert in roots
+        for component in cert["subject"]
+        for key, value in component
+        if key == "commonName"
+    )
+
+
+def test_pinned_legacy_uv_workflows_use_the_patched_ca_store() -> None:
+    for workflow in (ROOT / ".github/workflows").glob("*.yml"):
+        content = workflow.read_text()
+        if 'version: "0.11.29"' in content:
+            assert (
+                "SSL_CERT_FILE: ${{ github.workspace }}/.ci/trust/cacert.pem"
+                in content
+            ), workflow
+
+
+@pytest.mark.parametrize("status", ["False", "True"])
+def test_dependency_canary_checks_report_status(
+    monkeypatch, status: str
+) -> None:
+    calls = []
+
+    def completed(command, **_kwargs):
+        environment = command[-1]
+        calls.append(environment)
+        return SimpleNamespace(
+            returncode=0,
+            stdout=f"{environment} True {status} pydantic 2.0\n",
+        )
+
+    monkeypatch.setattr(HARNESS.subprocess, "run", completed)
+    if status == "False":
+        with pytest.raises(SystemExit, match="Dependency canary failed"):
+            HARNESS.dependencies()
+        assert calls == ["contracts"]
+    else:
+        HARNESS.dependencies()
+        assert calls == ["contracts", "columnar", "product"]
+
+
+def test_dependency_canary_rejects_missing_report(monkeypatch) -> None:
+    monkeypatch.setattr(
+        HARNESS.subprocess,
+        "run",
+        lambda *_args, **_kwargs: SimpleNamespace(
+            returncode=0, stdout="no report\n"
+        ),
+    )
+    with pytest.raises(SystemExit, match="Dependency canary failed or missing"):
+        HARNESS.dependencies()
