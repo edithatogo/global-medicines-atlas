@@ -1898,3 +1898,26 @@ def test_anonymous_pbs_readback_binds_revision_path_and_bytes(
         delivery.verify_anonymous_published_candidate(transport, SHA)
     with pytest.raises(ValueError, match="exact commit"):
         delivery.verify_anonymous_published_candidate(transport, "main")
+
+
+def test_pbs_live_parent_rejects_drift_and_collision():
+    candidate, readback, tree = _publication_plan_inputs()
+    plan = delivery.build_publication_plan(candidate, readback, tree)
+    info = SimpleNamespace(
+        sha=delivery.PUBLIC_PARENT_REVISION,
+        private=False,
+        gated=False,
+        siblings=[SimpleNamespace(rfilename="existing")],
+    )
+    public = SimpleNamespace(dataset_info=lambda *_args, **_kwargs: info)
+    delivery.verify_live_publication_parent(public, plan)
+    info.sha = SHA
+    with pytest.raises(ValueError, match="parent changed"):
+        delivery.verify_live_publication_parent(public, plan)
+    info.sha = delivery.PUBLIC_PARENT_REVISION
+    info.siblings.append(SimpleNamespace(rfilename=plan["remote_path"]))
+    with pytest.raises(ValueError, match="already contains"):
+        delivery.verify_live_publication_parent(public, plan)
+    plan["parquet_sha256"] = "0" * 64
+    with pytest.raises(ValueError, match="exact candidate"):
+        delivery.verify_live_publication_parent(public, plan)

@@ -254,6 +254,37 @@ def build_publication_plan(
     }
 
 
+def verify_live_publication_parent(public: Any, plan: dict[str, Any]) -> None:
+    """Fail closed if the reviewed destination changed since the frozen tree."""
+    expected_path = f"silver/pbs/v4/2026-04-01/{OUTPUT_ID}/values.parquet"
+    expected = {
+        "dataset": DATASET,
+        "expected_parent_revision": PUBLIC_PARENT_REVISION,
+        "remote_path": expected_path,
+        "output_id": OUTPUT_ID,
+        "parquet_sha256": PARQUET_SHA256,
+        "parquet_bytes": PARQUET_BYTES,
+    }
+    if any(plan.get(key) != value for key, value in expected.items()):
+        raise ValueError(
+            "PBS publication plan differs from the exact candidate"
+        )
+    info = public.dataset_info(DATASET, files_metadata=True, timeout=30)
+    if (
+        info.sha != PUBLIC_PARENT_REVISION
+        or info.private is not False
+        or info.gated is not False
+    ):
+        raise ValueError("PBS public parent changed or is not public")
+    siblings = cast("list[Any]", info.siblings or [])
+    if not siblings or any(
+        item.rfilename == expected_path for item in siblings
+    ):
+        raise ValueError(
+            "PBS destination inventory is empty or already contains the target"
+        )
+
+
 def verify_anonymous_published_candidate(
     transport: Any, revision: str
 ) -> dict[str, Any]:
