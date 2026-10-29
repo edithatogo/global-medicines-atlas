@@ -1,0 +1,284 @@
+{
+  "plan_version": "1",
+  "release_version": "japan-mhlw-20261030",
+  "target": {
+    "destination": "hugging_face",
+    "repository": "edithatogo/global-medicines-atlas-japan-mhlw-20261030",
+    "revision": "main",
+    "public_base_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-japan-mhlw-20261030"
+  },
+  "artifacts": [
+    {
+      "relative_path": "README.md",
+      "sha256": "5b90a2caef3a5322ef868d8d813808f802c310f0a7bda38cc1236e91f77ae1c8",
+      "size": 1029
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0001/payload.bin",
+      "sha256": "e1d777475920b434e5f9bdce85cb939b9144dd28b16176d50f8b01183520e66d",
+      "size": 2939535
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0001/receipt.json",
+      "sha256": "9f8ae59fdd063a38c2ba6a314ffbf59e609801070229c7d9c5c0c25125252f55",
+      "size": 5050
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0002/payload.bin",
+      "sha256": "df4e980d8d7056d80ae7a8ba21d5fdbc5d6945bfe3993159c27e13d8811b53bf",
+      "size": 1245964
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0002/receipt.json",
+      "sha256": "4bea6478f63ce14bb25043355e7430bfbfea9a5ab4d5fd3868f1ff2b2d108ee6",
+      "size": 5050
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0003/payload.bin",
+      "sha256": "0050d5c1149939addc0e8f0778dea7678de58b564326e761b3f3c7bb5e0eea8a",
+      "size": 2308687
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0003/receipt.json",
+      "sha256": "9d6f46b8c255820b97590808f78a044c70f97bd21ef567857e7e9983b0018029",
+      "size": 5050
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0004/payload.bin",
+      "sha256": "b4c2c13ee330ee31bbe5dcfcae428af516411482ff417b8d1039eb6c4b898004",
+      "size": 2508493
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0004/receipt.json",
+      "sha256": "c6b09aadfd390b523314ca203dbaa0dc8e561c5ba694ae74f4696c2e04779161",
+      "size": 5050
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0005/payload.bin",
+      "sha256": "cccc874fcb8c5f3dc09cb02f1887a64c8848a03bedcccfeac950ab1ea0a51aa2",
+      "size": 1135264
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0005/receipt.json",
+      "sha256": "50c3d2e9c51f79b94cc193c513a8823a5142b9d3d1b72ed87e4ebc0a3d025c2f",
+      "size": 5050
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0006/payload.bin",
+      "sha256": "689c3fa2d596ab480bb3bd56abb830000b96bb562c23dcb3d458182081d3def1",
+      "size": 1948691
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0006/receipt.json",
+      "sha256": "4a03229d7c4c35e43b895d707324a9729455c0e923a9de5cac2a822a9d087a1e",
+      "size": 5050
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0007/payload.bin",
+      "sha256": "07eac61c368b6295759685033615f87b36809b43b0c5ade2c33aaf557b33ab4f",
+      "size": 2131133
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0007/receipt.json",
+      "sha256": "fe4b8a1a4c622730f38a7b972d81240b714c909ac0dd8a9936534314cd312593",
+      "size": 5050
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0008/payload.bin",
+      "sha256": "9d73da4521eac94958530fdf9602eae91a9f8c3657e7dcd8782a9e51dd689624",
+      "size": 1024628
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0008/receipt.json",
+      "sha256": "5a7d8fcc8537497ff7c6df4847607d7f419d64d760abbdf64b7a619336bca257",
+      "size": 5049
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0009/payload.bin",
+      "sha256": "4f0d0b51192fc1910e177131e03d4132e15cd140aa4ddf72463428256501db0b",
+      "size": 1902813
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0009/receipt.json",
+      "sha256": "65f7b397d772f077aba5c293d0894c4ac92c9f724ad479f9aad5c695755bb2b1",
+      "size": 5050
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0010/payload.bin",
+      "sha256": "76a6edc9a9071c1db97ef84cd2bc5b4a1898a52926f97a8e39e48f2a6ac58f72",
+      "size": 1958285
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0010/receipt.json",
+      "sha256": "79f9bf541743702fd22d1f440ae42a31dd6c6ce1befc40c1d0ed488a30cd578a",
+      "size": 5050
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0011/payload.bin",
+      "sha256": "a5188111a4cc3868e17e83c8232dc5ef7a96b0bd946f0d7f3f694c84da602f48",
+      "size": 922275
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0011/receipt.json",
+      "sha256": "07eb106665b0fe5754aaac01118a36daeee72aaff013b62bf55677a72eac2327",
+      "size": 5045
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0012/payload.bin",
+      "sha256": "f0f4fdec17db308352254072d4f8b49b5f6d948434b03e96f8cc87ffa32fd058",
+      "size": 2110258
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0012/receipt.json",
+      "sha256": "13509ea6e807af62ba7134b660e5316b79ec3672f51cb0f67fa023ac206ae2f9",
+      "size": 5050
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0013/payload.bin",
+      "sha256": "be5ed7426d96d09e13e7a9aa7d29b20b15df1be8b206bb5796aa8526bd1936d3",
+      "size": 2227852
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0013/receipt.json",
+      "sha256": "d713c4b1d89fdab88a257368f82e3552d8cea7bd5fd12483060c2cdfc90de2a0",
+      "size": 5050
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0014/payload.bin",
+      "sha256": "4e7c74380bf9789cf8d2695939141436bf2dc7e8d838543d4913fec9b097505a",
+      "size": 1094539
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0014/receipt.json",
+      "sha256": "6c5f70e0c0f8544a963194d1ef51b9bc800b35e06da95fcaec14245d97825115",
+      "size": 5050
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0015/payload.bin",
+      "sha256": "4de4e435b584cc0ac610de4a536376d1d495c026b050c12dd9713256112fbb61",
+      "size": 40763
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0015/receipt.json",
+      "sha256": "a423a514a30dd32d2beab1eeaa2ac3e06d5a0dd90f1fbac2b49b3e76f8971182",
+      "size": 5040
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0016/payload.bin",
+      "sha256": "30a12b2be79c88f9b991e30d4f7778bc1e4bee6ad3fa4c8c1b79c059d9c46982",
+      "size": 44484
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0016/receipt.json",
+      "sha256": "4e81a5d5a80908d6b059827c84bba7cdf8eb9f8619ffe26f9eee5653eec38361",
+      "size": 5040
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0017/payload.bin",
+      "sha256": "83b3ed203618bc5ec1cf8084e3164a36664cd2b5c52dc0eaf7d0ec53abe4b752",
+      "size": 35272
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0017/receipt.json",
+      "sha256": "025c75fb7691e09c63e4c8abafc20c451ed1266a3c531449788a56ad851232c1",
+      "size": 5040
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0018/payload.bin",
+      "sha256": "62890e8b8423b3a589f077a59de2ec1164d53c5ae088fc07a879bcfc52f5973b",
+      "size": 37712
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0018/receipt.json",
+      "sha256": "72685bd90e2cd1f1b12e8329be2beee271db538bff01b0f1f1f024866705861c",
+      "size": 5040
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0019/payload.bin",
+      "sha256": "b12c27df35d4b490499f3060349010082a2fbb2fd0ed807a272d6ef6fb6b221b",
+      "size": 33443
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0019/receipt.json",
+      "sha256": "8ce4a386959031425c9fd88655f3b169ca7ffaedaa3c0c838f2e12575e890636",
+      "size": 5040
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0020/payload.bin",
+      "sha256": "cfa39bcc5c0b566b893f66a839bcdf9aa6d0ee5feb51dc256c5ad103811a34ab",
+      "size": 34808
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/objects/0020/receipt.json",
+      "sha256": "fb5767c72e1233c6129f9db5721651eff44d23ac17d9b7002eabbf55131b771b",
+      "size": 5040
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/payload.bin",
+      "sha256": "d02e3679aec449cc5cb1b762811e1941dc1ac964be443cb7274a0525e2cc7e0a",
+      "size": 2626603
+    },
+    {
+      "relative_path": "jp-mhlw-ndb-utilisation/receipt.json",
+      "sha256": "89497b6d63548b2a5bb84e0f55db997ee7fe5f281e7977fdec07a4e0021a5c03",
+      "size": 5050
+    },
+    {
+      "relative_path": "jp-mhlw-nhi-price/objects/0001/payload.bin",
+      "sha256": "161d801b4c94314c725eb19daf06af8834d7fc66c8aa4c503566ac818363a4bb",
+      "size": 386582
+    },
+    {
+      "relative_path": "jp-mhlw-nhi-price/objects/0001/receipt.json",
+      "sha256": "a72483ff9808cc6b55415975e76620a4f1ebae3c46c7172e1a94e1b3fc4d2109",
+      "size": 6756
+    },
+    {
+      "relative_path": "jp-mhlw-nhi-price/objects/0002/payload.bin",
+      "sha256": "91b30234eafc4fa60f3af8eb9363be926608bebc8b7754a5b5973dba7b856cd6",
+      "size": 215907
+    },
+    {
+      "relative_path": "jp-mhlw-nhi-price/objects/0002/receipt.json",
+      "sha256": "2f513affbe39eca093b8180ba31e03b7a99dada1d99ff85e27b9527371a01d31",
+      "size": 6756
+    },
+    {
+      "relative_path": "jp-mhlw-nhi-price/objects/0003/payload.bin",
+      "sha256": "1f523b83fd121cec341caba4efdf8acd9d001b547a6a94c03c8c21068e126f66",
+      "size": 24492
+    },
+    {
+      "relative_path": "jp-mhlw-nhi-price/objects/0003/receipt.json",
+      "sha256": "6ef489197941b34b5ddcc49fd7523fec6a1e8d76f696d58c420ee39aa2b2c193",
+      "size": 6751
+    },
+    {
+      "relative_path": "jp-mhlw-nhi-price/objects/0004/payload.bin",
+      "sha256": "4e9c75a80d74a2d103732dc2b5d956a3ab735df5fdf4ee89decf0e7f23cf0f5a",
+      "size": 738415
+    },
+    {
+      "relative_path": "jp-mhlw-nhi-price/objects/0004/receipt.json",
+      "sha256": "82f7f553ef2267bfdf3a610377052467cf84eb0def4f88a441161d9ce70f0de0",
+      "size": 6756
+    },
+    {
+      "relative_path": "jp-mhlw-nhi-price/payload.bin",
+      "sha256": "21bb77b08fb9dd5fabf8776b89cfcb8db5ac3ee5316424e9b6418546e8888628",
+      "size": 727243
+    },
+    {
+      "relative_path": "jp-mhlw-nhi-price/receipt.json",
+      "sha256": "a5ffcb3fcfd373f5f831bfead9da01b3245b9829315cc364f98c077d1ee9f5a7",
+      "size": 6756
+    },
+    {
+      "relative_path": "rights.json",
+      "sha256": "7644927f0bcf092f40c1248f5ae84926a69ace1c66f8c3e1e50f75cc115b6ec9",
+      "size": 2871
+    }
+  ],
+  "dry_run": true,
+  "maintainer_approved": false
+}

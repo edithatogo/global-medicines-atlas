@@ -1,0 +1,34 @@
+{
+  "plan_version": "1",
+  "release_version": "brazil-register-20261030",
+  "target": {
+    "destination": "hugging_face",
+    "repository": "edithatogo/global-medicines-atlas-brazil-register-20261030",
+    "revision": "main",
+    "public_base_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-brazil-register-20261030"
+  },
+  "artifacts": [
+    {
+      "relative_path": "README.md",
+      "sha256": "0371061d30f6b99bd71bb47daa2a76b2adc4af751b1574235a81515f95c5a741",
+      "size": 641
+    },
+    {
+      "relative_path": "br-anvisa-medicines/payload.bin",
+      "sha256": "f0b546e2d3a737a90fbc866348356cd766344bd2f4b8f488a43d66a0d7a30877",
+      "size": 45920138
+    },
+    {
+      "relative_path": "br-anvisa-medicines/receipt.json",
+      "sha256": "ea608dea771788d397c000289bfd4bf335e69f7b45255102d3cb1102588e2d6c",
+      "size": 5039
+    },
+    {
+      "relative_path": "rights.json",
+      "sha256": "0524365b1ee539b4356a4730f772ff52821d0118a4cda6dd0430dcd55815ded5",
+      "size": 704
+    }
+  ],
+  "dry_run": true,
+  "maintainer_approved": false
+}

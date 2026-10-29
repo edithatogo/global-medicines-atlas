@@ -1,0 +1,22 @@
+{
+  "receipt_version": "1",
+  "plan_sha256": "1f6af99713e5ad8aa47fdcf01dde9f420a8d86ae0a40d478fee4380b0ba55790",
+  "artifact_sha256": [
+    "d8e5b096a79a371e0a3cc15079b4b723a6a58c0316be35068e724b24d4cebcb4",
+    "bea0f5b2c31e609e802f3ca21007879d9a47baafd3e553cbdc8365ebfea48c4b",
+    "2bfe38cccac054f1e962e2f30f4c3a88b8116fb204442506ce94e64757b41e78",
+    "a46b9f850624c141010401da47e065dd33f509b53f7628a8ec538a501c0e3b29"
+  ],
+  "target": {
+    "destination": "hugging_face",
+    "repository": "edithatogo/global-medicines-atlas-colombia-register-20261030",
+    "revision": "main",
+    "public_base_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-colombia-register-20261030"
+  },
+  "state": "uploaded",
+  "recorded_at": "2026-10-29T21:02:33.499547Z",
+  "remote_revision": "4bdd05123581aad6ff1effdae93e6de100e0d5e8",
+  "verification_uri": null,
+  "failure_reason": null,
+  "verified_artifacts": []
+}

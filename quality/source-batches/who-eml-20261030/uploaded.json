@@ -1,0 +1,24 @@
+{
+  "receipt_version": "1",
+  "plan_sha256": "83b6ffb64ded519c575ebd989f63cc8809c654989dcc708ecb0aafaf396d2b74",
+  "artifact_sha256": [
+    "70f487ac84024755554973c26fac36db73a33e92c7d34e59a9c3741b2c7d2728",
+    "53e7b6ab5d50ca5d8c57ed0814a024eb018430a0c09d925e6decd06cd6fa4432",
+    "1a7f7a23e5b9d4510d63b868fc4925acfac15ee5fbb24ca857865eaccf96f324",
+    "69daf7c8399b85978ba85e143d3af34e6ccf7f3d493b1e056daa7ef909d64eb2",
+    "f222adb81aba9de8fd2bddb34c5325e39ac466eb2775006e7b16dc9d0321174e",
+    "a9d26310810de7af4d6e01104b8c8474f3370341722c22b62977de3af4857b60"
+  ],
+  "target": {
+    "destination": "hugging_face",
+    "repository": "edithatogo/global-medicines-atlas-who-eml-20261030",
+    "revision": "main",
+    "public_base_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-who-eml-20261030"
+  },
+  "state": "uploaded",
+  "recorded_at": "2026-10-29T22:53:35.829395Z",
+  "remote_revision": "89238704c0e97d00f628b5a06d8e959be51418f1",
+  "verification_uri": null,
+  "failure_reason": null,
+  "verified_artifacts": []
+}

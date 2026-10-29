@@ -1,0 +1,44 @@
+{
+  "plan_version": "1",
+  "release_version": "who-mi4a-20261030",
+  "target": {
+    "destination": "hugging_face",
+    "repository": "edithatogo/global-medicines-atlas-who-mi4a-20261030",
+    "revision": "main",
+    "public_base_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-who-mi4a-20261030"
+  },
+  "artifacts": [
+    {
+      "relative_path": "README.md",
+      "sha256": "970fdd529a139abace463c46fa0f90369dce82612b0174eacc41de0363e820ad",
+      "size": 1395
+    },
+    {
+      "relative_path": "global-who-mi4a/objects/0001/payload.bin",
+      "sha256": "66e0ec5066a6b374c77f1f2beb009c73aaabb57a5db54baf74efa111d1ee5a8d",
+      "size": 57798
+    },
+    {
+      "relative_path": "global-who-mi4a/objects/0001/receipt.json",
+      "sha256": "e7d59dc67e23f1ff974430e018c70156410272c9256949898c66c8a402629963",
+      "size": 5361
+    },
+    {
+      "relative_path": "global-who-mi4a/payload.bin",
+      "sha256": "da6a45be413117d8ecceafe1e16ca3f265b25c68f9bbe41761e5a5220d2356f1",
+      "size": 2089997
+    },
+    {
+      "relative_path": "global-who-mi4a/receipt.json",
+      "sha256": "cf0d891e199d23470d561e3d16d6ad894096055782662f631e718476293c9868",
+      "size": 5366
+    },
+    {
+      "relative_path": "rights.json",
+      "sha256": "29e399381cbd0084d77246a109511569ed7ca9ead0c64f65ae03e61992689bcc",
+      "size": 878
+    }
+  ],
+  "dry_run": true,
+  "maintainer_approved": false
+}

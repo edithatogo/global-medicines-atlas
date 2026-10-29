@@ -7,7 +7,8 @@ deferred; original federation and Stable v1 gates are unchanged.
 
 ## First qualified batch
 
-Thirteen sources, 39 immutable native files, acquired using the shared batch runner:
+Thirteen sources, 39 immutable native files, acquired and publicly verified using
+the shared batch runner and Actions-only publisher:
 
 | Batch | Sources | Exact scope |
 |---|---|---|
@@ -54,9 +55,10 @@ rights do not authorize every object or historical release in a source.
 
 ## Continuing inventory
 
-The remaining 87 entries have individual assessments being finalised, including four with
-previously retained private evidence. An absent recipe is unfinished engineering,
-not an external blocker. Public access alone is not a redistribution licence.
-No source is counted complete merely because a landing page was fetched.
+All 100 entries now have individual terminal outcomes: 13 newly public archives,
+four retained private archives and 83 documented blockers. The complete ledger
+is `docs/qualification/unfinished-source-assessment-20261030.md`. Missing recipes
+are not used as external blockers. Public access alone is not a redistribution
+licence; no source is complete merely because a landing page was fetched.
 
 WHO MI4A uses the WHO dataset terms for public-health-purpose reproduction and distribution. It is not relabelled under the separate data.who.int licence. Original anonymisation, attribution and restrictions remain attached. Both XLSX files passed digest and ZIP member integrity verification.

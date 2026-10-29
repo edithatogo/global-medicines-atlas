@@ -1,6 +1,6 @@
 {
   "scope": "Thirteen sources; 39 selected native objects only",
-  "publication_verified": false,
+  "publication_verified": true,
   "federation_resumed": false,
   "objects": [
     {
@@ -280,5 +280,7 @@
       "format": "xlsx",
       "members": 20
     }
-  ]
+  ],
+  "publication_evidence": "quality/qualifications/unfinished-source-assessment-20261030.json",
+  "hosted_payloads_matching_local_validation": 39
 }
