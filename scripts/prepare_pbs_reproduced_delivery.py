@@ -265,7 +265,11 @@ def verify_anonymous_published_candidate(
     info = transport.public.dataset_info(
         DATASET, revision=revision, files_metadata=True, timeout=30
     )
-    if info.sha != revision or info.private or info.gated:
+    if (
+        info.sha != revision
+        or info.private is not False
+        or info.gated is not False
+    ):
         raise ValueError("PBS publication revision is not anonymously public")
     remote_path = f"silver/pbs/v4/2026-04-01/{OUTPUT_ID}/values.parquet"
     siblings = cast("list[Any]", info.siblings or [])

@@ -1889,3 +1889,12 @@ def test_anonymous_pbs_readback_binds_revision_path_and_bytes(
     info.private = True
     with pytest.raises(ValueError, match="not anonymously public"):
         delivery.verify_anonymous_published_candidate(transport, SHA)
+    info.private = None
+    with pytest.raises(ValueError, match="not anonymously public"):
+        delivery.verify_anonymous_published_candidate(transport, SHA)
+    info.private = False
+    info.siblings[0].size -= 1
+    with pytest.raises(ValueError, match="object metadata differs"):
+        delivery.verify_anonymous_published_candidate(transport, SHA)
+    with pytest.raises(ValueError, match="exact commit"):
+        delivery.verify_anonymous_published_candidate(transport, "main")
