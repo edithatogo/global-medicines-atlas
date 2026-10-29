@@ -22,7 +22,7 @@ PlatinumSemanticDimension = Literal[
     "terminology",
     "source_structure",
 ]
-EntityGranularity = Literal[
+V1EntityGranularity = Literal[
     "service_item",
     "medicine_item",
     "evidence_edge",
@@ -30,11 +30,21 @@ EntityGranularity = Literal[
     "coverage_record",
     "provenance_record",
 ]
+EntityGranularity = Literal[V1EntityGranularity, "source_record"]
 Capability = Literal[
     "exact_v4_resolution",
     "anonymous_verified_read",
     "verified_cache_offline",
 ]
+
+
+def validate_granularity_dimension(
+    dimension: PlatinumSemanticDimension, granularity: EntityGranularity
+) -> None:
+    """Keep generic native source records out of domain-specific claims."""
+    if granularity == "source_record" and dimension != "source_structure":
+        raise ValueError("source records require source-structure semantics")
+
 
 __all__ = [
     "MAX_QUERY_OFFSET",
@@ -43,4 +53,6 @@ __all__ = [
     "EntityGranularity",
     "PlatinumSemanticDimension",
     "SemanticDimension",
+    "V1EntityGranularity",
+    "validate_granularity_dimension",
 ]

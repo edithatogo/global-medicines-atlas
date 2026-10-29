@@ -26,6 +26,7 @@ from .platinum_types import (
     RESOURCE_ID_PATTERN,
     EntityGranularity,
     PlatinumSemanticDimension,
+    validate_granularity_dimension,
 )
 from .strict_json import unique_json_object
 
@@ -60,6 +61,9 @@ def admit_product_configuration(
     """
     profile = ProductAdmissionProfile.model_validate(
         profile.model_dump(mode="python")
+    )
+    validate_granularity_dimension(
+        profile.semantic_dimension, profile.entity_granularity
     )
     closure = verify_receipt_closure(contract, receipts, schema=schema)
     expected_roles = sorted(profile.receipt_roles, key=lambda item: item.role)

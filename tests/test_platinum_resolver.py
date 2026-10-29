@@ -179,27 +179,51 @@ def test_resolve_is_storage_neutral_and_exact() -> None:
     assert not hub.requests
 
 
-def test_source_structure_is_admitted_without_semantic_promotion() -> None:
+@pytest.mark.parametrize("granularity", ["evidence_edge", "source_record"])
+def test_source_structure_is_admitted_without_semantic_promotion(
+    granularity: str,
+) -> None:
     hub = Hub()
     base = resource()
     manifest = semantic_manifest(
         base.binding.contract_sha256,
         resource_id="au.pbs.source-structure",
         dimension="source_structure",
-        granularity="evidence_edge",
+        granularity=granularity,
     )
     pbs_resource = replace(
         base,
         resource_id="au.pbs.source-structure",
         semantic_dimension="source_structure",
-        entity_granularity="evidence_edge",
+        entity_granularity=granularity,
         semantic_manifest=manifest,
     )
     with resolver(hub, pbs_resource) as client:
         resolved = client.resolve("au.pbs.source-structure")
         assert resolved.semantic_dimension == "source_structure"
-        assert resolved.entity_granularity == "evidence_edge"
+        assert resolved.entity_granularity == granularity
     assert not hub.requests
+
+
+def test_source_record_cannot_claim_funding_semantics() -> None:
+    base = resource()
+    manifest = semantic_manifest(
+        base.binding.contract_sha256,
+        resource_id="au.pbs.source-records",
+        dimension="funding",
+        granularity="source_record",
+    )
+    candidate = replace(
+        base,
+        resource_id="au.pbs.source-records",
+        semantic_dimension="funding",
+        entity_granularity="source_record",
+        semantic_manifest=manifest,
+    )
+    with pytest.raises(
+        ValueError, match="source records require source-structure"
+    ):
+        resolver(Hub(), candidate)
 
 
 def test_remote_read_and_explicit_offline_cache_roundtrip() -> None:

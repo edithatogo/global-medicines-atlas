@@ -666,6 +666,29 @@ def test_download_overrun_is_not_written(tmp_path):
     assert target.read_bytes() == b"1234"
 
 
+def test_download_allows_explicit_large_object_deadline(monkeypatch, tmp_path):
+    transport = object.__new__(transport_class())
+    transport.cache = tmp_path
+    target = tmp_path / "object"
+    seen = []
+
+    def run(command, **kwargs):
+        seen.append((command, kwargs))
+        return SimpleNamespace(stdout=str(target))
+
+    monkeypatch.setattr(subprocess, "run", run)
+    assert (
+        transport.download_object(
+            "owner/data", "a" * 40, "x", 637012122, timeout=900
+        )
+        == target
+    )
+    assert seen[0][0][-1] == "900"
+    assert seen[0][1]["timeout"] == 900
+    with pytest.raises(ValueError, match="timeout outside"):
+        transport.download_object("owner/data", "a" * 40, "x", 1, timeout=901)
+
+
 def test_download_expired_deadline_writes_no_source_bytes(tmp_path):
     class Stream(httpx.SyncByteStream):
         def __iter__(self):

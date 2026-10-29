@@ -33,6 +33,7 @@ from .platinum_types import (
     Capability,
     EntityGranularity,
     PlatinumSemanticDimension,
+    validate_granularity_dimension,
 )
 
 BASE_CAPABILITIES: tuple[Capability, ...] = (
@@ -57,6 +58,7 @@ _GRANULARITIES = {
     "history_event",
     "coverage_record",
     "provenance_record",
+    "source_record",
 }
 
 
@@ -347,6 +349,9 @@ def _resolve_resource(
         raise ValueError("invalid semantic dimension")
     if resource.entity_granularity not in _GRANULARITIES:
         raise ValueError("invalid entity granularity")
+    validate_granularity_dimension(
+        resource.semantic_dimension, resource.entity_granularity
+    )
     digest = hashlib.sha256(resource.contract).hexdigest()
     if digest != resource.binding.contract_sha256:
         raise ValueError("binding contract digest mismatch")

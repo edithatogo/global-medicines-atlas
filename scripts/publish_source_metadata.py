@@ -45,6 +45,7 @@ MAX_OBJECT_BYTES = 512 * 1024 * 1024
 MAX_TOTAL_BYTES = 2 * 1024 * 1024 * 1024
 MAX_OBJECTS = 10000
 WORKER_ARGUMENT_COUNT = 7
+MAX_DOWNLOAD_SECONDS = 900
 
 
 class HubTransport:
@@ -62,10 +63,16 @@ class HubTransport:
         return str(info.sha)
 
     def download_object(
-        self, dataset: str, revision: str, path: str, limit: int
+        self,
+        dataset: str,
+        revision: str,
+        path: str,
+        limit: int,
+        *,
+        timeout: int = 60,
     ) -> Path:
         """Restore one object through the existing isolated bounded reader."""
-        return self._download(dataset, revision, path, limit)
+        return self._download(dataset, revision, path, limit, timeout=timeout)
 
     def _download(
         self,
@@ -73,8 +80,12 @@ class HubTransport:
         revision: str,
         path: str,
         limit: int = MAX_OBJECT_BYTES,
+        *,
+        timeout: int = 60,
     ) -> Path:
         """Kill the isolated reader at the absolute wall-clock deadline."""
+        if type(timeout) is not int or not 1 <= timeout <= MAX_DOWNLOAD_SECONDS:
+            raise ValueError("download timeout outside supported bound")
         try:
             result = subprocess.run(
                 [
@@ -86,8 +97,9 @@ class HubTransport:
                     path,
                     str(limit),
                     str(self.cache),
+                    str(timeout),
                 ],
-                timeout=60,
+                timeout=timeout,
                 capture_output=True,
                 text=True,
                 check=True,
@@ -112,18 +124,22 @@ class HubTransport:
         revision: str,
         path: str,
         limit: int = MAX_OBJECT_BYTES,
+        *,
+        timeout: int = 60,
     ) -> Path:
         url = (
             f"https://huggingface.co/datasets/{dataset}/resolve/{revision}/"
             + quote(path)
         )
         target = self.cache / hashlib.sha256(url.encode()).hexdigest()
-        policy = AcquisitionPolicy(allowed_hosts=HOSTS, timeout_seconds=60)
-        deadline = time.monotonic() + 60
+        if type(timeout) is not int or not 1 <= timeout <= MAX_DOWNLOAD_SECONDS:
+            raise ValueError("download timeout outside supported bound")
+        policy = AcquisitionPolicy(allowed_hosts=HOSTS, timeout_seconds=timeout)
+        deadline = time.monotonic() + timeout
         with httpx.Client(
             transport=BoundIPAddressTransport(policy=policy),
             trust_env=False,
-            timeout=60,
+            timeout=timeout,
             follow_redirects=False,
             headers={"Accept-Encoding": "identity"},
         ) as client:
@@ -525,7 +541,7 @@ def main() -> None:
 
 if __name__ == "__main__":
     if (
-        len(sys.argv) == WORKER_ARGUMENT_COUNT
+        len(sys.argv) in {WORKER_ARGUMENT_COUNT, WORKER_ARGUMENT_COUNT + 1}
         and sys.argv[1] == "--download-worker"
     ):
         require_hosted_main(os.environ.get("GITHUB_SHA", ""))
@@ -533,7 +549,13 @@ if __name__ == "__main__":
         worker.cache = Path(sys.argv[6])
         print(
             worker._download_worker(  # pyright: ignore[reportPrivateUsage]
-                sys.argv[2], sys.argv[3], sys.argv[4], int(sys.argv[5])
+                sys.argv[2],
+                sys.argv[3],
+                sys.argv[4],
+                int(sys.argv[5]),
+                timeout=int(sys.argv[7])
+                if len(sys.argv) > WORKER_ARGUMENT_COUNT
+                else 60,
             )
         )
     else:

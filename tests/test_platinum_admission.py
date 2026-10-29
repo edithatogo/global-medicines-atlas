@@ -272,3 +272,24 @@ def test_semantic_digest_is_checked_before_resource_is_provisioned():
     raw, semantic, profile = product_inputs()
     with pytest.raises(ValueError, match="independent trust"):
         provision(raw, semantic + b" ", profile)
+
+
+def test_source_record_admission_is_structural_not_funding():
+    raw, semantic, profile = product_inputs()
+    claims = json.loads(semantic)
+    claims["entity_granularity"] = "source_record"
+    semantic = json.dumps(claims).encode()
+    profile = profile.model_copy(
+        update={
+            "entity_granularity": "source_record",
+            "semantic_sha256": hashlib.sha256(semantic).hexdigest(),
+        }
+    )
+    result = provision(raw, semantic, profile)
+    assert result.entity_granularity == "source_record"
+    assert result.semantic_dimension == "source_structure"
+    funding = profile.model_copy(update={"semantic_dimension": "funding"})
+    with pytest.raises(
+        ValueError, match="source records require source-structure"
+    ):
+        provision(raw, semantic, funding)

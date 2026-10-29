@@ -12,6 +12,7 @@ from .platinum_types import (
     EntityGranularity,
     PlatinumSemanticDimension,
     SemanticDimension,
+    V1EntityGranularity,
 )
 
 if TYPE_CHECKING:
@@ -42,7 +43,7 @@ class DatasetIdentityEnvelope(PlatinumSurfaceModel):
     semantic_manifest_sha256: Sha256
     jurisdiction: Jurisdiction
     semantic_dimension: SemanticDimension
-    entity_granularity: EntityGranularity
+    entity_granularity: V1EntityGranularity
     source_id: str = Field(min_length=1)
     acquisition_id: str = Field(min_length=1)
     layer: str = Field(min_length=1)
@@ -99,7 +100,10 @@ def dataset_identity(
     resource: ResolvedResource, *, jurisdiction: str
 ) -> DatasetIdentityEnvelope:
     """Translate one admitted resolver result without performing I/O."""
-    if resource.semantic_dimension == "source_structure":
+    if (
+        resource.semantic_dimension == "source_structure"
+        or resource.entity_granularity == "source_record"
+    ):
         raise ValueError("source_structure requires the v2 identity contract")
     return DatasetIdentityEnvelope(
         resource_id=resource.resource_id,

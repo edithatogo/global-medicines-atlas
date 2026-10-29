@@ -15,6 +15,7 @@ import pytest
 import yaml
 from scripts import assemble_historical_pbs_reference_manifest as assemble_nodes
 from scripts import prepare_historical_pbs_qualification as prepare_cli
+from scripts import prepare_pbs_reproduced_delivery as delivery
 from scripts import qualify_historical_pbs_public as cli
 from test_au_pbs_v3 import _zip  # ruff: ignore[import-private-name]
 from test_australian_source_contracts import (
@@ -1625,3 +1626,298 @@ def test_package_mode_keeps_existing_hosted_deadlines_and_read_only_artifacts():
                 "inputs.qualification_scope != 'native-value-package'"
                 in old["if"]
             )
+
+
+def _stub_delivery_preparation(monkeypatch, tmp_path, *, tamper=False):
+    payload = b"pbs synthetic bytes"
+    digest = hashlib.sha256(payload).hexdigest()
+    monkeypatch.setattr(delivery, "OUTPUT_ID", "o" * 64)
+    monkeypatch.setattr(delivery, "PARQUET_SHA256", digest)
+    monkeypatch.setattr(delivery, "PARQUET_BYTES", len(payload))
+    monkeypatch.setattr(delivery, "NATIVE_SHA256", "n" * 64)
+    monkeypatch.setattr(delivery, "MEMBER_SHA256", "m" * 64)
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("GITHUB_REPOSITORY", "edithatogo/global-medicines-atlas")
+    monkeypatch.setenv("GITHUB_REF", "refs/heads/main")
+    monkeypatch.setenv("GITHUB_SHA", SHA)
+    monkeypatch.setenv("GITHUB_RUN_ID", "1")
+    monkeypatch.setenv("GITHUB_RUN_ATTEMPT", "1")
+    monkeypatch.setenv("GITHUB_EVENT_NAME", "workflow_dispatch")
+    monkeypatch.setenv("RUNNER_TEMP", str(tmp_path))
+    monkeypatch.setattr(delivery, "verify_checkout", lambda _commit: None)
+    attestation = tmp_path / "rights.json"
+    attestation.write_text(
+        json.dumps({
+            "public_release_rights_attested": True,
+            "authorized_output": {
+                "output_id": "o" * 64,
+                "parquet_sha256": digest,
+                "parquet_bytes": len(payload),
+                "native_core_sha256": "n" * 64,
+                "member_sha256": "m" * 64,
+                "archive_sha256": delivery.ARCHIVE_SHA256,
+                "dataset": delivery.DATASET,
+                "revision": delivery.REVISION,
+            },
+        })
+    )
+    monkeypatch.setattr(delivery, "ATTESTATION", attestation)
+    inputs = SimpleNamespace(archive=b"", xml=b"", parent=None, binding=None)
+    monkeypatch.setattr(
+        hosted, "_verified_inputs", lambda *_args, **_kwargs: inputs
+    )
+
+    def build(*args):
+        output = args[-1]
+        for directory in ("first", "second"):
+            target = output / directory
+            target.mkdir(parents=True)
+            (target / "values.parquet").write_bytes(
+                b"bad" if tamper and directory == "second" else payload
+            )
+        return {
+            "complete_source_reparse_and_restore": True,
+            "parquet_bytes_identical": True,
+            "package": {
+                "output_id": "o" * 64,
+                "parquet": {"bytes": len(payload), "sha256": digest},
+                "coverage": {"native_core_sha256": "n" * 64},
+                "member_binding": {"member_payload": {"sha256": "m" * 64}},
+            },
+        }
+
+    monkeypatch.setattr(hosted, "qualify_value_package_pair", build)
+    return delivery
+
+
+def test_reproduced_delivery_preparation_retains_verified_candidate(
+    monkeypatch, tmp_path
+):
+    delivery = _stub_delivery_preparation(monkeypatch, tmp_path)
+    output = tmp_path / "candidate"
+    report = delivery.prepare(SHA, output)
+    assert report["candidate_retained"] is True
+    assert report["publication_performed"] is False
+    assert report["v4_admission_performed"] is False
+    assert (output / "first" / "values.parquet").is_file()
+    assert (output / "second" / "values.parquet").is_file()
+
+
+def test_reproduced_delivery_rejects_staged_byte_mismatch(
+    monkeypatch, tmp_path
+):
+    delivery = _stub_delivery_preparation(monkeypatch, tmp_path, tamper=True)
+    with pytest.raises(ValueError, match="staged Parquet bytes"):
+        delivery.prepare(SHA, tmp_path / "candidate")
+
+
+def test_reproduced_delivery_rejects_local_or_outside_runner(
+    monkeypatch, tmp_path
+):
+    delivery = _stub_delivery_preparation(monkeypatch, tmp_path)
+    with pytest.raises(ValueError, match="inside RUNNER_TEMP"):
+        delivery.prepare(SHA, tmp_path.parent / "outside")
+    monkeypatch.delenv("GITHUB_ACTIONS")
+    with pytest.raises(ValueError, match="exact main Actions"):
+        delivery.prepare(SHA, tmp_path / "candidate")
+
+
+def test_reproduced_delivery_cli_redacts_exception(
+    monkeypatch, capsys, tmp_path
+):
+    monkeypatch.setattr(
+        delivery,
+        "prepare",
+        lambda *_args: (_ for _ in ()).throw(
+            ValueError("sensitive source text")
+        ),
+    )
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "prepare",
+            "--exact-commit",
+            SHA,
+            "--output",
+            str(tmp_path / "candidate"),
+        ],
+    )
+    assert delivery.main() == 1
+    output = capsys.readouterr()
+    assert "sensitive" not in output.out + output.err
+    assert json.loads(output.out)["status"] == "preparation_failed"
+
+
+def test_reproduced_delivery_rejects_wrong_attestation(monkeypatch, tmp_path):
+    delivery = _stub_delivery_preparation(monkeypatch, tmp_path)
+    attestation = json.loads(delivery.ATTESTATION.read_text())
+    attestation["authorized_output"]["parquet_sha256"] = "0" * 64
+    delivery.ATTESTATION.write_text(json.dumps(attestation))
+    with pytest.raises(ValueError, match="rights attestation"):
+        delivery.prepare(SHA, tmp_path / "candidate")
+    assert not (tmp_path / "candidate").exists()
+
+
+def test_reproduced_delivery_rejects_checkout_mismatch(monkeypatch):
+    monkeypatch.setattr(
+        delivery.subprocess,
+        "run",
+        lambda *_args, **_kwargs: SimpleNamespace(stdout="b" * 40),
+    )
+    with pytest.raises(ValueError, match="checkout does not match"):
+        delivery.verify_checkout(SHA)
+
+
+def test_reproduced_delivery_rejects_dirty_checkout(monkeypatch):
+    def git_run(args, **_kwargs):
+        if args[1] == "rev-parse":
+            return SimpleNamespace(stdout=SHA)
+        raise delivery.subprocess.CalledProcessError(1, args)
+
+    monkeypatch.setattr(delivery.subprocess, "run", git_run)
+    with pytest.raises(delivery.subprocess.CalledProcessError):
+        delivery.verify_checkout(SHA)
+
+
+def test_reproduced_delivery_rejects_non_dispatch_event(monkeypatch, tmp_path):
+    _stub_delivery_preparation(monkeypatch, tmp_path)
+    monkeypatch.setenv("GITHUB_EVENT_NAME", "push")
+    with pytest.raises(ValueError, match="explicit workflow dispatch"):
+        delivery.prepare(SHA, tmp_path / "candidate")
+    assert not (tmp_path / "candidate").exists()
+
+
+def _publication_plan_inputs():
+    root = Path(
+        "quality/qualifications/pbs-reproduced-public-tree-readback-20261029"
+    )
+    candidate = {
+        "status": "candidate_prepared_not_published_or_admitted",
+        "output_id": delivery.OUTPUT_ID,
+        "parquet_sha256": delivery.PARQUET_SHA256,
+        "parquet_bytes": delivery.PARQUET_BYTES,
+        "source_member_sha256": delivery.MEMBER_SHA256,
+        "native_core_sha256": delivery.NATIVE_SHA256,
+        "candidate_retained": True,
+        "publication_performed": False,
+        "v4_admission_performed": False,
+        "workflow_commit": SHA,
+        "run_id": "123",
+        "run_attempt": "1",
+    }
+    return (
+        candidate,
+        (root / "readback.json").read_bytes(),
+        (root / "tree.json").read_bytes(),
+    )
+
+
+def test_publication_plan_binds_frozen_evidence_without_mutation():
+    candidate, readback, tree = _publication_plan_inputs()
+    plan = delivery.build_publication_plan(candidate, readback, tree)
+    assert plan["expected_parent_revision"] == delivery.PUBLIC_PARENT_REVISION
+    assert plan["remote_path"].endswith(f"/{delivery.OUTPUT_ID}/values.parquet")
+    assert plan["maintainer_publication_approved"] is False
+    assert plan["publication_performed"] is False
+    assert plan["v4_admission_performed"] is False
+
+
+def test_publication_plan_rejects_altered_candidate_and_evidence():
+    candidate, readback, tree = _publication_plan_inputs()
+    candidate["parquet_sha256"] = "0" * 64
+    with pytest.raises(ValueError, match="exact candidate"):
+        delivery.build_publication_plan(candidate, readback, tree)
+    candidate["parquet_sha256"] = delivery.PARQUET_SHA256
+    with pytest.raises(ValueError, match="readback digest"):
+        delivery.build_publication_plan(candidate, readback + b" ", tree)
+    with pytest.raises(ValueError, match="frozen observation"):
+        delivery.build_publication_plan(candidate, readback, tree + b" ")
+
+
+def test_publication_plan_rejects_destination_collision(monkeypatch):
+    candidate, readback, tree = _publication_plan_inputs()
+    entries = json.loads(tree)
+    entries[0]["path"] = (
+        f"silver/pbs/v4/2026-04-01/{delivery.OUTPUT_ID}/values.parquet"
+    )
+    tree = json.dumps(entries).encode()
+    tree_digest = hashlib.sha256(tree).hexdigest()
+    observation = json.loads(readback)
+    observation["tree_sha256"] = tree_digest
+    readback = json.dumps(observation).encode()
+    monkeypatch.setattr(delivery, "PUBLIC_TREE_SHA256", tree_digest)
+    monkeypatch.setattr(
+        delivery, "PUBLIC_READBACK_SHA256", hashlib.sha256(readback).hexdigest()
+    )
+    with pytest.raises(ValueError, match="target already exists"):
+        delivery.build_publication_plan(candidate, readback, tree)
+
+
+def test_anonymous_pbs_readback_binds_revision_path_and_bytes(
+    monkeypatch, tmp_path
+):
+    payload = b"synthetic PBS parquet"
+    candidate = tmp_path / "readback"
+    candidate.write_bytes(payload)
+    monkeypatch.setattr(delivery, "PARQUET_BYTES", len(payload))
+    monkeypatch.setattr(
+        delivery, "PARQUET_SHA256", hashlib.sha256(payload).hexdigest()
+    )
+    path = f"silver/pbs/v4/2026-04-01/{delivery.OUTPUT_ID}/values.parquet"
+    info = SimpleNamespace(
+        sha=SHA,
+        private=False,
+        gated=False,
+        siblings=[SimpleNamespace(rfilename=path, size=len(payload))],
+    )
+    calls = []
+    transport = SimpleNamespace(
+        public=SimpleNamespace(dataset_info=lambda *_args, **_kwargs: info),
+        download_object=lambda *args, **kwargs: (
+            calls.append((args, kwargs)),
+            candidate,
+        )[1],
+    )
+    receipt = delivery.verify_anonymous_published_candidate(transport, SHA)
+    assert receipt["anonymous_digest_verification"] == "passed"
+    assert calls == [
+        ((delivery.DATASET, SHA, path, len(payload)), {"timeout": 900})
+    ]
+    candidate.write_bytes(b"incorrect")
+    with pytest.raises(ValueError, match="published bytes differ"):
+        delivery.verify_anonymous_published_candidate(transport, SHA)
+    info.private = True
+    with pytest.raises(ValueError, match="not anonymously public"):
+        delivery.verify_anonymous_published_candidate(transport, SHA)
+    info.private = None
+    with pytest.raises(ValueError, match="not anonymously public"):
+        delivery.verify_anonymous_published_candidate(transport, SHA)
+    info.private = False
+    info.siblings[0].size -= 1
+    with pytest.raises(ValueError, match="object metadata differs"):
+        delivery.verify_anonymous_published_candidate(transport, SHA)
+    with pytest.raises(ValueError, match="exact commit"):
+        delivery.verify_anonymous_published_candidate(transport, "main")
+
+
+def test_pbs_live_parent_rejects_drift_and_collision():
+    candidate, readback, tree = _publication_plan_inputs()
+    plan = delivery.build_publication_plan(candidate, readback, tree)
+    info = SimpleNamespace(
+        sha=delivery.PUBLIC_PARENT_REVISION,
+        private=False,
+        gated=False,
+        siblings=[SimpleNamespace(rfilename="existing")],
+    )
+    public = SimpleNamespace(dataset_info=lambda *_args, **_kwargs: info)
+    delivery.verify_live_publication_parent(public, plan)
+    info.sha = SHA
+    with pytest.raises(ValueError, match="parent changed"):
+        delivery.verify_live_publication_parent(public, plan)
+    info.sha = delivery.PUBLIC_PARENT_REVISION
+    info.siblings.append(SimpleNamespace(rfilename=plan["remote_path"]))
+    with pytest.raises(ValueError, match="already contains"):
+        delivery.verify_live_publication_parent(public, plan)
+    plan["parquet_sha256"] = "0" * 64
+    with pytest.raises(ValueError, match="exact candidate"):
+        delivery.verify_live_publication_parent(public, plan)

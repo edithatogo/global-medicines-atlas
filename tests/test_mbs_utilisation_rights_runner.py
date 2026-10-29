@@ -704,10 +704,14 @@ def test_public_download_adapter_uses_existing_bounded_worker(
     target = tmp_path / "object"
     calls = []
     monkeypatch.setattr(
-        hub, "_download", lambda *args: calls.append(args) or target
+        hub,
+        "_download",
+        lambda *args, **kwargs: calls.append((args, kwargs)) or target,
     )
     assert hub.download_object("dataset", "revision", "raw/path", 123) == target
-    assert calls == [("dataset", "revision", "raw/path", 123)]
+    assert calls == [
+        (("dataset", "revision", "raw/path", 123), {"timeout": 60})
+    ]
 
 
 @pytest.mark.parametrize(
