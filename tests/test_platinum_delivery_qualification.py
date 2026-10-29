@@ -278,3 +278,26 @@ def test_source_structure_qualification_checks_bounds_and_consumer_agreement(
             **options,
             "resource_id": "unknown.resource",
         })
+
+    class FailedExport:
+        exit_code = 1
+
+    monkeypatch.setattr(
+        qualification.CliRunner,
+        "invoke",
+        lambda *_args, **_kwargs: FailedExport(),
+    )
+    with pytest.raises(ValueError, match="CLI export failed"):
+        qualification.qualify_structure_consumers(**options)
+
+    class InvalidExport:
+        exit_code = 0
+        stdout = "{}\n"
+
+    monkeypatch.setattr(
+        qualification.CliRunner,
+        "invoke",
+        lambda *_args, **_kwargs: InvalidExport(),
+    )
+    with pytest.raises(ValueError, match="export evidence differs"):
+        qualification.qualify_structure_consumers(**options)
