@@ -1,0 +1,21 @@
+{
+  "receipt_version": "1",
+  "plan_sha256": "7c78456d3224abe845acffd180e0dd26c6714ea3ad7dbae7c9f871138665dd95",
+  "artifact_sha256": [
+    "3066727092abff0e8f16601f2bed9b09cfa60020e0638df47bdd170b6e6ef36b",
+    "fe0bc6f7dea44ef112d7dac1ad63797132c674a1baeadc93f5775c68897ac76f",
+    "71f1249d6867a50aaa7142bd32e818bd7a24d6f8148e2bb4999a243b95b77ee2"
+  ],
+  "target": {
+    "destination": "hugging_face",
+    "repository": "edithatogo/global-medicines-atlas-ema-bronze-20261029",
+    "revision": "main",
+    "public_base_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-bronze-20261029/resolve/main"
+  },
+  "state": "prepared",
+  "recorded_at": "2026-10-29T12:09:11.669034Z",
+  "remote_revision": null,
+  "verification_uri": null,
+  "failure_reason": null,
+  "verified_artifacts": []
+}

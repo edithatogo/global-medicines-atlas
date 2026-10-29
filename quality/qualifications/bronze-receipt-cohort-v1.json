@@ -19,11 +19,11 @@
     },
     "source_catalog": {
       "path": "src/global_medicines_atlas/data/medicine_source_catalog.json",
-      "sha256": "5e0fb779c8c692b4b8fdaa845b7339df0cfe1a217106ce1aa5f185f91a5efdac"
+      "sha256": "f400731c4d4287368bfa4c0ecffd07a2416b4ea5abaa7e09982fd53adcc26cc8"
     },
     "source_landing_queue": {
       "path": "quality/qualifications/bronze-source-landing-queue.json",
-      "sha256": "e16597266cadf588bec545a3ba9b2d2ddc161485a8ec62119e8c41afa7c49000"
+      "sha256": "281c9a25627ca959c054b332a922cc3a20e91cf1c5a53269cd97aeb0aed6895e"
     },
     "landing_overrides": {
       "path": "src/global_medicines_atlas/data/source_landing_overrides.json",
@@ -31,7 +31,7 @@
     },
     "qualification_dependencies": {
       "algorithm": "sha256 of the ordered path/existence/content-digest manifest; covers full-scope evaluator evidence, direct current-scope receipt candidates, specialized authorization metadata, and adapter/fixture scan inputs",
-      "sha256": "4f070f18e2497a9ccd2000088638ff5c8b1962fa0a437917646d90dc3ceb96bc",
+      "sha256": "6e666092238fb0702815f9ab7a9ba78e4f290f95ec2cfc62505e2d601b26de55",
       "file_count": 149,
       "files": [
         {
@@ -147,7 +147,7 @@
         {
           "path": "quality/qualifications/bronze-source-landing-queue.json",
           "exists": true,
-          "sha256": "e16597266cadf588bec545a3ba9b2d2ddc161485a8ec62119e8c41afa7c49000"
+          "sha256": "281c9a25627ca959c054b332a922cc3a20e91cf1c5a53269cd97aeb0aed6895e"
         },
         {
           "path": "quality/qualifications/cms-partd-public-huggingface-20260829.json",
@@ -462,7 +462,7 @@
         {
           "path": "src/global_medicines_atlas/data/medicine_source_catalog.json",
           "exists": true,
-          "sha256": "5e0fb779c8c692b4b8fdaa845b7339df0cfe1a217106ce1aa5f185f91a5efdac"
+          "sha256": "f400731c4d4287368bfa4c0ecffd07a2416b4ea5abaa7e09982fd53adcc26cc8"
         },
         {
           "path": "src/global_medicines_atlas/data/source_landing_overrides.json",
@@ -767,7 +767,7 @@
         {
           "path": "tests/test_source_acquisition.py",
           "exists": true,
-          "sha256": "d3bf2f6b6bd30a672c880415097d1d3aa5b8e751f13a56583d03901b4bed70f3"
+          "sha256": "3bc3e0304362958cff6d62b2efe37d27a53d6c1180541d11e5043570f92193ac"
         },
         {
           "path": "tests/test_source_receipts.py",

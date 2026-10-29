@@ -1499,3 +1499,39 @@ coverage, new sources/terminology, and optional experiments remain deferred.
 This scheduling direction changes no acceptance criterion, current M-105/M-107
 disposition, or conditional release approval; current states come from the
 authoritative contract, reconciliation, and bound receipts.
+
+## Bounded Swiss/EMA direct-download batch — 29 October 2026
+
+- [x] Inspect exactly `ch-foph-specialities` and `eu-ema-json`; record official
+  URLs, rights findings and explicit bounds in
+  `docs/qualification/swiss-ema-direct-download-batch.md`.
+- [x] Retrieve one unchanged EMA medicines index using existing machinery,
+  parse JSON, verify written bytes and bind the exact publication plan.
+  117 existing retrieval/publication tests and context validation passed.
+- [x] Record Swiss HEAD 200 with missing official index links and unresolved
+  data-specific rights; no Swiss payload retained or source admission claimed.
+- [ ] Obtain exact EMA publication decision, execute through hosted Actions and
+  verify anonymous remote digests. Stop after that result; do not enable a
+  schedule, fetch linked documents or start backfills/Silver/Gold/federation.
+
+This bounded preparation does not close the overall source landing track or
+change its qualified/deferred denominators.
+
+## Shared URL configuration follow-up — 29 October 2026
+
+The maintainer requested one all-source URL file and reusable execution, then
+confirmed proceeding. This bounded follow-up covers configuration and shared
+local download behavior for the existing 176 IDs; it does not authorize live
+acquisition of every source, publication or federation work.
+
+- [x] Export all catalogue URLs/types/access/rights to `docs/data-sources/source-urls.csv`.
+- [x] Connect explicit file and single-response API selections to existing
+  `acquire_source`; preview offline, skip blocked rows, preserve receipts and
+  refuse output reuse. No second URL registry or source-specific downloader.
+- [x] Replace EMA's documentation-page download URL with its observed JSON
+  endpoint and regenerate existing B0/landing projections without changing rights.
+- [x] Focused acquisition, catalogue and projection tests; static checks.
+- [ ] Integrate the updated technical PR after final-head protected CI.
+
+Stop at that integration. Retain the earlier Swiss blocker and separate EMA
+publication decision; no other live sources, schedules or deferred milestones.

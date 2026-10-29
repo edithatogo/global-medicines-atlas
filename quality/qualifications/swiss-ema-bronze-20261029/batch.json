@@ -1,0 +1,61 @@
+{
+  "batch_id": "swiss-ema-direct-download-20261029",
+  "scope": [
+    "ch-foph-specialities",
+    "eu-ema-json"
+  ],
+  "max_payloads": 2,
+  "schedules_enabled": false,
+  "linked_document_downloads": false,
+  "historical_backfill": false,
+  "silver_gold_work": false,
+  "catalog_admission_changed": false,
+  "sources": [
+    {
+      "source_id": "eu-ema-json",
+      "state": "local_candidate_prepared_publication_pending",
+      "receipt": "retrieval.json",
+      "rights_url": "https://www.ema.europa.eu/en/about-us/about-website/legal-notice",
+      "rights_finding": "Official notice permits reproduction/distribution of EMA content with attribution, excluding third-party material. Proposed application to this unmodified medicines index; no approval or existing archive manifest scope inferred.",
+      "download_documentation": "https://www.ema.europa.eu/en/about-us/about-website/download-website-data-json-data-format"
+    },
+    {
+      "source_id": "ch-foph-specialities",
+      "state": "blocked_for_archival",
+      "candidate_url": "https://epl.bag.admin.ch/static/sl/publication/fhir/foph-sl-publication-latest-de.ndjson",
+      "candidate_discovery": "third-party reference, verified by HEAD at official host; not resolved from current official UI links",
+      "head_observed_on": "2026-10-29",
+      "http_status": 200,
+      "content_type": "application/octet-stream",
+      "content_length": 93566103,
+      "last_modified": "Mon, 05 Oct 2026 22:11:13 GMT",
+      "etag": "0x8DF232D91848F13",
+      "official_landing_page": "https://sl.bag.admin.ch/resources/current-and-archived-data",
+      "official_index": "https://epl.bag.admin.ch/api/sl/public/resources/current",
+      "index_observation": {
+        "excel": {
+          "all": {
+            "fileUrl": null,
+            "lastUpdated": null
+          },
+          "currentChanges": {
+            "fileUrl": null,
+            "lastUpdated": null
+          },
+          "publication": {
+            "fileUrl": null,
+            "lastUpdated": null
+          }
+        },
+        "fhir": {
+          "fileUrl": null,
+          "lastUpdated": null
+        }
+      },
+      "browser_observation": "Current export controls point to /static/undefined and last-updated values are null.",
+      "payload_retained": false,
+      "rights_finding": "No export-specific retention or redistribution grant established in the inspected official landing page and linked FHIR guide. FHIR implementation-guide terms do not establish dataset rights.",
+      "next_action": "Resume only with a reliable official export identity and applicable data reuse terms; no crawling or alternative-source substitution."
+    }
+  ]
+}
