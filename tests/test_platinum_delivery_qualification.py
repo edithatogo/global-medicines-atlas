@@ -274,6 +274,7 @@ def test_source_structure_qualification_checks_bounds_and_consumer_agreement(
     with pytest.raises(ValueError, match="outside its bounds"):
         qualification.qualify_structure_consumers(**{**options, "limit": 0})
     with pytest.raises(ValueError, match="API canary failed"):
-        qualification.qualify_structure_consumers(
-            **{**options, "resource_id": "unknown.resource"}
-        )
+        qualification.qualify_structure_consumers(**{
+            **options,
+            "resource_id": "unknown.resource",
+        })
