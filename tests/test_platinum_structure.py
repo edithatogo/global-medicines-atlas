@@ -467,3 +467,17 @@ def test_v2_source_structure_without_operator_service_is_unavailable():
     )
     assert response.status_code == 503
     assert response.headers["cache-control"] == "no-store"
+
+
+def test_source_structure_page_retains_source_record_granularity(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    identity = _identity().model_copy(
+        update={"entity_granularity": "source_record"}
+    )
+    page = _service(
+        monkeypatch, identity=identity, result=_available_result()
+    ).query(RESOURCE_ID, SourceStructureQuery(columns=("kind",), limit=1))
+    assert page.identity.entity_granularity == "source_record"
+    assert page.identity.semantic_dimension == "source_structure"
+    assert page.comparison_validity == "not_evaluated"
