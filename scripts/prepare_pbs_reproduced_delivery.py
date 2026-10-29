@@ -85,6 +85,10 @@ def verify_checkout(exact_commit: str) -> None:
 def prepare(exact_commit: str, output: Path) -> dict[str, Any]:
     """Rebuild and retain the exact candidate without publication or admission."""
     context = hosted._context(exact_commit)  # pyright: ignore[reportPrivateUsage] -- reuse the exact hosted guard
+    if os.environ.get("GITHUB_EVENT_NAME") != "workflow_dispatch":
+        raise ValueError(
+            "PBS preparation requires an explicit workflow dispatch"
+        )
     verify_checkout(exact_commit)
     runner_temp = os.environ.get("RUNNER_TEMP")
     if not runner_temp:

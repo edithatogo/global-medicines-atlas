@@ -1642,6 +1642,7 @@ def _stub_delivery_preparation(monkeypatch, tmp_path, *, tamper=False):
     monkeypatch.setenv("GITHUB_SHA", SHA)
     monkeypatch.setenv("GITHUB_RUN_ID", "1")
     monkeypatch.setenv("GITHUB_RUN_ATTEMPT", "1")
+    monkeypatch.setenv("GITHUB_EVENT_NAME", "workflow_dispatch")
     monkeypatch.setenv("RUNNER_TEMP", str(tmp_path))
     monkeypatch.setattr(delivery, "verify_checkout", lambda _commit: None)
     attestation = tmp_path / "rights.json"
@@ -1776,3 +1777,11 @@ def test_reproduced_delivery_rejects_dirty_checkout(monkeypatch):
     monkeypatch.setattr(delivery.subprocess, "run", git_run)
     with pytest.raises(delivery.subprocess.CalledProcessError):
         delivery.verify_checkout(SHA)
+
+
+def test_reproduced_delivery_rejects_non_dispatch_event(monkeypatch, tmp_path):
+    _stub_delivery_preparation(monkeypatch, tmp_path)
+    monkeypatch.setenv("GITHUB_EVENT_NAME", "push")
+    with pytest.raises(ValueError, match="explicit workflow dispatch"):
+        delivery.prepare(SHA, tmp_path / "candidate")
+    assert not (tmp_path / "candidate").exists()
