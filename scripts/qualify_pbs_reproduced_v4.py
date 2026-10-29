@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from pathlib import Path
 from typing import Any, Literal, cast
 
 from scripts import prepare_pbs_reproduced_delivery as candidate
@@ -239,3 +240,68 @@ def authenticate_preparation_artifact(
             "PBS preparation receipt differs from the exact candidate"
         )
     return receipt_raw, manifest_raw
+
+
+def retain_authenticated_receipts(
+    output_dir: Path,
+    *,
+    workflow_commit: str,
+    run_id: str,
+    publication_artifact_id: str,
+    preparation_artifact_id: str,
+) -> dict[str, Any]:
+    """Retain two authenticated metadata artifacts without creating admission."""
+    from tempfile import TemporaryDirectory  # ruff: ignore[import-outside-top-level]
+
+    publication_raw, publication = authenticate_publication_artifact(
+        workflow_commit=workflow_commit,
+        run_id=run_id,
+        artifact_id=publication_artifact_id,
+    )
+    preparation_raw, manifest_raw = authenticate_preparation_artifact(
+        workflow_commit=workflow_commit,
+        run_id=run_id,
+        artifact_id=preparation_artifact_id,
+    )
+    output_dir = Path(output_dir)
+    if output_dir.exists() or output_dir.is_symlink():
+        raise FileExistsError("PBS receipt output already exists")
+    if not output_dir.parent.is_dir():
+        raise ValueError("PBS receipt output parent does not exist")
+    inputs = {
+        "publication.json": publication_raw,
+        "preparation.json": preparation_raw,
+        "package-manifest.json": manifest_raw,
+    }
+    summary = {
+        "schema_id": "global-medicines-atlas.pbs-authenticated-hosted-receipts",
+        "schema_version": 1,
+        "status": "authenticated_not_admitted",
+        "workflow_commit": workflow_commit,
+        "run_id": run_id,
+        "publication_artifact_id": publication_artifact_id,
+        "preparation_artifact_id": preparation_artifact_id,
+        "dataset": candidate.DATASET,
+        "revision": publication["revision"],
+        "output_id": candidate.OUTPUT_ID,
+        "parquet_sha256": candidate.PARQUET_SHA256,
+        "files": {
+            name: hashlib.sha256(raw).hexdigest()
+            for name, raw in sorted(inputs.items())
+        },
+        "v4_admission_performed": False,
+        "consumer_canaries_run": False,
+    }
+    with TemporaryDirectory(
+        prefix=".pbs-hosted-receipts-", dir=output_dir.parent
+    ) as temporary:
+        staged = Path(temporary) / "receipts"
+        staged.mkdir()
+        for name, raw in inputs.items():
+            (staged / name).write_bytes(raw)
+        (staged / "manifest.json").write_text(
+            json.dumps(summary, sort_keys=True, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        staged.rename(output_dir)
+    return summary

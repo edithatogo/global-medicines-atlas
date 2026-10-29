@@ -2319,3 +2319,43 @@ def test_pbs_preparation_artifact_binds_manifest_and_native_core(monkeypatch):
         admission.authenticate_preparation_artifact(
             workflow_commit=SHA, run_id="123", artifact_id="99"
         )
+
+
+def test_pbs_authenticated_receipts_are_retained_without_admission(
+    monkeypatch, tmp_path
+):
+    from scripts import qualify_pbs_reproduced_v4 as admission  # ruff: ignore[import-outside-top-level]
+
+    monkeypatch.setattr(
+        admission,
+        "authenticate_publication_artifact",
+        lambda **_kwargs: (b"publication", {"revision": "b" * 40}),
+    )
+    monkeypatch.setattr(
+        admission,
+        "authenticate_preparation_artifact",
+        lambda **_kwargs: (b"preparation", b"manifest"),
+    )
+    output = tmp_path / "receipts"
+    summary = admission.retain_authenticated_receipts(
+        output,
+        workflow_commit=SHA,
+        run_id="123",
+        publication_artifact_id="98",
+        preparation_artifact_id="99",
+    )
+    assert summary["v4_admission_performed"] is False
+    assert summary["consumer_canaries_run"] is False
+    assert (output / "publication.json").read_bytes() == b"publication"
+    assert (
+        summary["files"]["package-manifest.json"]
+        == hashlib.sha256(b"manifest").hexdigest()
+    )
+    with pytest.raises(FileExistsError, match="already exists"):
+        admission.retain_authenticated_receipts(
+            output,
+            workflow_commit=SHA,
+            run_id="123",
+            publication_artifact_id="98",
+            preparation_artifact_id="99",
+        )
