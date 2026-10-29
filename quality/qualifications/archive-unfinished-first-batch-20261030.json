@@ -1,5 +1,5 @@
 {
-  "scope": "Twelve sources; 37 selected native objects only",
+  "scope": "Thirteen sources; 39 selected native objects only",
   "publication_verified": false,
   "federation_resumed": false,
   "objects": [
@@ -265,6 +265,20 @@
       "bytes": 2947434,
       "format": "pdf",
       "pages": 118
+    },
+    {
+      "path": "build/archive-unfinished-20261030/who-mi4a/global-who-mi4a/payload.bin",
+      "sha256": "da6a45be413117d8ecceafe1e16ca3f265b25c68f9bbe41761e5a5220d2356f1",
+      "bytes": 2089997,
+      "format": "xlsx",
+      "members": 29
+    },
+    {
+      "path": "build/archive-unfinished-20261030/who-mi4a/global-who-mi4a/objects/0001/payload.bin",
+      "sha256": "66e0ec5066a6b374c77f1f2beb009c73aaabb57a5db54baf74efa111d1ee5a8d",
+      "bytes": 57798,
+      "format": "xlsx",
+      "members": 20
     }
   ]
 }

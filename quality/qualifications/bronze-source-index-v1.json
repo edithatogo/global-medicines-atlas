@@ -18,8 +18,8 @@
   "landing_disposition_counts": {
     "credentialed_and_excluded": 15,
     "landed_and_evidenced": 42,
-    "manual_only_documented_acquisition": 83,
-    "rights_blocked": 35,
+    "manual_only_documented_acquisition": 82,
+    "rights_blocked": 36,
     "temporarily_unavailable": 1
   },
   "missing_source_is_negative_evidence": false,
@@ -31,8 +31,8 @@
   },
   "schema_id": "global-medicines-atlas.b0-source-index",
   "schema_version": 1,
-  "snapshot_id": "sha256:0234c08cbf23b64ecf676ea368eb4f8a875aeb685e184685bb9fc6967f641381",
-  "snapshot_sha256": "0234c08cbf23b64ecf676ea368eb4f8a875aeb685e184685bb9fc6967f641381",
+  "snapshot_id": "sha256:e48e8433f6ad13ae2d9345549eb8a145ef529740dab99eb01b276e4a3f2d00ee",
+  "snapshot_sha256": "e48e8433f6ad13ae2d9345549eb8a145ef529740dab99eb01b276e4a3f2d00ee",
   "source_count": 176,
   "sources": [
     {
@@ -3155,19 +3155,17 @@
     },
     {
       "access_mode": "download",
-      "acquisition_family": "document_collection",
+      "acquisition_family": "static_file_download",
       "api_url": "",
       "authentication": "none",
       "authority": "World Health Organization",
-      "current_landing_disposition": "manual_only_documented_acquisition",
+      "current_landing_disposition": "rights_blocked",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.who.int/teams/immunization-vaccines-and-biologicals/vaccine-access/mi4a",
-      "download_url": "https://www.who.int/teams/immunization-vaccines-and-biologicals/vaccine-access/mi4a",
+      "download_url": "https://cdn.who.int/media/docs/default-source/immunization/mi4a/who-mi4a-dataset-final-september-2026.xlsx?sfvrsn=a19b7135_5&download=true",
       "evidence_scope": "none",
       "expected_formats": [
-        "xlsx",
-        "pdf",
-        "html"
+        "xlsx"
       ],
       "index_presence_implies_coverage": false,
       "indexed": true,

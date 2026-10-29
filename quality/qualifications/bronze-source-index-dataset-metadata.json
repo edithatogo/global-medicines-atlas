@@ -1,10 +1,10 @@
 {
   "catalog_reviewed_at": "2026-10-17",
   "citation": {
-    "preferred_citation": "Global Medicines Atlas contributors. Global Medicines Atlas B0 Source Index (sha256:0234c08cbf23b64ecf676ea368eb4f8a875aeb685e184685bb9fc6967f641381).",
+    "preferred_citation": "Global Medicines Atlas contributors. Global Medicines Atlas B0 Source Index (sha256:e48e8433f6ad13ae2d9345549eb8a145ef529740dab99eb01b276e4a3f2d00ee).",
     "repository": "https://github.com/edithatogo/global-medicines-atlas",
     "title": "Global Medicines Atlas B0 Source Index",
-    "version": "sha256:0234c08cbf23b64ecf676ea368eb4f8a875aeb685e184685bb9fc6967f641381"
+    "version": "sha256:e48e8433f6ad13ae2d9345549eb8a145ef529740dab99eb01b276e4a3f2d00ee"
   },
   "dataset_id": "global-medicines-source-index",
   "description": "Versioned discovery index of medicines-related authorities and source surfaces; index presence is not coverage or qualification.",
@@ -13,13 +13,13 @@
       "format": "JSON",
       "media_type": "application/json",
       "path": "quality/qualifications/bronze-source-index-v1.json",
-      "sha256": "fb93e05594cb6d532cdc91e67ba8d7a2030043b62b022fe5d9c6e67588b58edc"
+      "sha256": "26bb1c88884c49ad9fb72e455291eb5a29526cb87f0c839011870158a23d71fe"
     },
     {
       "format": "Parquet",
       "media_type": "application/vnd.apache.parquet",
       "path": "quality/qualifications/bronze-source-index-v1.parquet",
-      "sha256": "a01c0c32cf0b9c51cda91f2ab2c28da7a3196a77e1240640365ce56306126d66"
+      "sha256": "4aa7f97ee30ca2a11529f2ae4ec321e4a275266bd63e040b34c6c11c24b552f1"
     }
   ],
   "evidence_boundary": {
@@ -37,8 +37,8 @@
   },
   "schema_id": "global-medicines-atlas.b0-source-index-dataset-metadata",
   "schema_version": 1,
-  "snapshot_id": "sha256:0234c08cbf23b64ecf676ea368eb4f8a875aeb685e184685bb9fc6967f641381",
-  "snapshot_sha256": "0234c08cbf23b64ecf676ea368eb4f8a875aeb685e184685bb9fc6967f641381",
+  "snapshot_id": "sha256:e48e8433f6ad13ae2d9345549eb8a145ef529740dab99eb01b276e4a3f2d00ee",
+  "snapshot_sha256": "e48e8433f6ad13ae2d9345549eb8a145ef529740dab99eb01b276e4a3f2d00ee",
   "source_count": 176,
   "title": "Global Medicines Atlas B0 Source Index"
 }

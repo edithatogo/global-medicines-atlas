@@ -557,9 +557,9 @@ def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:
     assert audit["queue_state_counts"] == {
         "credentialed_and_excluded": 15,
         "landed_and_evidenced": 42,
-        "manual_only_documented_acquisition": 83,
+        "manual_only_documented_acquisition": 82,
         "not_yet_implemented": 0,
-        "rights_blocked": 35,
+        "rights_blocked": 36,
         "superseded_by_reused_source": 0,
         "temporarily_unavailable": 1,
     }

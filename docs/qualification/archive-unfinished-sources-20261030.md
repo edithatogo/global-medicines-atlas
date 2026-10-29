@@ -7,7 +7,7 @@ deferred; original federation and Stable v1 gates are unchanged.
 
 ## First qualified batch
 
-Twelve sources, 37 immutable native files, acquired using the shared batch runner:
+Thirteen sources, 39 immutable native files, acquired using the shared batch runner:
 
 | Batch | Sources | Exact scope |
 |---|---|---|
@@ -18,6 +18,9 @@ Twelve sources, 37 immutable native files, acquired using the shared batch runne
 | brazil-conitec-20261030 | CONITEC | Published 2012–first-half-2025 demand-status ZIP |
 | japan-mhlw-20261030 | NHI price, NDB utilisation | Five current price files; 21 medicine quantity tables from tenth NDB release |
 | sweden-tlv-20261030 | TLV | Complete current price/subsidy export; no individual decision PDFs |
+| who-eml-20261030 | WHO EML | 2025 adult and children model lists |
+| east-africa-eml-20261030 | Kenya, Uganda | National lists published in 2023 |
+| who-mi4a-20261030 | WHO MI4A | 2026 public purchase dataset and vaccine product list |
 
 Exact URLs, source terms, reuse observations and attribution are retained in each
 `quality/source-batches/<batch>/` directory. Local preparation does not count as
@@ -33,7 +36,7 @@ bound; their explicit bound is now 512 MiB. CONITEC returned
 `binary/octet-stream`, now accepted by this runner. Core receipt contracts and
 historical acceptance bindings are unchanged.
 
-Local validation: 134 focused acquisition/publication tests passed; all 37
+Local validation: 134 focused acquisition/publication tests passed; all 39
 payload digests verified, ZIP/XLSX member CRC checks passed, Singapore response
 record count equals its declared total. Metadata-only validation evidence is
 `quality/qualifications/archive-unfinished-first-batch-20261030.json`.
@@ -51,7 +54,9 @@ rights do not authorize every object or historical release in a source.
 
 ## Continuing inventory
 
-The remaining 88 entries are still under assessment, including four with
+The remaining 87 entries have individual assessments being finalised, including four with
 previously retained private evidence. An absent recipe is unfinished engineering,
 not an external blocker. Public access alone is not a redistribution licence.
 No source is counted complete merely because a landing page was fetched.
+
+WHO MI4A uses the WHO dataset terms for public-health-purpose reproduction and distribution. It is not relabelled under the separate data.who.int licence. Original anonymisation, attribution and restrictions remain attached. Both XLSX files passed digest and ZIP member integrity verification.

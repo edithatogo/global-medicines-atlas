@@ -19,11 +19,11 @@
     },
     "source_catalog": {
       "path": "src/global_medicines_atlas/data/medicine_source_catalog.json",
-      "sha256": "74c188a9ae20e5fa067bae113df03340f8d86caf6d2f77885d2e921a4b0abff9"
+      "sha256": "724ba0fd30be1131f5b00a378af470ae3487460e5382224894d870907f70df24"
     },
     "source_landing_queue": {
       "path": "quality/qualifications/bronze-source-landing-queue.json",
-      "sha256": "fabdf14a118e91de173e44a56a75ff2f0970040f2fa9a1c20f8489a81f70686a"
+      "sha256": "031ae428cbf3c374e105a72e596346571159b92d4b435dff183bbf0e3d8f8b45"
     },
     "landing_overrides": {
       "path": "src/global_medicines_atlas/data/source_landing_overrides.json",
@@ -31,7 +31,7 @@
     },
     "qualification_dependencies": {
       "algorithm": "sha256 of the ordered path/existence/content-digest manifest; covers full-scope evaluator evidence, direct current-scope receipt candidates, specialized authorization metadata, and adapter/fixture scan inputs",
-      "sha256": "5332406df563025b4334529d0e28f251e791fb881977ffe5dc192eefd117c612",
+      "sha256": "7b13774e69a518231004a01dfb359da7cd1a488be7c05a4e70b4d260fd8bed2e",
       "file_count": 149,
       "files": [
         {
@@ -147,7 +147,7 @@
         {
           "path": "quality/qualifications/bronze-source-landing-queue.json",
           "exists": true,
-          "sha256": "fabdf14a118e91de173e44a56a75ff2f0970040f2fa9a1c20f8489a81f70686a"
+          "sha256": "031ae428cbf3c374e105a72e596346571159b92d4b435dff183bbf0e3d8f8b45"
         },
         {
           "path": "quality/qualifications/cms-partd-public-huggingface-20260829.json",
@@ -462,7 +462,7 @@
         {
           "path": "src/global_medicines_atlas/data/medicine_source_catalog.json",
           "exists": true,
-          "sha256": "74c188a9ae20e5fa067bae113df03340f8d86caf6d2f77885d2e921a4b0abff9"
+          "sha256": "724ba0fd30be1131f5b00a378af470ae3487460e5382224894d870907f70df24"
         },
         {
           "path": "src/global_medicines_atlas/data/source_landing_overrides.json",
@@ -1801,11 +1801,11 @@
           "GLOBAL"
         ],
         "title": "WHO MI4A vaccine market information",
-        "queue_state": "manual_only_documented_acquisition",
+        "queue_state": "rights_blocked",
         "evidence_scope": "none",
         "defer_reason_code": "no_qualifying_direct_receipt",
-        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
-        "next_action": "execute and receipt the documented public manual acquisition",
+        "reason": "source-specific retention and transformation rights unresolved: review_required",
+        "next_action": "record source-specific retention and transformation rights",
         "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
       },
       {

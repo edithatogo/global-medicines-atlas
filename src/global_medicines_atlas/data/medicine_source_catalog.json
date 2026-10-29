@@ -4973,9 +4973,7 @@
       "evidence_limit": "MI4A vaccine-market prices and volumes are distinct from conventional medicines reimbursement and procurement.",
       "interface_status": "documented_download",
       "formats": [
-        "xlsx",
-        "pdf",
-        "html"
+        "xlsx"
       ],
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
@@ -5012,8 +5010,9 @@
       ],
       "qualification_state": "declared",
       "qualification_references": [],
-      "download_url": "https://www.who.int/teams/immunization-vaccines-and-biologicals/vaccine-access/mi4a",
-      "acquisition_profile": "public-bulk"
+      "download_url": "https://cdn.who.int/media/docs/default-source/immunization/mi4a/who-mi4a-dataset-final-september-2026.xlsx?sfvrsn=a19b7135_5&download=true",
+      "acquisition_profile": "public-bulk",
+      "api_url": null
     },
     {
       "source_id": "global-who-national-eml-index",

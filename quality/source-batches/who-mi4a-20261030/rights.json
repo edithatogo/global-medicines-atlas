@@ -1,0 +1,15 @@
+{
+  "sources": [
+    {
+      "source_id": "global-who-mi4a",
+      "url": "https://cdn.who.int/media/docs/default-source/immunization/mi4a/who-mi4a-dataset-final-september-2026.xlsx?sfvrsn=a19b7135_5&download=true",
+      "terms": "https://www.who.int/about/policies/publishing/data-policy/terms-and-conditions",
+      "licence": "WHO dataset terms: reproduction and distribution for public health purposes; no commercial promotion or de-anonymisation",
+      "scope": "2026 public vaccine purchase dataset and full product list; original anonymisation retained",
+      "surface": "download",
+      "max_bytes": 67108864
+    }
+  ],
+  "authority": "Maintainer directs remaining straightforward acquisition and publication with clear rights; exact unmodified source inventories only",
+  "exclusions": "No third-party documents, logos, personal data or clinical interpretations"
+}

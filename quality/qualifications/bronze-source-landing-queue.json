@@ -3,11 +3,11 @@
   "catalog_schema_version": 5,
   "family_counts": {
     "archive_release": 10,
-    "document_collection": 27,
+    "document_collection": 26,
     "manual_reproducible_export": 11,
     "paginated_rest_api": 13,
     "regulator_search_export": 71,
-    "static_file_download": 44
+    "static_file_download": 45
   },
   "items": [
     {
@@ -2059,17 +2059,15 @@
     },
     {
       "adapter": {
-        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
         "acquisition_profile": "public-bulk",
         "credentials_persisted": false,
-        "endpoint": "https://www.who.int/teams/immunization-vaccines-and-biologicals/vaccine-access/mi4a",
-        "family": "document_collection",
+        "endpoint": "https://cdn.who.int/media/docs/default-source/immunization/mi4a/who-mi4a-dataset-final-september-2026.xlsx?sfvrsn=a19b7135_5&download=true",
+        "family": "static_file_download",
         "formats": [
-          "xlsx",
-          "pdf",
-          "html"
+          "xlsx"
         ],
-        "pagination": "manual",
+        "pagination": "none",
         "preserves_source_bytes": true,
         "requires_reuse_gate": true,
         "requires_rights_gate": true,
@@ -2079,11 +2077,11 @@
         "https://www.who.int/teams/immunization-vaccines-and-biologicals/vaccine-access/mi4a"
       ],
       "evidence_scope": "none",
-      "next_action": "execute and receipt the documented public manual acquisition",
-      "priority": 30,
-      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
       "source_id": "global-who-mi4a",
-      "state": "manual_only_documented_acquisition"
+      "state": "rights_blocked"
     },
     {
       "adapter": {
@@ -4767,9 +4765,9 @@
   "state_counts": {
     "credentialed_and_excluded": 15,
     "landed_and_evidenced": 42,
-    "manual_only_documented_acquisition": 83,
+    "manual_only_documented_acquisition": 82,
     "not_yet_implemented": 0,
-    "rights_blocked": 35,
+    "rights_blocked": 36,
     "superseded_by_reused_source": 0,
     "temporarily_unavailable": 1
   }

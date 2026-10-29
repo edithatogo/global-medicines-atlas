@@ -9,9 +9,9 @@ Silver transformations included: **no**.
 
 - `landed_and_evidenced`: 42
 - `temporarily_unavailable`: 1
-- `rights_blocked`: 35
+- `rights_blocked`: 36
 - `credentialed_and_excluded`: 15
-- `manual_only_documented_acquisition`: 83
+- `manual_only_documented_acquisition`: 82
 - `superseded_by_reused_source`: 0
 - `not_yet_implemented`: 0
 
@@ -42,6 +42,7 @@ Silver transformations included: **no**.
 - [x] `fr-bdpm-smr-asmr` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `gb-emit` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `gb-nhs-drug-tariff` — `landed_and_evidenced`; verify receipt freshness on schedule.
+- [ ] `global-who-mi4a` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `global-who-wla` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `in-nlem` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `jp-mhlw-ndb-utilisation` — `rights_blocked`; record source-specific retention and transformation rights.
@@ -177,7 +178,6 @@ Silver transformations included: **no**.
 - [ ] `global-who-availability-surveys` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [x] `global-who-eml` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `global-who-medicine-prices` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
-- [ ] `global-who-mi4a` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `global-who-national-eml-index` — `manual_only_documented_acquisition`; Resolve source-specific rights, upstream origins, and maintainer acquisition authority for each candidate before any linked-document landing; preserve unavailable items as unknown coverage..
 - [ ] `ie-pcrs-reimbursement` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `in-nppa-ceiling-prices` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
