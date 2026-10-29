@@ -7,6 +7,7 @@ close all configured receipt roles before invoking the shared admission gate.
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import re
@@ -305,3 +306,26 @@ def retain_authenticated_receipts(
         )
         staged.rename(output_dir)
     return summary
+
+
+def main() -> None:
+    """Authenticate and retain the artifacts from one successful hosted run."""
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--workflow-commit", required=True)
+    parser.add_argument("--run-id", required=True)
+    parser.add_argument("--publication-artifact-id", required=True)
+    parser.add_argument("--preparation-artifact-id", required=True)
+    parser.add_argument("--output-dir", type=Path, required=True)
+    args = parser.parse_args()
+    summary = retain_authenticated_receipts(
+        args.output_dir,
+        workflow_commit=args.workflow_commit,
+        run_id=args.run_id,
+        publication_artifact_id=args.publication_artifact_id,
+        preparation_artifact_id=args.preparation_artifact_id,
+    )
+    print(json.dumps(summary, sort_keys=True))
+
+
+if __name__ == "__main__":
+    main()

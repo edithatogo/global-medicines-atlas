@@ -7,3 +7,15 @@ The hosted workflow refuses an append until the exact publication authority reco
 A failed or interrupted append may have changed the Hub even if no acknowledgement exists. Do not rerun the job or redispatch publication solely because an acknowledgement or receipt is missing. Preserve the retained intent, attempt, and outcome artifacts; inspect the exact destination head, path, revision and bytes through read-only routes and reconcile the result under the existing recovery contract. An Actions rerun is rejected. Never delete or overwrite an existing destination to recover. Clean temporary staged files only after the anonymous verification receipt is retained.
 
 The only configured target is `edithatogo/australian-pbs-source-archive` at the observed parent revision `208f0b0f1db7768018b3c50929596d63d16e3392`. A changed parent requires fresh reviewed inventory and a revised transaction plan, not a blind retry. The current workflow and its synthetic tests are not evidence that a hosted publication, admission, or consumer read has occurred.
+
+After a successful authorized hosted run, authenticate and retain its publication and preparation artifacts using the run's actual workflow commit, run ID, and artifact IDs:
+
+```sh
+uv run python -m scripts.qualify_pbs_reproduced_v4 \
+  --workflow-commit "$WORKFLOW_COMMIT" --run-id "$RUN_ID" \
+  --publication-artifact-id "$PUBLICATION_ARTIFACT_ID" \
+  --preparation-artifact-id "$PREPARATION_ARTIFACT_ID" \
+  --output-dir "$NEW_RECEIPT_DIRECTORY"
+```
+
+The output directory must not exist. This read-only operation authenticates the exact successful run and both artifact identities before retaining their bytes and hashes. It does not establish the remaining v4 roles, admit the product, or run consumer canaries. Keep the receipt directory with the eventual admission evidence.
