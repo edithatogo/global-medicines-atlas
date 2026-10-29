@@ -1064,8 +1064,9 @@ def test_download_batch_blocks_before_network(tmp_path, monkeypatch, problem):
 
 @pytest.mark.unit
 @pytest.mark.parametrize("surface", ["download", "single_api_response"])
+@pytest.mark.parametrize("multiple", [False, True])
 def test_download_batch_reuses_acquirer_and_preserves_receipts(
-    tmp_path, monkeypatch, surface
+    tmp_path, monkeypatch, surface, multiple
 ):
 
     source = catalog_source(
@@ -1084,6 +1085,9 @@ def test_download_batch_reuses_acquirer_and_preserves_receipts(
         expected_url=str(url),
         retention_authority_reference="synthetic test authority",
         reuse_decision=acquire_new_decision(source.source_id),
+        additional_download_urls=("https://example.test/second.zip",)
+        if multiple and surface == "download"
+        else (),
     )
     seen = []
 
@@ -1112,7 +1116,8 @@ def test_download_batch_reuses_acquirer_and_preserves_receipts(
         execute=True,
     )
     assert [r["state"] for r in results] == ["blocked", "acquired_local"]
-    assert seen == [str(url)]
+    expected = [str(url), *selection.additional_download_urls]
+    assert seen == expected
     assert (output / source.source_id / "payload.bin").read_bytes() == b"{}"
     assert (output / source.source_id / "receipt.json").is_file()
     assert (output / source.source_id / "selection.json").is_file()
@@ -1125,7 +1130,37 @@ def test_download_batch_reuses_acquirer_and_preserves_receipts(
             repository_root=tmp_path,
             execute=True,
         )
-    assert seen == [str(url)]
+    assert seen == expected
+    if selection.additional_download_urls:
+        extra = output / source.source_id / "objects/0001"
+        assert (extra / "payload.bin").read_bytes() == b"{}"
+        assert (extra / "receipt.json").is_file()
+        (output / "results.json").write_text(json.dumps(results[1:]))
+        batch.resume_batch((selection,), output)
+        (extra / "payload.bin").write_bytes(b"changed")
+        with pytest.raises(ValueError, match="digest"):
+            batch.resume_batch((selection,), output)
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "url",
+    [
+        "https://other.test/data",
+        "http://example.test/data",
+        "https://user:password@example.test/data",
+        "https://example.test:444/data",
+        "https://example.test/medicines.zip",
+    ],
+)
+def test_batch_additional_downloads_are_exact_same_host(url):
+    selection = batch.DownloadSelection(
+        source_id="test-regulator",
+        expected_url="https://example.test/medicines.zip",
+        additional_download_urls=(url,),
+    )
+    with pytest.raises(ValueError, match="additional downloads"):
+        batch.selected_source(selection, (catalog_source(),))
 
 
 @pytest.mark.unit
@@ -1292,3 +1327,11 @@ def test_batch_signed_redirect_credentials_are_not_retained(
     assert "secret-signature" not in encoded
     assert "REDACTED" in encoded
     assert "version=2026" in str(evidence.final_uri)
+
+
+def test_global_catalogue_identity_uses_existing_global_receipt_code() -> None:
+    source = catalog_source().model_copy(update={"jurisdictions": ("GLOBAL",)})
+    identity = acquisition_module._source_identity(source)
+    assert identity.jurisdiction == "GLB"
+    assert identity.catalog_id == source.source_id
+    assert source.jurisdictions == ("GLOBAL",)

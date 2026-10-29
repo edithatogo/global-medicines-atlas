@@ -1,0 +1,15 @@
+{
+  "sources": [
+    {
+      "source_id": "se-tlv-subsidies",
+      "url": "https://www.tlv.se/file/medprice",
+      "terms": "https://www.tlv.se/om-tlv/oppna-data.html",
+      "licence": "TLV explicit open-data reuse statement",
+      "scope": "Complete current price and subsidy database Excel export; not individual decision PDFs",
+      "surface": "download",
+      "max_bytes": 67108864
+    }
+  ],
+  "authority": "Maintainer directs remaining straightforward acquisition and publication with clear rights; exact unmodified source inventories only",
+  "exclusions": "No third-party documents, logos, personal data or clinical interpretations"
+}

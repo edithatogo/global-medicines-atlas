@@ -1,0 +1,15 @@
+{
+  "sources": [
+    {
+      "source_id": "global-who-eml",
+      "url": "https://iris.who.int/server/api/core/bitstreams/17642505-ecd3-4940-a691-4f1dfa0d835a/content",
+      "terms": "https://www.who.int/publications/i/item/B09474",
+      "licence": "CC BY-NC-SA 3.0 IGO; explicit licence in both PDF front matter",
+      "scope": "Unmodified 2025 WHO 24th adult list and 10th children list; noncommercial archival only",
+      "surface": "download",
+      "max_bytes": 67108864
+    }
+  ],
+  "authority": "Maintainer directs remaining straightforward acquisition and publication with clear rights; exact unmodified source inventories only",
+  "exclusions": "No third-party documents, logos, personal data or clinical interpretations"
+}

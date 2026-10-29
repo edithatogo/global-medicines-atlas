@@ -1,0 +1,166 @@
+[
+  {
+    "source_id": "ke-national-eml",
+    "surface": "download",
+    "expected_url": "https://cdn.who.int/media/docs/default-source/essential-medicines/national-essential-medicines-lists-(neml)/afro_neml/kenya-2023.pdf?sfvrsn=5f922bbf_3&download=true",
+    "retention_authority_reference": "quality/source-batches/east-africa-eml-20261030/rights.json",
+    "reuse_decision": {
+      "source_id": "ke-national-eml",
+      "disposition": "acquire-new",
+      "searched_surfaces": [
+        "local_clones",
+        "github",
+        "hugging_face",
+        "source_registry"
+      ],
+      "candidates": [
+        {
+          "surface": "source_registry",
+          "locator": "https://cdn.who.int/media/docs/default-source/essential-medicines/national-essential-medicines-lists-(neml)/afro_neml/kenya-2023.pdf?sfvrsn=5f922bbf_3&download=true",
+          "source_id": "ke-national-eml",
+          "kind": "registry",
+          "digest": null,
+          "query": null,
+          "revision": null
+        }
+      ],
+      "rationale": "No matching live payload in checked authorities; acquire exact official snapshot.",
+      "catalogue_revision": "760723adc9c2f8e8946eebe9bcada7aff212095e",
+      "discovery_snapshot": {
+        "schema_id": "global-medicines-atlas.reuse-discovery",
+        "schema_version": 1,
+        "snapshot_id": "sha256:37a4181d41b67eea99d95822e5016c23b54a5bc7222c5694c2e6cfcb737e3b65",
+        "source_id": "ke-national-eml",
+        "generated_at": "2026-10-29T20:23:47.659756Z",
+        "freshness_seconds": 86400,
+        "expires_at": "2026-10-30T20:23:47.659756Z",
+        "tool_version": "bounded-source-batch-reuse-v1",
+        "surfaces": [
+          {
+            "name": "local_clones",
+            "state": "success",
+            "query": "ke-national-eml exact source ID and payload filename",
+            "candidates": [],
+            "detail": "Declared local clones and same-day pinned remote listings checked; no matching live payload"
+          },
+          {
+            "name": "github",
+            "state": "success",
+            "query": "ke-national-eml exact source ID and payload filename",
+            "candidates": [],
+            "detail": "Declared local clones and same-day pinned remote listings checked; no matching live payload"
+          },
+          {
+            "name": "hugging_face",
+            "state": "success",
+            "query": "ke-national-eml exact source ID and payload filename",
+            "candidates": [],
+            "detail": "Declared local clones and same-day pinned remote listings checked; no matching live payload"
+          },
+          {
+            "name": "source_registry",
+            "state": "success",
+            "query": "ke-national-eml exact source ID and payload filename",
+            "candidates": [
+              {
+                "surface": "source_registry",
+                "locator": "https://cdn.who.int/media/docs/default-source/essential-medicines/national-essential-medicines-lists-(neml)/afro_neml/kenya-2023.pdf?sfvrsn=5f922bbf_3&download=true",
+                "source_id": "ke-national-eml",
+                "kind": "registry",
+                "digest": null,
+                "query": null,
+                "revision": null
+              }
+            ],
+            "detail": "Declared local clones and same-day pinned remote listings checked; no matching live payload"
+          }
+        ]
+      }
+    },
+    "redirect_hosts": [],
+    "additional_download_urls": [],
+    "max_bytes": 67108864
+  },
+  {
+    "source_id": "ug-national-eml",
+    "surface": "download",
+    "expected_url": "https://cdn.who.int/media/docs/default-source/essential-medicines/national-essential-medicines-lists-(neml)/afro_neml/uganda-2023.pdf?sfvrsn=5205bf98_3&download=true",
+    "retention_authority_reference": "quality/source-batches/east-africa-eml-20261030/rights.json",
+    "reuse_decision": {
+      "source_id": "ug-national-eml",
+      "disposition": "acquire-new",
+      "searched_surfaces": [
+        "local_clones",
+        "github",
+        "hugging_face",
+        "source_registry"
+      ],
+      "candidates": [
+        {
+          "surface": "source_registry",
+          "locator": "https://cdn.who.int/media/docs/default-source/essential-medicines/national-essential-medicines-lists-(neml)/afro_neml/uganda-2023.pdf?sfvrsn=5205bf98_3&download=true",
+          "source_id": "ug-national-eml",
+          "kind": "registry",
+          "digest": null,
+          "query": null,
+          "revision": null
+        }
+      ],
+      "rationale": "No matching live payload in checked authorities; acquire exact official snapshot.",
+      "catalogue_revision": "760723adc9c2f8e8946eebe9bcada7aff212095e",
+      "discovery_snapshot": {
+        "schema_id": "global-medicines-atlas.reuse-discovery",
+        "schema_version": 1,
+        "snapshot_id": "sha256:35bba6c6383dd6d7243690036540dfd66d49fa4012228eb583f2833d45f2e4a9",
+        "source_id": "ug-national-eml",
+        "generated_at": "2026-10-29T20:23:47.816247Z",
+        "freshness_seconds": 86400,
+        "expires_at": "2026-10-30T20:23:47.816247Z",
+        "tool_version": "bounded-source-batch-reuse-v1",
+        "surfaces": [
+          {
+            "name": "local_clones",
+            "state": "success",
+            "query": "ug-national-eml exact source ID and payload filename",
+            "candidates": [],
+            "detail": "Declared local clones and same-day pinned remote listings checked; no matching live payload"
+          },
+          {
+            "name": "github",
+            "state": "success",
+            "query": "ug-national-eml exact source ID and payload filename",
+            "candidates": [],
+            "detail": "Declared local clones and same-day pinned remote listings checked; no matching live payload"
+          },
+          {
+            "name": "hugging_face",
+            "state": "success",
+            "query": "ug-national-eml exact source ID and payload filename",
+            "candidates": [],
+            "detail": "Declared local clones and same-day pinned remote listings checked; no matching live payload"
+          },
+          {
+            "name": "source_registry",
+            "state": "success",
+            "query": "ug-national-eml exact source ID and payload filename",
+            "candidates": [
+              {
+                "surface": "source_registry",
+                "locator": "https://cdn.who.int/media/docs/default-source/essential-medicines/national-essential-medicines-lists-(neml)/afro_neml/uganda-2023.pdf?sfvrsn=5205bf98_3&download=true",
+                "source_id": "ug-national-eml",
+                "kind": "registry",
+                "digest": null,
+                "query": null,
+                "revision": null
+              }
+            ],
+            "detail": "Declared local clones and same-day pinned remote listings checked; no matching live payload"
+          }
+        ]
+      }
+    },
+    "redirect_hosts": [],
+    "additional_download_urls": [],
+    "max_bytes": 67108864
+  }
+]

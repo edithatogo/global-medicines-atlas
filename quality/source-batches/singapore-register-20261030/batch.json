@@ -1,0 +1,83 @@
+[
+  {
+    "source_id": "sg-hsa-register",
+    "surface": "single_api_response",
+    "expected_url": "https://data.gov.sg/api/action/datastore_search?resource_id=d_767279312753558cbf19d48344577084&limit=10000",
+    "retention_authority_reference": "quality/source-batches/singapore-register-20261030/rights.json",
+    "reuse_decision": {
+      "source_id": "sg-hsa-register",
+      "disposition": "acquire-new",
+      "searched_surfaces": [
+        "local_clones",
+        "github",
+        "hugging_face",
+        "source_registry"
+      ],
+      "candidates": [
+        {
+          "surface": "source_registry",
+          "locator": "https://data.gov.sg/api/action/datastore_search?resource_id=d_767279312753558cbf19d48344577084&limit=10000",
+          "source_id": "sg-hsa-register",
+          "kind": "registry",
+          "digest": null,
+          "query": null,
+          "revision": null
+        }
+      ],
+      "rationale": "No matching live payload in checked authorities; acquire exact official snapshot.",
+      "catalogue_revision": "760723adc9c2f8e8946eebe9bcada7aff212095e",
+      "discovery_snapshot": {
+        "schema_id": "global-medicines-atlas.reuse-discovery",
+        "schema_version": 1,
+        "snapshot_id": "sha256:c6bdbbd36351e23970c653dfd0269691def9b66847b49efcbd1468fd5fb9d3bf",
+        "source_id": "sg-hsa-register",
+        "generated_at": "2026-10-29T20:00:06.938759Z",
+        "freshness_seconds": 86400,
+        "expires_at": "2026-10-30T20:00:06.938759Z",
+        "tool_version": "bounded-source-batch-reuse-v1",
+        "surfaces": [
+          {
+            "name": "local_clones",
+            "state": "success",
+            "query": "sg-hsa-register exact source ID and payload filename",
+            "candidates": [],
+            "detail": "Declared local clones and same-day pinned remote listings checked; no matching live payload"
+          },
+          {
+            "name": "github",
+            "state": "success",
+            "query": "sg-hsa-register exact source ID and payload filename",
+            "candidates": [],
+            "detail": "Declared local clones and same-day pinned remote listings checked; no matching live payload"
+          },
+          {
+            "name": "hugging_face",
+            "state": "success",
+            "query": "sg-hsa-register exact source ID and payload filename",
+            "candidates": [],
+            "detail": "Declared local clones and same-day pinned remote listings checked; no matching live payload"
+          },
+          {
+            "name": "source_registry",
+            "state": "success",
+            "query": "sg-hsa-register exact source ID and payload filename",
+            "candidates": [
+              {
+                "surface": "source_registry",
+                "locator": "https://data.gov.sg/api/action/datastore_search?resource_id=d_767279312753558cbf19d48344577084&limit=10000",
+                "source_id": "sg-hsa-register",
+                "kind": "registry",
+                "digest": null,
+                "query": null,
+                "revision": null
+              }
+            ],
+            "detail": "Declared local clones and same-day pinned remote listings checked; no matching live payload"
+          }
+        ]
+      }
+    },
+    "redirect_hosts": [],
+    "max_bytes": 67108864
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "sources": [
+    {
+      "source_id": "co-invima-register",
+      "url": "https://www.datos.gov.co/api/views/i7cb-raxc/rows.csv?accessType=DOWNLOAD",
+      "terms": "https://www.datos.gov.co/api/views/i7cb-raxc.json",
+      "licence": "Creative Commons Attribution ShareAlike 4.0",
+      "scope": "Current valid CUM registration CSV; unmodified; no expired-register coverage",
+      "surface": "download",
+      "max_bytes": 67108864
+    }
+  ],
+  "authority": "Maintainer directs remaining straightforward acquisition and publication with clear rights; exact unmodified source inventories only",
+  "exclusions": "No third-party documents, logos, personal data or clinical interpretations"
+}

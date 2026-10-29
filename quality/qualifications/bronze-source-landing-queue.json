@@ -2,12 +2,12 @@
   "catalog_reviewed_at": "2026-10-17",
   "catalog_schema_version": 5,
   "family_counts": {
-    "archive_release": 9,
-    "document_collection": 27,
+    "archive_release": 10,
+    "document_collection": 26,
     "manual_reproducible_export": 11,
-    "paginated_rest_api": 12,
-    "regulator_search_export": 79,
-    "static_file_download": 38
+    "paginated_rest_api": 13,
+    "regulator_search_export": 71,
+    "static_file_download": 45
   },
   "items": [
     {
@@ -455,15 +455,15 @@
     },
     {
       "adapter": {
-        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
         "acquisition_profile": null,
         "credentials_persisted": false,
-        "endpoint": "https://consultas.anvisa.gov.br/#/medicamentos/",
-        "family": "regulator_search_export",
+        "endpoint": "https://dados.anvisa.gov.br/dados/DADOS_ABERTOS_MEDICAMENTOS.csv",
+        "family": "static_file_download",
         "formats": [
-          "html"
+          "csv"
         ],
-        "pagination": "manual",
+        "pagination": "none",
         "preserves_source_bytes": true,
         "requires_reuse_gate": true,
         "requires_rights_gate": true,
@@ -473,11 +473,11 @@
         "https://consultas.anvisa.gov.br/#/medicamentos/"
       ],
       "evidence_scope": "none",
-      "next_action": "execute and receipt the documented public manual acquisition",
-      "priority": 30,
-      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
       "source_id": "br-anvisa-medicines",
-      "state": "manual_only_documented_acquisition"
+      "state": "rights_blocked"
     },
     {
       "adapter": {
@@ -507,15 +507,15 @@
     },
     {
       "adapter": {
-        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_instructions": "Download and receipt the archive before safely enumerating and extracting its members.",
         "acquisition_profile": null,
         "credentials_persisted": false,
-        "endpoint": "https://www.gov.br/conitec/pt-br",
-        "family": "regulator_search_export",
+        "endpoint": "https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/CONITEC/csv/Controle_de_Demandas_da_Conitec.csv.zip",
+        "family": "archive_release",
         "formats": [
-          "html"
+          "zip"
         ],
-        "pagination": "manual",
+        "pagination": "none",
         "preserves_source_bytes": true,
         "requires_reuse_gate": true,
         "requires_rights_gate": true,
@@ -525,11 +525,11 @@
         "https://www.gov.br/conitec/pt-br"
       ],
       "evidence_scope": "none",
-      "next_action": "execute and receipt the documented public manual acquisition",
-      "priority": 30,
-      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
       "source_id": "br-conitec-decisions",
-      "state": "manual_only_documented_acquisition"
+      "state": "rights_blocked"
     },
     {
       "adapter": {
@@ -886,15 +886,15 @@
     },
     {
       "adapter": {
-        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
         "acquisition_profile": null,
         "credentials_persisted": false,
-        "endpoint": "https://www.invima.gov.co/consulta-registros-sanitarios",
-        "family": "regulator_search_export",
+        "endpoint": "https://www.datos.gov.co/api/views/i7cb-raxc/rows.csv?accessType=DOWNLOAD",
+        "family": "static_file_download",
         "formats": [
-          "html"
+          "csv"
         ],
-        "pagination": "manual",
+        "pagination": "none",
         "preserves_source_bytes": true,
         "requires_reuse_gate": true,
         "requires_rights_gate": true,
@@ -904,11 +904,11 @@
         "https://www.invima.gov.co/consulta-registros-sanitarios"
       ],
       "evidence_scope": "none",
-      "next_action": "execute and receipt the documented public manual acquisition",
-      "priority": 30,
-      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
       "source_id": "co-invima-register",
-      "state": "manual_only_documented_acquisition"
+      "state": "rights_blocked"
     },
     {
       "adapter": {
@@ -2009,9 +2009,7 @@
         "endpoint": "https://www.who.int/groups/expert-committee-on-selection-and-use-of-essential-medicines/essential-medicines-lists",
         "family": "document_collection",
         "formats": [
-          "xlsx",
-          "pdf",
-          "html"
+          "pdf"
         ],
         "pagination": "manual",
         "preserves_source_bytes": true,
@@ -2061,17 +2059,15 @@
     },
     {
       "adapter": {
-        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
         "acquisition_profile": "public-bulk",
         "credentials_persisted": false,
-        "endpoint": "https://www.who.int/teams/immunization-vaccines-and-biologicals/vaccine-access/mi4a",
-        "family": "document_collection",
+        "endpoint": "https://cdn.who.int/media/docs/default-source/immunization/mi4a/who-mi4a-dataset-final-september-2026.xlsx?sfvrsn=a19b7135_5&download=true",
+        "family": "static_file_download",
         "formats": [
-          "xlsx",
-          "pdf",
-          "html"
+          "xlsx"
         ],
-        "pagination": "manual",
+        "pagination": "none",
         "preserves_source_bytes": true,
         "requires_reuse_gate": true,
         "requires_rights_gate": true,
@@ -2081,11 +2077,11 @@
         "https://www.who.int/teams/immunization-vaccines-and-biologicals/vaccine-access/mi4a"
       ],
       "evidence_scope": "none",
-      "next_action": "execute and receipt the documented public manual acquisition",
-      "priority": 30,
-      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
       "source_id": "global-who-mi4a",
-      "state": "manual_only_documented_acquisition"
+      "state": "rights_blocked"
     },
     {
       "adapter": {
@@ -2381,15 +2377,15 @@
     },
     {
       "adapter": {
-        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
         "acquisition_profile": null,
         "credentials_persisted": false,
-        "endpoint": "https://www.mhlw.go.jp/ndb/opendatasite/",
-        "family": "regulator_search_export",
+        "endpoint": "https://www.mhlw.go.jp/content/12400000/001495390.xlsx",
+        "family": "static_file_download",
         "formats": [
-          "html"
+          "xlsx"
         ],
-        "pagination": "manual",
+        "pagination": "none",
         "preserves_source_bytes": true,
         "requires_reuse_gate": true,
         "requires_rights_gate": true,
@@ -2399,21 +2395,21 @@
         "quality/qualifications/additional-utilisation-rights-preflight-20260821.json"
       ],
       "evidence_scope": "none",
-      "next_action": "execute and receipt the documented public manual acquisition",
-      "priority": 30,
-      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
       "source_id": "jp-mhlw-ndb-utilisation",
-      "state": "manual_only_documented_acquisition"
+      "state": "rights_blocked"
     },
     {
       "adapter": {
         "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
         "acquisition_profile": "public-bulk",
         "credentials_persisted": false,
-        "endpoint": "https://www.mhlw.go.jp/topics/2025/04/tp20250401-01.html",
+        "endpoint": "https://www.mhlw.go.jp/topics/2026/04/xls/tp20261014-01_01.xlsx",
         "family": "static_file_download",
         "formats": [
-          "source_native"
+          "xlsx"
         ],
         "pagination": "none",
         "preserves_source_bytes": true,
@@ -2523,8 +2519,7 @@
         "endpoint": "https://www.pharmacyboardkenya.org/",
         "family": "document_collection",
         "formats": [
-          "pdf",
-          "html"
+          "pdf"
         ],
         "pagination": "manual",
         "preserves_source_bytes": true,
@@ -3660,15 +3655,15 @@
     },
     {
       "adapter": {
-        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
         "acquisition_profile": null,
         "credentials_persisted": false,
-        "endpoint": "https://www.tlv.se/lakemedelsforetag/pris-och-subvention-av-lakemedel/subventionerade-lakemedel.html",
-        "family": "regulator_search_export",
+        "endpoint": "https://www.tlv.se/file/medprice",
+        "family": "static_file_download",
         "formats": [
-          "html"
+          "xlsx"
         ],
-        "pagination": "manual",
+        "pagination": "none",
         "preserves_source_bytes": true,
         "requires_reuse_gate": true,
         "requires_rights_gate": true,
@@ -3678,11 +3673,11 @@
         "https://www.tlv.se/lakemedelsforetag/pris-och-subvention-av-lakemedel/subventionerade-lakemedel.html"
       ],
       "evidence_scope": "none",
-      "next_action": "execute and receipt the documented public manual acquisition",
-      "priority": 30,
-      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
       "source_id": "se-tlv-subsidies",
-      "state": "manual_only_documented_acquisition"
+      "state": "rights_blocked"
     },
     {
       "adapter": {
@@ -3712,15 +3707,15 @@
     },
     {
       "adapter": {
-        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_instructions": "Traverse the configured API pagination contract, preserve each source response, and receipt the completed page set.",
         "acquisition_profile": null,
         "credentials_persisted": false,
-        "endpoint": "https://www.hsa.gov.sg/therapeutic-products/register",
-        "family": "regulator_search_export",
+        "endpoint": "https://data.gov.sg/api/action/datastore_search?resource_id=d_767279312753558cbf19d48344577084&limit=10000",
+        "family": "paginated_rest_api",
         "formats": [
-          "html"
+          "json"
         ],
-        "pagination": "manual",
+        "pagination": "source_config_required",
         "preserves_source_bytes": true,
         "requires_reuse_gate": true,
         "requires_rights_gate": true,
@@ -3730,11 +3725,11 @@
         "https://www.hsa.gov.sg/therapeutic-products/register"
       ],
       "evidence_scope": "none",
-      "next_action": "execute and receipt the documented public manual acquisition",
-      "priority": 30,
-      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
       "source_id": "sg-hsa-register",
-      "state": "manual_only_documented_acquisition"
+      "state": "rights_blocked"
     },
     {
       "adapter": {
@@ -3954,8 +3949,7 @@
         "endpoint": "https://www.nda.or.ug/",
         "family": "document_collection",
         "formats": [
-          "pdf",
-          "html"
+          "pdf"
         ],
         "pagination": "manual",
         "preserves_source_bytes": true,
@@ -4027,16 +4021,15 @@
     },
     {
       "adapter": {
-        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
         "acquisition_profile": null,
         "credentials_persisted": false,
-        "endpoint": "https://data.medicaid.gov/datasets",
-        "family": "regulator_search_export",
+        "endpoint": "https://download.medicaid.gov/data/drugproducts-q2-2026.csv",
+        "family": "static_file_download",
         "formats": [
-          "csv",
-          "json"
+          "csv"
         ],
-        "pagination": "manual",
+        "pagination": "none",
         "preserves_source_bytes": true,
         "requires_reuse_gate": true,
         "requires_rights_gate": true,
@@ -4046,24 +4039,23 @@
         "https://data.medicaid.gov/datasets"
       ],
       "evidence_scope": "none",
-      "next_action": "execute and receipt the documented public manual acquisition",
-      "priority": 30,
-      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
       "source_id": "us-cms-mdrp",
-      "state": "manual_only_documented_acquisition"
+      "state": "rights_blocked"
     },
     {
       "adapter": {
-        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
         "acquisition_profile": null,
         "credentials_persisted": false,
-        "endpoint": "https://data.medicaid.gov/datasets",
-        "family": "regulator_search_export",
+        "endpoint": "https://download.medicaid.gov/data/nadac-national-average-drug-acquisition-cost-10-28-2026.csv",
+        "family": "static_file_download",
         "formats": [
-          "csv",
-          "json"
+          "csv"
         ],
-        "pagination": "manual",
+        "pagination": "none",
         "preserves_source_bytes": true,
         "requires_reuse_gate": true,
         "requires_rights_gate": true,
@@ -4073,11 +4065,11 @@
         "https://data.medicaid.gov/datasets"
       ],
       "evidence_scope": "none",
-      "next_action": "execute and receipt the documented public manual acquisition",
-      "priority": 30,
-      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
       "source_id": "us-cms-nadac",
-      "state": "manual_only_documented_acquisition"
+      "state": "rights_blocked"
     },
     {
       "adapter": {
@@ -4773,9 +4765,9 @@
   "state_counts": {
     "credentialed_and_excluded": 15,
     "landed_and_evidenced": 42,
-    "manual_only_documented_acquisition": 91,
+    "manual_only_documented_acquisition": 82,
     "not_yet_implemented": 0,
-    "rights_blocked": 27,
+    "rights_blocked": 36,
     "superseded_by_reused_source": 0,
     "temporarily_unavailable": 1
   }

@@ -51,6 +51,7 @@ class DownloadSelection(FrozenModel):
     retention_authority_reference: str = ""
     reuse_decision: ReuseGateDecision | None = None
     redirect_hosts: tuple[str, ...] = ()
+    additional_download_urls: tuple[str, ...] = ()
     max_bytes: int = Field(default=64 * 1024 * 1024, ge=1, le=512 * 1024 * 1024)
 
 
@@ -99,6 +100,24 @@ def selected_source(
         for host in selection.redirect_hosts
     ):
         raise ValueError("redirect hosts must be exact public hostnames")
+    if selection.additional_download_urls:
+        urls = (selection.expected_url, *selection.additional_download_urls)
+        if selection.surface != "download" or len(urls) != len(set(urls)):
+            raise ValueError(
+                "additional downloads require unique download URLs"
+            )
+        for url in urls:
+            parsed = urlsplit(url)
+            if (
+                parsed.scheme != "https"
+                or parsed.hostname != urlsplit(selection.expected_url).hostname
+                or (parsed.username, parsed.password) != (None, None)
+                or parsed.port not in {None, 443}
+                or parsed.fragment
+            ):
+                raise ValueError(
+                    "additional downloads require the same HTTPS host"
+                )
     source = next(s for s in sources if s.source_id == selection.source_id)
     override = next(
         (
@@ -225,46 +244,69 @@ def run_batch(
             result["state"] = "ready"
             if execute:
                 directory = target / source.source_id
-                receipt = acquire_source(
-                    source.source_id,
-                    directory / "payload.bin",
-                    repository_root=repository_root,
-                    catalog=(source,),
-                    evidence_class=EvidenceClass.LIVE,
-                    reuse_decision=selection.reuse_decision,
-                    policy=AcquisitionPolicy(
-                        max_bytes=selection.max_bytes,
-                        allowed_hosts=(
-                            urlsplit(selection.expected_url).hostname or "",
-                            *selection.redirect_hosts,
-                        ),
-                    ),
-                )
-                if (
-                    isinstance(receipt, SourceReceipt)
-                    and receipt.retrieval.http is not None
-                ):
-                    receipt = receipt.model_copy(
-                        update={
-                            "retrieval": receipt.retrieval.model_copy(
-                                update={
-                                    "http": redact_batch_http(
-                                        receipt.retrieval.http
-                                    )
-                                }
-                            )
-                        }
+                receipts: list[SourceReceipt | FailureReceipt] = []
+                for index, url in enumerate((
+                    selection.expected_url,
+                    *selection.additional_download_urls,
+                )):
+                    object_directory = (
+                        directory
+                        if index == 0
+                        else directory / "objects" / f"{index:04d}"
                     )
-                directory.mkdir(parents=True, exist_ok=True)
-                (directory / "receipt.json").write_text(
-                    receipt.model_dump_json(indent=2) + "\n", encoding="utf-8"
-                )
+                    object_source = (
+                        source
+                        if index == 0
+                        else source.model_copy(update={"download_url": url})
+                    )
+                    receipt = acquire_source(
+                        source.source_id,
+                        object_directory / "payload.bin",
+                        repository_root=repository_root,
+                        catalog=(object_source,),
+                        evidence_class=EvidenceClass.LIVE,
+                        reuse_decision=selection.reuse_decision,
+                        policy=AcquisitionPolicy(
+                            max_bytes=selection.max_bytes,
+                            allowed_hosts=(
+                                urlsplit(selection.expected_url).hostname or "",
+                                *selection.redirect_hosts,
+                            ),
+                            allowed_content_types=(
+                                *AcquisitionPolicy().allowed_content_types,
+                                "binary/octet-stream",
+                                "application/pdf",
+                                "application/vnd.ms-excel",
+                            ),
+                        ),
+                    )
+                    if (
+                        isinstance(receipt, SourceReceipt)
+                        and receipt.retrieval.http is not None
+                    ):
+                        receipt = receipt.model_copy(
+                            update={
+                                "retrieval": receipt.retrieval.model_copy(
+                                    update={
+                                        "http": redact_batch_http(
+                                            receipt.retrieval.http
+                                        )
+                                    }
+                                )
+                            }
+                        )
+                    object_directory.mkdir(parents=True, exist_ok=True)
+                    (object_directory / "receipt.json").write_text(
+                        receipt.model_dump_json(indent=2) + "\n",
+                        encoding="utf-8",
+                    )
+                    receipts.append(receipt)
                 (directory / "selection.json").write_text(
                     selection.model_dump_json(indent=2) + "\n", encoding="utf-8"
                 )
                 result["state"] = (
                     "failed"
-                    if isinstance(receipt, FailureReceipt)
+                    if any(isinstance(r, FailureReceipt) for r in receipts)
                     else "acquired_local"
                 )
         results.append(result)
@@ -371,12 +413,14 @@ def resume_batch(
             != selection
         ):
             raise ValueError("existing batch selection differs")
-        receipt = json.loads((saved / "receipt.json").read_text())
-        if (
-            sha256((saved / "payload.bin").read_bytes()).hexdigest()
-            != receipt["payload"]["sha256"]
-        ):
-            raise ValueError("existing payload digest differs")
+        for index in range(1 + len(selection.additional_download_urls)):
+            obj = saved if index == 0 else saved / "objects" / f"{index:04d}"
+            receipt = json.loads((obj / "receipt.json").read_text())
+            if (
+                sha256((obj / "payload.bin").read_bytes()).hexdigest()
+                != receipt["payload"]["sha256"]
+            ):
+                raise ValueError("existing payload digest differs")
     return results
 
 

@@ -1,0 +1,230 @@
+[
+  {
+    "source_id": "jp-mhlw-nhi-price",
+    "surface": "download",
+    "expected_url": "https://www.mhlw.go.jp/topics/2026/04/xls/tp20261014-01_01.xlsx",
+    "retention_authority_reference": "quality/source-batches/japan-mhlw-20261030/rights.json",
+    "reuse_decision": {
+      "source_id": "jp-mhlw-nhi-price",
+      "disposition": "acquire-new",
+      "searched_surfaces": [
+        "local_clones",
+        "github",
+        "hugging_face",
+        "source_registry"
+      ],
+      "candidates": [
+        {
+          "surface": "local_clones",
+          "locator": "/Users/doughnut/.codex/worktrees/gma-streamlined-completion/global-medicines-atlas/tests/fixtures/native/jp/mhlw_nhi_prices.csv",
+          "source_id": "jp-mhlw-nhi-price",
+          "kind": "related",
+          "digest": "6e371513c70f5443541da4ed579588d9f226511565864f3569c9f4d29aee468e",
+          "query": "Synthetic fixture, not live payload",
+          "revision": null
+        },
+        {
+          "surface": "hugging_face",
+          "locator": "edithatogo/global-medicines-atlas-catalogue/fixtures/jp-mhlw-nhi-price/mhlw_nhi_prices.csv",
+          "source_id": "jp-mhlw-nhi-price",
+          "kind": "related",
+          "digest": null,
+          "query": "Fixture/metadata only",
+          "revision": "89c95653c498d7ad2835d8fcd6f9fd804e2a4d18"
+        },
+        {
+          "surface": "source_registry",
+          "locator": "https://www.mhlw.go.jp/topics/2026/04/xls/tp20261014-01_01.xlsx",
+          "source_id": "jp-mhlw-nhi-price",
+          "kind": "registry",
+          "digest": null,
+          "query": null,
+          "revision": null
+        }
+      ],
+      "rationale": "No matching live payload in checked authorities; acquire exact official snapshot.",
+      "catalogue_revision": "760723adc9c2f8e8946eebe9bcada7aff212095e",
+      "discovery_snapshot": {
+        "schema_id": "global-medicines-atlas.reuse-discovery",
+        "schema_version": 1,
+        "snapshot_id": "sha256:a0743e76154f7771706e43c3c443250b4ab4126f9806252424c6519914cfb4a5",
+        "source_id": "jp-mhlw-nhi-price",
+        "generated_at": "2026-10-29T20:04:30.991759Z",
+        "freshness_seconds": 86400,
+        "expires_at": "2026-10-30T20:04:30.991759Z",
+        "tool_version": "bounded-source-batch-reuse-v1",
+        "surfaces": [
+          {
+            "name": "local_clones",
+            "state": "success",
+            "query": "jp-mhlw-nhi-price exact source ID and payload filename",
+            "candidates": [
+              {
+                "surface": "local_clones",
+                "locator": "/Users/doughnut/.codex/worktrees/gma-streamlined-completion/global-medicines-atlas/tests/fixtures/native/jp/mhlw_nhi_prices.csv",
+                "source_id": "jp-mhlw-nhi-price",
+                "kind": "related",
+                "digest": "6e371513c70f5443541da4ed579588d9f226511565864f3569c9f4d29aee468e",
+                "query": "Synthetic fixture, not live payload",
+                "revision": null
+              }
+            ],
+            "detail": "Declared local clones and same-day pinned remote listings checked; no matching live payload"
+          },
+          {
+            "name": "github",
+            "state": "success",
+            "query": "jp-mhlw-nhi-price exact source ID and payload filename",
+            "candidates": [],
+            "detail": "Declared local clones and same-day pinned remote listings checked; no matching live payload"
+          },
+          {
+            "name": "hugging_face",
+            "state": "success",
+            "query": "jp-mhlw-nhi-price exact source ID and payload filename",
+            "candidates": [
+              {
+                "surface": "hugging_face",
+                "locator": "edithatogo/global-medicines-atlas-catalogue/fixtures/jp-mhlw-nhi-price/mhlw_nhi_prices.csv",
+                "source_id": "jp-mhlw-nhi-price",
+                "kind": "related",
+                "digest": null,
+                "query": "Fixture/metadata only",
+                "revision": "89c95653c498d7ad2835d8fcd6f9fd804e2a4d18"
+              }
+            ],
+            "detail": "Declared local clones and same-day pinned remote listings checked; no matching live payload"
+          },
+          {
+            "name": "source_registry",
+            "state": "success",
+            "query": "jp-mhlw-nhi-price exact source ID and payload filename",
+            "candidates": [
+              {
+                "surface": "source_registry",
+                "locator": "https://www.mhlw.go.jp/topics/2026/04/xls/tp20261014-01_01.xlsx",
+                "source_id": "jp-mhlw-nhi-price",
+                "kind": "registry",
+                "digest": null,
+                "query": null,
+                "revision": null
+              }
+            ],
+            "detail": "Declared local clones and same-day pinned remote listings checked; no matching live payload"
+          }
+        ]
+      }
+    },
+    "redirect_hosts": [],
+    "additional_download_urls": [
+      "https://www.mhlw.go.jp/topics/2026/04/xls/tp20261014-01_02.xlsx",
+      "https://www.mhlw.go.jp/topics/2026/04/xls/tp20261014-01_03.xlsx",
+      "https://www.mhlw.go.jp/topics/2026/04/xls/tp20260401-01_04.xlsx",
+      "https://www.mhlw.go.jp/topics/2026/04/xls/tp20261014-01_05.xlsx"
+    ],
+    "max_bytes": 67108864
+  },
+  {
+    "source_id": "jp-mhlw-ndb-utilisation",
+    "surface": "download",
+    "expected_url": "https://www.mhlw.go.jp/content/12400000/001495390.xlsx",
+    "retention_authority_reference": "quality/source-batches/japan-mhlw-20261030/rights.json",
+    "reuse_decision": {
+      "source_id": "jp-mhlw-ndb-utilisation",
+      "disposition": "acquire-new",
+      "searched_surfaces": [
+        "local_clones",
+        "github",
+        "hugging_face",
+        "source_registry"
+      ],
+      "candidates": [
+        {
+          "surface": "source_registry",
+          "locator": "https://www.mhlw.go.jp/content/12400000/001495390.xlsx",
+          "source_id": "jp-mhlw-ndb-utilisation",
+          "kind": "registry",
+          "digest": null,
+          "query": null,
+          "revision": null
+        }
+      ],
+      "rationale": "No matching live payload in checked authorities; acquire exact official snapshot.",
+      "catalogue_revision": "760723adc9c2f8e8946eebe9bcada7aff212095e",
+      "discovery_snapshot": {
+        "schema_id": "global-medicines-atlas.reuse-discovery",
+        "schema_version": 1,
+        "snapshot_id": "sha256:bdf6ed139c58aa2f462b3893183b1af9e8634e8de42bf0442c489314e51df8bb",
+        "source_id": "jp-mhlw-ndb-utilisation",
+        "generated_at": "2026-10-29T20:04:31.014408Z",
+        "freshness_seconds": 86400,
+        "expires_at": "2026-10-30T20:04:31.014408Z",
+        "tool_version": "bounded-source-batch-reuse-v1",
+        "surfaces": [
+          {
+            "name": "local_clones",
+            "state": "success",
+            "query": "jp-mhlw-ndb-utilisation exact source ID and payload filename",
+            "candidates": [],
+            "detail": "Declared local clones and same-day pinned remote listings checked; no matching live payload"
+          },
+          {
+            "name": "github",
+            "state": "success",
+            "query": "jp-mhlw-ndb-utilisation exact source ID and payload filename",
+            "candidates": [],
+            "detail": "Declared local clones and same-day pinned remote listings checked; no matching live payload"
+          },
+          {
+            "name": "hugging_face",
+            "state": "success",
+            "query": "jp-mhlw-ndb-utilisation exact source ID and payload filename",
+            "candidates": [],
+            "detail": "Declared local clones and same-day pinned remote listings checked; no matching live payload"
+          },
+          {
+            "name": "source_registry",
+            "state": "success",
+            "query": "jp-mhlw-ndb-utilisation exact source ID and payload filename",
+            "candidates": [
+              {
+                "surface": "source_registry",
+                "locator": "https://www.mhlw.go.jp/content/12400000/001495390.xlsx",
+                "source_id": "jp-mhlw-ndb-utilisation",
+                "kind": "registry",
+                "digest": null,
+                "query": null,
+                "revision": null
+              }
+            ],
+            "detail": "Declared local clones and same-day pinned remote listings checked; no matching live payload"
+          }
+        ]
+      }
+    },
+    "redirect_hosts": [],
+    "additional_download_urls": [
+      "https://www.mhlw.go.jp/content/12400000/001495391.xlsx",
+      "https://www.mhlw.go.jp/content/12400000/001495392.xlsx",
+      "https://www.mhlw.go.jp/content/12400000/001495396.xlsx",
+      "https://www.mhlw.go.jp/content/12400000/001495397.xlsx",
+      "https://www.mhlw.go.jp/content/12400000/001495408.xlsx",
+      "https://www.mhlw.go.jp/content/12400000/001495419.xlsx",
+      "https://www.mhlw.go.jp/content/12400000/001495423.xlsx",
+      "https://www.mhlw.go.jp/content/12400000/001495426.xlsx",
+      "https://www.mhlw.go.jp/content/12400000/001495456.xlsx",
+      "https://www.mhlw.go.jp/content/12400000/001495457.xlsx",
+      "https://www.mhlw.go.jp/content/12400000/001495458.xlsx",
+      "https://www.mhlw.go.jp/content/12400000/001495461.xlsx",
+      "https://www.mhlw.go.jp/content/12400000/001495462.xlsx",
+      "https://www.mhlw.go.jp/content/12400000/001495481.xlsx",
+      "https://www.mhlw.go.jp/content/12400000/001495487.xlsx",
+      "https://www.mhlw.go.jp/content/12400000/001495488.xlsx",
+      "https://www.mhlw.go.jp/content/12400000/001495977.xlsx",
+      "https://www.mhlw.go.jp/content/12400000/001495980.xlsx",
+      "https://www.mhlw.go.jp/content/12400000/001495983.xlsx",
+      "https://www.mhlw.go.jp/content/12400000/001495984.xlsx"
+    ],
+    "max_bytes": 67108864
+  }
+]
