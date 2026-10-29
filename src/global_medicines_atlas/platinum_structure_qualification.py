@@ -20,6 +20,10 @@ from typer.testing import CliRunner
 from . import cli
 from .atlas import create_atlas_app  # pyright: ignore[reportUnknownVariableType]
 from .platinum_configuration import load_benefits_resolver
+from .platinum_delivery_qualification import (
+    DeliveryRequest,
+    _qualify_browser_pages,  # pyright: ignore[reportPrivateUsage] -- shared bounded Atlas browser adapter
+)
 from .platinum_structure import SourceStructurePage, SourceStructureService
 from .platinum_v2_api import create_v2_app
 
@@ -69,6 +73,7 @@ def qualify_structure_consumers(  # ruff: ignore[too-many-locals]
     columns: tuple[str, ...],
     view: Literal["records", "fields"] = "records",
     limit: int = 2,
+    browser: bool = False,
 ) -> dict[str, Any]:
     """Exercise bounded API, CLI and Atlas reads against one admitted revision."""
     if not columns or len(columns) > MAX_COLUMNS or not 1 <= limit <= MAX_ROWS:
@@ -190,6 +195,32 @@ def qualify_structure_consumers(  # ruff: ignore[too-many-locals]
         ):
             if value not in rendered.text:
                 raise ValueError("source-structure Atlas identity differs")
+        browser_evidence: list[dict[str, object]] = []
+        if browser:
+            browser_evidence = _qualify_browser_pages(
+                cast("Any", atlas),
+                [
+                    (
+                        DeliveryRequest(
+                            resource_id=resource_id,
+                            columns=columns,
+                            limit=limit,
+                        ),
+                        list(page.rows),
+                        (
+                            page.identity.object_sha256,
+                            page.identity.contract_sha256,
+                            page.identity.semantic_manifest_sha256,
+                            page.identity.revision,
+                        ),
+                    )
+                ],
+                source_structure_view=view,
+            )
+            if len(browser_evidence) != 1:
+                raise ValueError(
+                    "source-structure browser evidence is incomplete"
+                )
         rows = json.dumps(
             page.rows,
             ensure_ascii=False,
@@ -210,6 +241,8 @@ def qualify_structure_consumers(  # ruff: ignore[too-many-locals]
                 first_export.stdout.encode()
             ).hexdigest(),
             "consumers": ["api_v2", "cli", "atlas"],
+            "browser_qualification": "passed" if browser else "not_run",
+            "browser_evidence": browser_evidence,
             "comparison_validity": page.comparison_validity,
             "public_export_performed": False,
         }

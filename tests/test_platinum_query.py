@@ -1154,3 +1154,23 @@ def test_source_structure_qualification_exercises_actual_consumers(
         limit=2,
     )
     assert repeated["export_sha256"] == receipt["export_sha256"]
+    seen = []
+    monkeypatch.setattr(
+        qualification,
+        "_qualify_browser_pages",
+        lambda _atlas, _cases, **kwargs: (
+            seen.append(kwargs) or [{"http_status": 200}]
+        ),
+    )
+    browser_report = qualification.qualify_structure_consumers(
+        trust_file=trust_file,
+        metadata_root=tmp_path,
+        schema_file=schema_file,
+        resource_id="au.mbs.service-items",
+        columns=("source_field_id", "value"),
+        view="fields",
+        limit=2,
+        browser=True,
+    )
+    assert seen == [{"source_structure_view": "fields"}]
+    assert browser_report["browser_qualification"] == "passed"
