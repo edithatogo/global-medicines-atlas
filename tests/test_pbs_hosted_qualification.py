@@ -1962,3 +1962,27 @@ def test_pbs_publication_intent_requires_exact_retained_artifact(
     path.write_bytes(b"changed")
     with pytest.raises(ValueError, match="intent bytes differ"):
         intent.verify_retained_intent(SHA, path)
+
+
+def test_pbs_publication_intent_binds_preparation_and_run(monkeypatch):
+    from scripts import pbs_publication_intent as intent  # ruff: ignore[import-outside-top-level]
+
+    candidate, readback, tree = _publication_plan_inputs()
+    plan = delivery.build_publication_plan(candidate, readback, tree)
+    for name, value in {
+        "GITHUB_ACTIONS": "true",
+        "GITHUB_REPOSITORY": intent.REPOSITORY,
+        "GITHUB_REF": "refs/heads/main",
+        "GITHUB_SHA": SHA,
+        "GITHUB_RUN_ID": "123",
+        "GITHUB_RUN_ATTEMPT": "1",
+        "GITHUB_EVENT_NAME": "workflow_dispatch",
+    }.items():
+        monkeypatch.setenv(name, value)
+    result = intent.build_intent(plan)
+    assert result["output_id"] == delivery.OUTPUT_ID
+    assert result["candidate_only"] is True
+    assert result["publication_performed"] is False
+    plan["run_id"] = "124"
+    with pytest.raises(ValueError, match="prepared candidate"):
+        intent.build_intent(plan)

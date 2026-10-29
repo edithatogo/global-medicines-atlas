@@ -14,9 +14,42 @@ import zipfile
 from pathlib import Path
 from typing import Any
 
+from scripts import prepare_pbs_reproduced_delivery as preparation
+
 REPOSITORY = "edithatogo/global-medicines-atlas"
 MAX_ARTIFACT_BYTES = 1024 * 1024
 MAX_INTENT_BYTES = 16 * 1024
+
+
+def build_intent(plan: dict[str, Any]) -> dict[str, Any]:
+    """Bind the dry-run candidate and parent to the exact Actions run."""
+    commit = os.environ.get("GITHUB_SHA", "")
+    context = preparation.hosted._context(commit)  # pyright: ignore[reportPrivateUsage] -- same protected-run guard
+    if os.environ.get("GITHUB_EVENT_NAME") != "workflow_dispatch":
+        raise ValueError("PBS publication intent requires workflow dispatch")
+    expected = {
+        "dataset": preparation.DATASET,
+        "expected_parent_revision": preparation.PUBLIC_PARENT_REVISION,
+        "output_id": preparation.OUTPUT_ID,
+        "parquet_sha256": preparation.PARQUET_SHA256,
+        "parquet_bytes": preparation.PARQUET_BYTES,
+        "remote_path": f"silver/pbs/v4/2026-04-01/{preparation.OUTPUT_ID}/values.parquet",
+        "status": "dry_run_not_authorized_or_published",
+        "publication_performed": False,
+        "v4_admission_performed": False,
+        **context,
+    }
+    if any(plan.get(key) != value for key, value in expected.items()):
+        raise ValueError(
+            "PBS publication intent does not match the prepared candidate"
+        )
+    return {
+        "schema_id": "global-medicines-atlas.pbs-silver-publication-intent",
+        "schema_version": 1,
+        "repository": REPOSITORY,
+        **expected,
+        "candidate_only": True,
+    }
 
 
 def verify_retained_intent(commit: str, intent_path: Path) -> None:
