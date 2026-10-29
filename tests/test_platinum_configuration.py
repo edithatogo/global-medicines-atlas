@@ -62,6 +62,32 @@ def test_independent_expectations_load_without_payload_reads(tmp_path):
     assert load(tmp_path).resolve("au.mbs.items").source_id == "au-mbs"
 
 
+def test_operator_can_bound_large_object_reads_without_changing_defaults(
+    tmp_path,
+):
+    trust = configuration(tmp_path)
+    with load(tmp_path) as resolver:
+        assert (
+            resolver.cache_receipt("au.mbs.items").max_read_bytes
+            == 64 * 1024 * 1024
+        )
+    trust["resolver_budgets"] = {
+        "max_read_bytes": 637012122,
+        "cache_bytes": 637012122,
+        "timeout_seconds": 900,
+    }
+    (tmp_path / "trust.json").write_text(json.dumps(trust))
+    with load(tmp_path) as resolver:
+        receipt = resolver.cache_receipt("au.mbs.items")
+        assert receipt.max_read_bytes == 637012122
+        assert receipt.cache_budget_bytes == 637012122
+        assert receipt.timeout_seconds == 900
+    trust["resolver_budgets"]["max_read_bytes"] = 1024 * 1024 * 1024 + 1
+    (tmp_path / "trust.json").write_text(json.dumps(trust))
+    with pytest.raises(ValueError, match="max_read_bytes"):
+        load(tmp_path)
+
+
 @pytest.mark.parametrize("name", ["contract.json", "semantic.json"])
 def test_candidate_mutation_does_not_self_admit(tmp_path, name):
     configuration(tmp_path)

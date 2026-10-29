@@ -38,6 +38,23 @@ class ResourceConfiguration(BaseModel):
     semantic_path: str
 
 
+class ResolverBudgets(BaseModel):
+    """Explicit operator limits for verified reads and their bounded cache."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True, strict=True)
+    max_read_bytes: int = Field(
+        default=64 * 1024 * 1024, ge=1, le=1024 * 1024 * 1024
+    )
+    cache_bytes: int = Field(
+        default=64 * 1024 * 1024, ge=1, le=1024 * 1024 * 1024
+    )
+    max_cache_entries: int = Field(default=32, ge=1, le=128)
+    max_open_reads: int = Field(default=2, ge=1, le=4)
+    timeout_seconds: float = Field(
+        default=30, gt=0, le=900, allow_inf_nan=False
+    )
+
+
 class DeploymentTrust(BaseModel):
     """Operator-supplied allowlist, never generated from candidate contents."""
 
@@ -46,6 +63,7 @@ class DeploymentTrust(BaseModel):
     resources: tuple[ResourceConfiguration, ...] = Field(
         min_length=1, max_length=32
     )
+    resolver_budgets: ResolverBudgets = Field(default_factory=ResolverBudgets)
 
 
 def _read(path: Path) -> bytes:
@@ -114,4 +132,5 @@ def load_benefits_resolver(
         admitted_semantic_manifests=frozenset(
             entry.semantic_sha256 for entry in trust.resources
         ),
+        **trust.resolver_budgets.model_dump(),
     )
