@@ -83,7 +83,7 @@ ie-pcrs-reimbursement,document,documented_download,none,https://about.hse.ie/pub
 in-cdsco-approved-drugs,web_search,interactive_only,none,,,https://cdsco.gov.in/opencms/opencms/en/Approval_new/Approved-New-Drugs/,https://cdsco.gov.in/opencms/opencms/en/Approval_new/Approved-New-Drugs/,html,review_required,catalogued
 in-cdsco-products,web_search,interactive_only,none,,,https://cdsco.gov.in/,https://cdsco.gov.in/,html,review_required,catalogued
 in-nlem,download,documented_download,none,https://main.mohfw.gov.in/newshighlights-104,,https://main.mohfw.gov.in/newshighlights-104,https://main.mohfw.gov.in/newshighlights-104,source_native,review_required,acquisition
-in-nppa-ceiling-prices,download,documented_download,none,https://www.nppaindia.nic.in/,,https://www.nppaindia.nic.in/,https://www.nppaindia.nic.in/,xlsx|pdf|html,review_required,acquisition
+in-nppa-ceiling-prices,download,documented_download,none,https://nppa.gov.in/storage/uploads/pdf/2845-fb-posts-anti-cancer-e3f335bfae6294a35741b326d91a26a5.pdf,,https://nppa.gov.in/en/therapeuticcategorywiseceilingpricelist,https://nppa.gov.in/en/therapeuticcategorywiseceilingpricelist,xlsx|pdf|html,review_required,acquisition
 in-procurement-availability,web_search,interactive_only,none,,,https://gem.gov.in/,https://gem.gov.in/,html,review_required,catalogued
 in-pvpi-safety,web_search,restricted,account,,,https://www.ipc.gov.in/PvPI/pv_home.html,https://www.ipc.gov.in/PvPI/pv_home.html,html,review_required,catalogued
 jp-mhlw-ndb-utilisation,download,documented_download,none,https://www.mhlw.go.jp/content/12400000/001495390.xlsx,,https://www.mhlw.go.jp/ndb/opendatasite/,https://www.mhlw.go.jp/ndb/opendatasite/,xlsx,review_required,acquisition

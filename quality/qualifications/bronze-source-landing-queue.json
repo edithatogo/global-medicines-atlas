@@ -1,5 +1,5 @@
 {
-  "catalog_reviewed_at": "2026-10-17",
+  "catalog_reviewed_at": "2026-10-30",
   "catalog_schema_version": 5,
   "family_counts": {
     "archive_release": 10,
@@ -2300,7 +2300,7 @@
         "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
         "acquisition_profile": "public-bulk",
         "credentials_persisted": false,
-        "endpoint": "https://www.nppaindia.nic.in/",
+        "endpoint": "https://nppa.gov.in/en/therapeuticcategorywiseceilingpricelist",
         "family": "document_collection",
         "formats": [
           "xlsx",
@@ -2314,7 +2314,7 @@
         "source_id": "in-nppa-ceiling-prices"
       },
       "evidence_references": [
-        "https://www.nppaindia.nic.in/"
+        "https://nppa.gov.in/en/therapeuticcategorywiseceilingpricelist"
       ],
       "evidence_scope": "none",
       "next_action": "execute and receipt the documented public manual acquisition",
