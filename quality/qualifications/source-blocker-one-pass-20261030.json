@@ -1,0 +1,1085 @@
+{
+  "scope": "One bounded attempt for 82 non-federation blockers; one federation item deferred",
+  "recorded_on": "2026-10-30",
+  "newly_archived": 0,
+  "federation_resumed": false,
+  "boundary": "A successful page request establishes only accessibility; it does not establish redistribution rights or resolve an access/export contract. No individual grant is inferred from missing rights text.",
+  "sources": [
+    {
+      "source_id": "ae-ede-register",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://services.ede.gov.ae/drugdirectory?lang=en-US",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 61518,
+        "sha256_observed": "85b0abb143792bfe304399e021cf29b750ef0017c04fc0e13146a3ee8e99e6b1"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "ar-anmat-vademecum",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://datos.gob.ar/dataset/salud-actualizaciones-vademecun-nacional-medicamentos-vnm",
+      "observation": {
+        "error": "ReadTimeout"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "au-artg",
+      "previous_outcome": "blocked_rights",
+      "attempt": "Checked TGA copyright policy once",
+      "reference": "https://www.tga.gov.au/about-us/using-our-website/copyright",
+      "observation": {
+        "policy": "General terms restrict retransmission and distribution without prior written approval; third-party rights remain separate."
+      },
+      "outcome": "Existing public archival restriction remains."
+    },
+    {
+      "source_id": "au-pbs-historical-xml",
+      "previous_outcome": "blocked_rights",
+      "attempt": "Deferred as Australian federation",
+      "reference": "https://www.pbs.gov.au/general/copyright",
+      "observation": {
+        "deferred": true
+      },
+      "outcome": "Existing federation and rights state preserved."
+    },
+    {
+      "source_id": "au-tga-daen",
+      "previous_outcome": "blocked_rights",
+      "attempt": "Checked TGA copyright policy once",
+      "reference": "https://www.tga.gov.au/about-us/using-our-website/copyright",
+      "observation": {
+        "policy": "General terms restrict retransmission and distribution without prior written approval; third-party rights remain separate."
+      },
+      "outcome": "Existing public archival restriction remains."
+    },
+    {
+      "source_id": "au-tga-pi-cmi",
+      "previous_outcome": "blocked_rights",
+      "attempt": "Checked TGA copyright policy once",
+      "reference": "https://www.tga.gov.au/about-us/using-our-website/copyright",
+      "observation": {
+        "policy": "General terms restrict retransmission and distribution without prior written approval; third-party rights remain separate."
+      },
+      "outcome": "Existing public archival restriction remains."
+    },
+    {
+      "source_id": "bh-moh-drug-prices",
+      "previous_outcome": "blocked_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.moh.gov.bh/OtherPages/TermsofUse?lang=en",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 81647,
+        "sha256_observed": "6a81f2fed9f8ccfa34138d5290ac452eb860449d1cf7ed074d4452cae7c417a2"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "ca-cda-recommendations",
+      "previous_outcome": "blocked_endpoint_and_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.cda-amc.ca/reimbursement-reviews",
+      "observation": {
+        "status": 403,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 5563,
+        "sha256_observed": "cc5b9ea4c617cb0c9a4d369834fb81af31ecdb7e17832e732230af3a24afbe9c"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "cl-isp-register",
+      "previous_outcome": "blocked_endpoint_and_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://registrosanitario.ispch.gob.cl/",
+      "observation": {
+        "error": "ConnectError"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "de-bfarm-amice",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://portal.dimdi.de/amgui/free/termsofuse.xhtml",
+      "observation": {
+        "status": 503,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 994,
+        "sha256_observed": "924c23ea19876746092f6faad6fdb340efb7a0f41f9f085b6fdf0abadc256dda"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "dk-medicinpriser",
+      "previous_outcome": "blocked_access",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://laegemiddelstyrelsen.dk/en/about/copyright-and-logo/",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 114986,
+        "sha256_observed": "5b2609cfa1a56d9ef5bc91dde1c92bf61430732996f76fc7780ce81134ac992d"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "dk-medstat-utilisation",
+      "previous_outcome": "blocked_export_contract",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://medstat.dk/",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 4851,
+        "sha256_observed": "fbb3678344efb19c66c821ae86eaa6409e16cbf5bcca14a2f920a2219f8014bf"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "eg-eda-register",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.edaegypt.gov.eg/",
+      "observation": {
+        "error": "ReadTimeout"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "eg-eda-safety",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.edaegypt.gov.eg/",
+      "observation": {
+        "error": "ReadTimeout"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "eg-national-eml",
+      "previous_outcome": "blocked_document_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://cdn.who.int/media/docs/default-source/essential-medicines/national-essential-medicines-lists-(neml)/emro_neml/egypt_eml_-------2025.pdf?sfvrsn=790782a7_1&download=true",
+      "observation": {
+        "status": 200,
+        "content_type": "application/pdf",
+        "location_host": null
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "eu-ema-epar-documents",
+      "previous_outcome": "blocked_mixed_document_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.ema.europa.eu/en/about-us/about-website/legal-notice",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 67927,
+        "sha256_observed": "95bad71604214de4c4cbe023ccd3c4bd36ad4046be590bcc294e1cf6b778d7ef"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "eu-ema-safety-communications",
+      "previous_outcome": "blocked_mixed_document_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.ema.europa.eu/en/about-us/about-website/legal-notice",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 67927,
+        "sha256_observed": "95bad71604214de4c4cbe023ccd3c4bd36ad4046be590bcc294e1cf6b778d7ef"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "eu-spor-public-metadata",
+      "previous_outcome": "blocked_access_and_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.ema.europa.eu/en/documents/other/boarding-users-substance-product-organisation-referentials-spor-data-services_en.pdf",
+      "observation": {
+        "status": 200,
+        "content_type": "application/pdf",
+        "location_host": null
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "gb-mhra-products",
+      "previous_outcome": "blocked_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.gov.uk/government/publications/reproduce-or-re-use-mhra-information/reproduce-or-re-use-mhra-information",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 88061,
+        "sha256_observed": "37ed59b1e3be5ddf6c91d143394434f5adfa2bdb6bdffbc84310cb3a938e872d"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "gb-mhra-yellow-card",
+      "previous_outcome": "blocked_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.gov.uk/government/publications/reproduce-or-re-use-mhra-information/reproduce-or-re-use-mhra-information",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 88061,
+        "sha256_observed": "37ed59b1e3be5ddf6c91d143394434f5adfa2bdb6bdffbc84310cb3a938e872d"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "gb-nice-ta",
+      "previous_outcome": "blocked_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.nice.org.uk/terms-and-conditions#notice-of-rights",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 115906,
+        "sha256_observed": "089c961080b8becca911c9060788e1807aefa6938e7d34dc13da0ae22b9e8527"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "gcc-central-registration",
+      "previous_outcome": "blocked_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.ghc.sa/en/terms-of-use/",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 137728,
+        "sha256_observed": "d42f43ae5d98b78e172375c4e23b418e9374b0019f09ab683396286f3c5ba003"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "gh-fda-register",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://fdaghana.gov.gh/",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 300000,
+        "sha256_observed": "a195bbebe61725b449766afbfc9b3fc0f741023c3d4422d2f0b45df59eb95784"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "gh-fda-safety",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://fdaghana.gov.gh/",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 300000,
+        "sha256_observed": "a195bbebe61725b449766afbfc9b3fc0f741023c3d4422d2f0b45df59eb95784"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "gh-national-eml",
+      "previous_outcome": "blocked_document_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://cdn.who.int/media/docs/default-source/essential-medicines/national-essential-medicines-lists-(neml)/afro_neml/ghana-2025-nhis-ml.pdf?sfvrsn=af6e55e0_1&download=true",
+      "observation": {
+        "status": 200,
+        "content_type": "application/pdf",
+        "location_host": null
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "global-who-amds-gprm",
+      "previous_outcome": "blocked_endpoint_and_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.who.int/redirect-pages/footer/who-policies/terms-of-use",
+      "observation": {
+        "status": 301,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 145,
+        "sha256_observed": "e3c1318ac44a79f3845dff482b543da4892fae2863fa7dcac98ce5391b16204f"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "global-who-availability-surveys",
+      "previous_outcome": "blocked_third_party_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.who.int/about/policies/publishing/data-policy/terms-and-conditions",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 85086,
+        "sha256_observed": "9a2982f817fe6abc4dcda0c3c9f886d88232c5a1c2d6fb44e844bea3b0e503ef"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "global-who-databases",
+      "previous_outcome": "blocked_heterogeneous_source_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.who.int/about/policies/publishing/data-policy/terms-and-conditions",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 85086,
+        "sha256_observed": "9a2982f817fe6abc4dcda0c3c9f886d88232c5a1c2d6fb44e844bea3b0e503ef"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "global-who-medicine-prices",
+      "previous_outcome": "blocked_heterogeneous_source_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.who.int/about/policies/publishing/data-policy/terms-and-conditions",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 85086,
+        "sha256_observed": "9a2982f817fe6abc4dcda0c3c9f886d88232c5a1c2d6fb44e844bea3b0e503ef"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "global-who-national-eml-index",
+      "previous_outcome": "blocked_heterogeneous_source_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.who.int/about/policies/publishing/data-policy/terms-and-conditions",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 85086,
+        "sha256_observed": "9a2982f817fe6abc4dcda0c3c9f886d88232c5a1c2d6fb44e844bea3b0e503ef"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "global-who-shortage-sources",
+      "previous_outcome": "blocked_heterogeneous_source_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.who.int/about/policies/publishing/data-policy/terms-and-conditions",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 85086,
+        "sha256_observed": "9a2982f817fe6abc4dcda0c3c9f886d88232c5a1c2d6fb44e844bea3b0e503ef"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "id-bpom-product",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://cekbpom.pom.go.id/",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 65336,
+        "sha256_observed": "e87ba90abcd4b1738c9de2743610541db3ab2bb15faef812e41459558f5d134d"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "ie-pcrs-reimbursement",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www2.hse.ie/disclaimer/",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 36133,
+        "sha256_observed": "ddffb6c64b7537fa1e73f9a0a84099a4972b7f8871c07d936db31c71d9f1c99c"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "in-cdsco-approved-drugs",
+      "previous_outcome": "blocked_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://cdsco.gov.in/opencms/opencms/en/terms_conditions/",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 57577,
+        "sha256_observed": "5691e23141cedde18410c940717f0725fdd6bddbc744cbf7b37fb2098c113d04"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "in-cdsco-products",
+      "previous_outcome": "blocked_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://cdsco.gov.in/opencms/opencms/en/terms_conditions/",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 57577,
+        "sha256_observed": "5691e23141cedde18410c940717f0725fdd6bddbc744cbf7b37fb2098c113d04"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "in-nppa-ceiling-prices",
+      "previous_outcome": "blocked_endpoint",
+      "attempt": "Fetch official certificate issuer to validate it against the pinned CA bundle and test a verified supplemental chain",
+      "reference": "https://crt.sectigo.com/SectigoPublicServerAuthenticationCADVR36.crt",
+      "observation": {
+        "error": "TLS handshake failure fetching the issuer certificate; chain verification and exact-page test could not be performed."
+      },
+      "outcome": "Transport qualification remains incomplete; certificate verification was not disabled."
+    },
+    {
+      "source_id": "in-procurement-availability",
+      "previous_outcome": "blocked_endpoint_and_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://gem.gov.in/",
+      "observation": {
+        "error": "ConnectError"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "jp-pmda-approvals",
+      "previous_outcome": "blocked_automated_access",
+      "attempt": "Checked PMDA site policy once",
+      "reference": "https://www.pmda.go.jp/english/0013.html",
+      "observation": {
+        "policy": "PMDA states automated crawling and download applications are not permitted."
+      },
+      "outcome": "Automated acquisition remains blocked; no prohibited downloader was run."
+    },
+    {
+      "source_id": "jp-pmda-package-inserts",
+      "previous_outcome": "blocked_automated_access",
+      "attempt": "Checked PMDA site policy once",
+      "reference": "https://www.pmda.go.jp/english/0013.html",
+      "observation": {
+        "policy": "PMDA states automated crawling and download applications are not permitted."
+      },
+      "outcome": "Automated acquisition remains blocked; no prohibited downloader was run."
+    },
+    {
+      "source_id": "jp-pmda-safety",
+      "previous_outcome": "blocked_automated_access",
+      "attempt": "Checked PMDA site policy once",
+      "reference": "https://www.pmda.go.jp/english/0013.html",
+      "observation": {
+        "policy": "PMDA states automated crawling and download applications are not permitted."
+      },
+      "outcome": "Automated acquisition remains blocked; no prohibited downloader was run."
+    },
+    {
+      "source_id": "ke-ppb-register",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://web.pharmacyboardkenya.org/terms-and-conditions/",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 228483,
+        "sha256_observed": "c5adf50ce7fc85c2d6a44f88a67877121e796e1da0e9b0b533f9bdbc39874a1b"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "ke-ppb-safety",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://web.pharmacyboardkenya.org/terms-and-conditions/",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 228483,
+        "sha256_observed": "c5adf50ce7fc85c2d6a44f88a67877121e796e1da0e9b0b533f9bdbc39874a1b"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "kw-moh-medicines",
+      "previous_outcome": "blocked_endpoint_and_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.moh.gov.kw/",
+      "observation": {
+        "error": "ConnectTimeout"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "mus-approved-drug-list",
+      "previous_outcome": "blocked_document_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://cdn.who.int/media/docs/default-source/essential-medicines/national-essential-medicines-lists-(neml)/afro_neml/mauritius-20227e9629f5-66f0-46e6-9b16-3205cffc2813.pdf?sfvrsn=360a4280_3&download=true",
+      "observation": {
+        "status": 200,
+        "content_type": "application/pdf",
+        "location_host": null
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "mus-historical-eml-archive",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://health.govmu.org/",
+      "observation": {
+        "status": 301,
+        "content_type": "text/html",
+        "location_host": "health.govmu.org",
+        "observed_bytes": 154,
+        "sha256_observed": "3d54bcd446c7f8e7381308d0db4dec508243ad3fe3a18b2d03e0c1b61f4b88ac"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "mus-pharmacy-board-register",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://health.govmu.org/",
+      "observation": {
+        "status": 301,
+        "content_type": "text/html",
+        "location_host": "health.govmu.org",
+        "observed_bytes": 154,
+        "sha256_observed": "3d54bcd446c7f8e7381308d0db4dec508243ad3fe3a18b2d03e0c1b61f4b88ac"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "mus-pharmacy-board-safety",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://health.govmu.org/",
+      "observation": {
+        "status": 301,
+        "content_type": "text/html",
+        "location_host": "health.govmu.org",
+        "observed_bytes": 154,
+        "sha256_observed": "3d54bcd446c7f8e7381308d0db4dec508243ad3fe3a18b2d03e0c1b61f4b88ac"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "mx-cofepris-register",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.gob.mx/cofepris",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 300000,
+        "sha256_observed": "4a055582a7b405bf478679a98c446580aac04574329b5e50ed8837bd50de571a"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "mx-csg-compendium",
+      "previous_outcome": "blocked_endpoint_and_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.csg.gob.mx/Compendio/CNIS/cnis.html",
+      "observation": {
+        "error": "ConnectTimeout"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "my-npra-quest",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://quest3plus.bpfk.gov.my/front-end/product-search.php",
+      "observation": {
+        "status": 404,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 226,
+        "sha256_observed": "0e9d6ac12f48b091c64374216f589ea66c2f0176725c128344e9672b40176756"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "ng-nafdac-products",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://greenbook.nafdac.gov.ng/",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 19905,
+        "sha256_observed": "2814d0164ab6a7ac13ae3dc18b6596aedc69c35690416d1bf413f30f5f1125fa"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "ng-nafdac-safety",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://nafdac.gov.ng/wp-content/uploads/Files/Resources/LOCAL_FOREIGN_INSPECTION/List-of-Inspected-Foreign-Manufacturing-Facilities-with-Valid-Licenses.pdf",
+      "observation": {
+        "status": 200,
+        "content_type": "application/pdf",
+        "location_host": null
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "ng-nhia-medicines",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.nhia.gov.ng/",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 208248,
+        "sha256_observed": "ae87cc447cc31733da1066da5bc2153643388d997a987e3516c7eaf15d84cfc9"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "nl-medicijnkosten",
+      "previous_outcome": "blocked_third_party_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.medicijnkosten.nl/algemeen/copyright",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 10446,
+        "sha256_observed": "591d01719bf43182b974555cd1a685caae5ffe80ed09decde7a0376a0558b371"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "no-dmp-fhir",
+      "previous_outcome": "blocked_access",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.dmp.no/en/about-us/distribution-of-data-on-medicinal-products/FHIR-service/how-to-access-the-fhir-service",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 243162,
+        "sha256_observed": "c62ff6e81060ec307ef134d91625e769e6480679b2030849f7e54988575f9758"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "nz-medsafe-documents",
+      "previous_outcome": "blocked_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.medsafe.govt.nz/regulatory/licensed.asp",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 24137,
+        "sha256_observed": "d60dbd563faa221fe88e36271edbf9ad0c4e29fe7b9597582086645e52f9aaaf"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "nz-medsafe-products",
+      "previous_outcome": "blocked_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.medsafe.govt.nz/regulatory/licensed.asp",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 24137,
+        "sha256_observed": "d60dbd563faa221fe88e36271edbf9ad0c4e29fe7b9597582086645e52f9aaaf"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "om-moh-medicines",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.moh.gov.om/en/open-date/open-data/",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 121405,
+        "sha256_observed": "881572ca1da2ee7b83000230c221bc937c4f2d33e30a6bdb3b47c13f094dd99a"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "ph-fda-verification",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://verification.fda.gov.ph/",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 864,
+        "sha256_observed": "8f17eaaa4aa664bca5e4065624dd640562be046bc22f40e18d18c74685f414a8"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "pk-drap-register",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.dra.gov.pk/",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 102795,
+        "sha256_observed": "f8d9c79aecb6d488fc992bcb200ac1b17e4b789b855738e694d48afb5ae5f427"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "pk-drap-safety",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.dra.gov.pk/",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 102795,
+        "sha256_observed": "f8d9c79aecb6d488fc992bcb200ac1b17e4b789b855738e694d48afb5ae5f427"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "pk-neml",
+      "previous_outcome": "blocked_document_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://cdn.who.int/media/docs/default-source/essential-medicines/national-essential-medicines-lists-(neml)/emro_neml/pakistan-2023.pdf?sfvrsn=e6d42aeb_3&download=true",
+      "observation": {
+        "status": 200,
+        "content_type": "application/pdf",
+        "location_host": null
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "qa-moh-medicines",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.moph.gov.qa/arabic/Pages/Terms-Conditions.aspx",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 128683,
+        "sha256_observed": "a585f315e754c2abfe8b7e82d8903b000d508a186f0277eebde5b2fd13938f79"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "rw-national-eml",
+      "previous_outcome": "blocked_document_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://rwandafda.gov.rw/revoked-premise-licenses/",
+      "observation": {
+        "status": 301,
+        "content_type": "",
+        "location_host": "www.rwandafda.gov.rw"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "rw-rwandafda-register",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://rwandafda.gov.rw/revoked-premise-licenses/",
+      "observation": {
+        "status": 301,
+        "content_type": "",
+        "location_host": "www.rwandafda.gov.rw"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "rw-rwandafda-safety",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://rwandafda.gov.rw/revoked-premise-licenses/",
+      "observation": {
+        "status": 301,
+        "content_type": "",
+        "location_host": "www.rwandafda.gov.rw"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "sa-chi-formulary",
+      "previous_outcome": "blocked_endpoint_and_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.chi.gov.sa/",
+      "observation": {
+        "error": "ConnectError"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "sg-hsa-approval-deltas",
+      "previous_outcome": "blocked_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.hsa.gov.sg/terms-of-use/",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 300000,
+        "sha256_observed": "e3281620317c61fec463922882455134c6883c31cb3dbc94d94efd91b60f4c53"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "sg-moh-drug-list",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.moh.gov.sg/terms-of-use/",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 300000,
+        "sha256_observed": "1278c9cdfee825a7aedcc3a6ddc9087d79601e737bf956f10f0411327dfd9081"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "sn-dpm-register",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.sante.gouv.sn/",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 13118,
+        "sha256_observed": "5431d23d664f4926b5a03bcc105c40d592d56e177fc41073ad6e58d255bb9962"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "sn-dpm-safety",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.sante.gouv.sn/",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 13118,
+        "sha256_observed": "5431d23d664f4926b5a03bcc105c40d592d56e177fc41073ad6e58d255bb9962"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "sn-national-eml",
+      "previous_outcome": "blocked_document_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://cdn.who.int/media/docs/default-source/essential-medicines/national-essential-medicines-lists-(neml)/afro_neml/senegal-lnmpe-2025.pdf?sfvrsn=e5ea7678_1&download=true",
+      "observation": {
+        "status": 200,
+        "content_type": "application/pdf",
+        "location_host": null
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "th-fda-search",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://pertento.fda.moph.go.th/FDA_SEARCH_DRUG/SEARCH_DRUG/FRM_SEARCH_PAGE.aspx",
+      "observation": {
+        "status": 404,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 3834,
+        "sha256_observed": "5c97351f9e11cf71e973144d7123932938cf67c37e85ddf5021f85321da3f3eb"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "tz-national-eml",
+      "previous_outcome": "blocked_document_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.tmda.go.tz/terms-and-conditions",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 59482,
+        "sha256_observed": "8dd578f4195307928934858dcb85a7dcf6edbedc8a183b39c86c69a938144db1"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "tz-tmda-products",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.tmda.go.tz/terms-and-conditions",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 59482,
+        "sha256_observed": "8dd578f4195307928934858dcb85a7dcf6edbedc8a183b39c86c69a938144db1"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "tz-tmda-safety",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.tmda.go.tz/terms-and-conditions",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 59482,
+        "sha256_observed": "8dd578f4195307928934858dcb85a7dcf6edbedc8a183b39c86c69a938144db1"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "ug-nda-register",
+      "previous_outcome": "blocked_endpoint_and_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.nda.or.ug/licensed-outlets/",
+      "observation": {
+        "status": 403,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 5422,
+        "sha256_observed": "6d731d857258176fbbdc45726da2234358741ad5262e76b0793a517c958ca618"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "ug-nda-safety",
+      "previous_outcome": "blocked_endpoint_and_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.nda.or.ug/licensed-outlets/",
+      "observation": {
+        "status": 403,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 5422,
+        "sha256_observed": "6d731d857258176fbbdc45726da2234358741ad5262e76b0793a517c958ca618"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "za-sahpra-register",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.sahpra.org.za/registered-health-products/",
+      "observation": {
+        "status": 301,
+        "content_type": "text/html",
+        "location_host": "medapps.sahpra.org.za",
+        "observed_bytes": 0,
+        "sha256_observed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "za-sahpra-safety",
+      "previous_outcome": "blocked_rights_unestablished",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.sahpra.org.za/revoked-or-suspended-pharma-licences/",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 300000,
+        "sha256_observed": "a3f5a916ca50a7fd2f46078ef08c6bb3e7752ed6d2caa0a23193a7cc0dfebc7d"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "zw-mcaz-register",
+      "previous_outcome": "blocked_endpoint_and_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.mcaz.co.zw/",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 259003,
+        "sha256_observed": "d77fc3c7d3f5b38ced87cf5a1caa44280a7914cd9e90c7848fc5afc2dc59e482"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "zw-mcaz-safety",
+      "previous_outcome": "blocked_endpoint_and_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://www.mcaz.co.zw/",
+      "observation": {
+        "status": 200,
+        "content_type": "text/html",
+        "location_host": null,
+        "observed_bytes": 259003,
+        "sha256_observed": "d77fc3c7d3f5b38ced87cf5a1caa44280a7914cd9e90c7848fc5afc2dc59e482"
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    },
+    {
+      "source_id": "zw-national-eml",
+      "previous_outcome": "blocked_document_rights",
+      "attempt": "One GET to the recorded official rights or access reference, without following redirects or retrying",
+      "reference": "https://cdn.who.int/media/docs/default-source/essential-medicines/national-essential-medicines-lists-(neml)/afro_neml/zimbabwe_neml_2020.pdf?sfvrsn=98e7326f_1&download=true",
+      "observation": {
+        "status": 200,
+        "content_type": "application/pdf",
+        "location_host": null
+      },
+      "outcome": "No change to existing archival eligibility established by this bounded check; review source-specific terms and rights where unresolved."
+    }
+  ]
+}
