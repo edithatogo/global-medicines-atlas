@@ -244,3 +244,10 @@ including an NPPA TLS chain repair attempt and official rights/access evidence.
 Record outcomes without changing dataset admission or treating an HTTP response
 as a redistribution grant. No new credentials, publication, schedules or
 outbound messages; Australian federation remains deferred.
+
+### NPPA technical TLS fix — 30 October 2026
+
+The same chat/worktree owns `codex/nppa-verified-tls`, based on `df3cb5ce`.
+Scope: shared batch transport, the pinned NPPA intermediate and focused tests.
+Five PDFs verified through the existing public-IP-bound transport. No native
+publication or federation operation is active. Next: protected CI and integration.

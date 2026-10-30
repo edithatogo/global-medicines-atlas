@@ -1,0 +1,49 @@
+{
+  "source_id": "in-nppa-ceiling-prices",
+  "scope": "Technical download verification only; no publication or admission change",
+  "tls_verification_enabled": true,
+  "partial_chain_trust_enabled": false,
+  "issuer_sha256": "b40358316fd9e1caaaab92c382927d2c13ef51b481eec9371a82e16c86f2a687",
+  "issuer_url": "http://crt.sectigo.com/SectigoPublicServerAuthenticationCADVR36.crt",
+  "issuer_signature_verified_against": ".ci/trust/cacert.pem",
+  "destination_binding": "existing BoundIPAddressTransport; public IP validation retained",
+  "objects": [
+    {
+      "url": "https://nppa.gov.in/storage/uploads/pdf/2845-fb-posts-anti-cancer-e3f335bfae6294a35741b326d91a26a5.pdf",
+      "http_status": 200,
+      "bytes": 477927,
+      "sha256": "65c33e1776ea8552c41030582e9bce9ffaa8b8be7f12ff4332d26a875d847cfe",
+      "path": "build/source-technical-20261030/nppa-0.pdf"
+    },
+    {
+      "url": "https://nppa.gov.in/storage/uploads/pdf/2845-fb-posts-anti-diabetes-a2491c25ce7e20c9200884e1f92cf68a.pdf",
+      "http_status": 200,
+      "bytes": 401697,
+      "sha256": "fd23814ae3a0009a0d8d6e14d079ff3e72605edfae6041e3529ccd988f311e62",
+      "path": "build/source-technical-20261030/nppa-1.pdf"
+    },
+    {
+      "url": "https://nppa.gov.in/storage/uploads/pdf/2845-fb-posts-anti-hiv-834be8c8fdb7b0dce18e87266ca05512.pdf",
+      "http_status": 200,
+      "bytes": 368795,
+      "sha256": "d7ce77c499e863b37edadc4cc13ec74e57af6b8e9c9ed5eea4e9fdc554cf73b0",
+      "path": "build/source-technical-20261030/nppa-2.pdf"
+    },
+    {
+      "url": "https://nppa.gov.in/storage/uploads/pdf/2845-fb-posts-anti-tb-4767550580d2ed15f1877932bd47e39a.pdf",
+      "http_status": 200,
+      "bytes": 362753,
+      "sha256": "961f0c688d441d158cfb7b17e5b55cd687cf14696e7053741dd85c30e48cad99",
+      "path": "build/source-technical-20261030/nppa-3.pdf"
+    },
+    {
+      "url": "https://nppa.gov.in/storage/uploads/pdf/2845-fb-posts-cardio-ea1e3eda2076b6367cf9a9685da62f95.pdf",
+      "http_status": 200,
+      "bytes": 1016575,
+      "sha256": "8ce7d0a8216104958f049c9442da12f5b4e125b10af45824f2a6cbc7c342095d",
+      "path": "build/source-technical-20261030/nppa-4.pdf"
+    }
+  ],
+  "focused_tests_passed": 74,
+  "implementation": "scripts/source_download_batch.py:selection_transport"
+}
