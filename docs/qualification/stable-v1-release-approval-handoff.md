@@ -235,3 +235,12 @@ batch destinations from that frozen main commit. Next: retain terminal anonymous
 verification, execute the complete accounting pass, and integrate the outcome
 ledger. Existing primary-checkout edits and native private archives are untouched.
 Federation remains deferred; no new schedule or outbound communication.
+
+### One-attempt source-blocker follow-up — 30 October 2026
+
+The same chat and worktree own `codex/source-blocker-one-pass`, based on
+`a5d49b15`. Scope: one bounded attempt per non-federation source blocker,
+including an NPPA TLS chain repair attempt and official rights/access evidence.
+Record outcomes without changing dataset admission or treating an HTTP response
+as a redistribution grant. No new credentials, publication, schedules or
+outbound messages; Australian federation remains deferred.
