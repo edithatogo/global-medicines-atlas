@@ -1,7 +1,7 @@
 {
   "schema_id": "global-medicines-atlas.source-rights-review-ledger",
   "schema_version": 1,
-  "generated_at": "2026-10-30T00:00:00Z",
+  "generated_at": "2026-10-17T00:00:00Z",
   "catalogue_source_count": 176,
   "review_count": 176,
   "publication_gate": "satisfied_for_exact_approved_manifests",

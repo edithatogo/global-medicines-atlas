@@ -1,6 +1,6 @@
 {
   "schema_version": 5,
-  "reviewed_at": "2026-10-30",
+  "reviewed_at": "2026-10-17",
   "monitoring_contract": {
     "source_health": "weekly",
     "schema_drift": "monthly"
@@ -5463,7 +5463,7 @@
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
       "native_identifier": "NPPA scheduled-formulation ceiling-price identifier",
-      "last_verified_at": "2026-10-30",
+      "last_verified_at": "2026-08-20",
       "integration_layer": "acquisition",
       "implemented_ingestion": false,
       "documentation_url": "https://nppa.gov.in/en/therapeuticcategorywiseceilingpricelist",

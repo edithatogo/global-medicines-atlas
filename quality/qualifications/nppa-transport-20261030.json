@@ -45,5 +45,6 @@
     }
   ],
   "focused_tests_passed": 74,
-  "implementation": "scripts/source_download_batch.py:selection_transport"
+  "implementation": "scripts/source_download_batch.py:selection_transport",
+  "recorded_on": "2026-10-30"
 }
