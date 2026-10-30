@@ -7,14 +7,21 @@ import csv
 import io
 import json
 import re
+import ssl
+from functools import partial
 from hashlib import sha256
 from pathlib import Path
 from typing import Literal
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
+import httpx
 from pydantic import Field
 
-from global_medicines_atlas.acquisition import AcquisitionPolicy, acquire_source
+from global_medicines_atlas.acquisition import (
+    AcquisitionPolicy,
+    BoundIPAddressTransport,
+    acquire_source,
+)
 from global_medicines_atlas.models import FrozenModel
 from global_medicines_atlas.receipts import (
     EvidenceClass,
@@ -213,6 +220,29 @@ def redact_batch_http(http: HttpRetrievalEvidence) -> HttpRetrievalEvidence:
     return HttpRetrievalEvidence.model_validate(document)
 
 
+def selection_transport(url: str) -> httpx.BaseTransport | None:
+    """Supply NPPA's missing intermediate while retaining root validation."""
+    if urlsplit(url).hostname != "nppa.gov.in":
+        return None
+    intermediate = ROOT / ".ci/trust/nppa-intermediate.pem"
+    if (
+        sha256(intermediate.read_bytes()).hexdigest()
+        != "b40358316fd9e1caaaab92c382927d2c13ef51b481eec9371a82e16c86f2a687"
+    ):
+        raise ValueError("NPPA intermediate certificate digest mismatch")
+    context = ssl.create_default_context(
+        cafile=str(ROOT / ".ci/trust/cacert.pem")
+    )
+    context.load_verify_locations(cafile=str(intermediate))
+    context.verify_flags &= ~ssl.VERIFY_X509_PARTIAL_CHAIN
+    return BoundIPAddressTransport(
+        policy=AcquisitionPolicy(allowed_hosts=("nppa.gov.in",)),
+        inner_factory=lambda: httpx.HTTPTransport(
+            verify=context, trust_env=False
+        ),
+    )
+
+
 def run_batch(
     selections: tuple[DownloadSelection, ...],
     *,
@@ -259,7 +289,13 @@ def run_batch(
                         if index == 0
                         else source.model_copy(update={"download_url": url})
                     )
-                    receipt = acquire_source(
+                    transport = selection_transport(url)
+                    acquire = (
+                        acquire_source
+                        if transport is None
+                        else partial(acquire_source, transport=transport)
+                    )
+                    receipt = acquire(
                         source.source_id,
                         object_directory / "payload.bin",
                         repository_root=repository_root,

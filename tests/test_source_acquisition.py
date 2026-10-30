@@ -4,6 +4,7 @@ import csv
 import gzip
 import io
 import json
+import ssl
 from collections.abc import Callable
 from datetime import UTC, datetime
 from itertools import permutations
@@ -1335,3 +1336,31 @@ def test_global_catalogue_identity_uses_existing_global_receipt_code() -> None:
     assert identity.jurisdiction == "GLB"
     assert identity.catalog_id == source.source_id
     assert source.jurisdictions == ("GLOBAL",)
+
+
+def test_nppa_transport_retains_root_and_hostname_verification(monkeypatch):
+    captured = {}
+
+    def factory(**kwargs):
+        captured.update(kwargs)
+        return httpx.MockTransport(lambda _request: httpx.Response(200))
+
+    monkeypatch.setattr(batch.httpx, "HTTPTransport", factory)
+    transport = batch.selection_transport("https://nppa.gov.in/file.pdf")
+    assert isinstance(transport, BoundIPAddressTransport)
+    transport._inner_factory()
+    context = captured["verify"]
+    assert context.check_hostname
+    assert context.verify_mode == ssl.CERT_REQUIRED
+    assert not context.verify_flags & ssl.VERIFY_X509_PARTIAL_CHAIN
+    assert captured["trust_env"] is False
+    assert batch.selection_transport("https://example.org/file.pdf") is None
+
+
+def test_nppa_transport_rejects_modified_intermediate(tmp_path, monkeypatch):
+    certificate = tmp_path / ".ci/trust/nppa-intermediate.pem"
+    certificate.parent.mkdir(parents=True)
+    certificate.write_text("modified")
+    monkeypatch.setattr(batch, "ROOT", tmp_path)
+    with pytest.raises(ValueError, match="digest mismatch"):
+        batch.selection_transport("https://nppa.gov.in/file.pdf")

@@ -5448,7 +5448,7 @@
       "title": "NPPA ceiling prices",
       "dimension": "funding",
       "access_mode": "download",
-      "landing_page": "https://www.nppaindia.nic.in/",
+      "landing_page": "https://nppa.gov.in/en/therapeuticcategorywiseceilingpricelist",
       "update_cadence": "source-declared",
       "rights_status": "review_required",
       "readiness": "candidate",
@@ -5466,7 +5466,7 @@
       "last_verified_at": "2026-08-20",
       "integration_layer": "acquisition",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.nppaindia.nic.in/",
+      "documentation_url": "https://nppa.gov.in/en/therapeuticcategorywiseceilingpricelist",
       "discovery_status": "declaration_verified",
       "information_domains": [
         "product_identity",
@@ -5494,7 +5494,7 @@
       ],
       "qualification_state": "declared",
       "qualification_references": [],
-      "download_url": "https://www.nppaindia.nic.in/",
+      "download_url": "https://nppa.gov.in/storage/uploads/pdf/2845-fb-posts-anti-cancer-e3f335bfae6294a35741b326d91a26a5.pdf",
       "acquisition_profile": "public-bulk"
     },
     {

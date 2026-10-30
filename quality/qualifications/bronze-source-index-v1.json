@@ -31,8 +31,8 @@
   },
   "schema_id": "global-medicines-atlas.b0-source-index",
   "schema_version": 1,
-  "snapshot_id": "sha256:e48e8433f6ad13ae2d9345549eb8a145ef529740dab99eb01b276e4a3f2d00ee",
-  "snapshot_sha256": "e48e8433f6ad13ae2d9345549eb8a145ef529740dab99eb01b276e4a3f2d00ee",
+  "snapshot_id": "sha256:177cc5436c332bb4f9b328c524673634cf70aad1e5d6876b4b0d7587c2bb6b6c",
+  "snapshot_sha256": "177cc5436c332bb4f9b328c524673634cf70aad1e5d6876b4b0d7587c2bb6b6c",
   "source_count": 176,
   "sources": [
     {
@@ -3527,8 +3527,8 @@
       "authority": "National Pharmaceutical Pricing Authority",
       "current_landing_disposition": "manual_only_documented_acquisition",
       "discovery_state": "declaration_verified",
-      "documentation_url": "https://www.nppaindia.nic.in/",
-      "download_url": "https://www.nppaindia.nic.in/",
+      "documentation_url": "https://nppa.gov.in/en/therapeuticcategorywiseceilingpricelist",
+      "download_url": "https://nppa.gov.in/storage/uploads/pdf/2845-fb-posts-anti-cancer-e3f335bfae6294a35741b326d91a26a5.pdf",
       "evidence_scope": "none",
       "expected_formats": [
         "xlsx",
@@ -3545,13 +3545,13 @@
       "jurisdictions": [
         "IND"
       ],
-      "landing_page": "https://www.nppaindia.nic.in/",
+      "landing_page": "https://nppa.gov.in/en/therapeuticcategorywiseceilingpricelist",
       "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
       "qualification_references": [
-        "https://www.nppaindia.nic.in/"
+        "https://nppa.gov.in/en/therapeuticcategorywiseceilingpricelist"
       ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
