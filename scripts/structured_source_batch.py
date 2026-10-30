@@ -54,7 +54,7 @@ def structured_tables(data: bytes) -> list[str]:
     return outputs
 
 
-def fetch(client: httpx.Client, url: str) -> tuple[bytes, str]:
+def fetch(client: httpx.Client, url: str) -> tuple[bytes, str, str]:
     """Read one bounded response with no retries."""
     with client.stream("GET", url) as response:
         response.raise_for_status()
@@ -63,7 +63,11 @@ def fetch(client: httpx.Client, url: str) -> tuple[bytes, str]:
             chunks.extend(chunk)
             if len(chunks) > LIMIT:
                 raise ValueError("64 MiB acquisition bound exceeded")
-        return bytes(chunks), response.headers.get("content-type", "").lower()
+        return (
+            bytes(chunks),
+            response.headers.get("content-type", "").lower(),
+            str(response.url),
+        )
 
 
 def export_link(data: bytes, url: str, hosts: tuple[str, ...]) -> str | None:
@@ -111,24 +115,43 @@ def execute_recipe(recipe: dict[str, Any], directory: Path) -> list[str]:
         follow_redirects=True,
         max_redirects=3,
     ) as client:
-        data, content_type = fetch(client, recipe["url"])
+        data, content_type, final_url = fetch(client, recipe["url"])
         if "html" not in content_type and not data.lstrip().lower().startswith((
             b"<!doctype html",
             b"<html",
         )):
             return write_payload(directory, data, content_type)
         tables = structured_tables(data)
+        digest = hashlib.sha256(data).hexdigest()
+        native = f"{digest}.html"
+        (directory / native).write_bytes(data)
+        (directory / "source-receipt.json").write_text(
+            json.dumps(
+                {
+                    "requested_url": recipe["url"],
+                    "final_url": final_url,
+                    "sha256": digest,
+                    "bytes": len(data),
+                    "path": native,
+                    "derived_tables": [
+                        f"table-{i}.csv" for i in range(len(tables))
+                    ],
+                },
+                indent=2,
+            )
+            + "\n"
+        )
         names: list[str] = []
         for index, table in enumerate(tables):
             path = directory / f"table-{index}.csv"
             path.write_text(table)
             names.append(path.name)
         if names:
-            return names
-        target = export_link(data, recipe["url"], hosts)
+            return [native, "source-receipt.json", *names]
+        target = export_link(data, final_url, hosts)
         if target is None:
             return []
-        data, content_type = fetch(client, target)
+        data, content_type, _final_url = fetch(client, target)
         return write_payload(directory, data, content_type)
 
 
