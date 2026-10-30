@@ -165,10 +165,9 @@
     {
       "source_id": "ie-pcrs-reimbursement",
       "title": "HSE PCRS reimbursement reports",
-      "url": "https://about.hse.ie/api/v2/download-file/healthcare_professional_publications/Pharmacy_Circular_021-25_Claims_Submission_Calendar_PLHMFZ1.pdf/",
+      "url": "https://www.sspcrs.ie/druglist/pub",
       "allowed_hosts": [
-        "about.hse.ie",
-        "www.about.hse.ie"
+        "www.sspcrs.ie"
       ],
       "attempts": 1
     },
@@ -205,10 +204,9 @@
     {
       "source_id": "ke-ppb-register",
       "title": "Kenya PPB product register",
-      "url": "https://www.pharmacyboardkenya.org/registrationretentionvariations/",
+      "url": "https://web.pharmacyboardkenya.org/",
       "allowed_hosts": [
-        "www.pharmacyboardkenya.org",
-        "pharmacyboardkenya.org"
+        "web.pharmacyboardkenya.org"
       ],
       "attempts": 1
     },
@@ -345,20 +343,18 @@
     {
       "source_id": "sn-dpm-register",
       "title": "Senegal DPM product register",
-      "url": "https://www.sante.gouv.sn/node/35",
+      "url": "https://arp.sn/",
       "allowed_hosts": [
-        "www.sante.gouv.sn",
-        "sante.gouv.sn"
+        "arp.sn"
       ],
       "attempts": 1
     },
     {
       "source_id": "sn-dpm-safety",
       "title": "Senegal Direction de la Pharmacie et du M\u00e9dicament public safety/recall notices",
-      "url": "https://www.sante.gouv.sn/node/35",
+      "url": "https://arp.sn/",
       "allowed_hosts": [
-        "www.sante.gouv.sn",
-        "sante.gouv.sn"
+        "arp.sn"
       ],
       "attempts": 1
     },
