@@ -193,10 +193,14 @@ def test_fixture_contracts_and_lossless_parquet(payload: bytes) -> None:
 
 
 @pytest.mark.parametrize("payload", [_xml(), _production_xml()])
-def test_columnar_index_contracts_equal_row_contracts(payload: bytes) -> None:
+@pytest.mark.parametrize("start", [0, 1])
+def test_columnar_index_contracts_equal_row_contracts(
+    payload: bytes, start: int
+) -> None:
     batches = list(
         iter_pbs_entity_batches(payload, _receipt(payload, "au-pbs"))
     )
+    batches = [batch.slice(start) for batch in batches]
     expected = [
         pbs_references._contract(row)  # pyright: ignore[reportPrivateUsage]
         for batch in batches
