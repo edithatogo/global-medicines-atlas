@@ -33,3 +33,9 @@ Ireland route failed its TLS handshake; Kenya and both Senegal recipes still
 require source-specific adapters. These are unresolved, not successful datasets.
 PR #1387 review fixes passed 74 focused tests, Ruff, ty and BasedPyright.
 Federation remains deferred.
+
+On 1 November the four retry receipts matched the four failed original partitions.
+All 2,396 frozen partitions have local files matching their receipt sizes,
+totalling 137,563,772,556 bytes. The [local reconciliation](../../quality/qualifications/openfda-local-bulk-reconciliation-20261101.json)
+records the inventory and receipt index digests. Public archive verification
+and Bronze admission remain open.
