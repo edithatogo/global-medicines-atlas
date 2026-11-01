@@ -1215,6 +1215,6 @@ and Stable v1 release conditions remain unchanged and open.
   Correct scheduling prose that could resume deferred lanes automatically.
   Reuse passing software evidence for the prose correction; no production code,
   dependencies, source receipts, release gates or hosted settings changed.
-- [ ] Integrator: merge the scoped software-completion PR after its protected
-  checks pass. Then close this bounded milestone without starting federation.
-  Main and PBS PR #1377 retain their existing integrator and native owner.
+- [x] PR #1378 merged at `f0b3de8b` after protected checks passed, closing
+  the bounded software milestone. Stable promotion remains conditional on the
+  Australian federation gate and the exact candidate verification requirements.
