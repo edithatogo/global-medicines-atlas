@@ -1,0 +1,108 @@
+name: Publish reproduced PBS Silver candidate
+
+on:
+  workflow_dispatch:
+    inputs:
+      exact_contract_commit:
+        description: Exact reviewed main commit with publication authority
+        required: true
+        type: string
+
+permissions: {}
+concurrency:
+  group: australian-legacy-hf-publication
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Prepare, append and verify exact PBS candidate
+    runs-on: ubuntu-24.04
+    environment: australian-hf-publication
+    timeout-minutes: 180
+    permissions:
+      contents: read
+      actions: read # Authenticate the retained intent and attempt artifacts before append.
+    env:
+      HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Select isolated transaction paths
+        run: |
+          echo "HF_HOME=$RUNNER_TEMP/pbs-hf-home" >> "$GITHUB_ENV"
+          echo "PBS_TRANSACTION=$RUNNER_TEMP/pbs-silver-transaction" >> "$GITHUB_ENV"
+      - name: Validate main and prepare exact candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_COMMIT: ${{ inputs.exact_contract_commit }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/main
+          test "$GITHUB_SHA" = "$REQUESTED_COMMIT"
+          test "$GITHUB_SHA" = "$(gh api repos/edithatogo/global-medicines-atlas/commits/main --jq .sha)"
+          test -f quality/qualifications/pbs-reproduced-publication-authority.json
+          mkdir "$PBS_TRANSACTION"
+          uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 python -m scripts.prepare_pbs_publication_intent --exact-commit "$GITHUB_SHA" --root "$PBS_TRANSACTION"
+      - name: Retain exact intent
+        id: publication_intent
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-silver-publication-intent-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/pbs-silver-transaction/intent.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Retain value-free preparation evidence
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-silver-preparation-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/pbs-silver-transaction/preparation.json
+            ${{ runner.temp }}/pbs-silver-transaction/candidate/first/manifest.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Prepare append attempt
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PUBLICATION_INTENT_ARTIFACT_ID: ${{ steps.publication_intent.outputs.artifact-id }}
+        run: uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 python -m scripts.publish_pbs_reproduced --stage attempt --root "$PBS_TRANSACTION"
+      - name: Retain append attempt
+        id: publication_attempt
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-silver-publication-attempt-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/pbs-silver-transaction/append-attempt.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Append exact candidate once
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          PUBLICATION_INTENT_ARTIFACT_ID: ${{ steps.publication_intent.outputs.artifact-id }}
+          PUBLICATION_ATTEMPT_ARTIFACT_ID: ${{ steps.publication_attempt.outputs.artifact-id }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_SHA" = "$(gh api repos/edithatogo/global-medicines-atlas/commits/main --jq .sha)"
+          uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 python -m scripts.publish_pbs_reproduced --stage append --root "$PBS_TRANSACTION"
+      - name: Retain append outcome
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-silver-publication-outcome-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/pbs-silver-transaction/append-started.json
+            ${{ runner.temp }}/pbs-silver-transaction/cas-acknowledgement.json
+          if-no-files-found: ignore
+          retention-days: 90
+      - name: Verify anonymously
+        run: uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 python -m scripts.publish_pbs_reproduced --stage verify --root "$PBS_TRANSACTION"
+      - name: Retain verified receipt
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-silver-publication-receipt-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/pbs-silver-transaction/hosted-receipt.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Remove verified temporary candidate
+        run: rm -rf "$PBS_TRANSACTION" "$HF_HOME"

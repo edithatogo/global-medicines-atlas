@@ -1092,6 +1092,10 @@ def source_structure_query(
     columns: Annotated[list[str], typer.Option("--column")],
     limit: Annotated[int, typer.Option(min=1, max=100)] = 100,
     offset: Annotated[int, typer.Option(min=0, max=MAX_QUERY_OFFSET)] = 0,
+    output_format: Annotated[
+        ExportFormat,
+        typer.Option("--format", case_sensitive=False, help="json or jsonl."),
+    ] = ExportFormat.JSON,
     *,
     offline: bool = False,
     view: Annotated[Literal["records", "fields"], typer.Option()] = "records",
@@ -1144,7 +1148,35 @@ def source_structure_query(
             ErrorCode.INVALID_REQUEST,
             "The source-structure query or operator configuration is invalid",
         )
-    typer.echo(page.model_dump_json())
+    finally:
+        resolver.close()
+    if output_format == ExportFormat.JSONL:
+        rows = [
+            _benefits_serialize_jsonl({"type": "record", "record": row})
+            for row in page.rows
+        ]
+        rows.append(
+            _benefits_serialize_jsonl({
+                "type": "summary",
+                "status": page.status,
+                "identity": page.identity.model_dump(mode="json"),
+                "view": page.view,
+                "offset": page.offset,
+                "query_sha256": page.query_sha256,
+                "row_count": len(page.rows),
+                "comparison_validity": page.comparison_validity,
+                "source_completeness": "not_established",
+            })
+        )
+        output = "\n".join(rows)
+        if len(output.encode("utf-8")) + 1 > _BENEFITS_EXPORT_MAX_BYTES:
+            _fail(
+                ErrorCode.INVALID_REQUEST,
+                "The source-structure export exceeds its byte limit",
+            )
+        typer.echo(output)
+    else:
+        typer.echo(page.model_dump_json())
     if page.status == "unavailable":
         raise typer.Exit(3)
 

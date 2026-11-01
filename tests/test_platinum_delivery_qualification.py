@@ -4,13 +4,22 @@ from __future__ import annotations
 
 import json
 import os
+from pathlib import Path
 
 import httpx
 import pytest
 from pydantic import ValidationError
 from test_platinum_configuration import configuration
-from test_platinum_query import parquet_payload
+from test_platinum_query import (
+    native_field_collection_payload,
+    parquet_payload,
+    resolver,
+)
 
+from global_medicines_atlas import cli
+from global_medicines_atlas import (
+    platinum_structure_qualification as qualification,
+)
 from global_medicines_atlas.platinum_delivery_qualification import (
     DeliveryQualificationError,
     DeliveryRequest,
@@ -192,3 +201,111 @@ def test_cli_and_http_resolvers_close_on_success_unavailable_and_query_failure(
     else:
         run(tmp_path, (request,))
     assert closed == [0] * closed_count
+
+
+def test_source_structure_qualification_renders_in_chromium(
+    monkeypatch, tmp_path
+):
+    from playwright.sync_api import BrowserType  # ruff: ignore[import-outside-top-level]
+
+    browser_path = Path(
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+    )
+    if browser_path.is_file():
+        original = BrowserType.launch
+
+        def launch(self, **kwargs):
+            return original(self, executable_path=browser_path, **kwargs)
+
+        monkeypatch.setattr(BrowserType, "launch", launch)
+
+    def loader(**_kwargs):
+        return resolver(
+            native_field_collection_payload(),
+            semantic_dimension="source_structure",
+        )
+
+    monkeypatch.setattr(qualification, "load_benefits_resolver", loader)
+    monkeypatch.setattr(cli, "_dataset_resolver_loader", lambda: loader)
+    trust_file = tmp_path / "trust.json"
+    schema_file = tmp_path / "schema.json"
+    trust_file.write_text("{}")
+    schema_file.write_text("{}")
+    receipt = qualification.qualify_structure_consumers(
+        trust_file=trust_file,
+        metadata_root=tmp_path,
+        schema_file=schema_file,
+        resource_id="au.mbs.service-items",
+        columns=("source_field_id", "value"),
+        view="fields",
+        limit=2,
+        browser=True,
+    )
+    assert receipt["browser_qualification"] == "passed"
+    assert receipt["browser_evidence"][0]["row_count"] == 2
+
+
+def test_source_structure_qualification_checks_bounds_and_consumer_agreement(
+    monkeypatch, tmp_path
+):
+    def loader(**_kwargs):
+        return resolver(
+            native_field_collection_payload(),
+            semantic_dimension="source_structure",
+        )
+
+    monkeypatch.setattr(qualification, "load_benefits_resolver", loader)
+    monkeypatch.setattr(cli, "_dataset_resolver_loader", lambda: loader)
+    options = {
+        "trust_file": tmp_path / "trust.json",
+        "metadata_root": tmp_path,
+        "schema_file": tmp_path / "schema.json",
+        "resource_id": "au.mbs.service-items",
+        "columns": ("source_field_id", "value"),
+        "view": "fields",
+        "limit": 2,
+    }
+    options["trust_file"].write_text("{}")
+    options["schema_file"].write_text("{}")
+    result = qualification.qualify_structure_consumers(**options)
+    assert result["consumers"] == ["api_v2", "cli", "atlas"]
+    assert result["browser_qualification"] == "not_run"
+    assert result["row_count"] == 2
+    monkeypatch.setattr(
+        qualification, "_qualify_browser_pages", lambda *_a, **_k: []
+    )
+    with pytest.raises(ValueError, match="browser evidence is incomplete"):
+        qualification.qualify_structure_consumers(**{
+            **options,
+            "browser": True,
+        })
+    with pytest.raises(ValueError, match="outside its bounds"):
+        qualification.qualify_structure_consumers(**{**options, "limit": 0})
+    with pytest.raises(ValueError, match="API canary failed"):
+        qualification.qualify_structure_consumers(**{
+            **options,
+            "resource_id": "unknown.resource",
+        })
+
+    class FailedExport:
+        exit_code = 1
+
+    monkeypatch.setattr(
+        qualification.CliRunner,
+        "invoke",
+        lambda *_args, **_kwargs: FailedExport(),
+    )
+    with pytest.raises(ValueError, match="CLI export failed"):
+        qualification.qualify_structure_consumers(**options)
+
+    class InvalidExport:
+        exit_code = 0
+        stdout = "{}\n"
+
+    monkeypatch.setattr(
+        qualification.CliRunner,
+        "invoke",
+        lambda *_args, **_kwargs: InvalidExport(),
+    )
+    with pytest.raises(ValueError, match="export evidence differs"):
+        qualification.qualify_structure_consumers(**options)
