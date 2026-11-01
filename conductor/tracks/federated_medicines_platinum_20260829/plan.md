@@ -1789,17 +1789,21 @@ authoritative contract, reconciliation, and bound receipts.
   Synthetic two-engine tests reach later flat records and nested fields; an
   admitted synthetic object yields the same later page through API, Atlas and
   CLI. Real derived output canaries remain outstanding.
-- [~] Complete protected CI and the review/merge checkpoint. The one local full
+- [x] PR #1369 completed protected CI and merged at d0cc3508. The one local full
   invocation stopped after coverage with four failures; the affected rerun
   passed the two keyboard cases and one release fixture, while the other
   release fixture still exceeded its p95 query budget. No budget was weakened.
 
 ### Offline research-package implementation (2026-10-29)
 
-- [~] Implement a versioned local content-addressed result reference and
+- [x] Implement a versioned local content-addressed result reference and
   verify the separate canonical result without relaxing public URL validation.
   The implementing agent reviewed the increment and 103 affected tests passed;
-  exact-head protected checks are pending.
-- [ ] Build and verify a deterministic package from an already-admitted real
+  PR #1370 merged at 685e0df2.
+- [x] Build and verify a deterministic package from an already-admitted real
   query at a pinned source revision and exact merged assembly commit. Retain
   digest-bound evidence; do not claim publication or federation acceptance.
+  PR #1371 retains the two-row canary and deterministic archive digest in
+  `quality/qualifications/platinum-research-package-merged-canary-20261029.json`.
+  A separate process verified the saved archive in the same environment.
+  Independent clean-room restoration remains open.
