@@ -1,0 +1,422 @@
+{
+  "scope": "42 configured technical acquisition recipes; failures remain explicit; not a claim of 42 working adapters",
+  "federation_deferred": true,
+  "sources": [
+    {
+      "source_id": "ar-anmat-vademecum",
+      "title": "Vademecum Nacional",
+      "url": "https://www.argentina.gob.ar/noticias/inconvenientes-con-el-vademecum-nacional-de-medicamentos-y-el-sistema-de-trazabilidad",
+      "allowed_hosts": [
+        "www.argentina.gob.ar",
+        "argentina.gob.ar"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "bh-moh-drug-prices",
+      "title": "Drug price list",
+      "url": "https://www.moh.gov.bh/eServices/?lang=en",
+      "allowed_hosts": [
+        "www.moh.gov.bh",
+        "moh.gov.bh"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "ca-cda-recommendations",
+      "title": "Reimbursement review recommendations",
+      "url": "https://www.cda-amc.ca/pharmaceutical-reviews-update-issue-64",
+      "allowed_hosts": [
+        "www.cda-amc.ca",
+        "cda-amc.ca"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "cl-isp-register",
+      "title": "Medicines registration search",
+      "url": "https://registrosanitario.ispch.gob.cl/",
+      "allowed_hosts": [
+        "registrosanitario.ispch.gob.cl",
+        "www.registrosanitario.ispch.gob.cl"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "de-bfarm-amice",
+      "title": "AMIce PharmNet.Bund",
+      "url": "https://www.bfarm.de/DE/Arzneimittel/Arzneimittelinformationen/Arzneimittel-recherchieren/AMIce/_artikel.html",
+      "allowed_hosts": [
+        "www.bfarm.de",
+        "bfarm.de"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "dk-medstat-utilisation",
+      "title": "Medstat.dk medicines statistics",
+      "url": "https://medstat.dk/",
+      "allowed_hosts": [
+        "medstat.dk",
+        "www.medstat.dk"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "eg-eda-register",
+      "title": "Egypt EDA product register",
+      "url": "https://www.edaegypt.gov.eg/en/media-center/news/the-efforts-of-the-egyptian-drug-authority-to-control-the-markets-during-last-march-drug-authority/",
+      "allowed_hosts": [
+        "www.edaegypt.gov.eg",
+        "edaegypt.gov.eg"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "eg-eda-safety",
+      "title": "Egyptian Drug Authority public safety/recall notices",
+      "url": "https://www.edaegypt.gov.eg/en/media-center/news/the-efforts-of-the-egyptian-drug-authority-to-control-the-markets-during-last-march-drug-authority/",
+      "allowed_hosts": [
+        "www.edaegypt.gov.eg",
+        "edaegypt.gov.eg"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "eg-national-eml",
+      "title": "EGY essential medicines / health-supplies list",
+      "url": "https://www.edaegypt.gov.eg/en/publications-reports-and-eda-in-numbers/eda-publications/periodic-lists/periodic-lists-of-the-central-administration-for-pharmaceutical-care/",
+      "allowed_hosts": [
+        "www.edaegypt.gov.eg",
+        "edaegypt.gov.eg"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "eu-spor-public-metadata",
+      "title": "SPOR public RMS/OMS metadata",
+      "url": "https://spor.ema.europa.eu/sporwi/",
+      "allowed_hosts": [
+        "spor.ema.europa.eu",
+        "www.spor.ema.europa.eu"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "gb-mhra-products",
+      "title": "MHRA Products",
+      "url": "https://products.mhra.gov.uk/",
+      "allowed_hosts": [
+        "products.mhra.gov.uk",
+        "www.products.mhra.gov.uk"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "gb-mhra-yellow-card",
+      "title": "Yellow Card Scheme public outputs",
+      "url": "https://yellowcard.mhra.gov.uk/what-to-report",
+      "allowed_hosts": [
+        "yellowcard.mhra.gov.uk",
+        "www.yellowcard.mhra.gov.uk"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "gcc-central-registration",
+      "title": "GCC central registration process",
+      "url": "https://ghc.sa/",
+      "allowed_hosts": [
+        "ghc.sa",
+        "www.ghc.sa"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "gh-fda-register",
+      "title": "Ghana FDA product register",
+      "url": "https://fdaghana.gov.gh/product-register/",
+      "allowed_hosts": [
+        "fdaghana.gov.gh",
+        "www.fdaghana.gov.gh"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "gh-national-eml",
+      "title": "GHA essential medicines / health-supplies list",
+      "url": "https://fdaghana.gov.gh/product-register/",
+      "allowed_hosts": [
+        "fdaghana.gov.gh",
+        "www.fdaghana.gov.gh"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "id-bpom-product",
+      "title": "Product check portal",
+      "url": "https://cekbpom.pom.go.id/",
+      "allowed_hosts": [
+        "cekbpom.pom.go.id",
+        "www.cekbpom.pom.go.id"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "ie-pcrs-reimbursement",
+      "title": "HSE PCRS reimbursement reports",
+      "url": "https://www.sspcrs.ie/druglist/pub",
+      "allowed_hosts": [
+        "www.sspcrs.ie"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "in-cdsco-approved-drugs",
+      "title": "CDSCO approved new drugs",
+      "url": "https://www.cdsco.gov.in/opencms/opencms/en/Drugs/New-Drugs/",
+      "allowed_hosts": [
+        "www.cdsco.gov.in",
+        "cdsco.gov.in"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "in-cdsco-products",
+      "title": "CDSCO public product/license surfaces beyond the approved-drugs seed",
+      "url": "https://www.cdsco.gov.in/opencms/opencms/en/Drugs/New-Drugs/",
+      "allowed_hosts": [
+        "www.cdsco.gov.in",
+        "cdsco.gov.in"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "in-procurement-availability",
+      "title": "India public medicines procurement/availability surfaces",
+      "url": "https://gem.gov.in/",
+      "allowed_hosts": [
+        "gem.gov.in",
+        "www.gem.gov.in"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "ke-ppb-register",
+      "title": "Kenya PPB product register",
+      "url": "https://web.pharmacyboardkenya.org/",
+      "allowed_hosts": [
+        "web.pharmacyboardkenya.org"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "kw-moh-medicines",
+      "title": "Medicines source discovery record",
+      "url": "https://www.moh.gov.kw/",
+      "allowed_hosts": [
+        "www.moh.gov.kw",
+        "moh.gov.kw"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "mus-approved-drug-list",
+      "title": "Mauritius Approved Drug List / EML",
+      "url": "https://health.govmu.org/health/?p=8174",
+      "allowed_hosts": [
+        "health.govmu.org",
+        "www.health.govmu.org"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "mus-historical-eml-archive",
+      "title": "Mauritius historical EML/Approved Drug List editions",
+      "url": "https://health.govmu.org/health/?p=8174",
+      "allowed_hosts": [
+        "health.govmu.org",
+        "www.health.govmu.org"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "mus-pharmacy-board-register",
+      "title": "Mauritius public product registration",
+      "url": "https://health.govmu.org/",
+      "allowed_hosts": [
+        "health.govmu.org",
+        "www.health.govmu.org"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "mx-csg-compendium",
+      "title": "National Health Supplies Compendium",
+      "url": "https://www.csg.gob.mx/Compendio/CNIS/cnis.html",
+      "allowed_hosts": [
+        "www.csg.gob.mx",
+        "csg.gob.mx"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "my-npra-quest",
+      "title": "QUEST3 Product Search",
+      "url": "https://quest3plus.bpfk.gov.my/pmo2/index.php",
+      "allowed_hosts": [
+        "quest3plus.bpfk.gov.my",
+        "www.quest3plus.bpfk.gov.my"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "ng-nafdac-products",
+      "title": "NAFDAC registered products search",
+      "url": "https://greenbook.nafdac.gov.ng/productCategory/products/5",
+      "allowed_hosts": [
+        "greenbook.nafdac.gov.ng",
+        "www.greenbook.nafdac.gov.ng"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "nl-medicijnkosten",
+      "title": "Medicijnkosten",
+      "url": "https://www.medicijnkosten.nl/databank",
+      "allowed_hosts": [
+        "www.medicijnkosten.nl",
+        "medicijnkosten.nl"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "nz-medsafe-documents",
+      "title": "Data sheets and consumer medicine information",
+      "url": "https://www.medsafe.govt.nz/Medicines/medicine-information.asp",
+      "allowed_hosts": [
+        "www.medsafe.govt.nz",
+        "medsafe.govt.nz"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "nz-medsafe-products",
+      "title": "Product/Application and data-sheet search",
+      "url": "https://www.medsafe.govt.nz/Medicines/medicine-information.asp",
+      "allowed_hosts": [
+        "www.medsafe.govt.nz",
+        "medsafe.govt.nz"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "ph-fda-verification",
+      "title": "FDA Verification Portal",
+      "url": "https://verification.fda.gov.ph/",
+      "allowed_hosts": [
+        "verification.fda.gov.ph",
+        "www.verification.fda.gov.ph"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "qa-moh-medicines",
+      "title": "Medicines source discovery record",
+      "url": "https://www.moph.gov.qa/",
+      "allowed_hosts": [
+        "www.moph.gov.qa",
+        "moph.gov.qa"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "rw-national-eml",
+      "title": "RWA essential medicines / health-supplies list",
+      "url": "https://monitoring.rwandafda.gov.rw/register/hmdr/",
+      "allowed_hosts": [
+        "monitoring.rwandafda.gov.rw",
+        "www.monitoring.rwandafda.gov.rw"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "sn-dpm-register",
+      "title": "Senegal DPM product register",
+      "url": "https://arp.sn/",
+      "allowed_hosts": [
+        "arp.sn"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "sn-dpm-safety",
+      "title": "Senegal Direction de la Pharmacie et du M\u00e9dicament public safety/recall notices",
+      "url": "https://arp.sn/",
+      "allowed_hosts": [
+        "arp.sn"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "sn-national-eml",
+      "title": "SEN essential medicines / health-supplies list",
+      "url": "https://arp.sn/",
+      "allowed_hosts": [
+        "arp.sn",
+        "www.arp.sn"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "th-fda-search",
+      "title": "Medicine product search",
+      "url": "https://pertento.fda.moph.go.th/FDA_SEARCH_DRUG/SEARCH_DRUG/FRM_SEARCH_PAGE.aspx",
+      "allowed_hosts": [
+        "pertento.fda.moph.go.th",
+        "www.pertento.fda.moph.go.th"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "ug-nda-register",
+      "title": "Uganda NDA product register",
+      "url": "https://www.nda.or.ug/nda/productsafety/recalls.html",
+      "allowed_hosts": [
+        "www.nda.or.ug",
+        "nda.or.ug"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "ug-nda-safety",
+      "title": "Uganda National Drug Authority public safety/recall notices",
+      "url": "https://www.nda.or.ug/nda/productsafety/recalls.html",
+      "allowed_hosts": [
+        "www.nda.or.ug",
+        "nda.or.ug"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "zw-mcaz-safety",
+      "title": "Medicines Control Authority of Zimbabwe public safety/recall notices",
+      "url": "https://www.mcaz.co.zw/user-manual-for-import-export-permit-application-of-registered-medicines",
+      "allowed_hosts": [
+        "www.mcaz.co.zw",
+        "mcaz.co.zw"
+      ],
+      "attempts": 1
+    },
+    {
+      "source_id": "zw-national-eml",
+      "title": "ZWE essential medicines / health-supplies list",
+      "url": "https://www.mcaz.co.zw/user-manual-for-import-export-permit-application-of-registered-medicines",
+      "allowed_hosts": [
+        "www.mcaz.co.zw",
+        "mcaz.co.zw"
+      ],
+      "attempts": 1
+    }
+  ]
+}

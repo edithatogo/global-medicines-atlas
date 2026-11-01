@@ -1,0 +1,61 @@
+{
+  "receipt_version": "1",
+  "plan_sha256": "0639d76fd1fedb0541fd865d99f2da3d7c21bedb5b6eef7b1504382ea16445d6",
+  "artifact_sha256": [
+    "01e1e271fc3f10f84aa50702b56a5374e5fddc44239e0ff777f189ee62c0dbc8",
+    "d0c8793999de9466f624e117a1bc583fc0326a6aceddf8e557d49f1cbe372c52",
+    "ee27186251b4656a92cfd4e29ebb9a245a4210e0c4bd2feb669c79382a0fbea8",
+    "f08cc34ff0a453e1eae36d151eb448ada470863a0c149efc1a862054baf958e8",
+    "252ec94cae41bfbfa30ad5523aeb352cbf84e35e0720bf631e1ef95d1edca2e9",
+    "daf763a8f252320bfad9674a2a4897eb485dce195c740e9060e565201f17534b"
+  ],
+  "target": {
+    "destination": "hugging_face",
+    "repository": "edithatogo/global-medicines-atlas-cms-medicaid-20261030",
+    "revision": "main",
+    "public_base_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-cms-medicaid-20261030"
+  },
+  "state": "public",
+  "recorded_at": "2026-10-29T21:01:36.267928Z",
+  "remote_revision": "16e3c22b082e05c2435d5b49bfb3331e700925b9",
+  "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-cms-medicaid-20261030/tree/16e3c22b082e05c2435d5b49bfb3331e700925b9",
+  "failure_reason": null,
+  "verified_artifacts": [
+    {
+      "relative_path": "README.md",
+      "sha256": "01e1e271fc3f10f84aa50702b56a5374e5fddc44239e0ff777f189ee62c0dbc8",
+      "size": 902,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-cms-medicaid-20261030/resolve/16e3c22b082e05c2435d5b49bfb3331e700925b9/README.md"
+    },
+    {
+      "relative_path": "rights.json",
+      "sha256": "d0c8793999de9466f624e117a1bc583fc0326a6aceddf8e557d49f1cbe372c52",
+      "size": 1035,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-cms-medicaid-20261030/resolve/16e3c22b082e05c2435d5b49bfb3331e700925b9/rights.json"
+    },
+    {
+      "relative_path": "us-cms-mdrp/payload.bin",
+      "sha256": "ee27186251b4656a92cfd4e29ebb9a245a4210e0c4bd2feb669c79382a0fbea8",
+      "size": 329796376,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-cms-medicaid-20261030/resolve/16e3c22b082e05c2435d5b49bfb3331e700925b9/us-cms-mdrp/payload.bin"
+    },
+    {
+      "relative_path": "us-cms-mdrp/receipt.json",
+      "sha256": "f08cc34ff0a453e1eae36d151eb448ada470863a0c149efc1a862054baf958e8",
+      "size": 4950,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-cms-medicaid-20261030/resolve/16e3c22b082e05c2435d5b49bfb3331e700925b9/us-cms-mdrp/receipt.json"
+    },
+    {
+      "relative_path": "us-cms-nadac/payload.bin",
+      "sha256": "252ec94cae41bfbfa30ad5523aeb352cbf84e35e0720bf631e1ef95d1edca2e9",
+      "size": 112571995,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-cms-medicaid-20261030/resolve/16e3c22b082e05c2435d5b49bfb3331e700925b9/us-cms-nadac/payload.bin"
+    },
+    {
+      "relative_path": "us-cms-nadac/receipt.json",
+      "sha256": "daf763a8f252320bfad9674a2a4897eb485dce195c740e9060e565201f17534b",
+      "size": 5133,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-cms-medicaid-20261030/resolve/16e3c22b082e05c2435d5b49bfb3331e700925b9/us-cms-nadac/receipt.json"
+    }
+  ]
+}

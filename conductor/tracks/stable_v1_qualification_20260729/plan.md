@@ -1191,3 +1191,30 @@ remaining federation criteria, and this track's archival remain pending.
   Effective frozen raw totals are 14 admissions, 14 reader canaries and 1,745
   deferred. The separate six-table MBS Silver cohort is not added to these
   counts. Federation remains blocked; no release or archival was performed.
+
+## Bounded software completion — 29 October 2026
+
+The maintainer selected bounded software completion with federation later.
+This phase records that finite milestone; all earlier federation requirements
+and Stable v1 release conditions remain unchanged and open.
+
+- [x] Replace open-ended scheduling with the bounded software checklist and
+  defer unfinished federation, new coverage and optional experiments to the
+  roadmap. Preserve the original acceptance evidence and track markers.
+- [x] Streamline contributor setup, fix the unsupported `test_goblin.py all`
+  instruction, and remove blanket per-task validation/bookkeeping. Keep the
+  locked default test toolchain because strict pytest configuration requires
+  its timeout plugin; the attempted `test`-only setup failed before execution.
+- [x] Verify the existing software candidate on repo-local Python 3.15.1:
+  154 context/CLI/Atlas/accessibility/export tests and 29 API tests passed.
+  CLI help commands and context validation passed. The existing clean-consumer
+  harness built, installed and reinstalled wheel and sdist, verifying CLI,
+  API/OpenAPI, Atlas assets, core fallback and v2 comparison/evidence behavior.
+  Receipt: `quality/qualifications/bounded-software-consumer-20261029.json`.
+- [x] Perform one implementing-agent Conductor review of the scoped diff.
+  Correct scheduling prose that could resume deferred lanes automatically.
+  Reuse passing software evidence for the prose correction; no production code,
+  dependencies, source receipts, release gates or hosted settings changed.
+- [ ] Integrator: merge the scoped software-completion PR after its protected
+  checks pass. Then close this bounded milestone without starting federation.
+  Main and PBS PR #1377 retain their existing integrator and native owner.

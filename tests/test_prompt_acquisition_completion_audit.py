@@ -557,9 +557,9 @@ def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:
     assert audit["queue_state_counts"] == {
         "credentialed_and_excluded": 15,
         "landed_and_evidenced": 42,
-        "manual_only_documented_acquisition": 91,
+        "manual_only_documented_acquisition": 82,
         "not_yet_implemented": 0,
-        "rights_blocked": 27,
+        "rights_blocked": 36,
         "superseded_by_reused_source": 0,
         "temporarily_unavailable": 1,
     }
@@ -727,7 +727,7 @@ def test_additional_utilisation_public_surfaces_are_not_credential_blocked() -> 
     )
     assert prompt["queue_states"] == {
         "fr-open-medic": "landed_and_evidenced",
-        "jp-mhlw-ndb-utilisation": "manual_only_documented_acquisition",
+        "jp-mhlw-ndb-utilisation": "rights_blocked",
         "ca-cihi-nhex-medicines": "rights_blocked",
         "ie-pcrs-reimbursement": "manual_only_documented_acquisition",
     }

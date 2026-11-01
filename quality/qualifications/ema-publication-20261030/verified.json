@@ -1,0 +1,40 @@
+{
+  "receipt_version": "1",
+  "plan_sha256": "5008fffd1314fc37a85c626818f7d830a15858209a7ce745825e3582e80129c8",
+  "artifact_sha256": [
+    "488dab8e7fbff8634736697d4fb62b39db679545d8a97360703f551086b64bfd",
+    "fe0bc6f7dea44ef112d7dac1ad63797132c674a1baeadc93f5775c68897ac76f",
+    "71f1249d6867a50aaa7142bd32e818bd7a24d6f8148e2bb4999a243b95b77ee2"
+  ],
+  "target": {
+    "destination": "hugging_face",
+    "repository": "edithatogo/global-medicines-atlas-ema-bronze-20261029",
+    "revision": "main",
+    "public_base_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-bronze-20261029"
+  },
+  "state": "public",
+  "recorded_at": "2026-10-29T18:07:06.897649Z",
+  "remote_revision": "3aaa509d4b8d5b3f594caaeb0fab2ad99fec3c61",
+  "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-bronze-20261029/tree/3aaa509d4b8d5b3f594caaeb0fab2ad99fec3c61",
+  "failure_reason": null,
+  "verified_artifacts": [
+    {
+      "relative_path": "README.md",
+      "sha256": "488dab8e7fbff8634736697d4fb62b39db679545d8a97360703f551086b64bfd",
+      "size": 1041,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-bronze-20261029/resolve/3aaa509d4b8d5b3f594caaeb0fab2ad99fec3c61/README.md"
+    },
+    {
+      "relative_path": "medicines.json",
+      "sha256": "fe0bc6f7dea44ef112d7dac1ad63797132c674a1baeadc93f5775c68897ac76f",
+      "size": 6795698,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-bronze-20261029/resolve/3aaa509d4b8d5b3f594caaeb0fab2ad99fec3c61/medicines.json"
+    },
+    {
+      "relative_path": "retrieval.json",
+      "sha256": "71f1249d6867a50aaa7142bd32e818bd7a24d6f8148e2bb4999a243b95b77ee2",
+      "size": 611,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-bronze-20261029/resolve/3aaa509d4b8d5b3f594caaeb0fab2ad99fec3c61/retrieval.json"
+    }
+  ]
+}

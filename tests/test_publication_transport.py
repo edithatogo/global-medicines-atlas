@@ -8,7 +8,9 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
+import scripts.publish_source_batch as source_publisher
 from pydantic import ValidationError
+from scripts import publish_ema_snapshot as ema_snapshot
 
 from global_medicines_atlas.publication_transport import (
     APPROVAL_VALUE,
@@ -794,3 +796,128 @@ def test_preparation_script_emits_local_dry_run_only(tmp_path: Path) -> None:
     assert output["plan"]["maintainer_approved"] is False
     assert output["receipt"]["state"] == "prepared"
     assert "token" not in result.stdout.casefold()
+
+
+def test_ema_snapshot_rejects_local_publication(tmp_path: Path) -> None:
+    """The approved snapshot runner rejects local writes before reading bytes."""
+
+    with pytest.MonkeyPatch.context() as patch:
+        patch.delenv("GITHUB_ACTIONS", raising=False)
+        with pytest.raises(ValueError, match="Actions dispatch"):
+            ema_snapshot.main([
+                "--artifact",
+                str(tmp_path / "missing"),
+                "--output",
+                str(tmp_path / "output"),
+                "--publish",
+            ])
+    assert not (tmp_path / "output").exists()
+
+
+def test_ema_snapshot_binds_restored_payload(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A changed source artifact cannot enter the approved upload package."""
+    evidence = tmp_path / "evidence"
+    evidence.mkdir()
+    artifact_root = tmp_path / "artifact"
+    source = artifact_root / ema_snapshot.PAYLOAD
+    source.parent.mkdir(parents=True)
+    source.write_bytes(b"approved")
+    for name in ("README.md", "retrieval.json"):
+        (evidence / name).write_bytes(name.encode())
+    (evidence / "medicines.json").write_bytes(b"approved")
+    approved = PublicationPlan(
+        release_version="test",
+        target=target(),
+        artifacts=bind_artifacts(
+            evidence, ("README.md", "medicines.json", "retrieval.json")
+        ),
+    )
+    (evidence / "publication-plan.json").write_text(
+        approved.model_dump_json(), encoding="utf-8"
+    )
+    monkeypatch.setattr(ema_snapshot, "EVIDENCE", evidence)
+    assert (
+        ema_snapshot.prepare_snapshot(artifact_root, tmp_path / "valid")
+        == approved
+    )
+    source.write_bytes(b"changed")
+    with pytest.raises(ValueError, match="approved snapshot"):
+        ema_snapshot.prepare_snapshot(artifact_root, tmp_path / "invalid")
+
+
+def test_shared_publisher_rejects_local_execution(tmp_path, monkeypatch):
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    with pytest.raises(ValueError, match="Actions dispatch"):
+        source_publisher.publish_batch(
+            tmp_path / "missing.json", tmp_path / "out", "a" * 40
+        )
+    assert not (tmp_path / "out").exists()
+
+
+def test_shared_publisher_rejects_snapshot_drift(tmp_path, monkeypatch):
+    monkeypatch.setattr(source_publisher, "ROOT", tmp_path)
+    monkeypatch.setattr(source_publisher, "require_hosted_main", lambda _: None)
+    evidence = tmp_path / "quality/source-batches/example"
+    evidence.mkdir(parents=True)
+    manifest = evidence / "manifest.json"
+    manifest.write_text(
+        json.dumps({
+            "publication_approved": True,
+            "expected_payloads": {
+                "test-source": {"sha256": "a" * 64, "byte_count": 1}
+            },
+        })
+    )
+    (evidence / "batch.json").write_text(
+        json.dumps([
+            {
+                "source_id": "test-source",
+                "expected_url": "https://example.test/file",
+            }
+        ])
+    )
+    output = tmp_path / "build/run"
+
+    def acquired(*_args, **_kwargs):
+        folder = output / "acquisition/test-source"
+        folder.mkdir(parents=True)
+        (folder / "receipt.json").write_text(
+            json.dumps({"payload": {"sha256": "b" * 64, "byte_count": 1}})
+        )
+        return [{"source_id": "test-source", "state": "acquired_local"}]
+
+    monkeypatch.setattr(source_publisher, "run_batch", acquired)
+    with pytest.raises(ValueError, match="approved snapshot changed"):
+        source_publisher.publish_batch(manifest, output, "a" * 40)
+    assert not (output / "publication-receipts/intent.json").exists()
+
+
+def test_source_batch_package_preserves_every_selected_object(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "source"
+    target_path = tmp_path / "package"
+    for relative in (Path(), Path("objects/0001")):
+        folder = source / relative
+        folder.mkdir(parents=True)
+        (folder / "payload.bin").write_bytes(str(relative).encode())
+        (folder / "receipt.json").write_text(
+            '{"object": "' + str(relative) + '"}'
+        )
+    source_publisher.copy_source_objects(source, target_path, 2)
+    expected = {
+        str(p.relative_to(source)): p.read_bytes()
+        for p in source.rglob("*")
+        if p.is_file()
+    }
+    actual = {
+        str(p.relative_to(target_path)): p.read_bytes()
+        for p in target_path.rglob("*")
+        if p.is_file()
+    }
+    assert actual == expected
+    (source / "objects/0001/receipt.json").unlink()
+    with pytest.raises(FileNotFoundError):
+        source_publisher.copy_source_objects(source, tmp_path / "incomplete", 2)

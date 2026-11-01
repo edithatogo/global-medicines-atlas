@@ -1,0 +1,47 @@
+{
+  "receipt_version": "1",
+  "plan_sha256": "6d00815c61632d65cdf5215517627244b4c5fee938d3356c96b29c2224e43d20",
+  "artifact_sha256": [
+    "b05c613ef18ec61ef41e11ac5b13dc562d25107a8f304398ef6c68ada5d6fdcd",
+    "113a9dd40529c4c235c3856c52d9e02800cc3bd051a1f5d3aed476891967b77c",
+    "49aed018b2fcd02dad40fa48f4ebefb35e64df6d627e8dbd3e96a7e1f7ac1ead",
+    "e140e2ef957a5c70560d6de49a5991a23cd3122a46bf233ca21fca55a531fc0c"
+  ],
+  "target": {
+    "destination": "hugging_face",
+    "repository": "edithatogo/global-medicines-atlas-singapore-register-20261030",
+    "revision": "main",
+    "public_base_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-singapore-register-20261030"
+  },
+  "state": "public",
+  "recorded_at": "2026-10-29T20:58:30.673441Z",
+  "remote_revision": "f5783a0e53744368f74d1fc69b2b70361f481996",
+  "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-singapore-register-20261030/tree/f5783a0e53744368f74d1fc69b2b70361f481996",
+  "failure_reason": null,
+  "verified_artifacts": [
+    {
+      "relative_path": "README.md",
+      "sha256": "b05c613ef18ec61ef41e11ac5b13dc562d25107a8f304398ef6c68ada5d6fdcd",
+      "size": 754,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-singapore-register-20261030/resolve/f5783a0e53744368f74d1fc69b2b70361f481996/README.md"
+    },
+    {
+      "relative_path": "rights.json",
+      "sha256": "113a9dd40529c4c235c3856c52d9e02800cc3bd051a1f5d3aed476891967b77c",
+      "size": 702,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-singapore-register-20261030/resolve/f5783a0e53744368f74d1fc69b2b70361f481996/rights.json"
+    },
+    {
+      "relative_path": "sg-hsa-register/payload.bin",
+      "sha256": "49aed018b2fcd02dad40fa48f4ebefb35e64df6d627e8dbd3e96a7e1f7ac1ead",
+      "size": 2604008,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-singapore-register-20261030/resolve/f5783a0e53744368f74d1fc69b2b70361f481996/sg-hsa-register/payload.bin"
+    },
+    {
+      "relative_path": "sg-hsa-register/receipt.json",
+      "sha256": "e140e2ef957a5c70560d6de49a5991a23cd3122a46bf233ca21fca55a531fc0c",
+      "size": 5129,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-singapore-register-20261030/resolve/f5783a0e53744368f74d1fc69b2b70361f481996/sg-hsa-register/receipt.json"
+    }
+  ]
+}

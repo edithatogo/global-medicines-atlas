@@ -1,0 +1,105 @@
+[
+  {
+    "source_id": "global-who-eml",
+    "surface": "download",
+    "expected_url": "https://iris.who.int/server/api/core/bitstreams/17642505-ecd3-4940-a691-4f1dfa0d835a/content",
+    "retention_authority_reference": "quality/source-batches/who-eml-20261030/rights.json",
+    "reuse_decision": {
+      "source_id": "global-who-eml",
+      "disposition": "acquire-new",
+      "searched_surfaces": [
+        "local_clones",
+        "github",
+        "hugging_face",
+        "source_registry"
+      ],
+      "candidates": [
+        {
+          "surface": "local_clones",
+          "locator": "/Users/doughnut/.codex/worktrees/gma-streamlined-completion/global-medicines-atlas/tests/fixtures/source_expansion/who-eml.csv",
+          "source_id": "global-who-eml",
+          "kind": "related",
+          "digest": "9cb9f87b1a193563f705d33df69a437aef17e0b8d1ea3382178563329f1d56b5",
+          "query": "Synthetic fixture, not live payload",
+          "revision": null
+        },
+        {
+          "surface": "source_registry",
+          "locator": "https://iris.who.int/server/api/core/bitstreams/17642505-ecd3-4940-a691-4f1dfa0d835a/content",
+          "source_id": "global-who-eml",
+          "kind": "registry",
+          "digest": null,
+          "query": null,
+          "revision": null
+        }
+      ],
+      "rationale": "No matching live payload in checked authorities; acquire exact official snapshot.",
+      "catalogue_revision": "760723adc9c2f8e8946eebe9bcada7aff212095e",
+      "discovery_snapshot": {
+        "schema_id": "global-medicines-atlas.reuse-discovery",
+        "schema_version": 1,
+        "snapshot_id": "sha256:d6bc6361f01c0538f8050ef0bb7cdcf03087c82e8720828aabaae5d89e991f2f",
+        "source_id": "global-who-eml",
+        "generated_at": "2026-10-29T20:21:19.155195Z",
+        "freshness_seconds": 86400,
+        "expires_at": "2026-10-30T20:21:19.155195Z",
+        "tool_version": "bounded-source-batch-reuse-v1",
+        "surfaces": [
+          {
+            "name": "local_clones",
+            "state": "success",
+            "query": "global-who-eml exact source ID and payload filename",
+            "candidates": [
+              {
+                "surface": "local_clones",
+                "locator": "/Users/doughnut/.codex/worktrees/gma-streamlined-completion/global-medicines-atlas/tests/fixtures/source_expansion/who-eml.csv",
+                "source_id": "global-who-eml",
+                "kind": "related",
+                "digest": "9cb9f87b1a193563f705d33df69a437aef17e0b8d1ea3382178563329f1d56b5",
+                "query": "Synthetic fixture, not live payload",
+                "revision": null
+              }
+            ],
+            "detail": "Declared local clones and same-day pinned remote listings checked; no matching live payload"
+          },
+          {
+            "name": "github",
+            "state": "success",
+            "query": "global-who-eml exact source ID and payload filename",
+            "candidates": [],
+            "detail": "Declared local clones and same-day pinned remote listings checked; no matching live payload"
+          },
+          {
+            "name": "hugging_face",
+            "state": "success",
+            "query": "global-who-eml exact source ID and payload filename",
+            "candidates": [],
+            "detail": "Declared local clones and same-day pinned remote listings checked; no matching live payload"
+          },
+          {
+            "name": "source_registry",
+            "state": "success",
+            "query": "global-who-eml exact source ID and payload filename",
+            "candidates": [
+              {
+                "surface": "source_registry",
+                "locator": "https://iris.who.int/server/api/core/bitstreams/17642505-ecd3-4940-a691-4f1dfa0d835a/content",
+                "source_id": "global-who-eml",
+                "kind": "registry",
+                "digest": null,
+                "query": null,
+                "revision": null
+              }
+            ],
+            "detail": "Declared local clones and same-day pinned remote listings checked; no matching live payload"
+          }
+        ]
+      }
+    },
+    "redirect_hosts": [],
+    "additional_download_urls": [
+      "https://iris.who.int/server/api/core/bitstreams/337edac2-d0aa-4e19-9d72-3acb11d09808/content"
+    ],
+    "max_bytes": 67108864
+  }
+]

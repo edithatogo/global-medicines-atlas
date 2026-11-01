@@ -1,0 +1,274 @@
+[
+  {
+    "source_id": "ca-dpd",
+    "surface": "download",
+    "expected_url": "https://www.canada.ca/content/dam/hc-sc/documents/services/drug-product-database/allfiles.zip",
+    "retention_authority_reference": "quality/qualifications/canada-bronze-20261030/rights.json",
+    "reuse_decision": {
+      "source_id": "ca-dpd",
+      "disposition": "acquire-new",
+      "searched_surfaces": [
+        "local_clones",
+        "github",
+        "hugging_face",
+        "source_registry"
+      ],
+      "candidates": [
+        {
+          "surface": "local_clones",
+          "locator": "/Users/doughnut/.codex/worktrees/gma-streamlined-completion/global-medicines-atlas/tests/fixtures/native/ca/dpd_api.json",
+          "source_id": "ca-dpd",
+          "kind": "related",
+          "digest": "5612733defbb625d19bd846560148cb38e583390206bb4f8ed48cb8fa204c5c0",
+          "query": "Synthetic fixture, not live Canadian bulk payload",
+          "revision": null
+        },
+        {
+          "surface": "local_clones",
+          "locator": "/Users/doughnut/.codex/worktrees/gma-streamlined-completion/global-medicines-atlas/tests/fixtures/native/ca/dpd_bulk.csv",
+          "source_id": "ca-dpd",
+          "kind": "related",
+          "digest": "044e59a087aadf089a179dc13f0afbe25992efb51b2fc296432384c7c05bd0ed",
+          "query": "Synthetic fixture, not live Canadian bulk payload",
+          "revision": null
+        },
+        {
+          "surface": "hugging_face",
+          "locator": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue/blob/89c95653c498d7ad2835d8fcd6f9fd804e2a4d18/fixtures/ca-dpd/dpd_api.json",
+          "source_id": "ca-dpd",
+          "kind": "related",
+          "digest": "5612733defbb625d19bd846560148cb38e583390206bb4f8ed48cb8fa204c5c0",
+          "query": "Byte-identical synthetic fixture",
+          "revision": "89c95653c498d7ad2835d8fcd6f9fd804e2a4d18"
+        },
+        {
+          "surface": "hugging_face",
+          "locator": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue/blob/89c95653c498d7ad2835d8fcd6f9fd804e2a4d18/fixtures/ca-dpd/dpd_bulk.csv",
+          "source_id": "ca-dpd",
+          "kind": "related",
+          "digest": "044e59a087aadf089a179dc13f0afbe25992efb51b2fc296432384c7c05bd0ed",
+          "query": "Byte-identical synthetic fixture",
+          "revision": "89c95653c498d7ad2835d8fcd6f9fd804e2a4d18"
+        },
+        {
+          "surface": "source_registry",
+          "locator": "https://www.canada.ca/content/dam/hc-sc/documents/services/drug-product-database/allfiles.zip",
+          "source_id": "ca-dpd",
+          "kind": "registry",
+          "digest": null,
+          "query": null,
+          "revision": null
+        }
+      ],
+      "rationale": "Declared authorities searched successfully. Canadian hits are byte-verified synthetic fixtures; no matching live bulk payload found.",
+      "catalogue_revision": "760723adc9c2f8e8946eebe9bcada7aff212095e",
+      "discovery_snapshot": {
+        "schema_id": "global-medicines-atlas.reuse-discovery",
+        "schema_version": 1,
+        "snapshot_id": "sha256:7c3603c32fca4327ab3cbdd51926db6fc6304d23654c82a5799b4a50005d2619",
+        "source_id": "ca-dpd",
+        "generated_at": "2026-10-29T17:53:55.871224Z",
+        "freshness_seconds": 86400,
+        "expires_at": "2026-10-30T17:53:55.871224Z",
+        "tool_version": "bounded-live-tree-and-fixture-content-readback-v1",
+        "surfaces": [
+          {
+            "name": "local_clones",
+            "state": "success",
+            "query": "ca-dpd: exact ID, DPD/NOC and bulk filenames in declared repository trees and dataset listings",
+            "candidates": [
+              {
+                "surface": "local_clones",
+                "locator": "/Users/doughnut/.codex/worktrees/gma-streamlined-completion/global-medicines-atlas/tests/fixtures/native/ca/dpd_api.json",
+                "source_id": "ca-dpd",
+                "kind": "related",
+                "digest": "5612733defbb625d19bd846560148cb38e583390206bb4f8ed48cb8fa204c5c0",
+                "query": "Synthetic fixture, not live Canadian bulk payload",
+                "revision": null
+              },
+              {
+                "surface": "local_clones",
+                "locator": "/Users/doughnut/.codex/worktrees/gma-streamlined-completion/global-medicines-atlas/tests/fixtures/native/ca/dpd_bulk.csv",
+                "source_id": "ca-dpd",
+                "kind": "related",
+                "digest": "044e59a087aadf089a179dc13f0afbe25992efb51b2fc296432384c7c05bd0ed",
+                "query": "Synthetic fixture, not live Canadian bulk payload",
+                "revision": null
+              }
+            ],
+            "detail": "Pinned observations: quality/qualifications/canada-bronze-20261030/reuse-searches.json; fixture content compared, not live archives"
+          },
+          {
+            "name": "github",
+            "state": "success",
+            "query": "ca-dpd: exact ID, DPD/NOC and bulk filenames in declared repository trees and dataset listings",
+            "candidates": [],
+            "detail": "Pinned observations: quality/qualifications/canada-bronze-20261030/reuse-searches.json; fixture content compared, not live archives"
+          },
+          {
+            "name": "hugging_face",
+            "state": "success",
+            "query": "ca-dpd: exact ID, DPD/NOC and bulk filenames in declared repository trees and dataset listings",
+            "candidates": [
+              {
+                "surface": "hugging_face",
+                "locator": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue/blob/89c95653c498d7ad2835d8fcd6f9fd804e2a4d18/fixtures/ca-dpd/dpd_api.json",
+                "source_id": "ca-dpd",
+                "kind": "related",
+                "digest": "5612733defbb625d19bd846560148cb38e583390206bb4f8ed48cb8fa204c5c0",
+                "query": "Byte-identical synthetic fixture",
+                "revision": "89c95653c498d7ad2835d8fcd6f9fd804e2a4d18"
+              },
+              {
+                "surface": "hugging_face",
+                "locator": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue/blob/89c95653c498d7ad2835d8fcd6f9fd804e2a4d18/fixtures/ca-dpd/dpd_bulk.csv",
+                "source_id": "ca-dpd",
+                "kind": "related",
+                "digest": "044e59a087aadf089a179dc13f0afbe25992efb51b2fc296432384c7c05bd0ed",
+                "query": "Byte-identical synthetic fixture",
+                "revision": "89c95653c498d7ad2835d8fcd6f9fd804e2a4d18"
+              }
+            ],
+            "detail": "Pinned observations: quality/qualifications/canada-bronze-20261030/reuse-searches.json; fixture content compared, not live archives"
+          },
+          {
+            "name": "source_registry",
+            "state": "success",
+            "query": "ca-dpd: exact ID, DPD/NOC and bulk filenames in declared repository trees and dataset listings",
+            "candidates": [
+              {
+                "surface": "source_registry",
+                "locator": "https://www.canada.ca/content/dam/hc-sc/documents/services/drug-product-database/allfiles.zip",
+                "source_id": "ca-dpd",
+                "kind": "registry",
+                "digest": null,
+                "query": null,
+                "revision": null
+              }
+            ],
+            "detail": "Pinned observations: quality/qualifications/canada-bronze-20261030/reuse-searches.json; fixture content compared, not live archives"
+          }
+        ]
+      }
+    },
+    "max_bytes": 67108864
+  },
+  {
+    "source_id": "ca-noc",
+    "surface": "download",
+    "expected_url": "https://www.canada.ca/content/dam/hc-sc/documents/services/drugs-health-products/drug-products/notice-compliance/database/noc_files.zip",
+    "retention_authority_reference": "quality/qualifications/canada-bronze-20261030/rights.json",
+    "reuse_decision": {
+      "source_id": "ca-noc",
+      "disposition": "acquire-new",
+      "searched_surfaces": [
+        "local_clones",
+        "github",
+        "hugging_face",
+        "source_registry"
+      ],
+      "candidates": [
+        {
+          "surface": "local_clones",
+          "locator": "/Users/doughnut/.codex/worktrees/gma-streamlined-completion/global-medicines-atlas/tests/fixtures/native/ca/noc_extract.csv",
+          "source_id": "ca-noc",
+          "kind": "related",
+          "digest": "d666035ae34e754cdba205637b41eedc0a5ac96d470a6331a11581ebbaa89025",
+          "query": "Synthetic fixture, not live Canadian bulk payload",
+          "revision": null
+        },
+        {
+          "surface": "hugging_face",
+          "locator": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue/blob/89c95653c498d7ad2835d8fcd6f9fd804e2a4d18/fixtures/ca-noc/noc_extract.csv",
+          "source_id": "ca-noc",
+          "kind": "related",
+          "digest": "d666035ae34e754cdba205637b41eedc0a5ac96d470a6331a11581ebbaa89025",
+          "query": "Byte-identical synthetic fixture",
+          "revision": "89c95653c498d7ad2835d8fcd6f9fd804e2a4d18"
+        },
+        {
+          "surface": "source_registry",
+          "locator": "https://www.canada.ca/content/dam/hc-sc/documents/services/drugs-health-products/drug-products/notice-compliance/database/noc_files.zip",
+          "source_id": "ca-noc",
+          "kind": "registry",
+          "digest": null,
+          "query": null,
+          "revision": null
+        }
+      ],
+      "rationale": "Declared authorities searched successfully. Canadian hits are byte-verified synthetic fixtures; no matching live bulk payload found.",
+      "catalogue_revision": "760723adc9c2f8e8946eebe9bcada7aff212095e",
+      "discovery_snapshot": {
+        "schema_id": "global-medicines-atlas.reuse-discovery",
+        "schema_version": 1,
+        "snapshot_id": "sha256:a48c4a537fdd697ace7797cbd7acbc7d93f5df5a6bac20e1b07443eadf488718",
+        "source_id": "ca-noc",
+        "generated_at": "2026-10-29T17:53:56.632749Z",
+        "freshness_seconds": 86400,
+        "expires_at": "2026-10-30T17:53:56.632749Z",
+        "tool_version": "bounded-live-tree-and-fixture-content-readback-v1",
+        "surfaces": [
+          {
+            "name": "local_clones",
+            "state": "success",
+            "query": "ca-noc: exact ID, DPD/NOC and bulk filenames in declared repository trees and dataset listings",
+            "candidates": [
+              {
+                "surface": "local_clones",
+                "locator": "/Users/doughnut/.codex/worktrees/gma-streamlined-completion/global-medicines-atlas/tests/fixtures/native/ca/noc_extract.csv",
+                "source_id": "ca-noc",
+                "kind": "related",
+                "digest": "d666035ae34e754cdba205637b41eedc0a5ac96d470a6331a11581ebbaa89025",
+                "query": "Synthetic fixture, not live Canadian bulk payload",
+                "revision": null
+              }
+            ],
+            "detail": "Pinned observations: quality/qualifications/canada-bronze-20261030/reuse-searches.json; fixture content compared, not live archives"
+          },
+          {
+            "name": "github",
+            "state": "success",
+            "query": "ca-noc: exact ID, DPD/NOC and bulk filenames in declared repository trees and dataset listings",
+            "candidates": [],
+            "detail": "Pinned observations: quality/qualifications/canada-bronze-20261030/reuse-searches.json; fixture content compared, not live archives"
+          },
+          {
+            "name": "hugging_face",
+            "state": "success",
+            "query": "ca-noc: exact ID, DPD/NOC and bulk filenames in declared repository trees and dataset listings",
+            "candidates": [
+              {
+                "surface": "hugging_face",
+                "locator": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue/blob/89c95653c498d7ad2835d8fcd6f9fd804e2a4d18/fixtures/ca-noc/noc_extract.csv",
+                "source_id": "ca-noc",
+                "kind": "related",
+                "digest": "d666035ae34e754cdba205637b41eedc0a5ac96d470a6331a11581ebbaa89025",
+                "query": "Byte-identical synthetic fixture",
+                "revision": "89c95653c498d7ad2835d8fcd6f9fd804e2a4d18"
+              }
+            ],
+            "detail": "Pinned observations: quality/qualifications/canada-bronze-20261030/reuse-searches.json; fixture content compared, not live archives"
+          },
+          {
+            "name": "source_registry",
+            "state": "success",
+            "query": "ca-noc: exact ID, DPD/NOC and bulk filenames in declared repository trees and dataset listings",
+            "candidates": [
+              {
+                "surface": "source_registry",
+                "locator": "https://www.canada.ca/content/dam/hc-sc/documents/services/drugs-health-products/drug-products/notice-compliance/database/noc_files.zip",
+                "source_id": "ca-noc",
+                "kind": "registry",
+                "digest": null,
+                "query": null,
+                "revision": null
+              }
+            ],
+            "detail": "Pinned observations: quality/qualifications/canada-bronze-20261030/reuse-searches.json; fixture content compared, not live archives"
+          }
+        ]
+      }
+    },
+    "max_bytes": 67108864
+  }
+]

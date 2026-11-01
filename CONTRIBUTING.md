@@ -13,18 +13,38 @@ The Conductor agent plugin is pinned as a Git submodule at
 git submodule update --init --recursive
 ```
 
-Use Python 3.15.1 and the locked environment:
+Bootstrap once in your own checkout with Python 3.15.1 and the locked test
+environment. Do not replace another operation's environment:
 
 ```shell
-uv sync --python 3.15.1 --locked --all-groups
-uv run python scripts/test_goblin.py all
-uv run ruff check .
-uv run ruff format --check .
-uv run ty check
-uv run basedpyright
+uv sync --python 3.15.1 --locked
+uv run --no-sync python --version
+uv run --no-sync pytest -q tests/test_smoke.py
 ```
 
-Use `python scripts/test_goblin.py <lane>` for exactly one primary test lane:
+During edits, select exact affected test files or nodes. Preserve the worktree's
+pytest cache; use `--lf --last-failed-no-failures=none` for failure-only recovery.
+An empty failure cache is not verification. Use zero automatic retries.
+The default locked `test-goblin` group supplies the required pytest plugins,
+including the configured timeout plugin; the `test` group alone is insufficient.
+
+For a coherent integration milestone, install only the additional locked
+groups needed by its checks, then use the existing runner:
+
+```shell
+uv sync --python 3.15.1 --locked --group typing
+uv run --no-sync python scripts/test_goblin.py routine
+uv run --no-sync python scripts/test_goblin.py strict
+uv run --no-sync python scripts/test_goblin.py package
+```
+
+The full profile is `full`, not `all`. Run it when required by the changed
+production behavior or release contract, with the applicable dev/security
+groups installed; it is not the bootstrap or per-edit command. Existing
+protected hosted lanes still qualify every PR head. Policy-only changes use
+`uv run --no-sync python scripts/validate_context.py` and affected context tests.
+
+Use `uv run --no-sync python scripts/test_goblin.py <lane>` for one primary lane:
 `unit`, `integration`, `e2e`, `smoke`, `property`, or `edge`. Adapter and
 storage-boundary changes normally use `integration`; complete user workflows
 use `e2e`; malformed or adversarial inputs use `edge`. The harness rejects
@@ -66,10 +86,12 @@ Before merge:
 
 1. update the applicable Conductor plan and evidence ledger;
 2. add every new test file to one Test-Goblin lane;
-3. run routine typing and the relevant behavioral lanes locally;
+3. run affected checks, reusing unchanged evidence; use broader checks at a
+   coherent milestone under [the workflow](conductor/workflow.md);
 4. state fixture, live-network, rights, and publication limitations;
 5. wait for all required hosted checks, including Codecov patch coverage;
-6. link the pull request to its GitHub issue and Conductor task.
+6. link the pull request to its existing Conductor task and parent issue;
+   no new issue or separate receipt-only PR is needed for routine work.
 
 Mojo is an experimental acceleration path and must retain a Python fallback.
 Conductor requirements, plan, metadata, and evidence are canonical. Update them

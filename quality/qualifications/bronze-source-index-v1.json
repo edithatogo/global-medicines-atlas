@@ -18,8 +18,8 @@
   "landing_disposition_counts": {
     "credentialed_and_excluded": 15,
     "landed_and_evidenced": 42,
-    "manual_only_documented_acquisition": 91,
-    "rights_blocked": 27,
+    "manual_only_documented_acquisition": 82,
+    "rights_blocked": 36,
     "temporarily_unavailable": 1
   },
   "missing_source_is_negative_evidence": false,
@@ -31,8 +31,8 @@
   },
   "schema_id": "global-medicines-atlas.b0-source-index",
   "schema_version": 1,
-  "snapshot_id": "sha256:018d58d9dc5f047f23022cc80bb19f180e3847d178b43bb3efd6c6ae3312c60a",
-  "snapshot_sha256": "018d58d9dc5f047f23022cc80bb19f180e3847d178b43bb3efd6c6ae3312c60a",
+  "snapshot_id": "sha256:177cc5436c332bb4f9b328c524673634cf70aad1e5d6876b4b0d7587c2bb6b6c",
+  "snapshot_sha256": "177cc5436c332bb4f9b328c524673634cf70aad1e5d6876b4b0d7587c2bb6b6c",
   "source_count": 176,
   "sources": [
     {
@@ -706,18 +706,18 @@
       "update_cadence": "source-declared"
     },
     {
-      "access_mode": "web_search",
-      "acquisition_family": "regulator_search_export",
+      "access_mode": "download",
+      "acquisition_family": "static_file_download",
       "api_url": "",
       "authentication": "none",
       "authority": "Agencia Nacional de Vigilancia Sanitaria",
-      "current_landing_disposition": "manual_only_documented_acquisition",
+      "current_landing_disposition": "rights_blocked",
       "discovery_state": "discovery_only",
       "documentation_url": "https://consultas.anvisa.gov.br/#/medicamentos/",
-      "download_url": "",
+      "download_url": "https://dados.anvisa.gov.br/dados/DADOS_ABERTOS_MEDICAMENTOS.csv",
       "evidence_scope": "none",
       "expected_formats": [
-        "html"
+        "csv"
       ],
       "index_presence_implies_coverage": false,
       "indexed": true,
@@ -787,18 +787,18 @@
       "update_cadence": "source-declared"
     },
     {
-      "access_mode": "web_search",
-      "acquisition_family": "regulator_search_export",
+      "access_mode": "download",
+      "acquisition_family": "archive_release",
       "api_url": "",
       "authentication": "none",
       "authority": "Comissao Nacional de Incorporacao de Tecnologias no Sistema Unico de Saude",
-      "current_landing_disposition": "manual_only_documented_acquisition",
+      "current_landing_disposition": "rights_blocked",
       "discovery_state": "discovery_only",
       "documentation_url": "https://www.gov.br/conitec/pt-br",
-      "download_url": "",
+      "download_url": "https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/CONITEC/csv/Controle_de_Demandas_da_Conitec.csv.zip",
       "evidence_scope": "none",
       "expected_formats": [
-        "html"
+        "zip"
       ],
       "index_presence_implies_coverage": false,
       "indexed": true,
@@ -962,7 +962,7 @@
       "current_landing_disposition": "landed_and_evidenced",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.canada.ca/en/health-canada/services/drugs-health-products/drug-products/drug-product-database.html",
-      "download_url": "https://www.canada.ca/en/health-canada/services/drugs-health-products/drug-products/drug-product-database/what-data-extract-drug-product-database.html",
+      "download_url": "https://www.canada.ca/content/dam/hc-sc/documents/services/drug-product-database/allfiles.zip",
       "evidence_scope": "governed_fixture",
       "expected_formats": [
         "json",
@@ -1006,7 +1006,7 @@
       "current_landing_disposition": "landed_and_evidenced",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.canada.ca/en/health-canada/services/drugs-health-products/drug-products/notice-compliance/database/data-extract.html",
-      "download_url": "https://www.canada.ca/en/health-canada/services/drugs-health-products/drug-products/notice-compliance/database/data-extract.html",
+      "download_url": "https://www.canada.ca/content/dam/hc-sc/documents/services/drugs-health-products/drug-products/notice-compliance/database/noc_files.zip",
       "evidence_scope": "governed_fixture",
       "expected_formats": [
         "source_native"
@@ -1048,7 +1048,7 @@
       "current_landing_disposition": "rights_blocked",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://open.canada.ca/data/en/dataset/e49db542-48db-8656-c4d5-f1f32516ddad",
-      "download_url": "https://open.canada.ca/data/en/dataset/e49db542-48db-8656-c4d5-f1f32516ddad",
+      "download_url": "https://data.novascotia.ca/api/views/wyjy-2gt4/rows.csv?accessType=DOWNLOAD",
       "evidence_scope": "none",
       "expected_formats": [
         "csv",
@@ -1366,18 +1366,18 @@
       "update_cadence": "source-declared"
     },
     {
-      "access_mode": "web_search",
-      "acquisition_family": "regulator_search_export",
+      "access_mode": "download",
+      "acquisition_family": "static_file_download",
       "api_url": "",
       "authentication": "none",
       "authority": "INVIMA",
-      "current_landing_disposition": "manual_only_documented_acquisition",
+      "current_landing_disposition": "rights_blocked",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.invima.gov.co/consulta-registros-sanitarios",
-      "download_url": "",
+      "download_url": "https://www.datos.gov.co/api/views/i7cb-raxc/rows.csv?accessType=DOWNLOAD",
       "evidence_scope": "none",
       "expected_formats": [
-        "html"
+        "csv"
       ],
       "index_presence_implies_coverage": false,
       "indexed": true,
@@ -1738,7 +1738,7 @@
       "current_landing_disposition": "rights_blocked",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.ema.europa.eu/en/about-us/about-website/download-website-data-json-data-format",
-      "download_url": "https://www.ema.europa.eu/en/about-us/about-website/download-website-data-json-data-format",
+      "download_url": "https://www.ema.europa.eu/en/documents/report/medicines-output-medicines_json-report_en.json",
       "evidence_scope": "none",
       "expected_formats": [
         "source_native"
@@ -1779,7 +1779,7 @@
       "current_landing_disposition": "landed_and_evidenced",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.ema.europa.eu/en/medicines",
-      "download_url": "https://www.ema.europa.eu/en/medicines/download-medicine-data",
+      "download_url": "https://www.ema.europa.eu/en/documents/report/medicines-output-medicines-report_en.xlsx",
       "evidence_scope": "governed_fixture",
       "expected_formats": [
         "source_native"
@@ -1821,7 +1821,7 @@
       "current_landing_disposition": "rights_blocked",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.ema.europa.eu/en/human-regulatory-overview/orphan-designation-overview",
-      "download_url": "https://www.ema.europa.eu/en/medicines/download-medicine-data",
+      "download_url": "https://www.ema.europa.eu/en/documents/report/medicines-output-orphan_designations-report_en.xlsx",
       "evidence_scope": "none",
       "expected_formats": [
         "xlsx",
@@ -1903,7 +1903,7 @@
       "current_landing_disposition": "rights_blocked",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.ema.europa.eu/en/medicines/download-medicine-data",
-      "download_url": "https://www.ema.europa.eu/en/medicines/download-medicine-data",
+      "download_url": "https://www.ema.europa.eu/en/documents/report/medicines-output-referrals-report_en.xlsx",
       "evidence_scope": "none",
       "expected_formats": [
         "xlsx",
@@ -3077,12 +3077,10 @@
       "current_landing_disposition": "landed_and_evidenced",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.who.int/groups/expert-committee-on-selection-and-use-of-essential-medicines/essential-medicines-lists",
-      "download_url": "https://www.who.int/groups/expert-committee-on-selection-and-use-of-essential-medicines/essential-medicines-lists",
+      "download_url": "https://iris.who.int/server/api/core/bitstreams/17642505-ecd3-4940-a691-4f1dfa0d835a/content",
       "evidence_scope": "governed_fixture",
       "expected_formats": [
-        "xlsx",
-        "pdf",
-        "html"
+        "pdf"
       ],
       "index_presence_implies_coverage": false,
       "indexed": true,
@@ -3157,19 +3155,17 @@
     },
     {
       "access_mode": "download",
-      "acquisition_family": "document_collection",
+      "acquisition_family": "static_file_download",
       "api_url": "",
       "authentication": "none",
       "authority": "World Health Organization",
-      "current_landing_disposition": "manual_only_documented_acquisition",
+      "current_landing_disposition": "rights_blocked",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.who.int/teams/immunization-vaccines-and-biologicals/vaccine-access/mi4a",
-      "download_url": "https://www.who.int/teams/immunization-vaccines-and-biologicals/vaccine-access/mi4a",
+      "download_url": "https://cdn.who.int/media/docs/default-source/immunization/mi4a/who-mi4a-dataset-final-september-2026.xlsx?sfvrsn=a19b7135_5&download=true",
       "evidence_scope": "none",
       "expected_formats": [
-        "xlsx",
-        "pdf",
-        "html"
+        "xlsx"
       ],
       "index_presence_implies_coverage": false,
       "indexed": true,
@@ -3531,8 +3527,8 @@
       "authority": "National Pharmaceutical Pricing Authority",
       "current_landing_disposition": "manual_only_documented_acquisition",
       "discovery_state": "declaration_verified",
-      "documentation_url": "https://www.nppaindia.nic.in/",
-      "download_url": "https://www.nppaindia.nic.in/",
+      "documentation_url": "https://nppa.gov.in/en/therapeuticcategorywiseceilingpricelist",
+      "download_url": "https://nppa.gov.in/storage/uploads/pdf/2845-fb-posts-anti-cancer-e3f335bfae6294a35741b326d91a26a5.pdf",
       "evidence_scope": "none",
       "expected_formats": [
         "xlsx",
@@ -3549,13 +3545,13 @@
       "jurisdictions": [
         "IND"
       ],
-      "landing_page": "https://www.nppaindia.nic.in/",
+      "landing_page": "https://nppa.gov.in/en/therapeuticcategorywiseceilingpricelist",
       "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
       "qualification_references": [
-        "https://www.nppaindia.nic.in/"
+        "https://nppa.gov.in/en/therapeuticcategorywiseceilingpricelist"
       ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
@@ -3649,18 +3645,18 @@
       "update_cadence": "source-declared"
     },
     {
-      "access_mode": "web_search",
-      "acquisition_family": "regulator_search_export",
+      "access_mode": "download",
+      "acquisition_family": "static_file_download",
       "api_url": "",
       "authentication": "none",
       "authority": "Ministry of Health, Labour and Welfare",
-      "current_landing_disposition": "manual_only_documented_acquisition",
+      "current_landing_disposition": "rights_blocked",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.mhlw.go.jp/ndb/opendatasite/",
-      "download_url": "https://www.mhlw.go.jp/ndb/opendatasite/",
+      "download_url": "https://www.mhlw.go.jp/content/12400000/001495390.xlsx",
       "evidence_scope": "none",
       "expected_formats": [
-        "html"
+        "xlsx"
       ],
       "index_presence_implies_coverage": false,
       "indexed": true,
@@ -3697,10 +3693,10 @@
       "current_landing_disposition": "landed_and_evidenced",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.mhlw.go.jp/topics/2025/04/tp20250401-01.html",
-      "download_url": "https://www.mhlw.go.jp/topics/2025/04/tp20250401-01.html",
+      "download_url": "https://www.mhlw.go.jp/topics/2026/04/xls/tp20261014-01_01.xlsx",
       "evidence_scope": "governed_fixture",
       "expected_formats": [
-        "source_native"
+        "xlsx"
       ],
       "index_presence_implies_coverage": false,
       "indexed": true,
@@ -3858,7 +3854,7 @@
       "update_cadence": "source-declared"
     },
     {
-      "access_mode": "document",
+      "access_mode": "download",
       "acquisition_family": "document_collection",
       "api_url": "",
       "authentication": "none",
@@ -3866,11 +3862,10 @@
       "current_landing_disposition": "manual_only_documented_acquisition",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.pharmacyboardkenya.org/",
-      "download_url": "",
+      "download_url": "https://cdn.who.int/media/docs/default-source/essential-medicines/national-essential-medicines-lists-(neml)/afro_neml/kenya-2023.pdf?sfvrsn=5f922bbf_3&download=true",
       "evidence_scope": "none",
       "expected_formats": [
-        "pdf",
-        "html"
+        "pdf"
       ],
       "index_presence_implies_coverage": false,
       "indexed": true,
@@ -5612,18 +5607,18 @@
       "update_cadence": "source-declared"
     },
     {
-      "access_mode": "web_search",
-      "acquisition_family": "regulator_search_export",
+      "access_mode": "download",
+      "acquisition_family": "static_file_download",
       "api_url": "",
       "authentication": "none",
       "authority": "Dental and Pharmaceutical Benefits Agency",
-      "current_landing_disposition": "manual_only_documented_acquisition",
+      "current_landing_disposition": "rights_blocked",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.tlv.se/lakemedelsforetag/pris-och-subvention-av-lakemedel/subventionerade-lakemedel.html",
-      "download_url": "",
+      "download_url": "https://www.tlv.se/file/medprice",
       "evidence_scope": "none",
       "expected_formats": [
-        "html"
+        "xlsx"
       ],
       "index_presence_implies_coverage": false,
       "indexed": true,
@@ -5693,18 +5688,18 @@
       "update_cadence": "source-declared"
     },
     {
-      "access_mode": "web_search",
-      "acquisition_family": "regulator_search_export",
-      "api_url": "",
+      "access_mode": "api",
+      "acquisition_family": "paginated_rest_api",
+      "api_url": "https://data.gov.sg/api/action/datastore_search?resource_id=d_767279312753558cbf19d48344577084&limit=10000",
       "authentication": "none",
       "authority": "Health Sciences Authority",
-      "current_landing_disposition": "manual_only_documented_acquisition",
+      "current_landing_disposition": "rights_blocked",
       "discovery_state": "discovery_only",
       "documentation_url": "https://www.hsa.gov.sg/therapeutic-products/register",
       "download_url": "",
       "evidence_scope": "none",
       "expected_formats": [
-        "html"
+        "json"
       ],
       "index_presence_implies_coverage": false,
       "indexed": true,
@@ -6057,7 +6052,7 @@
       "update_cadence": "source-declared"
     },
     {
-      "access_mode": "document",
+      "access_mode": "download",
       "acquisition_family": "document_collection",
       "api_url": "",
       "authentication": "none",
@@ -6065,11 +6060,10 @@
       "current_landing_disposition": "manual_only_documented_acquisition",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.nda.or.ug/",
-      "download_url": "",
+      "download_url": "https://cdn.who.int/media/docs/default-source/essential-medicines/national-essential-medicines-lists-(neml)/afro_neml/uganda-2023.pdf?sfvrsn=5205bf98_3&download=true",
       "evidence_scope": "none",
       "expected_formats": [
-        "pdf",
-        "html"
+        "pdf"
       ],
       "index_presence_implies_coverage": false,
       "indexed": true,
@@ -6179,19 +6173,18 @@
       "update_cadence": "source-declared"
     },
     {
-      "access_mode": "web_search",
-      "acquisition_family": "regulator_search_export",
+      "access_mode": "download",
+      "acquisition_family": "static_file_download",
       "api_url": "",
       "authentication": "none",
       "authority": "Centers for Medicare and Medicaid Services",
-      "current_landing_disposition": "manual_only_documented_acquisition",
+      "current_landing_disposition": "rights_blocked",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://data.medicaid.gov/datasets",
-      "download_url": "",
+      "download_url": "https://download.medicaid.gov/data/drugproducts-q2-2026.csv",
       "evidence_scope": "none",
       "expected_formats": [
-        "csv",
-        "json"
+        "csv"
       ],
       "index_presence_implies_coverage": false,
       "indexed": true,
@@ -6220,19 +6213,18 @@
       "update_cadence": "source-declared"
     },
     {
-      "access_mode": "web_search",
-      "acquisition_family": "regulator_search_export",
+      "access_mode": "download",
+      "acquisition_family": "static_file_download",
       "api_url": "",
       "authentication": "none",
       "authority": "Centers for Medicare and Medicaid Services",
-      "current_landing_disposition": "manual_only_documented_acquisition",
+      "current_landing_disposition": "rights_blocked",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://data.medicaid.gov/datasets",
-      "download_url": "",
+      "download_url": "https://download.medicaid.gov/data/nadac-national-average-drug-acquisition-cost-10-28-2026.csv",
       "evidence_scope": "none",
       "expected_formats": [
-        "csv",
-        "json"
+        "csv"
       ],
       "index_presence_implies_coverage": false,
       "indexed": true,

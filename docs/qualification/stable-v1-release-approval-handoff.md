@@ -119,3 +119,135 @@ reference and verify its exact sidecar digest while retaining the existing
 public-URL contract. No source, credential, publication or other native write
 is implied. The previous native-field assignment and its captured evidence
 remain history above.
+
+### Bounded software completion lane — 29 October 2026
+
+The maintainer explicitly selected bounded software completion and deferred
+unfinished Australian federation qualification. This changes scheduling only;
+the conditional Stable v1 promotion and every blocked federation requirement
+retain their existing conditions.
+
+- Chat: `01a18773-f302-7e83-ba8c-816fcea9d3f1`,
+  **Global Medicines Atlas — Completion — Simplify delivery**.
+- Worktree:
+  `/Users/doughnut/.codex/worktrees/gma-streamlined-completion/global-medicines-atlas`.
+- Branch: `codex/streamlined-completion-20261029`, based on `fc8c41530`.
+- Owned scope: this branch's contributor/agent workflow, roadmap and
+  system-completion scheduling edits, plus the bounded software verification
+  entry. No runtime, dependency, hook or submodule changes are assigned.
+- Native scope: read-only inspection of existing PR/check state; local
+  representative tests and clean package consumers. No data publication,
+  admission, authentication renewal or release operation.
+- Existing integrator `01a10ee2-71a5-7c03-ae11-2ba1d2ebce11` retains main,
+  PR #1377 and PBS publication/admission scope. Its latest terminal chat turn
+  reported the pending hosted gremlins job. This lane does not redispatch or
+  duplicate its operations or change its checkout.
+- Next operation: verify the bounded software packet, preserve one scoped
+  commit and technical PR, and provide terminal evidence for integration.
+  Historical track acceptance and previous assignments remain unchanged.
+
+### Swiss/EMA bounded Bronze lane — 29 October 2026
+
+Chat `01a18773-f302-7e83-ba8c-816fcea9d3f1`, **Global Medicines Atlas —
+Bronze — Swiss and EMA downloads**, owns branch `codex/swiss-ema-bronze-batch`
+in `/Users/doughnut/.codex/worktrees/gma-streamlined-completion/global-medicines-atlas`.
+The prior software milestone is complete. The user authorized only this small
+direct-download batch. Owned paths are its qualification document and receipt
+folder, local `build/swiss-ema-bronze-20261029/` staging, and this scoped track
+append. Native scope is public read-only discovery and one local EMA retrieval.
+No other chat's native object or authentication scope is acquired. Next operation:
+finish the preparation packet and pause for exact EMA publication approval;
+Swiss remains explicitly blocked. No schedule or public dataset write is active.
+
+### Shared URL configuration follow-up — 29 October 2026
+
+The same chat and worktree, now titled **Global Medicines Atlas — Bronze —
+Shared source downloads**, own the user-requested shared URL follow-up on
+`codex/swiss-ema-bronze-batch`: `scripts/source_download_batch.py`, the generated
+URL CSV/runbook, the exact EMA catalogue URL and derived B0/landing projections,
+focused acquisition tests and this track receipt. The primary checkout and its
+other writer remain untouched. Native scope is offline generation and synthetic
+network tests; no additional live source acquisition, publication or schedule.
+Next operation: finish the updated PR's protected CI and integrate this bounded
+packet. Existing Swiss and EMA publication blockers retain their dispositions.
+
+### EMA publication and next small batch — 30 October 2026
+
+Chat `01a18773-f302-7e83-ba8c-816fcea9d3f1` owns the same managed worktree on
+`codex/ema-publication-next-batch`, based on merged main `b84fabae`.
+The maintainer now explicitly authorizes EMA publication and another small
+straightforward source batch. Native write scope is only public dataset
+`edithatogo/global-medicines-atlas-ema-bronze-20261029`, through Actions, with
+unchanged approved EMA source bytes and exact three-file readback. The approved
+payload is already retained in Actions run `40873191471`; its digest matches the
+local candidate. Next-source acquisition is bounded to two Health Canada bulk
+files after rights and reuse checks; no next-batch public write or schedule.
+Swiss and federation are read-only blocker assessments. Other writers and native
+scopes remain unchanged. Next operation: prepare the hosted exact-snapshot
+publication and execute the shared download command for the bounded next batch.
+
+### Archive-all execution — 30 October 2026
+
+The same chat/worktree owns `codex/archive-all-execution`, based on merged
+`a83c34a3`. EMA is public at `3aaa509d4b8d5b3f594caaeb0fab2ad99fec3c61`
+(Actions `40927685330`, three anonymous digests verified). The maintainer now
+requests archive-all execution, expressly approves the two Canadian files for
+publication, and authorizes remaining straightforward-source batches. This lane
+owns the shared batch runner, finite batch manifests, archive-all outcome ledger,
+and hosted batch publisher. Native writes remain Actions-to-HF only, exact
+approved inventories; no schedules, credentials, federation, Silver/Gold or
+other writer's objects. Next: integrate reusable batch publication and publish
+Canada first, then execute eligible remaining batches. Every catalogue ID must
+receive an explicit outcome; blocked entries cannot count as archived.
+
+### Straightforward large-file follow-up — 30 October 2026
+
+The same chat/worktree now owns `codex/archive-large-public-source`, based on
+`232f0b5c`. All three earlier batches have terminal public receipts (Canada
+`40932305371`, EMA tables `40932493613`, Nova Scotia `40932680599`). Their six
+source outcomes are folded into the canonical reuse manifest here. Scope is
+one remaining clear-rights source, Canada Vigilance: explicit bounded larger-file
+limit and exact official redirect host, signed-query redaction in HTTP receipts,
+and the existing hosted batch publication. No credentials are created, no
+unrestricted redirect policy is enabled, and federation remains deferred.
+
+### Remaining 100-source execution — 30 October 2026
+
+Chat `01a18773-f302-7e83-ba8c-816fcea9d3f1` retains this worktree and now owns
+`codex/archive-unfinished-sources`, based on `2f632c16`. The maintainer explicitly
+expanded execution to the 100 unfinished catalogue sources, prioritising direct
+recipes and clear rights until concrete blockers remain. Owned paths: shared
+batch configurations, source endpoint corrections, scoped discovery/outcome
+receipts and this track append. Existing private archives remain private. Native
+writes are eligible approved source batches through Actions to public HF only;
+no credentials, schedules or federation work. Next: reconcile existing archives,
+inspect official endpoints and terms, implement and publish eligible batches.
+
+### Remaining-source outcomes and hosted verification — 30 October 2026
+
+The same chat and actual worktree retain ownership on
+`codex/archive-source-outcomes`, based on merged `c20cfe39`. PR #1383 passed all
+29 required checks at `281ac69e`; its merge tree is
+`10f866fc1ad6e1d392331fe382459f2248e9d320`. This lane owns the 100-source outcome
+ledger, archive-all reuse/blocker configuration, exact hosted batch receipts and
+this track append. The single serial publication process owns the ten approved
+batch destinations from that frozen main commit. Next: retain terminal anonymous
+verification, execute the complete accounting pass, and integrate the outcome
+ledger. Existing primary-checkout edits and native private archives are untouched.
+Federation remains deferred; no new schedule or outbound communication.
+
+### One-attempt source-blocker follow-up — 30 October 2026
+
+The same chat and worktree own `codex/source-blocker-one-pass`, based on
+`a5d49b15`. Scope: one bounded attempt per non-federation source blocker,
+including an NPPA TLS chain repair attempt and official rights/access evidence.
+Record outcomes without changing dataset admission or treating an HTTP response
+as a redistribution grant. No new credentials, publication, schedules or
+outbound messages; Australian federation remains deferred.
+
+### NPPA technical TLS fix — 30 October 2026
+
+The same chat/worktree owns `codex/nppa-verified-tls`, based on `df3cb5ce`.
+Scope: shared batch transport, the pinned NPPA intermediate and focused tests.
+Five PDFs verified through the existing public-IP-bound transport. No native
+publication or federation operation is active. Next: protected CI and integration.

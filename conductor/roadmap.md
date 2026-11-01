@@ -8,6 +8,28 @@ GitHub programme issue: [#44](https://github.com/edithatogo/global-medicines-atl
 Its native subissues are the Conductor delivery tracks; each track parent owns
 its phase subissues.
 
+## Current delivery scope — 29 October 2026
+
+The maintainer selected **bounded software completion; federation later**.
+The finite software checklist is in [system-completion.md](system-completion.md).
+It covers the existing CLI, API, Atlas, exports, locked Python 3.15.1 setup and
+clean package consumers. It does not create a new product, add sources or imply
+that the separately gated Stable v1 release is ready.
+
+| Disposition | Work | Resume condition |
+| --- | --- | --- |
+| Complete now | Existing software behavior, usable contributor commands, clean wheel/sdist consumers, one protected integration packet | Current authorized scope |
+| Later federation milestone | M-105 donor evidence and chronology, M-106 patient measures, M-107 historical coverage, M-108 required derived delivery, M-109 source meanings, M-110 broader Gold qualification, M-111 remaining live consumers, M-112 independent recovery and eligible-object admission | Explicitly resume federation with the exact missing evidence/authority; preserve all current blocked states |
+| Later Stable v1 promotion | Exact candidate release verification and protected hosted release | Existing federation gates pass and recorded release conditions are met |
+| Deferred coverage | Additional Bronze sources, new jurisdictions, terminology, historical object cohorts and exhaustive value interpretation | A specific user need and qualified source/rights scope |
+| Deferred experiments | Optional Mojo/Rust acceleration, Iceberg/DuckLake/Delta/Hudi expansion, vector/graph/streaming previews and frontier dependency upgrades | Measured requirement that the locked reference implementation cannot meet |
+| Deferred tooling | Additional bootstrap frameworks, issue/subissue automation, CI selection/retry plugins and new coordination services | Demonstrated recurring cost after the bounded candidate is delivered |
+
+Deferral preserves evidence and incomplete criteria. It does not relabel
+mandatory federation requirements as passed. Existing optional integrations and
+protected CI stay intact; this scope decision adds no new experiments. There is
+no automatic progression from software completion into these later milestones.
+
 | Version | Product outcome | Principal features | Conductor track |
 |---|---|---|---|
 | v0.1 Foundation | Governed monorepository | Python 3.14, Mojo canary, Test-Goblin, protected CI, source registry | `nzmedicines_migration_20260727` |

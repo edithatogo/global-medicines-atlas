@@ -1,0 +1,22 @@
+{
+  "receipt_version": "1",
+  "plan_sha256": "0d3df8310a4ef20248f2943d40a27f9c03cc44050ece2f8ec1eaf7351c658df4",
+  "artifact_sha256": [
+    "0a3280952432250bcd920348d4a89058701fb5a389ba5340e1d4885b08f00819",
+    "64bedd7cc420921a76a08b7730b052408b4d09cdd8564d8720cb701d4c41c27d",
+    "d865e912b5ffae496f03ab9b1235f6632cfb5e84875ed6365a3745c862dc7c3b",
+    "6d42cf69908e354eacee57ad2a3f687d7b1172bf00eca097521b5d7bc87a57ff"
+  ],
+  "target": {
+    "destination": "hugging_face",
+    "repository": "edithatogo/global-medicines-atlas-sweden-tlv-20261030",
+    "revision": "main",
+    "public_base_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-sweden-tlv-20261030"
+  },
+  "state": "uploaded",
+  "recorded_at": "2026-10-29T22:52:55.986857Z",
+  "remote_revision": "a40a3932063d354331c2cbf8a862c1d7cc118c57",
+  "verification_uri": null,
+  "failure_reason": null,
+  "verified_artifacts": []
+}

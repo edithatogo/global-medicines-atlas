@@ -74,10 +74,10 @@ features and maturity levels to Conductor tracks and the native GitHub
 The authoritative runtime is CPython 3.15.1. From a source checkout:
 
 ```console
-uv sync --python 3.15.1 --locked --no-dev
-uv run global-medicines-atlas --help
-uv run global-medicines-atlas comparison --help
-uv run pytest -q tests/test_smoke.py
+uv sync --python 3.15.1 --locked --no-default-groups
+uv run --no-sync python --version
+uv run --no-sync global-medicines-atlas --help
+uv run --no-sync global-medicines-atlas comparison --help
 ```
 
 Queries require an explicit governed DuckDB database and a deployment-owned
@@ -85,6 +85,11 @@ cursor secret; the repository never substitutes test fixtures for production
 data. The optional LanceDB-backed semantic layer is installed with
 `--extra semantic`. See the user guide for PowerShell commands and the current
 API/Atlas application-factory boundary.
+
+For development and the focused smoke check, use the minimal locked test setup
+in [Contributing](CONTRIBUTING.md). The current finish line is the
+[bounded software candidate](conductor/system-completion.md); complete
+Australian federation and Stable v1 promotion remain later, gated milestones.
 
 Start with the [task-oriented user guide](docs/user-guide.md) to:
 

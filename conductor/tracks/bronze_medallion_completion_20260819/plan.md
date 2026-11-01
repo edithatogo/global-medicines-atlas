@@ -1499,3 +1499,96 @@ coverage, new sources/terminology, and optional experiments remain deferred.
 This scheduling direction changes no acceptance criterion, current M-105/M-107
 disposition, or conditional release approval; current states come from the
 authoritative contract, reconciliation, and bound receipts.
+
+## Bounded Swiss/EMA direct-download batch — 29 October 2026
+
+- [x] Inspect exactly `ch-foph-specialities` and `eu-ema-json`; record official
+  URLs, rights findings and explicit bounds in
+  `docs/qualification/swiss-ema-direct-download-batch.md`.
+- [x] Retrieve one unchanged EMA medicines index using existing machinery,
+  parse JSON, verify written bytes and bind the exact publication plan.
+  117 existing retrieval/publication tests and context validation passed.
+- [x] Record Swiss HEAD 200 with missing official index links and unresolved
+  data-specific rights; no Swiss payload retained or source admission claimed.
+- [ ] Obtain exact EMA publication decision, execute through hosted Actions and
+  verify anonymous remote digests. Stop after that result; do not enable a
+  schedule, fetch linked documents or start backfills/Silver/Gold/federation.
+
+This bounded preparation does not close the overall source landing track or
+change its qualified/deferred denominators.
+
+## Shared URL configuration follow-up — 29 October 2026
+
+The maintainer requested one all-source URL file and reusable execution, then
+confirmed proceeding. This bounded follow-up covers configuration and shared
+local download behavior for the existing 176 IDs; it does not authorize live
+acquisition of every source, publication or federation work.
+
+- [x] Export all catalogue URLs/types/access/rights to `docs/data-sources/source-urls.csv`.
+- [x] Connect explicit file and single-response API selections to existing
+  `acquire_source`; preview offline, skip blocked rows, preserve receipts and
+  refuse output reuse. No second URL registry or source-specific downloader.
+- [x] Replace EMA's documentation-page download URL with its observed JSON
+  endpoint and regenerate existing B0/landing projections without changing rights.
+- [x] Focused acquisition, catalogue and projection tests; static checks.
+- [ ] Integrate the updated technical PR after final-head protected CI.
+
+Stop at that integration. Retain the earlier Swiss blocker and separate EMA
+publication decision; no other live sources, schedules or deferred milestones.
+
+## Approved EMA publication and next batch — 30 October 2026
+
+- [x] Prior shared URL implementation integrated by PR #1379, merge
+  `b84fabae7c5150f2430fdf75bf6b3574607247ac`; final checked head
+  `ab5fef8ceeb9077177a1a7986dfe8374864ba873`, all 29 required checks passed.
+- [x] Obtain direct maintainer EMA publication approval and recover exact
+  approved source bytes from existing hosted artifact, without recapture.
+- [x] Prepare narrow hosted wrapper over existing publication transport and
+  negative controls for local publication and changed payloads.
+- [x] Acquire the two specified Canadian ZIPs through the shared batch command;
+  record real reuse/rights checks, immutable receipts and member CRC verification.
+- [~] Integrate protected CI, dispatch EMA once and verify public pinned digests.
+
+Stop after these results. Swiss remains unresolved; federation remains deferred.
+The report is `docs/qualification/ema-canada-bronze-20261030.md`.
+
+## Archive-all execution — 30 October 2026
+
+- [x] EMA prior publication verified at `3aaa509d4b8d5b3f594caaeb0fab2ad99fec3c61`; PR #1380 merged as `a83c34a3`, all 29 required checks passed.
+- [x] Extend shared runner to account for all 176 source IDs, resume verified
+  local batches and retain explicit review/blocker outcomes.
+- [x] Prepare reusable hosted publisher and three exact batch inventories,
+  reusing existing acquisition, transport and verification machinery.
+- [x] Integrate protected CI, publish approved Canada first, then execute and
+  publish the named clear-rights EMA and Nova Scotia batches.
+- [x] Record final complete inventory outcomes and exact public revisions.
+
+Archive-all does not waive rights, imply every historical version is retained,
+or mark unconfigured/blocked sources archived. No federation work or schedule.
+
+## Clear-rights large-file batch — 30 October 2026
+
+- [x] Canada, EMA tables and Nova Scotia published and anonymously verified;
+  their six exact revisions now populate the canonical archive-all reuse ledger.
+- [x] Resolve the Canada Vigilance size/redirect prerequisites through explicit
+  bounded settings and secret-free HTTP receipt projection.
+- [x] Integrate focused changes and publish this one additional bulk source.
+
+No other source rights or federation acceptance state changes.
+
+## Remaining 100 source IDs — explicit scope extension, 30 October 2026
+
+- [x] Inspect all 100 catalogue entries and official landing/terms surfaces.
+- [x] Prepare 13 clear-rights sources with 39 verified native files.
+- [x] Extend existing runner and publisher for finite multi-file releases.
+- [x] Integrate CI and publish the qualified batches with anonymous verification.
+- [x] Continue every remaining source until acquired/reused or an evidenced blocker.
+
+No federation work. Missing recipes remain work, not external blockers.
+
+Terminal outcome: 13 newly public sources (39 native files), four retained private
+archives, and 83 documented blockers in the exact 100-source scope. Full
+archive-all accounting covers 176 IDs, with 50 verified public archive references
+and no unconfigured recipe/review states. This is bounded execution completion,
+not universal archival, historical completeness or federation acceptance. See
+`docs/qualification/unfinished-source-assessment-20261030.md`.

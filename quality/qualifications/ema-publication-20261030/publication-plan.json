@@ -1,0 +1,29 @@
+{
+  "plan_version": "1",
+  "release_version": "bronze-ema-20261029",
+  "target": {
+    "destination": "hugging_face",
+    "repository": "edithatogo/global-medicines-atlas-ema-bronze-20261029",
+    "revision": "main",
+    "public_base_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-bronze-20261029"
+  },
+  "artifacts": [
+    {
+      "relative_path": "README.md",
+      "sha256": "488dab8e7fbff8634736697d4fb62b39db679545d8a97360703f551086b64bfd",
+      "size": 1041
+    },
+    {
+      "relative_path": "medicines.json",
+      "sha256": "fe0bc6f7dea44ef112d7dac1ad63797132c674a1baeadc93f5775c68897ac76f",
+      "size": 6795698
+    },
+    {
+      "relative_path": "retrieval.json",
+      "sha256": "71f1249d6867a50aaa7142bd32e818bd7a24d6f8148e2bb4999a243b95b77ee2",
+      "size": 611
+    }
+  ],
+  "dry_run": true,
+  "maintainer_approved": false
+}

@@ -1,0 +1,22 @@
+{
+  "receipt_version": "1",
+  "plan_sha256": "fae3f72814b8a2b9bb33d93d0573ed614eff1a38266bfccc89358b970f81948c",
+  "artifact_sha256": [
+    "0371061d30f6b99bd71bb47daa2a76b2adc4af751b1574235a81515f95c5a741",
+    "f0b546e2d3a737a90fbc866348356cd766344bd2f4b8f488a43d66a0d7a30877",
+    "ea608dea771788d397c000289bfd4bf335e69f7b45255102d3cb1102588e2d6c",
+    "0524365b1ee539b4356a4730f772ff52821d0118a4cda6dd0430dcd55815ded5"
+  ],
+  "target": {
+    "destination": "hugging_face",
+    "repository": "edithatogo/global-medicines-atlas-brazil-register-20261030",
+    "revision": "main",
+    "public_base_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-brazil-register-20261030"
+  },
+  "state": "uploaded",
+  "recorded_at": "2026-10-29T21:00:00.915991Z",
+  "remote_revision": "6ba60e15b16b7f5b13ad0af7fbaf38957c2cab22",
+  "verification_uri": null,
+  "failure_reason": null,
+  "verified_artifacts": []
+}

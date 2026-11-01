@@ -1,6 +1,10 @@
 from __future__ import annotations
 
+import csv
 import gzip
+import io
+import json
+import ssl
 from collections.abc import Callable
 from datetime import UTC, datetime
 from itertools import permutations
@@ -8,6 +12,8 @@ from pathlib import Path
 
 import httpx
 import pytest
+import scripts.source_download_batch as batch
+from scripts.source_download_batch import url_inventory
 
 import global_medicines_atlas.acquisition as acquisition_module
 from global_medicines_atlas.acquisition import (
@@ -24,6 +30,7 @@ from global_medicines_atlas.receipts import (
     EvidenceClass,
     FailureReceipt,
     SourceReceipt,
+    http_retrieval_from_response,
 )
 from global_medicines_atlas.reuse_gate import (
     ReuseGateRequiredError,
@@ -35,6 +42,7 @@ from global_medicines_atlas.source_catalog import (
     InterfaceStatus,
     MedicineDataSource,
     SourceReadiness,
+    load_source_catalog,
 )
 
 NOW = datetime(2026, 7, 29, 4, 5, 6, tzinfo=UTC)
@@ -991,3 +999,368 @@ def test_acquisition_without_reuse_gate_fails(tmp_path: Path) -> None:
             ),
             clock=lambda: NOW,
         )
+
+
+@pytest.mark.unit
+def test_download_batch_inventory_is_complete_and_current() -> None:
+
+    sources = load_source_catalog()
+    text = url_inventory(sources)
+    rows = list(csv.DictReader(io.StringIO(text)))
+    assert {row["source_id"] for row in rows} == {s.source_id for s in sources}
+    assert len(rows) == len(sources)
+    assert (
+        text
+        == (
+            Path(__file__).resolve().parents[1]
+            / "docs/data-sources/source-urls.csv"
+        ).read_text()
+    )
+    ema = next(row for row in rows if row["source_id"] == "eu-ema-json")
+    assert ema["download_url"].endswith("medicines_json-report_en.json")
+    assert ema["rights_status"] == "review_required"
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "problem", ["authority", "reuse", "url", "auth", "page"]
+)
+def test_download_batch_blocks_before_network(tmp_path, monkeypatch, problem):
+
+    source = catalog_source()
+    selection = batch.DownloadSelection(
+        source_id=source.source_id,
+        expected_url=str(source.download_url),
+        retention_authority_reference="synthetic test authority",
+        reuse_decision=acquire_new_decision(source.source_id),
+    )
+    if problem == "authority":
+        selection = selection.model_copy(
+            update={"retention_authority_reference": ""}
+        )
+    elif problem == "reuse":
+        selection = selection.model_copy(update={"reuse_decision": None})
+    elif problem == "url":
+        selection = selection.model_copy(
+            update={"expected_url": "https://example.test/changed"}
+        )
+    elif problem == "auth":
+        source = source.model_copy(
+            update={"authentication": AuthenticationMode.API_KEY}
+        )
+    else:
+        source = source.model_copy(update={"landing_page": source.download_url})
+
+    def forbidden(*_args, **_kwargs):
+        pytest.fail("blocked batch attempted network")
+
+    monkeypatch.setattr(batch, "acquire_source", forbidden)
+    output = tmp_path / "build/batch"
+    result = batch.run_batch(
+        (selection,), sources=(source,), output=output, repository_root=tmp_path
+    )
+    assert result[0]["state"] == "blocked"
+    assert not output.exists()
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("surface", ["download", "single_api_response"])
+@pytest.mark.parametrize("multiple", [False, True])
+def test_download_batch_reuses_acquirer_and_preserves_receipts(
+    tmp_path, monkeypatch, surface, multiple
+):
+
+    source = catalog_source(
+        access_mode=AccessMode.API
+        if surface == "single_api_response"
+        else AccessMode.DOWNLOAD
+    )
+    url = (
+        source.api_url
+        if surface == "single_api_response"
+        else source.download_url
+    )
+    selection = batch.DownloadSelection(
+        source_id=source.source_id,
+        surface=surface,
+        expected_url=str(url),
+        retention_authority_reference="synthetic test authority",
+        reuse_decision=acquire_new_decision(source.source_id),
+        additional_download_urls=("https://example.test/second.zip",)
+        if multiple and surface == "download"
+        else (),
+    )
+    seen = []
+
+    def handler(request):
+        seen.append(str(request.url))
+        return httpx.Response(
+            200, content=b"{}", headers={"Content-Type": "application/json"}
+        )
+
+    def acquire_fixture(*args, **kwargs):
+        return acquire_source(
+            *args,
+            **kwargs,
+            transport=httpx.MockTransport(handler),
+            clock=lambda: NOW,
+        )
+
+    monkeypatch.setattr(batch, "acquire_source", acquire_fixture)
+    blocked = selection.model_copy(update={"source_id": "unknown-source"})
+    output = tmp_path / "build/batch"
+    results = batch.run_batch(
+        (blocked, selection),
+        sources=(source,),
+        output=output,
+        repository_root=tmp_path,
+        execute=True,
+    )
+    assert [r["state"] for r in results] == ["blocked", "acquired_local"]
+    expected = [str(url), *selection.additional_download_urls]
+    assert seen == expected
+    assert (output / source.source_id / "payload.bin").read_bytes() == b"{}"
+    assert (output / source.source_id / "receipt.json").is_file()
+    assert (output / source.source_id / "selection.json").is_file()
+    assert (output / "results.json").is_file()
+    with pytest.raises(FileExistsError):
+        batch.run_batch(
+            (selection,),
+            sources=(source,),
+            output=output,
+            repository_root=tmp_path,
+            execute=True,
+        )
+    assert seen == expected
+    if selection.additional_download_urls:
+        extra = output / source.source_id / "objects/0001"
+        assert (extra / "payload.bin").read_bytes() == b"{}"
+        assert (extra / "receipt.json").is_file()
+        (output / "results.json").write_text(json.dumps(results[1:]))
+        batch.resume_batch((selection,), output)
+        (extra / "payload.bin").write_bytes(b"changed")
+        with pytest.raises(ValueError, match="digest"):
+            batch.resume_batch((selection,), output)
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "url",
+    [
+        "https://other.test/data",
+        "http://example.test/data",
+        "https://user:password@example.test/data",
+        "https://example.test:444/data",
+        "https://example.test/medicines.zip",
+    ],
+)
+def test_batch_additional_downloads_are_exact_same_host(url):
+    selection = batch.DownloadSelection(
+        source_id="test-regulator",
+        expected_url="https://example.test/medicines.zip",
+        additional_download_urls=(url,),
+    )
+    with pytest.raises(ValueError, match="additional downloads"):
+        batch.selected_source(selection, (catalog_source(),))
+
+
+@pytest.mark.unit
+def test_download_batch_respects_existing_raw_byte_restrictions():
+    source = next(
+        s for s in load_source_catalog() if s.source_id == "us-rxnorm-api"
+    )
+    selection = batch.DownloadSelection(
+        source_id=source.source_id,
+        surface="single_api_response",
+        expected_url=str(source.api_url),
+        retention_authority_reference="cannot override source restriction",
+        reuse_decision=acquire_new_decision(source.source_id),
+    )
+    with pytest.raises(ValueError, match="existing source restriction"):
+        batch.selected_source(selection, (source,))
+
+
+@pytest.mark.unit
+def test_download_batch_receipts_failure_without_partial_payload(
+    tmp_path, monkeypatch
+):
+    source = catalog_source()
+    selection = batch.DownloadSelection(
+        source_id=source.source_id,
+        expected_url=str(source.download_url),
+        retention_authority_reference="synthetic test authority",
+        reuse_decision=acquire_new_decision(source.source_id),
+        max_bytes=1,
+    )
+
+    def handler(_request):
+        return httpx.Response(
+            200, content=b"{}", headers={"Content-Type": "application/json"}
+        )
+
+    def acquire_fixture(*args, **kwargs):
+        return acquire_source(
+            *args,
+            **kwargs,
+            transport=httpx.MockTransport(handler),
+            clock=lambda: NOW,
+        )
+
+    monkeypatch.setattr(batch, "acquire_source", acquire_fixture)
+    output = tmp_path / "build/batch"
+    results = batch.run_batch(
+        (selection,),
+        sources=(source,),
+        output=output,
+        repository_root=tmp_path,
+        execute=True,
+    )
+    assert results[0]["state"] == "failed"
+    assert not (output / source.source_id / "payload.bin").exists()
+    assert (output / source.source_id / "receipt.json").is_file()
+
+
+@pytest.mark.unit
+def test_download_batch_cli_is_offline_by_default(tmp_path, capsys):
+    output = tmp_path / "urls.csv"
+    assert batch.main(["--urls-output", str(output)]) == 0
+    assert output.read_text() == url_inventory(load_source_catalog())
+    assert batch.main([]) == 0
+    assert capsys.readouterr().out == output.read_text()
+    with pytest.raises(SystemExit, match="2"):
+        batch.main(["--execute"])
+
+
+@pytest.mark.unit
+def test_archive_all_accounts_for_unselected_sources(tmp_path, monkeypatch):
+    """Running ready batches must not erase unconfigured sources."""
+    first = catalog_source()
+    second = first.model_copy(update={"source_id": "other-source"})
+    monkeypatch.setattr(batch, "ROOT", tmp_path)
+    monkeypatch.setattr(batch, "load_source_catalog", lambda: (first, second))
+    queue = tmp_path / "quality/qualifications/bronze-source-landing-queue.json"
+    queue.parent.mkdir(parents=True)
+    queue.write_text(
+        json.dumps({
+            "items": [
+                {
+                    "source_id": s.source_id,
+                    "reason": "needs rights",
+                    "next_action": "review",
+                }
+                for s in (first, second)
+            ]
+        })
+    )
+    manifest = tmp_path / "all.json"
+    manifest.write_text(
+        json.dumps({
+            "reuse": [
+                {
+                    "source_id": first.source_id,
+                    "evidence_reference": "existing verified receipt",
+                }
+            ],
+            "batches": [],
+        })
+    )
+    rows = batch.run_archive_all(manifest, output=tmp_path / "build/run")
+    assert len(rows) == 2
+    assert {r["state"] for r in rows} == {
+        "reused_verified_archive",
+        "needs_source_review",
+    }
+    assert not (tmp_path / "build/run").exists()
+
+
+@pytest.mark.unit
+def test_batch_resume_rejects_changed_payload(tmp_path):
+    """A checkpoint cannot turn corrupted bytes into a completed source."""
+    selection = batch.DownloadSelection(
+        source_id="test-source", expected_url="https://example.test/file"
+    )
+    folder = tmp_path / "test-source"
+    folder.mkdir()
+    (tmp_path / "results.json").write_text(
+        json.dumps([{"source_id": "test-source", "state": "acquired_local"}])
+    )
+    (folder / "selection.json").write_text(selection.model_dump_json())
+    (folder / "receipt.json").write_text(
+        json.dumps({"payload": {"sha256": "0" * 64}})
+    )
+    (folder / "payload.bin").write_bytes(b"corrupt")
+    with pytest.raises(ValueError, match="digest differs"):
+        batch.resume_batch((selection,), tmp_path)
+
+
+@pytest.mark.unit
+def test_batch_redirect_allowlist_rejects_wildcards() -> None:
+    selection = batch.DownloadSelection(
+        source_id="test-regulator",
+        expected_url="https://example.test/file",
+        redirect_hosts=("*.example.test",),
+    )
+    with pytest.raises(ValueError, match="exact public hostnames"):
+        batch.selected_source(selection, (catalog_source(),))
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "parameter", ["sig", "X-Amz-Signature", "access_token", "api_key"]
+)
+def test_batch_signed_redirect_credentials_are_not_retained(
+    parameter: str,
+) -> None:
+    signed = f"https://cdn.example.test/archive.zip?{parameter}=secret-signature&version=2026"
+    intermediate = httpx.Response(302, request=httpx.Request("GET", signed))
+    response = httpx.Response(
+        200, request=httpx.Request("GET", signed), history=[intermediate]
+    )
+    evidence = batch.redact_batch_http(
+        http_retrieval_from_response(
+            response,
+            original_uri=signed,
+            observed_byte_length=3,
+            agent_version="test",
+        )
+    )
+    encoded = evidence.model_dump_json()
+    assert "secret-signature" not in encoded
+    assert "REDACTED" in encoded
+    assert "version=2026" in str(evidence.final_uri)
+
+
+def test_global_catalogue_identity_uses_existing_global_receipt_code() -> None:
+    source = catalog_source().model_copy(update={"jurisdictions": ("GLOBAL",)})
+    identity = acquisition_module._source_identity(source)
+    assert identity.jurisdiction == "GLB"
+    assert identity.catalog_id == source.source_id
+    assert source.jurisdictions == ("GLOBAL",)
+
+
+def test_nppa_transport_retains_root_and_hostname_verification(monkeypatch):
+    captured = {}
+
+    def factory(**kwargs):
+        captured.update(kwargs)
+        return httpx.MockTransport(lambda _request: httpx.Response(200))
+
+    monkeypatch.setattr(batch.httpx, "HTTPTransport", factory)
+    transport = batch.selection_transport("https://nppa.gov.in/file.pdf")
+    assert isinstance(transport, BoundIPAddressTransport)
+    transport._inner_factory()
+    context = captured["verify"]
+    assert context.check_hostname
+    assert context.verify_mode == ssl.CERT_REQUIRED
+    assert not context.verify_flags & ssl.VERIFY_X509_PARTIAL_CHAIN
+    assert captured["trust_env"] is False
+    assert batch.selection_transport("https://example.org/file.pdf") is None
+
+
+def test_nppa_transport_rejects_modified_intermediate(tmp_path, monkeypatch):
+    certificate = tmp_path / ".ci/trust/nppa-intermediate.pem"
+    certificate.parent.mkdir(parents=True)
+    certificate.write_text("modified")
+    monkeypatch.setattr(batch, "ROOT", tmp_path)
+    with pytest.raises(ValueError, match="digest mismatch"):
+        batch.selection_transport("https://nppa.gov.in/file.pdf")

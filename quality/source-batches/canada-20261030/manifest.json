@@ -1,0 +1,16 @@
+{
+  "batch_id": "canada-20261030",
+  "repository": "edithatogo/global-medicines-atlas-canada-bronze-20261030",
+  "publication_approved": true,
+  "approval_reference": "Direct maintainer instruction: Proceed with publishing the Canadian files",
+  "expected_payloads": {
+    "ca-dpd": {
+      "sha256": "d8bb108003233435a2fb7c9cfb3a15b8f26962cf1758b80082ad0e4d2203ee98",
+      "byte_count": 1513654
+    },
+    "ca-noc": {
+      "sha256": "578b60e0cb0935172548be8bd24ce9f06739697a24008789894b6ba04b170cae",
+      "byte_count": 4621340
+    }
+  }
+}

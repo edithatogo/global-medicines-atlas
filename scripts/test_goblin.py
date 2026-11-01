@@ -525,6 +525,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_japan_native_adapters.py",
         "tests/test_columnar.py",
         "tests/test_source_acquisition.py",
+        "tests/test_structured_source_batch.py",
         "tests/test_temporal_snapshots.py",
         "tests/test_publication_package.py",
         "tests/test_stable_v1_publication_metadata.py",

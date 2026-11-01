@@ -1,0 +1,12 @@
+{
+  "recorded_on": "2026-10-30",
+  "authority": "Direct maintainer instruction: Proceed with the EMA publication",
+  "target": "edithatogo/global-medicines-atlas-ema-bronze-20261029",
+  "payload_sha256": "fe0bc6f7dea44ef112d7dac1ad63797132c674a1baeadc93f5775c68897ac76f",
+  "payload_bytes": 6795698,
+  "plan_sha256": "5008fffd1314fc37a85c626818f7d830a15858209a7ce745825e3582e80129c8",
+  "artifact_id": 12896777847,
+  "artifact_run_id": 40873191471,
+  "artifact_sha256": "2a390c88c961180e71135997ffa5d9eb4f192621ccd9220e15098c377c81f441",
+  "scope": "Three plan-bound files, hosted Actions origin, anonymous revision-pinned digest verification. No new capture, linked documents, schedule, other dataset or Stable v1 release."
+}

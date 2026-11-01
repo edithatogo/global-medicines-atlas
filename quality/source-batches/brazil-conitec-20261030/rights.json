@@ -1,0 +1,15 @@
+{
+  "sources": [
+    {
+      "source_id": "br-conitec-decisions",
+      "url": "https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/CONITEC/csv/Controle_de_Demandas_da_Conitec.csv.zip",
+      "terms": "https://dadosabertos.saude.gov.br/dataset/controle_demandas_conitec",
+      "licence": "Creative Commons Attribution NoDerivatives 3.0",
+      "scope": "Unmodified published demand-status ZIP; 2012 to first half 2025; excludes compliance-stage and noncompliant demands",
+      "surface": "download",
+      "max_bytes": 67108864
+    }
+  ],
+  "authority": "Maintainer directs remaining straightforward acquisition and publication with clear rights; exact unmodified source inventories only",
+  "exclusions": "No third-party documents, logos, personal data or clinical interpretations"
+}

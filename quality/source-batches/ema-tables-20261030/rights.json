@@ -1,0 +1,12 @@
+{
+  "licence": "EMA attribution reuse terms",
+  "licence_url": "https://www.ema.europa.eu/en/about-us/about-website/legal-notice",
+  "sources": {
+    "eu-ema-medicines": "https://www.ema.europa.eu/en/documents/report/medicines-output-medicines-report_en.xlsx",
+    "eu-ema-referrals": "https://www.ema.europa.eu/en/documents/report/medicines-output-referrals-report_en.xlsx",
+    "eu-ema-orphan": "https://www.ema.europa.eu/en/documents/report/medicines-output-orphan_designations-report_en.xlsx"
+  },
+  "scope": "Unmodified public bulk tables only; no linked documents, third-party content, logos or clinical interpretations",
+  "evidence": "Official EMA download page and legal notice",
+  "attribution": "Source: European Medicines Agency"
+}

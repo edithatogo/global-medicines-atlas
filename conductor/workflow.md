@@ -3,7 +3,9 @@
 ## Principles
 
 1. Conductor requirements, designs, tracks, and plans are the planning source of truth.
-2. Every implementation task begins with executable acceptance tests.
+2. Use existing executable acceptance tests where they cover the change; add a
+   regression only for new behavior or an uncovered defect. Documentation and
+   scheduling edits use their existing validators, without manufactured tests.
 3. Regulatory approval and funding assertions remain separate.
 4. Primary-source provenance, licensing, uncertainty, and coverage are required data.
 5. External publication, credentials, licensing decisions, and consequential releases remain explicit human gates.
@@ -41,10 +43,10 @@
 
 1. Select the next unblocked system task and record its existing gate, concrete
    failure, bounded scope, expected evidence and stop condition; mark it `[~]`.
-2. Write or identify failing unit, integration, end-to-end, smoke, property,
-   metamorphic, contract, deterministic-simulation, mutation, or parity tests
-   appropriate to the change.
-3. Confirm the intended failure.
+2. Select the existing checks that exercise the affected behavior. For a new
+   behavior or uncovered defect, add the smallest meaningful regression.
+3. For a defect, reproduce its failure before the fix where practical. Do not
+   manufacture failing tests for documentation or bookkeeping changes.
 4. Implement the smallest coherent change.
 5. Run exact affected test files/nodes and applicable static checks. Broaden
    only for demonstrated shared impact, new failures or unresolved risk; reuse
@@ -54,11 +56,17 @@
    full profile when the applicable contract and changed behavior require it.
    Do not repeat broad validation for each dataset or routine integration.
    Complete protected CI lanes remain required for every pull request.
-6. Run routine typing with `ty` and formal typing with BasedPyright.
-7. Verify coverage remains strictly above 90% for governed core code and upload CI coverage to Codecov.
-8. Run security, provenance, licensing, deterministic-regeneration, and source-boundary gates.
-9. Record evidence and deviations in the active track.
-10. Commit only scoped work, record the commit identifier, and update the plan.
+6. For Python changes, run affected static checks; use routine `ty` and formal
+   BasedPyright at the integration milestone. A prose edit does not require
+   another repository-wide type check.
+7. Retain the governed core coverage floor and Codecov checks in protected CI.
+   Do not run full local coverage for every small edit.
+8. Run security, provenance, licensing, regeneration and source-boundary checks
+   when their inputs change and at required milestones; reuse unchanged results.
+9. Record one concise terminal evidence entry per coherent batch, including any
+   first failure and its recovery. Avoid separate reports for each unchanged gate.
+10. Commit the bounded batch and update its plan together. A task-start marker,
+    review acknowledgement or merge receipt does not need a separate commit/PR.
 
 ## Validation State and Merge Evidence
 
@@ -86,7 +94,10 @@
 - Supply multiline PR descriptions through a literal body file or structured
   argument so shell interpolation cannot corrupt the review text.
 
-## Required Test Lanes
+## Required Test Lanes at Integration and Release
+
+These lanes remain available and protected CI remains complete. This inventory
+is not a demand to run every lane locally for every task or phase.
 
 - Unit tests.
 - Integration tests.
@@ -102,12 +113,12 @@
 
 ## Phase Verification
 
-Every phase ends with:
+Each coherent implementation milestone records:
 
 - affected automated tests;
-- coverage and typing verification;
-- provenance and licensing checks;
-- a concise manual verification procedure;
+- applicable coverage and typing verification, or an unchanged receipt;
+- affected provenance and licensing checks, or an unchanged receipt;
+- a manual verification procedure only where automation leaves a relevant gap;
 - a durable evidence record;
 - explicit classification of unresolved external gates.
 
@@ -128,12 +139,13 @@ or requires judgment that cannot be represented by automated evidence.
 
 ## Reuse and Dependency Review
 
-Before implementation:
+Before introducing a new capability or dependency:
 
 1. Search the maintainer's GitHub, package, dataset, schema, fixture, and workflow ecosystem.
 2. Record relevant existing capabilities and source commits.
 3. Decide whether to reuse, evolve, extract, replace, or reject each candidate.
-4. Prefer the current standardized frontier stack when compatibility evidence passes.
+4. Use the locked, qualified stack for completion. Defer optional frontier
+   upgrades unless a demonstrated blocker requires them.
 5. Add legacy adapters only where behavior or downstream compatibility requires them.
 6. Record retirement conditions for every temporary compatibility dependency.
 7. Add cross-repository canaries when a shared dependency or package could affect multiple projects.
@@ -145,9 +157,11 @@ an unresolved package-name dependency.
 ## GitHub and Conductor Traceability
 
 - One parent GitHub issue corresponds to each Conductor track.
-- Actionable plan tasks become linked subissues.
+- Existing plan tasks and parent issues provide sufficient traceability for a
+  bounded batch. Do not create a subissue for every fix, receipt or review pass.
 - Track files reference issue URLs and issues reference track paths and requirement identifiers.
-- Synchronization is dry-run by default and validated in CI.
+- Synchronization is dry-run by default and validated in CI; do not refresh
+  unchanged issue/project bookkeeping on each task.
 - Renovate manages dependency updates through grouped, approval-controlled branches.
 
 ## Definition of Done

@@ -1,0 +1,47 @@
+{
+  "receipt_version": "1",
+  "plan_sha256": "3069e72434e16b1e4fe0e8e536b9dfa1e2b04aa59e78f1b0550171461c61a990",
+  "artifact_sha256": [
+    "4d4d5378e7c124103e81b500d88791be9e650a631bacff9eea6a25098de30b8f",
+    "bbbb1adb1588baf77c995d2a10d211939c8ac476eedbe4175913cb508fd77aef",
+    "8aa7d4ae0f831c0a1394734cf0c54362b36c527422d6438b3956e128c92ceb59",
+    "88ec17087d6f57ade448b4eb0aa9f0225ec6d8398ee1bad5a9f3d285076398c7"
+  ],
+  "target": {
+    "destination": "hugging_face",
+    "repository": "edithatogo/global-medicines-atlas-nova-scotia-20261030",
+    "revision": "main",
+    "public_base_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-nova-scotia-20261030"
+  },
+  "state": "public",
+  "recorded_at": "2026-10-29T18:38:51.954523Z",
+  "remote_revision": "3d01119e73fa098c62f72505c23782505ca3cf8f",
+  "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-nova-scotia-20261030/tree/3d01119e73fa098c62f72505c23782505ca3cf8f",
+  "failure_reason": null,
+  "verified_artifacts": [
+    {
+      "relative_path": "README.md",
+      "sha256": "4d4d5378e7c124103e81b500d88791be9e650a631bacff9eea6a25098de30b8f",
+      "size": 314,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-nova-scotia-20261030/resolve/3d01119e73fa098c62f72505c23782505ca3cf8f/README.md"
+    },
+    {
+      "relative_path": "ca-nova-scotia-pharmacare/payload.bin",
+      "sha256": "bbbb1adb1588baf77c995d2a10d211939c8ac476eedbe4175913cb508fd77aef",
+      "size": 653842,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-nova-scotia-20261030/resolve/3d01119e73fa098c62f72505c23782505ca3cf8f/ca-nova-scotia-pharmacare/payload.bin"
+    },
+    {
+      "relative_path": "ca-nova-scotia-pharmacare/receipt.json",
+      "sha256": "8aa7d4ae0f831c0a1394734cf0c54362b36c527422d6438b3956e128c92ceb59",
+      "size": 5424,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-nova-scotia-20261030/resolve/3d01119e73fa098c62f72505c23782505ca3cf8f/ca-nova-scotia-pharmacare/receipt.json"
+    },
+    {
+      "relative_path": "rights.json",
+      "sha256": "88ec17087d6f57ade448b4eb0aa9f0225ec6d8398ee1bad5a9f3d285076398c7",
+      "size": 704,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-nova-scotia-20261030/resolve/3d01119e73fa098c62f72505c23782505ca3cf8f/rights.json"
+    }
+  ]
+}

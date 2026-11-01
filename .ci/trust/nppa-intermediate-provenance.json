@@ -1,0 +1,8 @@
+{
+  "certificate": "Sectigo Public Server Authentication CA DV R36",
+  "download_url": "http://crt.sectigo.com/SectigoPublicServerAuthenticationCADVR36.crt",
+  "pem_sha256": "b40358316fd9e1caaaab92c382927d2c13ef51b481eec9371a82e16c86f2a687",
+  "validation": "openssl verify -CAfile .ci/trust/cacert.pem .ci/trust/nppa-intermediate.pem",
+  "result": "OK",
+  "scope": "nppa.gov.in only; complete chain to root required; hostname and public IP validation retained"
+}

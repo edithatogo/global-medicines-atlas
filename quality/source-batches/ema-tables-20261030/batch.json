@@ -1,0 +1,316 @@
+[
+  {
+    "source_id": "eu-ema-medicines",
+    "surface": "download",
+    "expected_url": "https://www.ema.europa.eu/en/documents/report/medicines-output-medicines-report_en.xlsx",
+    "retention_authority_reference": "quality/source-batches/ema-tables-20261030/rights.json",
+    "reuse_decision": {
+      "source_id": "eu-ema-medicines",
+      "disposition": "acquire-new",
+      "searched_surfaces": [
+        "local_clones",
+        "github",
+        "hugging_face",
+        "source_registry"
+      ],
+      "candidates": [
+        {
+          "surface": "local_clones",
+          "locator": "/Users/doughnut/.codex/worktrees/gma-streamlined-completion/global-medicines-atlas/tests/fixtures/native/eu/ema_medicines.csv",
+          "source_id": "eu-ema-medicines",
+          "kind": "related",
+          "digest": "5e0c9f7077f55f5f8bf675c8c84dee9e7dc9ad97816ed6237ce40f72f5053430",
+          "query": "Synthetic example; not source bulk data",
+          "revision": null
+        },
+        {
+          "surface": "hugging_face",
+          "locator": "edithatogo/global-medicines-atlas-catalogue/fixtures/eu-ema-medicines/ema_medicines.csv",
+          "source_id": "eu-ema-medicines",
+          "kind": "related",
+          "digest": null,
+          "query": "Metadata or synthetic fixture",
+          "revision": "89c95653c498d7ad2835d8fcd6f9fd804e2a4d18"
+        },
+        {
+          "surface": "hugging_face",
+          "locator": "edithatogo/global-medicines-atlas-catalogue/metadata/sources/eu-ema-medicines.json",
+          "source_id": "eu-ema-medicines",
+          "kind": "registry",
+          "digest": null,
+          "query": "Metadata or synthetic fixture",
+          "revision": "89c95653c498d7ad2835d8fcd6f9fd804e2a4d18"
+        },
+        {
+          "surface": "hugging_face",
+          "locator": "edithatogo/global-medicines-atlas-catalogue/payloads/eu-ema-medicines/public-artefact.bin",
+          "source_id": "eu-ema-medicines",
+          "kind": "related",
+          "digest": null,
+          "query": "Previously archived HTML discovery page, not XLSX source payload",
+          "revision": "89c95653c498d7ad2835d8fcd6f9fd804e2a4d18"
+        },
+        {
+          "surface": "source_registry",
+          "locator": "https://www.ema.europa.eu/en/documents/report/medicines-output-medicines-report_en.xlsx",
+          "source_id": "eu-ema-medicines",
+          "kind": "registry",
+          "digest": null,
+          "query": null,
+          "revision": null
+        }
+      ],
+      "rationale": "No corresponding native bulk archive in checked authorities. Existing EMA HTML and synthetic fixtures are related evidence, not the requested spreadsheets.",
+      "catalogue_revision": "760723adc9c2f8e8946eebe9bcada7aff212095e",
+      "discovery_snapshot": {
+        "schema_id": "global-medicines-atlas.reuse-discovery",
+        "schema_version": 1,
+        "snapshot_id": "sha256:d8cd4c757c531eeb224a44e88bf807854ddcdc99936782ec282b16f5e350a451",
+        "source_id": "eu-ema-medicines",
+        "generated_at": "2026-10-29T18:19:58.994782Z",
+        "freshness_seconds": 86400,
+        "expires_at": "2026-10-30T18:19:58.994782Z",
+        "tool_version": "bounded-source-batch-reuse-v1",
+        "surfaces": [
+          {
+            "name": "local_clones",
+            "state": "success",
+            "query": "eu-ema-medicines exact source ID and native bulk filename search",
+            "candidates": [
+              {
+                "surface": "local_clones",
+                "locator": "/Users/doughnut/.codex/worktrees/gma-streamlined-completion/global-medicines-atlas/tests/fixtures/native/eu/ema_medicines.csv",
+                "source_id": "eu-ema-medicines",
+                "kind": "related",
+                "digest": "5e0c9f7077f55f5f8bf675c8c84dee9e7dc9ad97816ed6237ce40f72f5053430",
+                "query": "Synthetic example; not source bulk data",
+                "revision": null
+              }
+            ],
+            "detail": "Pinned live tree listings reused from same-day successful read; matched archive classified from metadata and HTML prefix"
+          },
+          {
+            "name": "github",
+            "state": "success",
+            "query": "eu-ema-medicines exact source ID and native bulk filename search",
+            "candidates": [],
+            "detail": "Pinned live tree listings reused from same-day successful read; matched archive classified from metadata and HTML prefix"
+          },
+          {
+            "name": "hugging_face",
+            "state": "success",
+            "query": "eu-ema-medicines exact source ID and native bulk filename search",
+            "candidates": [
+              {
+                "surface": "hugging_face",
+                "locator": "edithatogo/global-medicines-atlas-catalogue/fixtures/eu-ema-medicines/ema_medicines.csv",
+                "source_id": "eu-ema-medicines",
+                "kind": "related",
+                "digest": null,
+                "query": "Metadata or synthetic fixture",
+                "revision": "89c95653c498d7ad2835d8fcd6f9fd804e2a4d18"
+              },
+              {
+                "surface": "hugging_face",
+                "locator": "edithatogo/global-medicines-atlas-catalogue/metadata/sources/eu-ema-medicines.json",
+                "source_id": "eu-ema-medicines",
+                "kind": "registry",
+                "digest": null,
+                "query": "Metadata or synthetic fixture",
+                "revision": "89c95653c498d7ad2835d8fcd6f9fd804e2a4d18"
+              },
+              {
+                "surface": "hugging_face",
+                "locator": "edithatogo/global-medicines-atlas-catalogue/payloads/eu-ema-medicines/public-artefact.bin",
+                "source_id": "eu-ema-medicines",
+                "kind": "related",
+                "digest": null,
+                "query": "Previously archived HTML discovery page, not XLSX source payload",
+                "revision": "89c95653c498d7ad2835d8fcd6f9fd804e2a4d18"
+              }
+            ],
+            "detail": "Pinned live tree listings reused from same-day successful read; matched archive classified from metadata and HTML prefix"
+          },
+          {
+            "name": "source_registry",
+            "state": "success",
+            "query": "eu-ema-medicines exact source ID and native bulk filename search",
+            "candidates": [
+              {
+                "surface": "source_registry",
+                "locator": "https://www.ema.europa.eu/en/documents/report/medicines-output-medicines-report_en.xlsx",
+                "source_id": "eu-ema-medicines",
+                "kind": "registry",
+                "digest": null,
+                "query": null,
+                "revision": null
+              }
+            ],
+            "detail": "Pinned live tree listings reused from same-day successful read; matched archive classified from metadata and HTML prefix"
+          }
+        ]
+      }
+    },
+    "max_bytes": 67108864
+  },
+  {
+    "source_id": "eu-ema-referrals",
+    "surface": "download",
+    "expected_url": "https://www.ema.europa.eu/en/documents/report/medicines-output-referrals-report_en.xlsx",
+    "retention_authority_reference": "quality/source-batches/ema-tables-20261030/rights.json",
+    "reuse_decision": {
+      "source_id": "eu-ema-referrals",
+      "disposition": "acquire-new",
+      "searched_surfaces": [
+        "local_clones",
+        "github",
+        "hugging_face",
+        "source_registry"
+      ],
+      "candidates": [
+        {
+          "surface": "source_registry",
+          "locator": "https://www.ema.europa.eu/en/documents/report/medicines-output-referrals-report_en.xlsx",
+          "source_id": "eu-ema-referrals",
+          "kind": "registry",
+          "digest": null,
+          "query": null,
+          "revision": null
+        }
+      ],
+      "rationale": "No corresponding native bulk archive in checked authorities. Existing EMA HTML and synthetic fixtures are related evidence, not the requested spreadsheets.",
+      "catalogue_revision": "760723adc9c2f8e8946eebe9bcada7aff212095e",
+      "discovery_snapshot": {
+        "schema_id": "global-medicines-atlas.reuse-discovery",
+        "schema_version": 1,
+        "snapshot_id": "sha256:f037d92dbfe9471a3b0b064e49174701cbedb9eda55801c67804767028862e61",
+        "source_id": "eu-ema-referrals",
+        "generated_at": "2026-10-29T18:19:59.024164Z",
+        "freshness_seconds": 86400,
+        "expires_at": "2026-10-30T18:19:59.024164Z",
+        "tool_version": "bounded-source-batch-reuse-v1",
+        "surfaces": [
+          {
+            "name": "local_clones",
+            "state": "success",
+            "query": "eu-ema-referrals exact source ID and native bulk filename search",
+            "candidates": [],
+            "detail": "Pinned live tree listings reused from same-day successful read; matched archive classified from metadata and HTML prefix"
+          },
+          {
+            "name": "github",
+            "state": "success",
+            "query": "eu-ema-referrals exact source ID and native bulk filename search",
+            "candidates": [],
+            "detail": "Pinned live tree listings reused from same-day successful read; matched archive classified from metadata and HTML prefix"
+          },
+          {
+            "name": "hugging_face",
+            "state": "success",
+            "query": "eu-ema-referrals exact source ID and native bulk filename search",
+            "candidates": [],
+            "detail": "Pinned live tree listings reused from same-day successful read; matched archive classified from metadata and HTML prefix"
+          },
+          {
+            "name": "source_registry",
+            "state": "success",
+            "query": "eu-ema-referrals exact source ID and native bulk filename search",
+            "candidates": [
+              {
+                "surface": "source_registry",
+                "locator": "https://www.ema.europa.eu/en/documents/report/medicines-output-referrals-report_en.xlsx",
+                "source_id": "eu-ema-referrals",
+                "kind": "registry",
+                "digest": null,
+                "query": null,
+                "revision": null
+              }
+            ],
+            "detail": "Pinned live tree listings reused from same-day successful read; matched archive classified from metadata and HTML prefix"
+          }
+        ]
+      }
+    },
+    "max_bytes": 67108864
+  },
+  {
+    "source_id": "eu-ema-orphan",
+    "surface": "download",
+    "expected_url": "https://www.ema.europa.eu/en/documents/report/medicines-output-orphan_designations-report_en.xlsx",
+    "retention_authority_reference": "quality/source-batches/ema-tables-20261030/rights.json",
+    "reuse_decision": {
+      "source_id": "eu-ema-orphan",
+      "disposition": "acquire-new",
+      "searched_surfaces": [
+        "local_clones",
+        "github",
+        "hugging_face",
+        "source_registry"
+      ],
+      "candidates": [
+        {
+          "surface": "source_registry",
+          "locator": "https://www.ema.europa.eu/en/documents/report/medicines-output-orphan_designations-report_en.xlsx",
+          "source_id": "eu-ema-orphan",
+          "kind": "registry",
+          "digest": null,
+          "query": null,
+          "revision": null
+        }
+      ],
+      "rationale": "No corresponding native bulk archive in checked authorities. Existing EMA HTML and synthetic fixtures are related evidence, not the requested spreadsheets.",
+      "catalogue_revision": "760723adc9c2f8e8946eebe9bcada7aff212095e",
+      "discovery_snapshot": {
+        "schema_id": "global-medicines-atlas.reuse-discovery",
+        "schema_version": 1,
+        "snapshot_id": "sha256:cc9dbe9b07caa2e37d0fb106ec740ec2a6cd5628631ea89fcb77c9ea4150bb64",
+        "source_id": "eu-ema-orphan",
+        "generated_at": "2026-10-29T18:19:59.042198Z",
+        "freshness_seconds": 86400,
+        "expires_at": "2026-10-30T18:19:59.042198Z",
+        "tool_version": "bounded-source-batch-reuse-v1",
+        "surfaces": [
+          {
+            "name": "local_clones",
+            "state": "success",
+            "query": "eu-ema-orphan exact source ID and native bulk filename search",
+            "candidates": [],
+            "detail": "Pinned live tree listings reused from same-day successful read; matched archive classified from metadata and HTML prefix"
+          },
+          {
+            "name": "github",
+            "state": "success",
+            "query": "eu-ema-orphan exact source ID and native bulk filename search",
+            "candidates": [],
+            "detail": "Pinned live tree listings reused from same-day successful read; matched archive classified from metadata and HTML prefix"
+          },
+          {
+            "name": "hugging_face",
+            "state": "success",
+            "query": "eu-ema-orphan exact source ID and native bulk filename search",
+            "candidates": [],
+            "detail": "Pinned live tree listings reused from same-day successful read; matched archive classified from metadata and HTML prefix"
+          },
+          {
+            "name": "source_registry",
+            "state": "success",
+            "query": "eu-ema-orphan exact source ID and native bulk filename search",
+            "candidates": [
+              {
+                "surface": "source_registry",
+                "locator": "https://www.ema.europa.eu/en/documents/report/medicines-output-orphan_designations-report_en.xlsx",
+                "source_id": "eu-ema-orphan",
+                "kind": "registry",
+                "digest": null,
+                "query": null,
+                "revision": null
+              }
+            ],
+            "detail": "Pinned live tree listings reused from same-day successful read; matched archive classified from metadata and HTML prefix"
+          }
+        ]
+      }
+    },
+    "max_bytes": 67108864
+  }
+]

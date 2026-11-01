@@ -1,0 +1,10 @@
+{
+  "dataset_id": "9cbaef00-b52c-4a70-9fed-d9aa8263ab74",
+  "licence": "Open Government Licence - Canada",
+  "licence_url": "https://open.canada.ca/en/open-government-licence-canada",
+  "metadata_url": "https://open.canada.ca/data/api/action/package_show?id=9cbaef00-b52c-4a70-9fed-d9aa8263ab74",
+  "source_url": "https://open.canada.ca/data/dataset/9cbaef00-b52c-4a70-9fed-d9aa8263ab74/resource/2e736909-ef1f-4d60-bfb6-f15b3be3b1fa/download/extract_extrait.zip",
+  "attribution": "Contains information licensed under the Open Government Licence – Canada. Source: Health Canada.",
+  "scope": "Unmodified public bulk data only; no linked documents, personal information, third-party rights or official symbols licensed by this record",
+  "source_caveat": "Reports of suspected adverse reactions do not establish causation, incidence or a product safety profile."
+}

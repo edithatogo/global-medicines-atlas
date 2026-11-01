@@ -1,0 +1,34 @@
+{
+  "plan_version": "1",
+  "release_version": "singapore-register-20261030",
+  "target": {
+    "destination": "hugging_face",
+    "repository": "edithatogo/global-medicines-atlas-singapore-register-20261030",
+    "revision": "main",
+    "public_base_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-singapore-register-20261030"
+  },
+  "artifacts": [
+    {
+      "relative_path": "README.md",
+      "sha256": "b05c613ef18ec61ef41e11ac5b13dc562d25107a8f304398ef6c68ada5d6fdcd",
+      "size": 754
+    },
+    {
+      "relative_path": "rights.json",
+      "sha256": "113a9dd40529c4c235c3856c52d9e02800cc3bd051a1f5d3aed476891967b77c",
+      "size": 702
+    },
+    {
+      "relative_path": "sg-hsa-register/payload.bin",
+      "sha256": "49aed018b2fcd02dad40fa48f4ebefb35e64df6d627e8dbd3e96a7e1f7ac1ead",
+      "size": 2604008
+    },
+    {
+      "relative_path": "sg-hsa-register/receipt.json",
+      "sha256": "e140e2ef957a5c70560d6de49a5991a23cd3122a46bf233ca21fca55a531fc0c",
+      "size": 5129
+    }
+  ],
+  "dry_run": true,
+  "maintainer_approved": false
+}

@@ -1,0 +1,15 @@
+{
+  "sources": [
+    {
+      "source_id": "sg-hsa-register",
+      "url": "https://data.gov.sg/api/action/datastore_search?resource_id=d_767279312753558cbf19d48344577084&limit=10000",
+      "terms": "https://data.gov.sg/open-data-licence",
+      "licence": "Singapore Open Data Licence",
+      "scope": "Complete API response, observed total 5511 records; no package inserts",
+      "surface": "single_api_response",
+      "max_bytes": 67108864
+    }
+  ],
+  "authority": "Maintainer directs remaining straightforward acquisition and publication with clear rights; exact unmodified source inventories only",
+  "exclusions": "No third-party documents, logos, personal data or clinical interpretations"
+}

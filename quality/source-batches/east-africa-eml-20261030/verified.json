@@ -1,0 +1,61 @@
+{
+  "receipt_version": "1",
+  "plan_sha256": "6088de79674a5acf62711cd38bc54d0dafef52d66103a246f8ae83cf47f69564",
+  "artifact_sha256": [
+    "e7346fca7572211399c8f74d7c751665ae1a42c16424ffe8f872f71a9f4bb785",
+    "b6d76bfaf978b42481757f1891600fb63350774942373122b45dc427bf34c343",
+    "15a3fecef83bba7893980a349907a7b9a1da6a9fed677684cdd4a6154d51dbe9",
+    "d4b61c6ecad6e0d1c99bdf6d5e1caff05208f8083892b08369ab6d71dcd7ad95",
+    "7e8c4a721b7c3a52820328f25c922c3fa9e4c3da80bda8f0d119f91088852f4c",
+    "0fb5dcf6fee78062779fa27e4cf0d11ee9640e791b14c243502aa11927abc3c4"
+  ],
+  "target": {
+    "destination": "hugging_face",
+    "repository": "edithatogo/global-medicines-atlas-east-africa-eml-20261030",
+    "revision": "main",
+    "public_base_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-east-africa-eml-20261030"
+  },
+  "state": "public",
+  "recorded_at": "2026-10-29T22:55:12.380688Z",
+  "remote_revision": "b2ee0364d3a1b44ae755496b843da9e4f6a350ff",
+  "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-east-africa-eml-20261030/tree/b2ee0364d3a1b44ae755496b843da9e4f6a350ff",
+  "failure_reason": null,
+  "verified_artifacts": [
+    {
+      "relative_path": "README.md",
+      "sha256": "e7346fca7572211399c8f74d7c751665ae1a42c16424ffe8f872f71a9f4bb785",
+      "size": 1817,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-east-africa-eml-20261030/resolve/b2ee0364d3a1b44ae755496b843da9e4f6a350ff/README.md"
+    },
+    {
+      "relative_path": "ke-national-eml/payload.bin",
+      "sha256": "b6d76bfaf978b42481757f1891600fb63350774942373122b45dc427bf34c343",
+      "size": 2687843,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-east-africa-eml-20261030/resolve/b2ee0364d3a1b44ae755496b843da9e4f6a350ff/ke-national-eml/payload.bin"
+    },
+    {
+      "relative_path": "ke-national-eml/receipt.json",
+      "sha256": "15a3fecef83bba7893980a349907a7b9a1da6a9fed677684cdd4a6154d51dbe9",
+      "size": 5464,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-east-africa-eml-20261030/resolve/b2ee0364d3a1b44ae755496b843da9e4f6a350ff/ke-national-eml/receipt.json"
+    },
+    {
+      "relative_path": "rights.json",
+      "sha256": "d4b61c6ecad6e0d1c99bdf6d5e1caff05208f8083892b08369ab6d71dcd7ad95",
+      "size": 1493,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-east-africa-eml-20261030/resolve/b2ee0364d3a1b44ae755496b843da9e4f6a350ff/rights.json"
+    },
+    {
+      "relative_path": "ug-national-eml/payload.bin",
+      "sha256": "7e8c4a721b7c3a52820328f25c922c3fa9e4c3da80bda8f0d119f91088852f4c",
+      "size": 2947434,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-east-africa-eml-20261030/resolve/b2ee0364d3a1b44ae755496b843da9e4f6a350ff/ug-national-eml/payload.bin"
+    },
+    {
+      "relative_path": "ug-national-eml/receipt.json",
+      "sha256": "0fb5dcf6fee78062779fa27e4cf0d11ee9640e791b14c243502aa11927abc3c4",
+      "size": 5456,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-east-africa-eml-20261030/resolve/b2ee0364d3a1b44ae755496b843da9e4f6a350ff/ug-national-eml/receipt.json"
+    }
+  ]
+}

@@ -1,0 +1,1224 @@
+{
+  "scope": "All 176 catalogue IDs; exact 100 unfinished-source extension completed",
+  "all_sources_archived": false,
+  "federation_resumed": false,
+  "counts": {
+    "blocked_rights": 35,
+    "blocked_rights_unestablished": 34,
+    "excluded_auth": 15,
+    "reused_verified_archive": 50,
+    "blocked_endpoint_and_rights": 13,
+    "blocked_access": 2,
+    "blocked_export_contract": 1,
+    "blocked_document_rights": 8,
+    "blocked_mixed_document_rights": 2,
+    "blocked_access_and_rights": 1,
+    "retained_private_publication_blocked": 4,
+    "blocked_endpoint": 2,
+    "blocked_third_party_rights": 2,
+    "blocked_heterogeneous_source_rights": 4,
+    "blocked_automated_access": 3
+  },
+  "sources": [
+    {
+      "source_id": "ae-dha-prices",
+      "state": "blocked_rights",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights"
+    },
+    {
+      "source_id": "ae-ede-register",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Registered product directory was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "ar-anmat-vademecum",
+      "state": "blocked_rights_unestablished",
+      "reason": "The official historical VNM dataset explicitly states that no licence was specified; public CSV/XLS links alone do not establish redistribution authority.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "au-amt-rf2",
+      "state": "excluded_auth",
+      "reason": "authentication mode account is excluded",
+      "next_action": "retain exclusion until credentials are explicitly authorised"
+    },
+    {
+      "source_id": "au-artg",
+      "state": "blocked_rights",
+      "reason": "TGA copyright notice limits copying to personal/internal use; public redistribution requires permission. Sponsor-authored product documents have additional third-party rights.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "au-data-gov-mbs-demographics",
+      "state": "blocked_rights",
+      "reason": "Maintainer approval is limited to the exact 14 historical objects in the M-112 rights decision; broader resources and revisions remain outside that scope. Imported B1/B2 references do not constitute native receipts, payload-storage receipts, or admission.",
+      "next_action": "Obtain source-specific rights and define a qualified acquisition profile before handling any resources outside the approved 14-object archive scope; do not infer distinct-patient counts."
+    },
+    {
+      "source_id": "au-data-gov-mbs-group",
+      "state": "blocked_rights",
+      "reason": "Maintainer approval is limited to the exact 4 historical group-statistics objects in the M-112 rights decision; broader resources and revisions remain outside that scope. Imported B1/B2 references do not constitute native receipts, payload-storage receipts, or admission.",
+      "next_action": "Obtain source-specific rights and define a qualified acquisition profile before handling resources outside the approved 4-object archive scope; do not infer distinct-patient counts."
+    },
+    {
+      "source_id": "au-mbs",
+      "evidence_reference": "quality/qualifications/australian-mbs-public-huggingface-20260829.json",
+      "revision": "4d1dae488ac43522f20e8320a8b2a56bf9138341",
+      "coverage_scope": "Exact historical approved inventory and existing anonymous digest receipts only; no currentness or federation acceptance claim",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "au-mbs-p7-legacy-workbook",
+      "evidence_reference": "quality/qualifications/australian-mbs-public-huggingface-20260829.json",
+      "revision": "4d1dae488ac43522f20e8320a8b2a56bf9138341",
+      "coverage_scope": "Exact historical approved inventory and existing anonymous digest receipts only; no currentness or federation acceptance claim",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "au-pbs-api",
+      "state": "blocked_rights",
+      "reason": "source-specific retention and transformation rights unresolved: terms_review_required",
+      "next_action": "record source-specific retention and transformation rights"
+    },
+    {
+      "source_id": "au-pbs-embargo",
+      "state": "excluded_auth",
+      "reason": "authentication mode manual_approval is excluded",
+      "next_action": "retain exclusion until credentials are explicitly authorised"
+    },
+    {
+      "source_id": "au-pbs-historical-xml",
+      "state": "blocked_rights",
+      "reason": "PBS website copyright permits limited personal reference copies, not general public rehosting of the historical XML corpus. Existing federation evidence and acceptance are unchanged.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "au-tga-daen",
+      "state": "blocked_rights",
+      "reason": "TGA copyright notice limits copying to personal/internal use; public redistribution requires permission. Sponsor-authored product documents have additional third-party rights.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "au-tga-pi-cmi",
+      "state": "blocked_rights",
+      "reason": "TGA copyright notice limits copying to personal/internal use; public redistribution requires permission. Sponsor-authored product documents have additional third-party rights.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "au-tga-regulatory-events",
+      "state": "blocked_rights",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights"
+    },
+    {
+      "source_id": "bh-moh-drug-prices",
+      "state": "blocked_rights",
+      "reason": "Bahrain MOH terms expressly require prior written permission for reproduction, republication or distribution.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "br-anvisa-medicines",
+      "evidence_reference": "quality/source-batches/brazil-register-20261030/verified.json",
+      "revision": "6ba60e15b16b7f5b13ad0af7fbaf38957c2cab22",
+      "coverage_scope": "Exact selected objects in brazil-register-20261030 only; not all historical versions or downstream qualification",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "br-cmed-prices",
+      "state": "blocked_rights",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights"
+    },
+    {
+      "source_id": "br-conitec-decisions",
+      "evidence_reference": "quality/source-batches/brazil-conitec-20261030/verified.json",
+      "revision": "0620a7a7830f6afb0fcca7f7f874211607fa2c28",
+      "coverage_scope": "Exact selected objects in brazil-conitec-20261030 only; not all historical versions or downstream qualification",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "ca-canada-vigilance",
+      "evidence_reference": "quality/source-batches/canada-vigilance-20261030/verified.json",
+      "revision": "3be09c44f7355aeebfc85fc30de3a0ecca1da45a",
+      "coverage_scope": "Exact public bulk extract",
+      "archive_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-canada-vigilance-20261030/tree/3be09c44f7355aeebfc85fc30de3a0ecca1da45a",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "ca-cda-recommendations",
+      "state": "blocked_endpoint_and_rights",
+      "reason": "The official source returned a denial or failed connection in the bounded current checks; applicable public corpus redistribution rights also remain unestablished. This is an observed route failure, not a claim of permanent global unavailability.",
+      "next_action": "A working provider-supported route and applicable source-specific archival terms are required; do not bypass denial or substitute unrelated data.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "ca-cihi-nhex-medicines",
+      "state": "blocked_rights",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights"
+    },
+    {
+      "source_id": "ca-dpd",
+      "evidence_reference": "quality/source-batches/canada-20261030/verified.json",
+      "revision": "76183e4d8298a582e21d084e0cd895ef7e8ec22e",
+      "coverage_scope": "Exact newly published native bulk snapshot only",
+      "archive_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-canada-bronze-20261030/tree/76183e4d8298a582e21d084e0cd895ef7e8ec22e",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "ca-noc",
+      "evidence_reference": "quality/source-batches/canada-20261030/verified.json",
+      "revision": "76183e4d8298a582e21d084e0cd895ef7e8ec22e",
+      "coverage_scope": "Exact newly published native bulk snapshot only",
+      "archive_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-canada-bronze-20261030/tree/76183e4d8298a582e21d084e0cd895ef7e8ec22e",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "ca-nova-scotia-pharmacare",
+      "evidence_reference": "quality/source-batches/nova-scotia-20261030/verified.json",
+      "revision": "3d01119e73fa098c62f72505c23782505ca3cf8f",
+      "coverage_scope": "Exact newly published native bulk snapshot only",
+      "archive_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-nova-scotia-20261030/tree/3d01119e73fa098c62f72505c23782505ca3cf8f",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "ca-ontario-odb",
+      "state": "blocked_rights",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights"
+    },
+    {
+      "source_id": "ch-foph-sl-fhir",
+      "state": "blocked_endpoint_and_rights",
+      "reason": "Official Swiss current resources API returns null fileUrl and lastUpdated; exact dataset reuse basis unresolved",
+      "next_action": "Bind official export and applicable terms; do not infer from candidate static URL"
+    },
+    {
+      "source_id": "ch-foph-specialities",
+      "state": "blocked_endpoint_and_rights",
+      "reason": "Official Swiss current resources API returns null fileUrl and lastUpdated; exact dataset reuse basis unresolved",
+      "next_action": "Bind official export and applicable terms; do not infer from candidate static URL"
+    },
+    {
+      "source_id": "ch-swissmedic-aips",
+      "state": "blocked_rights",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights"
+    },
+    {
+      "source_id": "ch-swissmedic-authorised",
+      "state": "blocked_rights",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights"
+    },
+    {
+      "source_id": "cl-isp-register",
+      "state": "blocked_endpoint_and_rights",
+      "reason": "The official source returned a denial or failed connection in the bounded current checks; applicable public corpus redistribution rights also remain unestablished. This is an observed route failure, not a claim of permanent global unavailability.",
+      "next_action": "A working provider-supported route and applicable source-specific archival terms are required; do not bypass denial or substitute unrelated data.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "co-invima-cum",
+      "state": "blocked_rights",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights"
+    },
+    {
+      "source_id": "co-invima-register",
+      "evidence_reference": "quality/source-batches/colombia-register-20261030/verified.json",
+      "revision": "4bdd05123581aad6ff1effdae93e6de100e0d5e8",
+      "coverage_scope": "Exact selected objects in colombia-register-20261030 only; not all historical versions or downstream qualification",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "de-bfarm-amice",
+      "state": "blocked_rights_unestablished",
+      "reason": "No applicable redistribution grant was established for the AMIce database. The linked public terms endpoint currently returns HTTP 503; free viewing is not treated as a corpus licence.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "dk-medicinpriser",
+      "state": "blocked_access",
+      "reason": "Full current bulk delivery requires a subscribed FTP username/password. Public search is capped and does not establish a complete enumeration; a historical sample is not current coverage.",
+      "next_action": "An already-authorised complete export or public bulk endpoint is needed; no subscription or credentials created.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "dk-medstat-utilisation",
+      "state": "blocked_export_contract",
+      "reason": "Retained exact-query export returned HTML under an XLS filename, with no documented reliable export contract; neither a valid complete utilisation table nor a stable machine-readable export was established.",
+      "next_action": "A provider-supported complete export and a reproducible query/result contract are required; preserve first-failure evidence.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "eg-eda-register",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Egypt EDA product register was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "eg-eda-safety",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Egyptian Drug Authority public safety/recall notices was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "eg-national-eml",
+      "state": "blocked_document_rights",
+      "reason": "The exact national document is available through WHO, but its reviewed front matter supplies no affirmative public redistribution grant. National/third-party copyright is not licensed by WHO hosting.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "eu-ema-article57",
+      "state": "blocked_rights",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights"
+    },
+    {
+      "source_id": "eu-ema-epar-documents",
+      "state": "blocked_mixed_document_rights",
+      "reason": "EMA permits reuse of its own material but expressly excludes third-party content. Unlike the already archived EMA data tables, the heterogeneous document corpus lacks per-object ownership/exception evidence; no blanket corpus publication is authorised.",
+      "next_action": "Bind a finite inventory of agency-owned documents and resolve each third-party exception before corpus publication; existing EMA data-table archives remain valid.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "eu-ema-json",
+      "evidence_reference": "quality/qualifications/ema-publication-20261030/verified.json",
+      "revision": "3aaa509d4b8d5b3f594caaeb0fab2ad99fec3c61",
+      "coverage_scope": "Exact 2026-10-29 JSON snapshot",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "eu-ema-medicines",
+      "evidence_reference": "quality/source-batches/ema-tables-20261030/verified.json",
+      "revision": "cd49b21eb14e6549c563b56371bc320b25c58d41",
+      "coverage_scope": "Exact newly published native bulk snapshot only",
+      "archive_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-tables-20261030/tree/cd49b21eb14e6549c563b56371bc320b25c58d41",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "eu-ema-orphan",
+      "evidence_reference": "quality/source-batches/ema-tables-20261030/verified.json",
+      "revision": "cd49b21eb14e6549c563b56371bc320b25c58d41",
+      "coverage_scope": "Exact newly published native bulk snapshot only",
+      "archive_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-tables-20261030/tree/cd49b21eb14e6549c563b56371bc320b25c58d41",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "eu-ema-pms-fhir",
+      "state": "excluded_auth",
+      "reason": "authentication mode account is excluded",
+      "next_action": "retain exclusion until credentials are explicitly authorised"
+    },
+    {
+      "source_id": "eu-ema-referrals",
+      "evidence_reference": "quality/source-batches/ema-tables-20261030/verified.json",
+      "revision": "cd49b21eb14e6549c563b56371bc320b25c58d41",
+      "coverage_scope": "Exact newly published native bulk snapshot only",
+      "archive_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-tables-20261030/tree/cd49b21eb14e6549c563b56371bc320b25c58d41",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "eu-ema-safety-communications",
+      "state": "blocked_mixed_document_rights",
+      "reason": "EMA permits reuse of its own material but expressly excludes third-party content. Unlike the already archived EMA data tables, the heterogeneous document corpus lacks per-object ownership/exception evidence; no blanket corpus publication is authorised.",
+      "next_action": "Bind a finite inventory of agency-owned documents and resolve each third-party exception before corpus publication; existing EMA data-table archives remain valid.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "eu-ema-xevmpd-credentialed",
+      "state": "excluded_auth",
+      "reason": "authentication mode account is excluded",
+      "next_action": "retain exclusion until credentials are explicitly authorised"
+    },
+    {
+      "source_id": "eu-eudravigilance-public",
+      "state": "excluded_auth",
+      "reason": "authentication mode account is excluded",
+      "next_action": "retain exclusion until credentials are explicitly authorised"
+    },
+    {
+      "source_id": "eu-spor-public-metadata",
+      "state": "blocked_access_and_rights",
+      "reason": "SPOR guest viewing does not confer export entitlement; download/export is role-bound and some vocabularies retain third-party rights.",
+      "next_action": "An authorised export with dataset-specific vocabulary redistribution terms is required.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "eu-spor-rms-oms",
+      "state": "excluded_auth",
+      "reason": "authentication mode account is excluded",
+      "next_action": "retain exclusion until credentials are explicitly authorised"
+    },
+    {
+      "source_id": "eu-union-register",
+      "evidence_reference": "quality/qualifications/international-public-huggingface-20260821.json",
+      "revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "fr-bdpm",
+      "evidence_reference": "quality/qualifications/international-public-huggingface-20260821.json",
+      "revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "fr-bdpm-smr-asmr",
+      "evidence_reference": "quality/qualifications/international-public-huggingface-20260821.json",
+      "revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "fr-open-medic",
+      "evidence_reference": "quality/qualifications/open-medic-public-huggingface-20260821.json",
+      "revision": "d19f7a66e35c58c557615bffa456856b485b7edc",
+      "coverage_scope": "Exact historical approved inventory and existing anonymous digest receipts only; no currentness or federation acceptance claim",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "gb-emit",
+      "evidence_reference": "quality/qualifications/international-public-huggingface-20260821.json",
+      "revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "gb-mhra-products",
+      "state": "blocked_rights",
+      "reason": "MHRA reuse guidance requires a permission/licence determination; third-party product documents and adverse-event database reuse are not licensed by the OGL notice on the guidance page itself.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "gb-mhra-yellow-card",
+      "state": "blocked_rights",
+      "reason": "MHRA reuse guidance requires a permission/licence determination; third-party product documents and adverse-event database reuse are not licensed by the OGL notice on the guidance page itself.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "gb-nhs-dmd",
+      "state": "excluded_auth",
+      "reason": "authentication mode subscription is excluded",
+      "next_action": "retain exclusion until credentials are explicitly authorised"
+    },
+    {
+      "source_id": "gb-nhs-drug-tariff",
+      "evidence_reference": "quality/qualifications/international-public-huggingface-20260821.json",
+      "revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "gb-nice-medicines-utilisation",
+      "state": "retained_private_publication_blocked",
+      "reason": "15 payloads from four 2008\u20132012 historical releases; restricted IMS/third-party material. Existing retained evidence is reused; no reacquisition or public-visibility change.",
+      "next_action": "Public redistribution requires source-specific authority; preserve current private archive and its bounded coverage.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "gb-nice-ta",
+      "state": "blocked_rights",
+      "reason": "NICE UK open-content licence is geographically limited; international redistribution and automated collection are not covered by a blanket worldwide licence.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "gb-openprescribing",
+      "state": "blocked_endpoint",
+      "reason": "Public acquisition, retention, release, and external publication of successfully retrieved receipt-bound API v1 partitions were approved under the OGL on 2026-08-26. The bounded 2026-09-27 HEAD check of all six documented identities still returned Cloudflare HTTP 403 challenges. On 2026-09-29 the provider confirmed increased Cloudflare protections may challenge or block automation and that it cannot offer an alternative automated route at present. No payload or challenge bytes were retained and no publication occurred.",
+      "next_action": "wait for a provider-supported automated route or material access-control change before one bounded retry; do not bypass challenges, crawl unboundedly, or substitute upstream files"
+    },
+    {
+      "source_id": "gb-trud-api",
+      "state": "excluded_auth",
+      "reason": "authentication mode api_key is excluded",
+      "next_action": "retain exclusion until credentials are explicitly authorised"
+    },
+    {
+      "source_id": "gcc-central-registration",
+      "state": "blocked_rights",
+      "reason": "GCC Health Council terms reserve intellectual property rights and provide personal-use access; no public register redistribution grant established.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "gh-fda-register",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Ghana FDA product register was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "gh-fda-safety",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Ghana Food and Drugs Authority public safety/recall notices was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "gh-national-eml",
+      "state": "blocked_document_rights",
+      "reason": "The current WHO item is now the 2025 NHIS reimbursement list, despite its older EML URL; this is not interchangeable with Ghana EML 2017. Neither source-specific redistribution grant nor a valid substitution is established.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "global-rxnorm",
+      "evidence_reference": "quality/qualifications/international-public-huggingface-20260821.json",
+      "revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "global-umc-vigibase",
+      "state": "excluded_auth",
+      "reason": "authentication mode subscription is excluded",
+      "next_action": "retain exclusion until credentials are explicitly authorised"
+    },
+    {
+      "source_id": "global-who-amds-gprm",
+      "state": "blocked_endpoint_and_rights",
+      "reason": "The catalogued AMDS service page returns 404. No current complete GPRM export with applicable rights was established; an unrelated WHO report is not the transaction dataset.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "global-who-availability-surveys",
+      "state": "blocked_third_party_rights",
+      "reason": "The WHO affordability page points to external WHO/HAI surveys and publications. No exact survey corpus with a common applicable redistribution grant was established; WHO terms do not license third-party data.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "global-who-databases",
+      "state": "blocked_heterogeneous_source_rights",
+      "reason": "This catalogue entry is an index of heterogeneous upstream sources, not one WHO-owned bulk dataset. WHO dataset terms exclude third-party datasets; each linked provider retains its own access and rights conditions.",
+      "next_action": "Reuse the B0 index and resolve each upstream object under its actual owner; an index snapshot does not imply acquisition of linked datasets.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "global-who-eml",
+      "evidence_reference": "quality/source-batches/who-eml-20261030/verified.json",
+      "revision": "89238704c0e97d00f628b5a06d8e959be51418f1",
+      "coverage_scope": "Exact selected objects in who-eml-20261030 only; not all historical versions or downstream qualification",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "global-who-medicine-prices",
+      "state": "blocked_heterogeneous_source_rights",
+      "reason": "This catalogue entry is an index of heterogeneous upstream sources, not one WHO-owned bulk dataset. WHO dataset terms exclude third-party datasets; each linked provider retains its own access and rights conditions.",
+      "next_action": "Reuse the B0 index and resolve each upstream object under its actual owner; an index snapshot does not imply acquisition of linked datasets.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "global-who-mi4a",
+      "evidence_reference": "quality/source-batches/who-mi4a-20261030/verified.json",
+      "revision": "6d5ca17d1fcf21fb6e1acb9410f74402973c3f11",
+      "coverage_scope": "Exact selected objects in who-mi4a-20261030 only; not all historical versions or downstream qualification",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "global-who-national-eml-index",
+      "state": "blocked_heterogeneous_source_rights",
+      "reason": "This catalogue entry is an index of heterogeneous upstream sources, not one WHO-owned bulk dataset. WHO dataset terms exclude third-party datasets; each linked provider retains its own access and rights conditions.",
+      "next_action": "Reuse the B0 index and resolve each upstream object under its actual owner; an index snapshot does not imply acquisition of linked datasets.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "global-who-shortage-sources",
+      "state": "blocked_heterogeneous_source_rights",
+      "reason": "This catalogue entry is an index of heterogeneous upstream sources, not one WHO-owned bulk dataset. WHO dataset terms exclude third-party datasets; each linked provider retains its own access and rights conditions.",
+      "next_action": "Reuse the B0 index and resolve each upstream object under its actual owner; an index snapshot does not imply acquisition of linked datasets.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "global-who-wla",
+      "state": "blocked_rights",
+      "reason": "source-specific retention and transformation rights unresolved: WHO terms apply",
+      "next_action": "record source-specific retention and transformation rights"
+    },
+    {
+      "source_id": "id-bpom-product",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Product check portal was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "ie-pcrs-reimbursement",
+      "state": "blocked_rights_unestablished",
+      "reason": "PCRS lists public reimbursement services, but HSE identifies mixed source ownership and no applicable public dataset redistribution grant was established. General Irish government reuse terms are not silently extended to this HSE corpus.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "in-cdsco-approved-drugs",
+      "state": "blocked_rights",
+      "reason": "CDSCO copyright policy requires permission to reproduce website content in whole or part.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "in-cdsco-products",
+      "state": "blocked_rights",
+      "reason": "CDSCO copyright policy requires permission to reproduce website content in whole or part.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "in-nlem",
+      "state": "blocked_rights",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights"
+    },
+    {
+      "source_id": "in-nppa-ceiling-prices",
+      "state": "blocked_endpoint",
+      "reason": "NPPA has an affirmative attribution-based reproduction policy. Both current host variants fail certificate-chain validation in the shared Python transport, including the system CA bundle. Native macOS curl succeeds, so this is a transport qualification gap, not global source unavailability; hosted archival has no qualified TLS route yet.",
+      "next_action": "Repair the server intermediate chain or qualify a hosted transport with valid trust; do not disable TLS validation or infer hosted proof from macOS curl.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "in-procurement-availability",
+      "state": "blocked_endpoint_and_rights",
+      "reason": "The official source returned a denial or failed connection in the bounded current checks; applicable public corpus redistribution rights also remain unestablished. This is an observed route failure, not a claim of permanent global unavailability.",
+      "next_action": "A working provider-supported route and applicable source-specific archival terms are required; do not bypass denial or substitute unrelated data.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "in-pvpi-safety",
+      "state": "excluded_auth",
+      "reason": "authentication mode account is excluded",
+      "next_action": "retain exclusion until credentials are explicitly authorised"
+    },
+    {
+      "source_id": "jp-mhlw-ndb-utilisation",
+      "evidence_reference": "quality/source-batches/japan-mhlw-20261030/verified.json",
+      "revision": "d311e456790ffc9c43bd98476aca81b4f1ca1f3d",
+      "coverage_scope": "Exact selected objects in japan-mhlw-20261030 only; not all historical versions or downstream qualification",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "jp-mhlw-nhi-price",
+      "evidence_reference": "quality/source-batches/japan-mhlw-20261030/verified.json",
+      "revision": "d311e456790ffc9c43bd98476aca81b4f1ca1f3d",
+      "coverage_scope": "Exact selected objects in japan-mhlw-20261030 only; not all historical versions or downstream qualification",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "jp-pmda-approvals",
+      "state": "blocked_automated_access",
+      "reason": "PMDA site policy explicitly prohibits automated crawling/download applications. Its PDL licence does not remove this acquisition restriction.",
+      "next_action": "A provider-permitted bulk distribution or explicit automated-download authority is required; no crawler is enabled.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "jp-pmda-package-inserts",
+      "state": "blocked_automated_access",
+      "reason": "PMDA site policy explicitly prohibits automated crawling/download applications. Its PDL licence does not remove this acquisition restriction.",
+      "next_action": "A provider-permitted bulk distribution or explicit automated-download authority is required; no crawler is enabled.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "jp-pmda-safety",
+      "state": "blocked_automated_access",
+      "reason": "PMDA site policy explicitly prohibits automated crawling/download applications. Its PDL licence does not remove this acquisition restriction.",
+      "next_action": "A provider-permitted bulk distribution or explicit automated-download authority is required; no crawler is enabled.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "ke-national-eml",
+      "evidence_reference": "quality/source-batches/east-africa-eml-20261030/verified.json",
+      "revision": "b2ee0364d3a1b44ae755496b843da9e4f6a350ff",
+      "coverage_scope": "Exact selected objects in east-africa-eml-20261030 only; not all historical versions or downstream qualification",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "ke-ppb-register",
+      "state": "blocked_rights_unestablished",
+      "reason": "The current PPB web domain was located; its terms provide system-use conditions and reserve rights, with no applicable public corpus redistribution grant. The older landing domain has TLS failure.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "ke-ppb-safety",
+      "state": "blocked_rights_unestablished",
+      "reason": "The current PPB web domain was located; its terms provide system-use conditions and reserve rights, with no applicable public corpus redistribution grant. The older landing domain has TLS failure.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "kr-hira-atc",
+      "state": "blocked_rights",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights"
+    },
+    {
+      "source_id": "kr-hira-reimbursement",
+      "state": "excluded_auth",
+      "reason": "authentication mode api_key is excluded",
+      "next_action": "retain exclusion until credentials are explicitly authorised"
+    },
+    {
+      "source_id": "kr-hira-standard-code",
+      "state": "blocked_rights",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights"
+    },
+    {
+      "source_id": "kr-mfds-nedrug",
+      "state": "excluded_auth",
+      "reason": "authentication mode api_key is excluded",
+      "next_action": "retain exclusion until credentials are explicitly authorised"
+    },
+    {
+      "source_id": "kw-moh-medicines",
+      "state": "blocked_endpoint_and_rights",
+      "reason": "The official source returned a denial or failed connection in the bounded current checks; applicable public corpus redistribution rights also remain unestablished. This is an observed route failure, not a claim of permanent global unavailability.",
+      "next_action": "A working provider-supported route and applicable source-specific archival terms are required; do not bypass denial or substitute unrelated data.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "mus-approved-drug-list",
+      "state": "blocked_document_rights",
+      "reason": "The exact national document is available through WHO, but its reviewed front matter supplies no affirmative public redistribution grant. National/third-party copyright is not licensed by WHO hosting.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "mus-historical-eml-archive",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Mauritius historical EML/Approved Drug List editions was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "mus-pharmacy-board-register",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Mauritius public product registration was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "mus-pharmacy-board-safety",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Mauritius Pharmacy Board public safety/recall notices was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "mx-cofepris-register",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of COFEPRIS sanitary registration consultation was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "mx-csg-compendium",
+      "state": "blocked_endpoint_and_rights",
+      "reason": "The official source returned a denial or failed connection in the bounded current checks; applicable public corpus redistribution rights also remain unestablished. This is an observed route failure, not a claim of permanent global unavailability.",
+      "next_action": "A working provider-supported route and applicable source-specific archival terms are required; do not bypass denial or substitute unrelated data.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "my-npra-quest",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of QUEST3 Product Search was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "ng-nafdac-products",
+      "state": "blocked_rights_unestablished",
+      "reason": "The reviewed official source reserves rights and supplies no affirmative public archival grant. Public viewing is not treated as permission to redistribute its full medicines/safety corpus.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "ng-nafdac-safety",
+      "state": "blocked_rights_unestablished",
+      "reason": "The reviewed official source reserves rights and supplies no affirmative public archival grant. Public viewing is not treated as permission to redistribute its full medicines/safety corpus.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "ng-nhia-medicines",
+      "state": "blocked_rights_unestablished",
+      "reason": "The reviewed official source reserves rights and supplies no affirmative public archival grant. Public viewing is not treated as permission to redistribute its full medicines/safety corpus.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "nl-gipdatabank",
+      "evidence_reference": "quality/qualifications/gip-public-huggingface-20260826.json",
+      "revision": "4e6395ee5217b0fb140dd7942f67b032039e7bbf",
+      "coverage_scope": "Exact historical approved inventory and existing anonymous digest receipts only; no currentness or federation acceptance claim",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "nl-medicijnkosten",
+      "state": "blocked_third_party_rights",
+      "reason": "The site identifies Z-Index G-Standaard ownership. Permission to use attributed noncommercial overviews does not establish redistribution rights over the full underlying database.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "no-dmp-fhir",
+      "state": "blocked_access",
+      "reason": "DMP requires approved access to its FHIR service; public documentation is not an anonymous production-data entitlement.",
+      "next_action": "An existing authorised service entitlement is required; no access request or new credential is created.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "no-fest",
+      "state": "blocked_rights",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights"
+    },
+    {
+      "source_id": "no-norpd-utilisation",
+      "state": "retained_private_publication_blocked",
+      "reason": "One 2014\u20132018 report in a verified private archive. Existing retained evidence is reused; no reacquisition or public-visibility change.",
+      "next_action": "Public redistribution requires source-specific authority; preserve current private archive and its bounded coverage.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "nz-medsafe-documents",
+      "state": "blocked_rights",
+      "reason": "Medsafe permits specified personal/academic/clinical uses; data sheets and CMI are sponsor-owned. Unrestricted public corpus redistribution is not established.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "nz-medsafe-products",
+      "state": "blocked_rights",
+      "reason": "Medsafe permits specified personal/academic/clinical uses; data sheets and CMI are sponsor-owned. Unrestricted public corpus redistribution is not established.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "nz-nzhts-fhir",
+      "state": "excluded_auth",
+      "reason": "authentication mode api_key is excluded",
+      "next_action": "retain exclusion until credentials are explicitly authorised"
+    },
+    {
+      "source_id": "nz-nzulm-bulk",
+      "state": "excluded_auth",
+      "reason": "authentication mode manual_approval is excluded",
+      "next_action": "retain exclusion until credentials are explicitly authorised"
+    },
+    {
+      "source_id": "nz-pharmac-hml",
+      "evidence_reference": "quality/qualifications/international-public-huggingface-20260821.json",
+      "revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "nz-pharmac-schedule",
+      "evidence_reference": "quality/qualifications/international-public-huggingface-20260821.json",
+      "revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "nz-pharmac-schedule-xml",
+      "evidence_reference": "quality/qualifications/international-public-huggingface-20260821.json",
+      "revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "om-moh-medicines",
+      "state": "blocked_rights_unestablished",
+      "reason": "Oman explicitly licenses datasets in its open-data section, but the reviewed section lists other health statistics, not the medicines-register corpus. That grant is not silently extended to separate drug-centre resources.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "ph-fda-verification",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of FDA Verification Portal was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "pk-drap-register",
+      "state": "blocked_rights_unestablished",
+      "reason": "The reviewed official source reserves rights and supplies no affirmative public archival grant. Public viewing is not treated as permission to redistribute its full medicines/safety corpus.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "pk-drap-safety",
+      "state": "blocked_rights_unestablished",
+      "reason": "The reviewed official source reserves rights and supplies no affirmative public archival grant. Public viewing is not treated as permission to redistribute its full medicines/safety corpus.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "pk-neml",
+      "state": "blocked_document_rights",
+      "reason": "The exact national document is available through WHO, but its reviewed front matter supplies no affirmative public redistribution grant. National/third-party copyright is not licensed by WHO hosting.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "qa-moh-medicines",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Medicines source discovery record was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "rw-national-eml",
+      "state": "blocked_document_rights",
+      "reason": "The exact national document is available through WHO, but its reviewed front matter supplies no affirmative public redistribution grant. National/third-party copyright is not licensed by WHO hosting.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "rw-rwandafda-register",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Rwanda FDA product register was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "rw-rwandafda-safety",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Rwanda Food and Drugs Authority public safety/recall notices was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "sa-chi-formulary",
+      "state": "blocked_endpoint_and_rights",
+      "reason": "The official source returned a denial or failed connection in the bounded current checks; applicable public corpus redistribution rights also remain unestablished. This is an observed route failure, not a claim of permanent global unavailability.",
+      "next_action": "A working provider-supported route and applicable source-specific archival terms are required; do not bypass denial or substitute unrelated data.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "sa-sfda-drug-list",
+      "state": "excluded_auth",
+      "reason": "authentication mode oauth is excluded",
+      "next_action": "retain exclusion until credentials are explicitly authorised"
+    },
+    {
+      "source_id": "se-npl-nsl",
+      "state": "blocked_rights",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights"
+    },
+    {
+      "source_id": "se-socialstyrelsen-utilisation",
+      "state": "retained_private_publication_blocked",
+      "reason": "Five 2025 national aggregate JSON files in a verified private archive. Existing retained evidence is reused; no reacquisition or public-visibility change.",
+      "next_action": "Public redistribution requires source-specific authority; preserve current private archive and its bounded coverage.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "se-tlv-subsidies",
+      "evidence_reference": "quality/source-batches/sweden-tlv-20261030/verified.json",
+      "revision": "a40a3932063d354331c2cbf8a862c1d7cc118c57",
+      "coverage_scope": "Exact selected objects in sweden-tlv-20261030 only; not all historical versions or downstream qualification",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "sg-hsa-approval-deltas",
+      "state": "blocked_rights",
+      "reason": "HSA website terms permit single copies for private research/study/reference; the separate data.gov.sg register licence does not cover these website approval documents.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "sg-hsa-register",
+      "evidence_reference": "quality/source-batches/singapore-register-20261030/verified.json",
+      "revision": "f5783a0e53744368f74d1fc69b2b70361f481996",
+      "coverage_scope": "Exact selected objects in singapore-register-20261030 only; not all historical versions or downstream qualification",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "sg-moh-drug-list",
+      "state": "blocked_rights_unestablished",
+      "reason": "Current MOH subsidy table is available as website HTML. MOH terms reserve website reproduction rights while separately licensing designated datasets; this table has not been explicitly designated under that licence.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "sn-dpm-register",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Senegal DPM product register was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "sn-dpm-safety",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Senegal Direction de la Pharmacie et du M\u00e9dicament public safety/recall notices was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "sn-national-eml",
+      "state": "blocked_document_rights",
+      "reason": "The exact national document is available through WHO, but its reviewed front matter supplies no affirmative public redistribution grant. National/third-party copyright is not licensed by WHO hosting.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "th-fda-search",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Medicine product search was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "tz-national-eml",
+      "state": "blocked_document_rights",
+      "reason": "The exact national document is available through WHO, but its reviewed front matter supplies no affirmative public redistribution grant. National/third-party copyright is not licensed by WHO hosting.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "tz-tmda-products",
+      "state": "blocked_rights_unestablished",
+      "reason": "The reviewed official source reserves rights and supplies no affirmative public archival grant. Public viewing is not treated as permission to redistribute its full medicines/safety corpus.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "tz-tmda-safety",
+      "state": "blocked_rights_unestablished",
+      "reason": "The reviewed official source reserves rights and supplies no affirmative public archival grant. Public viewing is not treated as permission to redistribute its full medicines/safety corpus.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "ug-national-eml",
+      "evidence_reference": "quality/source-batches/east-africa-eml-20261030/verified.json",
+      "revision": "b2ee0364d3a1b44ae755496b843da9e4f6a350ff",
+      "coverage_scope": "Exact selected objects in east-africa-eml-20261030 only; not all historical versions or downstream qualification",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "ug-nda-register",
+      "state": "blocked_endpoint_and_rights",
+      "reason": "The official source returned a denial or failed connection in the bounded current checks; applicable public corpus redistribution rights also remain unestablished. This is an observed route failure, not a claim of permanent global unavailability.",
+      "next_action": "A working provider-supported route and applicable source-specific archival terms are required; do not bypass denial or substitute unrelated data.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "ug-nda-safety",
+      "state": "blocked_endpoint_and_rights",
+      "reason": "The official source returned a denial or failed connection in the bounded current checks; applicable public corpus redistribution rights also remain unestablished. This is an observed route failure, not a claim of permanent global unavailability.",
+      "next_action": "A working provider-supported route and applicable source-specific archival terms are required; do not bypass denial or substitute unrelated data.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "us-cms-mdrp",
+      "evidence_reference": "quality/source-batches/cms-medicaid-20261030/verified.json",
+      "revision": "16e3c22b082e05c2435d5b49bfb3331e700925b9",
+      "coverage_scope": "Exact selected objects in cms-medicaid-20261030 only; not all historical versions or downstream qualification",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "us-cms-nadac",
+      "evidence_reference": "quality/source-batches/cms-medicaid-20261030/verified.json",
+      "revision": "16e3c22b082e05c2435d5b49bfb3331e700925b9",
+      "coverage_scope": "Exact selected objects in cms-medicaid-20261030 only; not all historical versions or downstream qualification",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "us-cms-partd-formulary",
+      "evidence_reference": "quality/qualifications/cms-partd-public-huggingface-20260829.json",
+      "revision": "abcff8ebd1f624c4bbb0a87d903b184388c98254",
+      "coverage_scope": "Exact historical approved inventory and existing anonymous digest receipts only; no currentness or federation acceptance claim",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "us-cms-partd-spending",
+      "evidence_reference": "quality/qualifications/cms-partd-public-huggingface-20260829.json",
+      "revision": "abcff8ebd1f624c4bbb0a87d903b184388c98254",
+      "coverage_scope": "Exact historical approved inventory and existing anonymous digest receipts only; no currentness or federation acceptance claim",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "us-dailymed-spl",
+      "state": "blocked_rights",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights"
+    },
+    {
+      "source_id": "us-drugsfda",
+      "evidence_reference": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "us-fda-drug-shortages",
+      "evidence_reference": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "us-fda-faers",
+      "evidence_reference": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "us-fda-ndc-directory",
+      "evidence_reference": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "us-fda-nsde",
+      "evidence_reference": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "us-fda-orange-book",
+      "evidence_reference": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "us-fda-recalls-notices",
+      "evidence_reference": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "us-fda-rems",
+      "evidence_reference": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "us-gsrs-unii",
+      "state": "retained_private_publication_blocked",
+      "reason": "136 payloads from 68 paired releases; existing private acquisition authority only. Existing retained evidence is reused; no reacquisition or public-visibility change.",
+      "next_action": "Public redistribution requires source-specific authority; preserve current private archive and its bounded coverage.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "us-openfda-drugsfda",
+      "evidence_reference": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "us-openfda-enforcement",
+      "evidence_reference": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "us-openfda-faers",
+      "evidence_reference": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "us-openfda-ndc",
+      "evidence_reference": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "us-openfda-nsde",
+      "evidence_reference": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "us-rxnorm-api",
+      "evidence_reference": "quality/qualifications/international-public-huggingface-20260821.json",
+      "revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "coverage_scope": "Exact historical inventory only; not current or exhaustive source coverage",
+      "state": "reused_verified_archive"
+    },
+    {
+      "source_id": "za-national-eml",
+      "state": "blocked_rights",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights"
+    },
+    {
+      "source_id": "za-sahpra-register",
+      "state": "blocked_rights_unestablished",
+      "reason": "The reviewed official source reserves rights and supplies no affirmative public archival grant. Public viewing is not treated as permission to redistribute its full medicines/safety corpus.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "za-sahpra-safety",
+      "state": "blocked_rights_unestablished",
+      "reason": "The reviewed official source reserves rights and supplies no affirmative public archival grant. Public viewing is not treated as permission to redistribute its full medicines/safety corpus.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "za-single-exit-price",
+      "state": "blocked_rights",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights"
+    },
+    {
+      "source_id": "zw-mcaz-register",
+      "state": "blocked_endpoint_and_rights",
+      "reason": "The official source returned a denial or failed connection in the bounded current checks; applicable public corpus redistribution rights also remain unestablished. This is an observed route failure, not a claim of permanent global unavailability.",
+      "next_action": "A working provider-supported route and applicable source-specific archival terms are required; do not bypass denial or substitute unrelated data.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "zw-mcaz-safety",
+      "state": "blocked_endpoint_and_rights",
+      "reason": "The official source returned a denial or failed connection in the bounded current checks; applicable public corpus redistribution rights also remain unestablished. This is an observed route failure, not a claim of permanent global unavailability.",
+      "next_action": "A working provider-supported route and applicable source-specific archival terms are required; do not bypass denial or substitute unrelated data.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    },
+    {
+      "source_id": "zw-national-eml",
+      "state": "blocked_document_rights",
+      "reason": "The exact national document is available through WHO, but its reviewed front matter supplies no affirmative public redistribution grant. National/third-party copyright is not licensed by WHO hosting.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_reference": "quality/qualifications/unfinished-source-assessment-20261030.json"
+    }
+  ]
+}

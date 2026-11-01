@@ -1,0 +1,22 @@
+{
+  "receipt_version": "1",
+  "plan_sha256": "3f62a9d581b3d38b58d4c5c8e4dfe183d85e7855487b4b35aa2f5bf5ffc29d20",
+  "artifact_sha256": [
+    "458d3fc900e1b27a3fffa90525cd89b236551f3457e424021d790fe1afb73dce",
+    "bc960610d411c374adddd2b8ac10a0953cd33201cb58c80bd573978aa0fd81ff",
+    "ea4b9873e5395c90f833ce298f99d73e6ecde85abe279f3c795ac48d443e4504",
+    "c3946424dc90fd3461178386b8fd84266ad401bea4632cd129d4ca48e3c7b626"
+  ],
+  "target": {
+    "destination": "hugging_face",
+    "repository": "edithatogo/global-medicines-atlas-brazil-conitec-20261030",
+    "revision": "main",
+    "public_base_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-brazil-conitec-20261030"
+  },
+  "state": "uploaded",
+  "recorded_at": "2026-10-29T20:59:15.775930Z",
+  "remote_revision": "0620a7a7830f6afb0fcca7f7f874211607fa2c28",
+  "verification_uri": null,
+  "failure_reason": null,
+  "verified_artifacts": []
+}

@@ -1,0 +1,19 @@
+{
+  "scope": "Local unchanged bulk acquisition only; public publication remains separate",
+  "authority": "Direct maintainer instruction: next small straightforward sources with clear rights",
+  "license": "Open Government Licence - Canada 2.0",
+  "license_url": "https://open.canada.ca/en/open-government-licence-canada",
+  "license_sha256": "fecc66c9cd636200cd0ba8483c3f5bf9bbebe95d3542f5fc5257d454c12b7c3d",
+  "attribution": "Contains information licensed under the Open Government Licence – Canada. Source: Health Canada.",
+  "exclusions": [
+    "personal information",
+    "third-party rights",
+    "official symbols",
+    "other intellectual property rights"
+  ],
+  "sources": {
+    "ca-dpd": "https://www.canada.ca/content/dam/hc-sc/documents/services/drug-product-database/allfiles.zip",
+    "ca-noc": "https://www.canada.ca/content/dam/hc-sc/documents/services/drugs-health-products/drug-products/notice-compliance/database/noc_files.zip"
+  },
+  "limits": "DPD marketed release only, not approved/inactive/dormant releases. NOC bulk extract only; no linked documents. No Silver/Gold or federation work."
+}

@@ -1,0 +1,2529 @@
+{
+  "scope": "The exact 100 previously unfinished source IDs, frozen before this execution",
+  "recorded_on": "2026-10-30",
+  "federation_resumed": false,
+  "archive_all_completed": false,
+  "boundary": "Unresolved rights means no affirmative applicable grant was established; it does not assert illegality. Existing private evidence is not promoted. Acquisition/publication scope is finite and explicit, not all historical versions.",
+  "counts": {
+    "blocked_rights_unestablished": 34,
+    "blocked_rights": 14,
+    "archived_public": 13,
+    "blocked_endpoint_and_rights": 11,
+    "blocked_access": 2,
+    "blocked_export_contract": 1,
+    "blocked_document_rights": 8,
+    "blocked_mixed_document_rights": 2,
+    "blocked_access_and_rights": 1,
+    "retained_private_publication_blocked": 4,
+    "blocked_third_party_rights": 2,
+    "blocked_heterogeneous_source_rights": 4,
+    "blocked_endpoint": 1,
+    "blocked_automated_access": 3
+  },
+  "sources": [
+    {
+      "source_id": "ae-ede-register",
+      "title": "Registered product directory",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Registered product directory was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_references": [
+        "https://services.ede.gov.ae/drugdirectory?lang=en-US"
+      ]
+    },
+    {
+      "source_id": "ar-anmat-vademecum",
+      "title": "Vademecum Nacional",
+      "state": "blocked_rights_unestablished",
+      "reason": "The official historical VNM dataset explicitly states that no licence was specified; public CSV/XLS links alone do not establish redistribution authority.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.argentina.gob.ar/anmat",
+        "https://datos.gob.ar/dataset/salud-actualizaciones-vademecun-nacional-medicamentos-vnm"
+      ]
+    },
+    {
+      "source_id": "au-artg",
+      "title": "Australian Register of Therapeutic Goods",
+      "state": "blocked_rights",
+      "reason": "TGA copyright notice limits copying to personal/internal use; public redistribution requires permission. Sponsor-authored product documents have additional third-party rights.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.tga.gov.au/resources/artg",
+        "https://www.tga.gov.au/about-us/using-our-website/copyright"
+      ]
+    },
+    {
+      "source_id": "au-pbs-historical-xml",
+      "title": "Historical PBS XML releases",
+      "state": "blocked_rights",
+      "reason": "PBS website copyright permits limited personal reference copies, not general public rehosting of the historical XML corpus. Existing federation evidence and acceptance are unchanged.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://info.data.pbs.gov.au/xml-schema/doc/html/guide.html",
+        "https://www.pbs.gov.au/general/copyright"
+      ]
+    },
+    {
+      "source_id": "au-tga-daen",
+      "title": "Database of Adverse Event Notifications",
+      "state": "blocked_rights",
+      "reason": "TGA copyright notice limits copying to personal/internal use; public redistribution requires permission. Sponsor-authored product documents have additional third-party rights.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.tga.gov.au/safety/adverse-events/database-adverse-event-notifications-daen",
+        "https://www.tga.gov.au/about-us/using-our-website/copyright"
+      ]
+    },
+    {
+      "source_id": "au-tga-pi-cmi",
+      "title": "Product Information and Consumer Medicine Information",
+      "state": "blocked_rights",
+      "reason": "TGA copyright notice limits copying to personal/internal use; public redistribution requires permission. Sponsor-authored product documents have additional third-party rights.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.tga.gov.au/products/regulations-all-products/about-australian-register-therapeutic-goods-artg/product-information-pi",
+        "https://www.tga.gov.au/about-us/using-our-website/copyright"
+      ]
+    },
+    {
+      "source_id": "bh-moh-drug-prices",
+      "title": "Drug price list",
+      "state": "blocked_rights",
+      "reason": "Bahrain MOH terms expressly require prior written permission for reproduction, republication or distribution.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.moh.gov.bh/OtherPages/Faq?lang=en",
+        "https://www.moh.gov.bh/OtherPages/TermsofUse",
+        "https://www.moh.gov.bh/OtherPages/TermsofUse?lang=en"
+      ]
+    },
+    {
+      "source_id": "br-anvisa-medicines",
+      "title": "Anvisa medicines consultation and open-data surfaces",
+      "state": "archived_public",
+      "reason": "Exact finite inventory published from GitHub Actions; every selected native file and receipt verified anonymously at the pinned public revision.",
+      "next_action": "Reuse this bounded snapshot; no automatic schedule, historical completeness or downstream admission is implied.",
+      "evidence_references": [
+        "https://consultas.anvisa.gov.br/#/medicamentos/",
+        "quality/source-batches/brazil-register-20261030/rights.json",
+        "quality/source-batches/brazil-register-20261030/batch.json",
+        "quality/source-batches/brazil-register-20261030/verified.json"
+      ],
+      "public_revision": "6ba60e15b16b7f5b13ad0af7fbaf38957c2cab22",
+      "publication_run_id": 40953871272,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-brazil-register-20261030/tree/6ba60e15b16b7f5b13ad0af7fbaf38957c2cab22"
+    },
+    {
+      "source_id": "br-conitec-decisions",
+      "title": "CONITEC recommendations and SUS incorporation decisions",
+      "state": "archived_public",
+      "reason": "Exact finite inventory published from GitHub Actions; every selected native file and receipt verified anonymously at the pinned public revision.",
+      "next_action": "Reuse this bounded snapshot; no automatic schedule, historical completeness or downstream admission is implied.",
+      "evidence_references": [
+        "https://www.gov.br/conitec/pt-br",
+        "https://creativecommons.org/licenses/by-nd/3.0/deed.pt_BR",
+        "quality/source-batches/brazil-conitec-20261030/rights.json",
+        "quality/source-batches/brazil-conitec-20261030/batch.json",
+        "quality/source-batches/brazil-conitec-20261030/verified.json"
+      ],
+      "public_revision": "0620a7a7830f6afb0fcca7f7f874211607fa2c28",
+      "publication_run_id": 40953774717,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-brazil-conitec-20261030/tree/0620a7a7830f6afb0fcca7f7f874211607fa2c28"
+    },
+    {
+      "source_id": "ca-cda-recommendations",
+      "title": "Reimbursement review recommendations",
+      "state": "blocked_endpoint_and_rights",
+      "reason": "The official source returned a denial or failed connection in the bounded current checks; applicable public corpus redistribution rights also remain unestablished. This is an observed route failure, not a claim of permanent global unavailability.",
+      "next_action": "A working provider-supported route and applicable source-specific archival terms are required; do not bypass denial or substitute unrelated data.",
+      "evidence_references": [
+        "https://www.cda-amc.ca/reimbursement-reviews"
+      ]
+    },
+    {
+      "source_id": "cl-isp-register",
+      "title": "Medicines registration search",
+      "state": "blocked_endpoint_and_rights",
+      "reason": "The official source returned a denial or failed connection in the bounded current checks; applicable public corpus redistribution rights also remain unestablished. This is an observed route failure, not a claim of permanent global unavailability.",
+      "next_action": "A working provider-supported route and applicable source-specific archival terms are required; do not bypass denial or substitute unrelated data.",
+      "evidence_references": [
+        "https://registrosanitario.ispch.gob.cl/"
+      ]
+    },
+    {
+      "source_id": "co-invima-register",
+      "title": "Sanitary registration search",
+      "state": "archived_public",
+      "reason": "Exact finite inventory published from GitHub Actions; every selected native file and receipt verified anonymously at the pinned public revision.",
+      "next_action": "Reuse this bounded snapshot; no automatic schedule, historical completeness or downstream admission is implied.",
+      "evidence_references": [
+        "https://www.invima.gov.co/consulta-registros-sanitarios",
+        "quality/source-batches/colombia-register-20261030/rights.json",
+        "quality/source-batches/colombia-register-20261030/batch.json",
+        "quality/source-batches/colombia-register-20261030/verified.json"
+      ],
+      "public_revision": "4bdd05123581aad6ff1effdae93e6de100e0d5e8",
+      "publication_run_id": 40954235719,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-colombia-register-20261030/tree/4bdd05123581aad6ff1effdae93e6de100e0d5e8"
+    },
+    {
+      "source_id": "de-bfarm-amice",
+      "title": "AMIce PharmNet.Bund",
+      "state": "blocked_rights_unestablished",
+      "reason": "No applicable redistribution grant was established for the AMIce database. The linked public terms endpoint currently returns HTTP 503; free viewing is not treated as a corpus licence.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_references": [
+        "https://www.bfarm.de/DE/Arzneimittel/Arzneimittelinformationen/Arzneimittel-recherchieren/AMIce/_artikel.html",
+        "https://portal.dimdi.de/amgui/free/termsofuse.xhtml"
+      ]
+    },
+    {
+      "source_id": "dk-medicinpriser",
+      "title": "Medicinpriser",
+      "state": "blocked_access",
+      "reason": "Full current bulk delivery requires a subscribed FTP username/password. Public search is capped and does not establish a complete enumeration; a historical sample is not current coverage.",
+      "next_action": "An already-authorised complete export or public bulk endpoint is needed; no subscription or credentials created.",
+      "evidence_references": [
+        "https://laegemiddelstyrelsen.dk/en/reimbursement/prices/medicine-prices-for-companies",
+        "https://laegemiddelstyrelsen.dk/en/about/copyright-and-logo/",
+        "https://erhverv.medicinpriser.dk/vejledning/download.aspx"
+      ]
+    },
+    {
+      "source_id": "dk-medstat-utilisation",
+      "title": "Medstat.dk medicines statistics",
+      "state": "blocked_export_contract",
+      "reason": "Retained exact-query export returned HTML under an XLS filename, with no documented reliable export contract; neither a valid complete utilisation table nor a stable machine-readable export was established.",
+      "next_action": "A provider-supported complete export and a reproducible query/result contract are required; preserve first-failure evidence.",
+      "evidence_references": [
+        "https://medstat.dk/",
+        "quality/qualifications/nordic-medstat-query-constraints-20260929.json",
+        "quality/qualifications/nordic-medstat-export-format-doc-review-20260929.json"
+      ]
+    },
+    {
+      "source_id": "eg-eda-register",
+      "title": "Egypt EDA product register",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Egypt EDA product register was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_references": [
+        "https://www.edaegypt.gov.eg/",
+        "http://eservices.edaegypt.gov.eg/EDASearch/SearchLicences.aspx"
+      ]
+    },
+    {
+      "source_id": "eg-eda-safety",
+      "title": "Egyptian Drug Authority public safety/recall notices",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Egyptian Drug Authority public safety/recall notices was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_references": [
+        "https://www.edaegypt.gov.eg/",
+        "http://eservices.edaegypt.gov.eg/EDASearch/SearchLicences.aspx"
+      ]
+    },
+    {
+      "source_id": "eg-national-eml",
+      "title": "EGY essential medicines / health-supplies list",
+      "state": "blocked_document_rights",
+      "reason": "The exact national document is available through WHO, but its reviewed front matter supplies no affirmative public redistribution grant. National/third-party copyright is not licensed by WHO hosting.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.edaegypt.gov.eg/",
+        "http://eservices.edaegypt.gov.eg/EDASearch/SearchLicences.aspx",
+        "https://www.who.int/publications/m/item/egypt--national-essential-medicine-list-2025-(english)",
+        "https://cdn.who.int/media/docs/default-source/essential-medicines/national-essential-medicines-lists-(neml)/emro_neml/egypt_eml_-------2025.pdf?sfvrsn=790782a7_1&download=true"
+      ]
+    },
+    {
+      "source_id": "eu-ema-epar-documents",
+      "title": "EMA EPAR and medicine documents",
+      "state": "blocked_mixed_document_rights",
+      "reason": "EMA permits reuse of its own material but expressly excludes third-party content. Unlike the already archived EMA data tables, the heterogeneous document corpus lacks per-object ownership/exception evidence; no blanket corpus publication is authorised.",
+      "next_action": "Bind a finite inventory of agency-owned documents and resolve each third-party exception before corpus publication; existing EMA data-table archives remain valid.",
+      "evidence_references": [
+        "https://www.ema.europa.eu/en/medicines",
+        "https://www.ema.europa.eu/en/about-us/about-website/legal-notice"
+      ]
+    },
+    {
+      "source_id": "eu-ema-safety-communications",
+      "title": "EMA safety communications",
+      "state": "blocked_mixed_document_rights",
+      "reason": "EMA permits reuse of its own material but expressly excludes third-party content. Unlike the already archived EMA data tables, the heterogeneous document corpus lacks per-object ownership/exception evidence; no blanket corpus publication is authorised.",
+      "next_action": "Bind a finite inventory of agency-owned documents and resolve each third-party exception before corpus publication; existing EMA data-table archives remain valid.",
+      "evidence_references": [
+        "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/pharmacovigilance-post-authorisation/safety-communication",
+        "https://www.ema.europa.eu/en/about-us/about-website/legal-notice"
+      ]
+    },
+    {
+      "source_id": "eu-spor-public-metadata",
+      "title": "SPOR public RMS/OMS metadata",
+      "state": "blocked_access_and_rights",
+      "reason": "SPOR guest viewing does not confer export entitlement; download/export is role-bound and some vocabularies retain third-party rights.",
+      "next_action": "An authorised export with dataset-specific vocabulary redistribution terms is required.",
+      "evidence_references": [
+        "https://spor.ema.europa.eu/sporwi/",
+        "https://www.ema.europa.eu/en/documents/other/boarding-users-substance-product-organisation-referentials-spor-data-services_en.pdf"
+      ]
+    },
+    {
+      "source_id": "gb-mhra-products",
+      "title": "MHRA Products",
+      "state": "blocked_rights",
+      "reason": "MHRA reuse guidance requires a permission/licence determination; third-party product documents and adverse-event database reuse are not licensed by the OGL notice on the guidance page itself.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://products.mhra.gov.uk/",
+        "https://www.gov.uk/government/publications/reproduce-or-re-use-mhra-information/reproduce-or-re-use-mhra-information"
+      ]
+    },
+    {
+      "source_id": "gb-mhra-yellow-card",
+      "title": "Yellow Card Scheme public outputs",
+      "state": "blocked_rights",
+      "reason": "MHRA reuse guidance requires a permission/licence determination; third-party product documents and adverse-event database reuse are not licensed by the OGL notice on the guidance page itself.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://yellowcard.mhra.gov.uk/idaps",
+        "https://www.gov.uk/government/publications/reproduce-or-re-use-mhra-information/reproduce-or-re-use-mhra-information"
+      ]
+    },
+    {
+      "source_id": "gb-nice-medicines-utilisation",
+      "title": "Use of NICE-appraised medicines",
+      "state": "retained_private_publication_blocked",
+      "reason": "15 payloads from four 2008–2012 historical releases; restricted IMS/third-party material. Existing retained evidence is reused; no reacquisition or public-visibility change.",
+      "next_action": "Public redistribution requires source-specific authority; preserve current private archive and its bounded coverage.",
+      "evidence_references": [
+        "https://www.england.nhs.uk/",
+        "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+        "https://www.england.nhs.uk/terms-and-conditions-2/",
+        "https://www.england.nhs.uk/terms-and-conditions/comment-policy/",
+        "quality/qualifications/nice-utilisation-acquisition-success-20260821.json"
+      ]
+    },
+    {
+      "source_id": "gb-nice-ta",
+      "title": "Technology appraisal guidance",
+      "state": "blocked_rights",
+      "reason": "NICE UK open-content licence is geographically limited; international redistribution and automated collection are not covered by a blanket worldwide licence.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.nice.org.uk/what-nice-does/our-guidance/about-technology-appraisal-guidance",
+        "https://www.nice.org.uk/reusing-our-content/nice-uk-open-content-licence",
+        "https://www.nice.org.uk/terms-and-conditions",
+        "https://www.nice.org.uk/terms-and-conditions#notice-of-rights"
+      ]
+    },
+    {
+      "source_id": "gcc-central-registration",
+      "title": "GCC central registration process",
+      "state": "blocked_rights",
+      "reason": "GCC Health Council terms reserve intellectual property rights and provide personal-use access; no public register redistribution grant established.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://ghc.sa/",
+        "https://www.ghc.sa/terms-of-use/",
+        "https://www.ghc.sa/en/terms-of-use/"
+      ]
+    },
+    {
+      "source_id": "gh-fda-register",
+      "title": "Ghana FDA product register",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Ghana FDA product register was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_references": [
+        "https://fdaghana.gov.gh/"
+      ]
+    },
+    {
+      "source_id": "gh-fda-safety",
+      "title": "Ghana Food and Drugs Authority public safety/recall notices",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Ghana Food and Drugs Authority public safety/recall notices was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_references": [
+        "https://fdaghana.gov.gh/"
+      ]
+    },
+    {
+      "source_id": "gh-national-eml",
+      "title": "GHA essential medicines / health-supplies list",
+      "state": "blocked_document_rights",
+      "reason": "The current WHO item is now the 2025 NHIS reimbursement list, despite its older EML URL; this is not interchangeable with Ghana EML 2017. Neither source-specific redistribution grant nor a valid substitution is established.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://fdaghana.gov.gh/",
+        "https://www.who.int/publications/m/item/ghana--essential-medicines-list-2017-(english)",
+        "https://cdn.who.int/media/docs/default-source/essential-medicines/national-essential-medicines-lists-(neml)/afro_neml/ghana-2025-nhis-ml.pdf?sfvrsn=af6e55e0_1&download=true"
+      ]
+    },
+    {
+      "source_id": "global-who-amds-gprm",
+      "title": "WHO AMDS / Global Price Reporting Mechanism",
+      "state": "blocked_endpoint_and_rights",
+      "reason": "The catalogued AMDS service page returns 404. No current complete GPRM export with applicable rights was established; an unrelated WHO report is not the transaction dataset.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.who.int/teams/global-hiv-hepatitis-and-stis-programmes/hiv/treatment/aids-medicines-and-diagnostics-service",
+        "https://www.who.int/about/policies/terms-of-use",
+        "https://www.who.int/redirect-pages/footer/who-policies/terms-of-use"
+      ]
+    },
+    {
+      "source_id": "global-who-availability-surveys",
+      "title": "WHO medicines availability survey sources",
+      "state": "blocked_third_party_rights",
+      "reason": "The WHO affordability page points to external WHO/HAI surveys and publications. No exact survey corpus with a common applicable redistribution grant was established; WHO terms do not license third-party data.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.who.int/teams/health-product-and-policy-standards/medicines-selection-ip-and-affordability/affordability-pricing",
+        "https://www.who.int/about/policies/terms-of-use",
+        "https://www.who.int/redirect-pages/footer/who-policies/terms-of-use",
+        "https://www.who.int/about/policies/publishing/data-policy/terms-and-conditions"
+      ]
+    },
+    {
+      "source_id": "global-who-databases",
+      "title": "WHO medicines and health-product databases catalog",
+      "state": "blocked_heterogeneous_source_rights",
+      "reason": "This catalogue entry is an index of heterogeneous upstream sources, not one WHO-owned bulk dataset. WHO dataset terms exclude third-party datasets; each linked provider retains its own access and rights conditions.",
+      "next_action": "Reuse the B0 index and resolve each upstream object under its actual owner; an index snapshot does not imply acquisition of linked datasets.",
+      "evidence_references": [
+        "https://www.who.int/tools/monitoring-and-evaluation/databases",
+        "https://www.who.int/about/policies/terms-of-use",
+        "https://www.who.int/redirect-pages/footer/who-policies/terms-of-use",
+        "https://www.who.int/about/policies/publishing/data-policy/terms-and-conditions",
+        "quality/qualifications/who-national-eml-index-inventory-20261003.json"
+      ]
+    },
+    {
+      "source_id": "global-who-eml",
+      "title": "WHO Model List of Essential Medicines",
+      "state": "archived_public",
+      "reason": "Exact finite inventory published from GitHub Actions; every selected native file and receipt verified anonymously at the pinned public revision.",
+      "next_action": "Reuse this bounded snapshot; no automatic schedule, historical completeness or downstream admission is implied.",
+      "evidence_references": [
+        "https://www.who.int/groups/expert-committee-on-selection-and-use-of-essential-medicines/essential-medicines-lists",
+        "https://www.who.int/about/policies/terms-of-use",
+        "https://www.who.int/redirect-pages/footer/who-policies/terms-of-use",
+        "quality/source-batches/who-eml-20261030/rights.json",
+        "quality/source-batches/who-eml-20261030/batch.json",
+        "quality/source-batches/who-eml-20261030/verified.json"
+      ],
+      "public_revision": "89238704c0e97d00f628b5a06d8e959be51418f1",
+      "publication_run_id": 40969211869,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-who-eml-20261030/tree/89238704c0e97d00f628b5a06d8e959be51418f1"
+    },
+    {
+      "source_id": "global-who-medicine-prices",
+      "title": "WHO medicines pricing information sources",
+      "state": "blocked_heterogeneous_source_rights",
+      "reason": "This catalogue entry is an index of heterogeneous upstream sources, not one WHO-owned bulk dataset. WHO dataset terms exclude third-party datasets; each linked provider retains its own access and rights conditions.",
+      "next_action": "Reuse the B0 index and resolve each upstream object under its actual owner; an index snapshot does not imply acquisition of linked datasets.",
+      "evidence_references": [
+        "https://www.who.int/teams/health-product-and-policy-standards/medicines-selection-ip-and-affordability/affordability-pricing",
+        "https://www.who.int/about/policies/terms-of-use",
+        "https://www.who.int/redirect-pages/footer/who-policies/terms-of-use",
+        "https://www.who.int/about/policies/publishing/data-policy/terms-and-conditions",
+        "quality/qualifications/who-national-eml-index-inventory-20261003.json"
+      ]
+    },
+    {
+      "source_id": "global-who-mi4a",
+      "title": "WHO MI4A vaccine market information",
+      "state": "archived_public",
+      "reason": "Exact finite inventory published from GitHub Actions; every selected native file and receipt verified anonymously at the pinned public revision.",
+      "next_action": "Reuse this bounded snapshot; no automatic schedule, historical completeness or downstream admission is implied.",
+      "evidence_references": [
+        "https://www.who.int/teams/immunization-vaccines-and-biologicals/vaccine-access/mi4a",
+        "https://www.who.int/about/policies/terms-of-use",
+        "https://www.who.int/redirect-pages/footer/who-policies/terms-of-use",
+        "quality/source-batches/who-mi4a-20261030/rights.json",
+        "quality/source-batches/who-mi4a-20261030/batch.json",
+        "quality/source-batches/who-mi4a-20261030/verified.json"
+      ],
+      "public_revision": "6d5ca17d1fcf21fb6e1acb9410f74402973c3f11",
+      "publication_run_id": 40969487061,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-who-mi4a-20261030/tree/6d5ca17d1fcf21fb6e1acb9410f74402973c3f11"
+    },
+    {
+      "source_id": "global-who-national-eml-index",
+      "title": "WHO index of national essential medicines lists",
+      "state": "blocked_heterogeneous_source_rights",
+      "reason": "This catalogue entry is an index of heterogeneous upstream sources, not one WHO-owned bulk dataset. WHO dataset terms exclude third-party datasets; each linked provider retains its own access and rights conditions.",
+      "next_action": "Reuse the B0 index and resolve each upstream object under its actual owner; an index snapshot does not imply acquisition of linked datasets.",
+      "evidence_references": [
+        "https://www.who.int/teams/health-product-policy-and-standards/assistive-and-medical-technology/essential-medicines/national-emls",
+        "https://www.who.int/about/policies/terms-of-use",
+        "https://www.who.int/redirect-pages/footer/who-policies/terms-of-use",
+        "https://www.who.int/about/policies/publishing/data-policy/terms-and-conditions",
+        "quality/qualifications/who-national-eml-index-inventory-20261003.json"
+      ]
+    },
+    {
+      "source_id": "global-who-shortage-sources",
+      "title": "WHO medicines shortage source inventory",
+      "state": "blocked_heterogeneous_source_rights",
+      "reason": "This catalogue entry is an index of heterogeneous upstream sources, not one WHO-owned bulk dataset. WHO dataset terms exclude third-party datasets; each linked provider retains its own access and rights conditions.",
+      "next_action": "Reuse the B0 index and resolve each upstream object under its actual owner; an index snapshot does not imply acquisition of linked datasets.",
+      "evidence_references": [
+        "https://www.who.int/teams/regulation-prequalification",
+        "https://www.who.int/about/policies/terms-of-use",
+        "https://www.who.int/redirect-pages/footer/who-policies/terms-of-use",
+        "https://www.who.int/about/policies/publishing/data-policy/terms-and-conditions",
+        "quality/qualifications/who-national-eml-index-inventory-20261003.json"
+      ]
+    },
+    {
+      "source_id": "id-bpom-product",
+      "title": "Product check portal",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Product check portal was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_references": [
+        "https://cekbpom.pom.go.id/"
+      ]
+    },
+    {
+      "source_id": "ie-pcrs-reimbursement",
+      "title": "HSE PCRS reimbursement reports",
+      "state": "blocked_rights_unestablished",
+      "reason": "PCRS lists public reimbursement services, but HSE identifies mixed source ownership and no applicable public dataset redistribution grant was established. General Irish government reuse terms are not silently extended to this HSE corpus.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_references": [
+        "https://about.hse.ie/publications/pcrs-statistical-analysis-of-claims-and-payments-2024/",
+        "https://www2.hse.ie/disclaimer/",
+        "https://healthservice.hse.ie/staff/information-healthcare-workers/pcrs/pcrs/"
+      ]
+    },
+    {
+      "source_id": "in-cdsco-approved-drugs",
+      "title": "CDSCO approved new drugs",
+      "state": "blocked_rights",
+      "reason": "CDSCO copyright policy requires permission to reproduce website content in whole or part.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://cdsco.gov.in/opencms/opencms/en/Approval_new/Approved-New-Drugs/",
+        "https://cdsco.gov.in/opencms/opencms//en/Copyright-Policy/",
+        "https://cdsco.gov.in/opencms/opencms/en/Central-Licences-Approving-Authority/",
+        "https://cdsco.gov.in/opencms/opencms/en/terms_conditions/"
+      ]
+    },
+    {
+      "source_id": "in-cdsco-products",
+      "title": "CDSCO public product/license surfaces beyond the approved-drugs seed",
+      "state": "blocked_rights",
+      "reason": "CDSCO copyright policy requires permission to reproduce website content in whole or part.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://cdsco.gov.in/",
+        "https://cdsco.gov.in/opencms/opencms//en/Copyright-Policy/",
+        "https://cdsco.gov.in/opencms/opencms/en/Central-Licences-Approving-Authority/",
+        "https://cdsco.gov.in/opencms/opencms/en/terms_conditions/"
+      ]
+    },
+    {
+      "source_id": "in-nppa-ceiling-prices",
+      "title": "NPPA ceiling prices",
+      "state": "blocked_endpoint",
+      "reason": "NPPA has an affirmative attribution-based reproduction policy. Both current host variants fail certificate-chain validation in the shared Python transport, including the system CA bundle. Native macOS curl succeeds, so this is a transport qualification gap, not global source unavailability; hosted archival has no qualified TLS route yet.",
+      "next_action": "Repair the server intermediate chain or qualify a hosted transport with valid trust; do not disable TLS validation or infer hosted proof from macOS curl.",
+      "evidence_references": [
+        "https://www.nppaindia.nic.in/",
+        "https://nppa.gov.in/en/websitepolicy",
+        "https://nppa.gov.in/en/ceiling-price"
+      ]
+    },
+    {
+      "source_id": "in-procurement-availability",
+      "title": "India public medicines procurement/availability surfaces",
+      "state": "blocked_endpoint_and_rights",
+      "reason": "The official source returned a denial or failed connection in the bounded current checks; applicable public corpus redistribution rights also remain unestablished. This is an observed route failure, not a claim of permanent global unavailability.",
+      "next_action": "A working provider-supported route and applicable source-specific archival terms are required; do not bypass denial or substitute unrelated data.",
+      "evidence_references": [
+        "https://gem.gov.in/"
+      ]
+    },
+    {
+      "source_id": "jp-mhlw-ndb-utilisation",
+      "title": "NDB tabulated medicines utilisation",
+      "state": "archived_public",
+      "reason": "Exact finite inventory published from GitHub Actions; every selected native file and receipt verified anonymously at the pinned public revision.",
+      "next_action": "Reuse this bounded snapshot; no automatic schedule, historical completeness or downstream admission is implied.",
+      "evidence_references": [
+        "https://www.mhlw.go.jp/ndb/opendatasite/",
+        "quality/source-batches/japan-mhlw-20261030/rights.json",
+        "quality/source-batches/japan-mhlw-20261030/batch.json",
+        "quality/source-batches/japan-mhlw-20261030/verified.json"
+      ],
+      "public_revision": "d311e456790ffc9c43bd98476aca81b4f1ca1f3d",
+      "publication_run_id": 40968979673,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-japan-mhlw-20261030/tree/d311e456790ffc9c43bd98476aca81b4f1ca1f3d"
+    },
+    {
+      "source_id": "jp-mhlw-nhi-price",
+      "title": "NHI drug price standard product lists",
+      "state": "archived_public",
+      "reason": "Exact finite inventory published from GitHub Actions; every selected native file and receipt verified anonymously at the pinned public revision.",
+      "next_action": "Reuse this bounded snapshot; no automatic schedule, historical completeness or downstream admission is implied.",
+      "evidence_references": [
+        "https://www.mhlw.go.jp/topics/2025/04/tp20250401-01.html",
+        "quality/source-batches/japan-mhlw-20261030/rights.json",
+        "quality/source-batches/japan-mhlw-20261030/batch.json",
+        "quality/source-batches/japan-mhlw-20261030/verified.json"
+      ],
+      "public_revision": "d311e456790ffc9c43bd98476aca81b4f1ca1f3d",
+      "publication_run_id": 40968979673,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-japan-mhlw-20261030/tree/d311e456790ffc9c43bd98476aca81b4f1ca1f3d"
+    },
+    {
+      "source_id": "jp-pmda-approvals",
+      "title": "Approved drug information and review reports",
+      "state": "blocked_automated_access",
+      "reason": "PMDA site policy explicitly prohibits automated crawling/download applications. Its PDL licence does not remove this acquisition restriction.",
+      "next_action": "A provider-permitted bulk distribution or explicit automated-download authority is required; no crawler is enabled.",
+      "evidence_references": [
+        "https://www.pmda.go.jp/english/review-services/reviews/approved-information/drugs/0001.html",
+        "https://www.pmda.go.jp/english/0013.html"
+      ]
+    },
+    {
+      "source_id": "jp-pmda-package-inserts",
+      "title": "Package insert search and selected CSV lists",
+      "state": "blocked_automated_access",
+      "reason": "PMDA site policy explicitly prohibits automated crawling/download applications. Its PDL licence does not remove this acquisition restriction.",
+      "next_action": "A provider-permitted bulk distribution or explicit automated-download authority is required; no crawler is enabled.",
+      "evidence_references": [
+        "https://www.info.pmda.go.jp/psearch/tenpulist.jsp",
+        "https://www.pmda.go.jp/english/0013.html"
+      ]
+    },
+    {
+      "source_id": "jp-pmda-safety",
+      "title": "PMDA safety information and alerts",
+      "state": "blocked_automated_access",
+      "reason": "PMDA site policy explicitly prohibits automated crawling/download applications. Its PDL licence does not remove this acquisition restriction.",
+      "next_action": "A provider-permitted bulk distribution or explicit automated-download authority is required; no crawler is enabled.",
+      "evidence_references": [
+        "https://www.pmda.go.jp/english/safety/info-services/0001.html",
+        "https://www.pmda.go.jp/english/0013.html"
+      ]
+    },
+    {
+      "source_id": "ke-national-eml",
+      "title": "KEN essential medicines / health-supplies list",
+      "state": "archived_public",
+      "reason": "Exact finite inventory published from GitHub Actions; every selected native file and receipt verified anonymously at the pinned public revision.",
+      "next_action": "Reuse this bounded snapshot; no automatic schedule, historical completeness or downstream admission is implied.",
+      "evidence_references": [
+        "https://www.pharmacyboardkenya.org/",
+        "quality/source-batches/east-africa-eml-20261030/rights.json",
+        "quality/source-batches/east-africa-eml-20261030/batch.json",
+        "quality/source-batches/east-africa-eml-20261030/verified.json"
+      ],
+      "public_revision": "b2ee0364d3a1b44ae755496b843da9e4f6a350ff",
+      "publication_run_id": 40969299618,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-east-africa-eml-20261030/tree/b2ee0364d3a1b44ae755496b843da9e4f6a350ff"
+    },
+    {
+      "source_id": "ke-ppb-register",
+      "title": "Kenya PPB product register",
+      "state": "blocked_rights_unestablished",
+      "reason": "The current PPB web domain was located; its terms provide system-use conditions and reserve rights, with no applicable public corpus redistribution grant. The older landing domain has TLS failure.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.pharmacyboardkenya.org/",
+        "https://web.pharmacyboardkenya.org/terms-and-conditions/"
+      ]
+    },
+    {
+      "source_id": "ke-ppb-safety",
+      "title": "Kenya Pharmacy and Poisons Board public safety/recall notices",
+      "state": "blocked_rights_unestablished",
+      "reason": "The current PPB web domain was located; its terms provide system-use conditions and reserve rights, with no applicable public corpus redistribution grant. The older landing domain has TLS failure.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.pharmacyboardkenya.org/",
+        "https://web.pharmacyboardkenya.org/terms-and-conditions/"
+      ]
+    },
+    {
+      "source_id": "kw-moh-medicines",
+      "title": "Medicines source discovery record",
+      "state": "blocked_endpoint_and_rights",
+      "reason": "The official source returned a denial or failed connection in the bounded current checks; applicable public corpus redistribution rights also remain unestablished. This is an observed route failure, not a claim of permanent global unavailability.",
+      "next_action": "A working provider-supported route and applicable source-specific archival terms are required; do not bypass denial or substitute unrelated data.",
+      "evidence_references": [
+        "https://www.moh.gov.kw/"
+      ]
+    },
+    {
+      "source_id": "mus-approved-drug-list",
+      "title": "Mauritius Approved Drug List / EML",
+      "state": "blocked_document_rights",
+      "reason": "The exact national document is available through WHO, but its reviewed front matter supplies no affirmative public redistribution grant. National/third-party copyright is not licensed by WHO hosting.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://health.govmu.org/",
+        "https://www.who.int/publications/m/item/mauritius--approved-drug-list-for-public-hospitals-in-mauritius-2022-(english)",
+        "https://cdn.who.int/media/docs/default-source/essential-medicines/national-essential-medicines-lists-(neml)/afro_neml/mauritius-20227e9629f5-66f0-46e6-9b16-3205cffc2813.pdf?sfvrsn=360a4280_3&download=true"
+      ]
+    },
+    {
+      "source_id": "mus-historical-eml-archive",
+      "title": "Mauritius historical EML/Approved Drug List editions",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Mauritius historical EML/Approved Drug List editions was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_references": [
+        "https://health.govmu.org/"
+      ]
+    },
+    {
+      "source_id": "mus-pharmacy-board-register",
+      "title": "Mauritius public product registration",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Mauritius public product registration was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_references": [
+        "https://health.govmu.org/"
+      ]
+    },
+    {
+      "source_id": "mus-pharmacy-board-safety",
+      "title": "Mauritius Pharmacy Board public safety/recall notices",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Mauritius Pharmacy Board public safety/recall notices was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_references": [
+        "https://health.govmu.org/"
+      ]
+    },
+    {
+      "source_id": "mx-cofepris-register",
+      "title": "COFEPRIS sanitary registration consultation",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of COFEPRIS sanitary registration consultation was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_references": [
+        "https://www.gob.mx/cofepris"
+      ]
+    },
+    {
+      "source_id": "mx-csg-compendium",
+      "title": "National Health Supplies Compendium",
+      "state": "blocked_endpoint_and_rights",
+      "reason": "The official source returned a denial or failed connection in the bounded current checks; applicable public corpus redistribution rights also remain unestablished. This is an observed route failure, not a claim of permanent global unavailability.",
+      "next_action": "A working provider-supported route and applicable source-specific archival terms are required; do not bypass denial or substitute unrelated data.",
+      "evidence_references": [
+        "https://www.csg.gob.mx/Compendio/CNIS/cnis.html"
+      ]
+    },
+    {
+      "source_id": "my-npra-quest",
+      "title": "QUEST3 Product Search",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of QUEST3 Product Search was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_references": [
+        "https://quest3plus.bpfk.gov.my/front-end/product-search.php"
+      ]
+    },
+    {
+      "source_id": "ng-nafdac-products",
+      "title": "NAFDAC registered products search",
+      "state": "blocked_rights_unestablished",
+      "reason": "The reviewed official source reserves rights and supplies no affirmative public archival grant. Public viewing is not treated as permission to redistribute its full medicines/safety corpus.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://greenbook.nafdac.gov.ng/"
+      ]
+    },
+    {
+      "source_id": "ng-nafdac-safety",
+      "title": "NAFDAC public safety/recall notices",
+      "state": "blocked_rights_unestablished",
+      "reason": "The reviewed official source reserves rights and supplies no affirmative public archival grant. Public viewing is not treated as permission to redistribute its full medicines/safety corpus.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.nafdac.gov.ng/",
+        "https://nafdac.gov.ng/wp-content/uploads/Files/Resources/LOCAL_FOREIGN_INSPECTION/List-of-Inspected-Foreign-Manufacturing-Facilities-with-Valid-Licenses.pdf",
+        "https://nsw.gov.ng/nsw/cusLogin/login.cl",
+        "https://trade.gov.ng/nafdac"
+      ]
+    },
+    {
+      "source_id": "ng-nhia-medicines",
+      "title": "NHIA medicines and benefit-package publications",
+      "state": "blocked_rights_unestablished",
+      "reason": "The reviewed official source reserves rights and supplies no affirmative public archival grant. Public viewing is not treated as permission to redistribute its full medicines/safety corpus.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.nhia.gov.ng/"
+      ]
+    },
+    {
+      "source_id": "nl-medicijnkosten",
+      "title": "Medicijnkosten",
+      "state": "blocked_third_party_rights",
+      "reason": "The site identifies Z-Index G-Standaard ownership. Permission to use attributed noncommercial overviews does not establish redistribution rights over the full underlying database.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.medicijnkosten.nl/",
+        "https://www.medicijnkosten.nl/algemeen/copyright"
+      ]
+    },
+    {
+      "source_id": "no-dmp-fhir",
+      "title": "Medicinal product FHIR service",
+      "state": "blocked_access",
+      "reason": "DMP requires approved access to its FHIR service; public documentation is not an anonymous production-data entitlement.",
+      "next_action": "An existing authorised service entitlement is required; no access request or new credential is created.",
+      "evidence_references": [
+        "https://www.dmp.no/om-oss/distribusjon-av-legemiddeldata/FHIR-tjenesten/innhold-i-tjenesten",
+        "https://www.dmp.no/godkjenning/nls/Standarder/standardbetegenlser-standard-terms-med-henvisninger-til-rmsspor",
+        "https://www.dmp.no/en/about-us/distribution-of-data-on-medicinal-products/FHIR-service/how-to-access-the-fhir-service"
+      ]
+    },
+    {
+      "source_id": "no-norpd-utilisation",
+      "title": "Norwegian Prescription Database",
+      "state": "retained_private_publication_blocked",
+      "reason": "One 2014–2018 report in a verified private archive. Existing retained evidence is reused; no reacquisition or public-visibility change.",
+      "next_action": "Public redistribution requires source-specific authority; preserve current private archive and its bounded coverage.",
+      "evidence_references": [
+        "https://statistikk.fhi.no/lmr/default.aspx",
+        "quality/qualifications/norpd-live-private-bronze-20261001.json"
+      ]
+    },
+    {
+      "source_id": "nz-medsafe-documents",
+      "title": "Data sheets and consumer medicine information",
+      "state": "blocked_rights",
+      "reason": "Medsafe permits specified personal/academic/clinical uses; data sheets and CMI are sponsor-owned. Unrestricted public corpus redistribution is not established.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.medsafe.govt.nz/DbSearch/InfoSearch",
+        "https://www.medsafe.govt.nz/regulatory/licensed.asp",
+        "https://www.medsafe.govt.nz/regulatory/packers.asp",
+        "https://www.medsafe.govt.nz/other/siteinfo.asp"
+      ]
+    },
+    {
+      "source_id": "nz-medsafe-products",
+      "title": "Product/Application and data-sheet search",
+      "state": "blocked_rights",
+      "reason": "Medsafe permits specified personal/academic/clinical uses; data sheets and CMI are sponsor-owned. Unrestricted public corpus redistribution is not established.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.medsafe.govt.nz/DbSearch/InfoSearch",
+        "https://www.medsafe.govt.nz/regulatory/licensed.asp",
+        "https://www.medsafe.govt.nz/regulatory/packers.asp",
+        "https://www.medsafe.govt.nz/other/siteinfo.asp"
+      ]
+    },
+    {
+      "source_id": "om-moh-medicines",
+      "title": "Medicines source discovery record",
+      "state": "blocked_rights_unestablished",
+      "reason": "Oman explicitly licenses datasets in its open-data section, but the reviewed section lists other health statistics, not the medicines-register corpus. That grant is not silently extended to separate drug-centre resources.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.moh.gov.om/",
+        "https://www.moh.gov.om/en/open-date/open-data/"
+      ]
+    },
+    {
+      "source_id": "ph-fda-verification",
+      "title": "FDA Verification Portal",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of FDA Verification Portal was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_references": [
+        "https://verification.fda.gov.ph/"
+      ]
+    },
+    {
+      "source_id": "pk-drap-register",
+      "title": "DRAP registered/provisional products",
+      "state": "blocked_rights_unestablished",
+      "reason": "The reviewed official source reserves rights and supplies no affirmative public archival grant. Public viewing is not treated as permission to redistribute its full medicines/safety corpus.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.dra.gov.pk/"
+      ]
+    },
+    {
+      "source_id": "pk-drap-safety",
+      "title": "Pakistan Drug Regulatory Authority public safety/recall notices",
+      "state": "blocked_rights_unestablished",
+      "reason": "The reviewed official source reserves rights and supplies no affirmative public archival grant. Public viewing is not treated as permission to redistribute its full medicines/safety corpus.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.dra.gov.pk/"
+      ]
+    },
+    {
+      "source_id": "pk-neml",
+      "title": "PAK essential medicines / health-supplies list",
+      "state": "blocked_document_rights",
+      "reason": "The exact national document is available through WHO, but its reviewed front matter supplies no affirmative public redistribution grant. National/third-party copyright is not licensed by WHO hosting.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.dra.gov.pk/",
+        "https://www.who.int/publications/m/item/pakistan--national-essential-medicine-list-2023-(english)",
+        "https://cdn.who.int/media/docs/default-source/essential-medicines/national-essential-medicines-lists-(neml)/emro_neml/pakistan-2023.pdf?sfvrsn=e6d42aeb_3&download=true"
+      ]
+    },
+    {
+      "source_id": "qa-moh-medicines",
+      "title": "Medicines source discovery record",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Medicines source discovery record was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_references": [
+        "https://www.moph.gov.qa/",
+        "https://www.moph.gov.qa/arabic/Pages/Terms-Conditions.aspx"
+      ]
+    },
+    {
+      "source_id": "rw-national-eml",
+      "title": "RWA essential medicines / health-supplies list",
+      "state": "blocked_document_rights",
+      "reason": "The exact national document is available through WHO, but its reviewed front matter supplies no affirmative public redistribution grant. National/third-party copyright is not licensed by WHO hosting.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://rwandafda.gov.rw/",
+        "https://rwandafda.gov.rw/licensed-food-business-operators/",
+        "https://rwandafda.gov.rw/medical-cosmetics-households-chemicals-inspection-registered-and-licensed-premises/",
+        "https://rwandafda.gov.rw/medical-devices-inspection-registered-and-licensed-premises/",
+        "https://rwandafda.gov.rw/medicines-inspection-closed-premise-licenses/",
+        "https://rwandafda.gov.rw/medicines-inspection-licensed-premises/",
+        "https://rwandafda.gov.rw/medicines-inspection-suspended-premise-licenses/",
+        "https://rwandafda.gov.rw/revoked-licenses/",
+        "https://rwandafda.gov.rw/revoked-premise-licenses/",
+        "https://www.who.int/publications/m/item/rwanda--national-list-of-essential-medicines-for-adults-2022-(english)",
+        "https://cdn.who.int/media/docs/default-source/essential-medicines/national-essential-medicines-lists-(neml)/afro_neml/rwanda-2022.pdf?sfvrsn=134cc7ef_5&download=true"
+      ]
+    },
+    {
+      "source_id": "rw-rwandafda-register",
+      "title": "Rwanda FDA product register",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Rwanda FDA product register was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_references": [
+        "https://rwandafda.gov.rw/",
+        "https://rwandafda.gov.rw/licensed-food-business-operators/",
+        "https://rwandafda.gov.rw/medical-cosmetics-households-chemicals-inspection-registered-and-licensed-premises/",
+        "https://rwandafda.gov.rw/medical-devices-inspection-registered-and-licensed-premises/",
+        "https://rwandafda.gov.rw/medicines-inspection-closed-premise-licenses/",
+        "https://rwandafda.gov.rw/medicines-inspection-licensed-premises/",
+        "https://rwandafda.gov.rw/medicines-inspection-suspended-premise-licenses/",
+        "https://rwandafda.gov.rw/revoked-licenses/",
+        "https://rwandafda.gov.rw/revoked-premise-licenses/"
+      ]
+    },
+    {
+      "source_id": "rw-rwandafda-safety",
+      "title": "Rwanda Food and Drugs Authority public safety/recall notices",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Rwanda Food and Drugs Authority public safety/recall notices was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_references": [
+        "https://rwandafda.gov.rw/",
+        "https://rwandafda.gov.rw/licensed-food-business-operators/",
+        "https://rwandafda.gov.rw/medical-cosmetics-households-chemicals-inspection-registered-and-licensed-premises/",
+        "https://rwandafda.gov.rw/medical-devices-inspection-registered-and-licensed-premises/",
+        "https://rwandafda.gov.rw/medicines-inspection-closed-premise-licenses/",
+        "https://rwandafda.gov.rw/medicines-inspection-licensed-premises/",
+        "https://rwandafda.gov.rw/medicines-inspection-suspended-premise-licenses/",
+        "https://rwandafda.gov.rw/revoked-licenses/",
+        "https://rwandafda.gov.rw/revoked-premise-licenses/"
+      ]
+    },
+    {
+      "source_id": "sa-chi-formulary",
+      "title": "Health insurance formulary and benefit publications",
+      "state": "blocked_endpoint_and_rights",
+      "reason": "The official source returned a denial or failed connection in the bounded current checks; applicable public corpus redistribution rights also remain unestablished. This is an observed route failure, not a claim of permanent global unavailability.",
+      "next_action": "A working provider-supported route and applicable source-specific archival terms are required; do not bypass denial or substitute unrelated data.",
+      "evidence_references": [
+        "https://www.chi.gov.sa/"
+      ]
+    },
+    {
+      "source_id": "se-socialstyrelsen-utilisation",
+      "title": "Socialstyrelsen medicines statistics",
+      "state": "retained_private_publication_blocked",
+      "reason": "Five 2025 national aggregate JSON files in a verified private archive. Existing retained evidence is reused; no reacquisition or public-visibility change.",
+      "next_action": "Public redistribution requires source-specific authority; preserve current private archive and its bounded coverage.",
+      "evidence_references": [
+        "https://www.socialstyrelsen.se/statistik-och-data/statistik/statistikamnen/lakemedel/",
+        "quality/qualifications/sweden-socialstyrelsen-live-private-bronze-20260929.json"
+      ]
+    },
+    {
+      "source_id": "se-tlv-subsidies",
+      "title": "TLV price and subsidy database",
+      "state": "archived_public",
+      "reason": "Exact finite inventory published from GitHub Actions; every selected native file and receipt verified anonymously at the pinned public revision.",
+      "next_action": "Reuse this bounded snapshot; no automatic schedule, historical completeness or downstream admission is implied.",
+      "evidence_references": [
+        "https://www.tlv.se/lakemedelsforetag/pris-och-subvention-av-lakemedel/subventionerade-lakemedel.html",
+        "quality/source-batches/sweden-tlv-20261030/rights.json",
+        "quality/source-batches/sweden-tlv-20261030/batch.json",
+        "quality/source-batches/sweden-tlv-20261030/verified.json"
+      ],
+      "public_revision": "a40a3932063d354331c2cbf8a862c1d7cc118c57",
+      "publication_run_id": 40969126588,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-sweden-tlv-20261030/tree/a40a3932063d354331c2cbf8a862c1d7cc118c57"
+    },
+    {
+      "source_id": "sg-hsa-approval-deltas",
+      "title": "Approval and post-registration listings",
+      "state": "blocked_rights",
+      "reason": "HSA website terms permit single copies for private research/study/reference; the separate data.gov.sg register licence does not cover these website approval documents.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.hsa.gov.sg/therapeutic-products/registration-of-therapeutic-products/tools-and-resources/listing-of-approvals-and-post-registration-actions/listing-of-approvals/",
+        "https://www.hsa.gov.sg/terms-of-use/"
+      ]
+    },
+    {
+      "source_id": "sg-hsa-register",
+      "title": "Register of therapeutic products",
+      "state": "archived_public",
+      "reason": "Exact finite inventory published from GitHub Actions; every selected native file and receipt verified anonymously at the pinned public revision.",
+      "next_action": "Reuse this bounded snapshot; no automatic schedule, historical completeness or downstream admission is implied.",
+      "evidence_references": [
+        "https://www.hsa.gov.sg/therapeutic-products/register",
+        "https://www.hsa.gov.sg/terms-of-use/",
+        "quality/source-batches/singapore-register-20261030/rights.json",
+        "quality/source-batches/singapore-register-20261030/batch.json",
+        "quality/source-batches/singapore-register-20261030/verified.json"
+      ],
+      "public_revision": "f5783a0e53744368f74d1fc69b2b70361f481996",
+      "publication_run_id": 40953643767,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-singapore-register-20261030/tree/f5783a0e53744368f74d1fc69b2b70361f481996"
+    },
+    {
+      "source_id": "sg-moh-drug-list",
+      "title": "Standard Drug List and subsidy information",
+      "state": "blocked_rights_unestablished",
+      "reason": "Current MOH subsidy table is available as website HTML. MOH terms reserve website reproduction rights while separately licensing designated datasets; this table has not been explicitly designated under that licence.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.moh.gov.sg/managing-expenses/schemes-and-subsidies/drug-subsidies-schemes",
+        "https://www.moh.gov.sg/terms-of-use/",
+        "https://www.moh.gov.sg/managing-expenses/schemes-and-subsidies/list-of-subsidised-drugs/"
+      ]
+    },
+    {
+      "source_id": "sn-dpm-register",
+      "title": "Senegal DPM product register",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Senegal DPM product register was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_references": [
+        "https://www.sante.gouv.sn/"
+      ]
+    },
+    {
+      "source_id": "sn-dpm-safety",
+      "title": "Senegal Direction de la Pharmacie et du Médicament public safety/recall notices",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Senegal Direction de la Pharmacie et du Médicament public safety/recall notices was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_references": [
+        "https://www.sante.gouv.sn/"
+      ]
+    },
+    {
+      "source_id": "sn-national-eml",
+      "title": "SEN essential medicines / health-supplies list",
+      "state": "blocked_document_rights",
+      "reason": "The exact national document is available through WHO, but its reviewed front matter supplies no affirmative public redistribution grant. National/third-party copyright is not licensed by WHO hosting.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.sante.gouv.sn/",
+        "https://www.who.int/publications/m/item/senegal--liste-nationale-des-medicaments-et-produits-essentiels-du-senegal-2025-(french)",
+        "https://cdn.who.int/media/docs/default-source/essential-medicines/national-essential-medicines-lists-(neml)/afro_neml/senegal-lnmpe-2025.pdf?sfvrsn=e5ea7678_1&download=true"
+      ]
+    },
+    {
+      "source_id": "th-fda-search",
+      "title": "Medicine product search",
+      "state": "blocked_rights_unestablished",
+      "reason": "No affirmative grant for public archival of Medicine product search was established from its reviewed official source/terms surfaces. This is an unresolved permission basis, not a claim that all uses are prohibited.",
+      "next_action": "An explicit applicable dataset licence or existing source-specific redistribution authority is required; neither a public search page nor missing authentication supplies that authority.",
+      "evidence_references": [
+        "https://pertento.fda.moph.go.th/FDA_SEARCH_DRUG/SEARCH_DRUG/FRM_SEARCH_PAGE.aspx"
+      ]
+    },
+    {
+      "source_id": "tz-national-eml",
+      "title": "TZA essential medicines / health-supplies list",
+      "state": "blocked_document_rights",
+      "reason": "The exact national document is available through WHO, but its reviewed front matter supplies no affirmative public redistribution grant. National/third-party copyright is not licensed by WHO hosting.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.tmda.go.tz/",
+        "https://www.tmda.go.tz/copyright",
+        "https://www.tmda.go.tz/terms-and-conditions",
+        "https://www.who.int/publications/m/item/united-republic-of-tanzania--national-essential-medicines-list-(nemlit)-2026-(english)",
+        "https://cdn.who.int/media/docs/default-source/essential-medicines/national-essential-medicines-lists-(neml)/afro_neml/tanzania-eml-2026.pdf?sfvrsn=20039cca_1&download=true"
+      ]
+    },
+    {
+      "source_id": "tz-tmda-products",
+      "title": "TMDA registered products",
+      "state": "blocked_rights_unestablished",
+      "reason": "The reviewed official source reserves rights and supplies no affirmative public archival grant. Public viewing is not treated as permission to redistribute its full medicines/safety corpus.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.tmda.go.tz/",
+        "https://www.tmda.go.tz/copyright",
+        "https://www.tmda.go.tz/terms-and-conditions"
+      ]
+    },
+    {
+      "source_id": "tz-tmda-safety",
+      "title": "Tanzania Medicines and Medical Devices Authority public safety/recall notices",
+      "state": "blocked_rights_unestablished",
+      "reason": "The reviewed official source reserves rights and supplies no affirmative public archival grant. Public viewing is not treated as permission to redistribute its full medicines/safety corpus.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.tmda.go.tz/",
+        "https://www.tmda.go.tz/copyright",
+        "https://www.tmda.go.tz/terms-and-conditions"
+      ]
+    },
+    {
+      "source_id": "ug-national-eml",
+      "title": "Uganda EML and health supplies list",
+      "state": "archived_public",
+      "reason": "Exact finite inventory published from GitHub Actions; every selected native file and receipt verified anonymously at the pinned public revision.",
+      "next_action": "Reuse this bounded snapshot; no automatic schedule, historical completeness or downstream admission is implied.",
+      "evidence_references": [
+        "https://www.nda.or.ug/",
+        "https://www.nda.or.ug/drug-shops-licensed-in-2020/",
+        "https://www.nda.or.ug/drug-shops-licensed/",
+        "https://www.nda.or.ug/licensed-outlets-statistics/",
+        "https://www.nda.or.ug/licensed-outlets/",
+        "quality/source-batches/east-africa-eml-20261030/rights.json",
+        "quality/source-batches/east-africa-eml-20261030/batch.json",
+        "quality/source-batches/east-africa-eml-20261030/verified.json"
+      ],
+      "public_revision": "b2ee0364d3a1b44ae755496b843da9e4f6a350ff",
+      "publication_run_id": 40969299618,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-east-africa-eml-20261030/tree/b2ee0364d3a1b44ae755496b843da9e4f6a350ff"
+    },
+    {
+      "source_id": "ug-nda-register",
+      "title": "Uganda NDA product register",
+      "state": "blocked_endpoint_and_rights",
+      "reason": "The official source returned a denial or failed connection in the bounded current checks; applicable public corpus redistribution rights also remain unestablished. This is an observed route failure, not a claim of permanent global unavailability.",
+      "next_action": "A working provider-supported route and applicable source-specific archival terms are required; do not bypass denial or substitute unrelated data.",
+      "evidence_references": [
+        "https://www.nda.or.ug/",
+        "https://www.nda.or.ug/drug-shops-licensed-in-2020/",
+        "https://www.nda.or.ug/drug-shops-licensed/",
+        "https://www.nda.or.ug/licensed-outlets-statistics/",
+        "https://www.nda.or.ug/licensed-outlets/"
+      ]
+    },
+    {
+      "source_id": "ug-nda-safety",
+      "title": "Uganda National Drug Authority public safety/recall notices",
+      "state": "blocked_endpoint_and_rights",
+      "reason": "The official source returned a denial or failed connection in the bounded current checks; applicable public corpus redistribution rights also remain unestablished. This is an observed route failure, not a claim of permanent global unavailability.",
+      "next_action": "A working provider-supported route and applicable source-specific archival terms are required; do not bypass denial or substitute unrelated data.",
+      "evidence_references": [
+        "https://www.nda.or.ug/",
+        "https://www.nda.or.ug/drug-shops-licensed-in-2020/",
+        "https://www.nda.or.ug/drug-shops-licensed/",
+        "https://www.nda.or.ug/licensed-outlets-statistics/",
+        "https://www.nda.or.ug/licensed-outlets/"
+      ]
+    },
+    {
+      "source_id": "us-cms-mdrp",
+      "title": "Medicaid Drug Rebate Program product data",
+      "state": "archived_public",
+      "reason": "Exact finite inventory published from GitHub Actions; every selected native file and receipt verified anonymously at the pinned public revision.",
+      "next_action": "Reuse this bounded snapshot; no automatic schedule, historical completeness or downstream admission is implied.",
+      "evidence_references": [
+        "https://data.medicaid.gov/datasets",
+        "quality/source-batches/cms-medicaid-20261030/rights.json",
+        "quality/source-batches/cms-medicaid-20261030/batch.json",
+        "quality/source-batches/cms-medicaid-20261030/verified.json"
+      ],
+      "public_revision": "16e3c22b082e05c2435d5b49bfb3331e700925b9",
+      "publication_run_id": 40954052124,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-cms-medicaid-20261030/tree/16e3c22b082e05c2435d5b49bfb3331e700925b9"
+    },
+    {
+      "source_id": "us-cms-nadac",
+      "title": "National Average Drug Acquisition Cost",
+      "state": "archived_public",
+      "reason": "Exact finite inventory published from GitHub Actions; every selected native file and receipt verified anonymously at the pinned public revision.",
+      "next_action": "Reuse this bounded snapshot; no automatic schedule, historical completeness or downstream admission is implied.",
+      "evidence_references": [
+        "https://data.medicaid.gov/datasets",
+        "quality/source-batches/cms-medicaid-20261030/rights.json",
+        "quality/source-batches/cms-medicaid-20261030/batch.json",
+        "quality/source-batches/cms-medicaid-20261030/verified.json"
+      ],
+      "public_revision": "16e3c22b082e05c2435d5b49bfb3331e700925b9",
+      "publication_run_id": 40954052124,
+      "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-cms-medicaid-20261030/tree/16e3c22b082e05c2435d5b49bfb3331e700925b9"
+    },
+    {
+      "source_id": "us-gsrs-unii",
+      "title": "GSRS and UNII",
+      "state": "retained_private_publication_blocked",
+      "reason": "136 payloads from 68 paired releases; existing private acquisition authority only. Existing retained evidence is reused; no reacquisition or public-visibility change.",
+      "next_action": "Public redistribution requires source-specific authority; preserve current private archive and its bounded coverage.",
+      "evidence_references": [
+        "https://gsrs.ncats.nih.gov/",
+        "quality/qualifications/gsrs-unii-acquisition-success-20260826.json"
+      ]
+    },
+    {
+      "source_id": "za-sahpra-register",
+      "title": "Registered health products",
+      "state": "blocked_rights_unestablished",
+      "reason": "The reviewed official source reserves rights and supplies no affirmative public archival grant. Public viewing is not treated as permission to redistribute its full medicines/safety corpus.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.sahpra.org.za/registered-health-products/"
+      ]
+    },
+    {
+      "source_id": "za-sahpra-safety",
+      "title": "SAHPRA public safety/recall notices",
+      "state": "blocked_rights_unestablished",
+      "reason": "The reviewed official source reserves rights and supplies no affirmative public archival grant. Public viewing is not treated as permission to redistribute its full medicines/safety corpus.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.sahpra.org.za/",
+        "https://www.sahpra.org.za/approved-licences-and-registrations/",
+        "https://www.sahpra.org.za/approved-licences/",
+        "https://www.sahpra.org.za/inspectorate-pharma-licencing-and-regulatory-compliance/",
+        "https://www.sahpra.org.za/medical-devices-licences-issued/",
+        "https://www.sahpra.org.za/revoked-or-suspended-pharma-licences/"
+      ]
+    },
+    {
+      "source_id": "zw-mcaz-register",
+      "title": "MCAZ product register",
+      "state": "blocked_endpoint_and_rights",
+      "reason": "The official source returned a denial or failed connection in the bounded current checks; applicable public corpus redistribution rights also remain unestablished. This is an observed route failure, not a claim of permanent global unavailability.",
+      "next_action": "A working provider-supported route and applicable source-specific archival terms are required; do not bypass denial or substitute unrelated data.",
+      "evidence_references": [
+        "https://www.mcaz.co.zw/"
+      ]
+    },
+    {
+      "source_id": "zw-mcaz-safety",
+      "title": "Medicines Control Authority of Zimbabwe public safety/recall notices",
+      "state": "blocked_endpoint_and_rights",
+      "reason": "The official source returned a denial or failed connection in the bounded current checks; applicable public corpus redistribution rights also remain unestablished. This is an observed route failure, not a claim of permanent global unavailability.",
+      "next_action": "A working provider-supported route and applicable source-specific archival terms are required; do not bypass denial or substitute unrelated data.",
+      "evidence_references": [
+        "https://www.mcaz.co.zw/"
+      ]
+    },
+    {
+      "source_id": "zw-national-eml",
+      "title": "ZWE essential medicines / health-supplies list",
+      "state": "blocked_document_rights",
+      "reason": "The exact national document is available through WHO, but its reviewed front matter supplies no affirmative public redistribution grant. National/third-party copyright is not licensed by WHO hosting.",
+      "next_action": "An explicit source-specific grant permitting unmodified public archival is required; retain references and do not publish restricted bytes.",
+      "evidence_references": [
+        "https://www.mcaz.co.zw/",
+        "https://www.who.int/publications/m/item/zimbabwe--essential-medicines-list-of-zimbabwe-2020-(english)",
+        "https://cdn.who.int/media/docs/default-source/essential-medicines/national-essential-medicines-lists-(neml)/afro_neml/zimbabwe_neml_2020.pdf?sfvrsn=98e7326f_1&download=true"
+      ]
+    }
+  ],
+  "http_observations": {
+    "https://services.ede.gov.ae/drugdirectory?lang=en-US": {
+      "observed_at": "2026-10-29T19:54:53.664965+00:00",
+      "status": 200,
+      "final_url": "https://services.ede.gov.ae/drugdirectory?lang=en-US",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "74267b45c10a6f10160a08a88e6fa1bcfe4d41198e53f887cbd17d562f1b1c22",
+      "bytes_observed": 61518,
+      "truncated": false
+    },
+    "https://www.argentina.gob.ar/anmat": {
+      "observed_at": "2026-10-29T19:54:53.666589+00:00",
+      "status": 200,
+      "final_url": "https://www.argentina.gob.ar/anmat",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "73589aabf24b303c00480e910c74ce6e068a750834c36b0070d5dd1edd65b23c",
+      "bytes_observed": 52169,
+      "truncated": false
+    },
+    "https://www.tga.gov.au/resources/artg": {
+      "observed_at": "2026-10-29T19:54:53.667162+00:00",
+      "status": 200,
+      "final_url": "https://www.tga.gov.au/resources/artg",
+      "content_type": "text/html",
+      "sha256": "2c7acd700c66d81a6d96ce903a051d301cc48a2994d401c61a71599164800c37",
+      "bytes_observed": 2204,
+      "truncated": false
+    },
+    "https://www.tga.gov.au/about-us/using-our-website/copyright": {
+      "observed_at": "2026-10-29T19:54:53.669003+00:00",
+      "status": 200,
+      "final_url": "https://www.tga.gov.au/about-us/using-our-website/copyright",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "7856ca70b39ed6a27a3cf90efc69a5e292906f4c2135ddd02e01852547d5eef9",
+      "bytes_observed": 117541,
+      "truncated": false
+    },
+    "https://info.data.pbs.gov.au/xml-schema/doc/html/guide.html": {
+      "observed_at": "2026-10-29T19:54:53.669969+00:00",
+      "status": 200,
+      "final_url": "https://data.pbs.gov.au",
+      "content_type": "text/html;charset=utf-8",
+      "sha256": "88f713dbcddbdff60a5fb2226802732c1c02c8f0beb7f5a4e703bf443a7372d2",
+      "bytes_observed": 32931,
+      "truncated": false
+    },
+    "https://www.pbs.gov.au/general/copyright": {
+      "observed_at": "2026-10-29T20:18:06.444092+00:00",
+      "status": 200,
+      "final_url": "https://www.pbs.gov.au/general/copyright",
+      "sha256": "953f91bbd23e54c4e3edac602173e699cf4919deb7bc4099ad5213c37d498583"
+    },
+    "https://www.tga.gov.au/safety/adverse-events/database-adverse-event-notifications-daen": {
+      "observed_at": "2026-10-29T19:54:53.670318+00:00",
+      "status": 200,
+      "final_url": "https://www.tga.gov.au/safety/adverse-events/database-adverse-event-notifications-daen",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "82177a86226c3d345b3b2b5fcbe939e345bae162f6ef19a064778d67a7539ea9",
+      "bytes_observed": 139100,
+      "truncated": false
+    },
+    "https://www.tga.gov.au/products/regulations-all-products/about-australian-register-therapeutic-goods-artg/product-information-pi": {
+      "observed_at": "2026-10-29T19:54:53.671283+00:00",
+      "status": 200,
+      "final_url": "https://www.tga.gov.au/products/regulations-all-products/about-australian-register-therapeutic-goods-artg/product-information-pi",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "590701f23e2f0d811eaa1cb9da6426aa399b3e8fc98ff3ff65e1fdc87741d1b8",
+      "bytes_observed": 122894,
+      "truncated": false
+    },
+    "https://www.moh.gov.bh/OtherPages/Faq?lang=en": {
+      "observed_at": "2026-10-29T19:54:53.671636+00:00",
+      "status": 200,
+      "final_url": "https://www.moh.gov.bh/OtherPages/Faq?lang=en",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "1303d89652c183bcb7a30c95023fac18268df0ed652267bb3a611a3d6475525d",
+      "bytes_observed": 161561,
+      "truncated": false
+    },
+    "https://www.moh.gov.bh/OtherPages/TermsofUse": {
+      "observed_at": "2026-10-29T19:54:54.430501+00:00",
+      "status": 200,
+      "final_url": "https://www.moh.gov.bh/OtherPages/TermsofUse",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "b1fba875adba7c6d4951bce0fdb3bccf734df01e32ebf14f090bdf98363959a9",
+      "bytes_observed": 88828,
+      "truncated": false
+    },
+    "https://www.moh.gov.bh/OtherPages/TermsofUse?lang=en": {
+      "observed_at": "2026-10-29T20:18:06.440296+00:00",
+      "status": 200,
+      "final_url": "https://www.moh.gov.bh/OtherPages/TermsofUse?lang=en",
+      "sha256": "50414e4c24f0032d9b152a1d47d7bb6dfa88bf8c89945d9a50ec087a55d9c594"
+    },
+    "https://consultas.anvisa.gov.br/#/medicamentos/": {
+      "observed_at": "2026-10-29T19:54:54.449324+00:00",
+      "status": 403,
+      "final_url": "https://consultas.anvisa.gov.br/#/medicamentos/",
+      "content_type": "text/html; charset=UTF-8",
+      "sha256": "311dc662e6805d69f149202bbf0e6de5e60d4644f8006d20a52451d705e7d8eb",
+      "bytes_observed": 5649,
+      "truncated": false
+    },
+    "https://www.gov.br/conitec/pt-br": {
+      "observed_at": "2026-10-29T19:54:54.493779+00:00",
+      "status": 200,
+      "final_url": "https://www.gov.br/conitec/pt-br",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "63d5650e3030f2e0bf65e3cd6ec9f82387f2e3e5e96c868e58150df1396e88d2",
+      "bytes_observed": 369732,
+      "truncated": false
+    },
+    "https://creativecommons.org/licenses/by-nd/3.0/deed.pt_BR": {
+      "observed_at": "2026-10-29T19:54:54.538694+00:00",
+      "status": 200,
+      "final_url": "https://creativecommons.org/licenses/by-nd/3.0/deed.en",
+      "content_type": "text/html",
+      "sha256": "f11bcbf71abc2de26f02fd60d1a501790cd870bc1a05b7fd42df8ba42bdfc473",
+      "bytes_observed": 35030,
+      "truncated": false
+    },
+    "https://www.cda-amc.ca/reimbursement-reviews": {
+      "observed_at": "2026-10-29T19:54:54.746716+00:00",
+      "status": 403,
+      "final_url": "https://www.cda-amc.ca/reimbursement-reviews",
+      "content_type": "text/html; charset=UTF-8",
+      "sha256": "1259a89b785e93bb0b8b5398ce523adecb79fac84a799438dd47274b05092f7e",
+      "bytes_observed": 5478,
+      "truncated": false
+    },
+    "https://registrosanitario.ispch.gob.cl/": {
+      "observed_at": "2026-10-29T19:54:55.096887+00:00",
+      "error": "ConnectTimeout: timed out"
+    },
+    "https://www.invima.gov.co/consulta-registros-sanitarios": {
+      "observed_at": "2026-10-29T19:54:55.370684+00:00",
+      "status": 200,
+      "final_url": "https://www.invima.gov.co/consulta-registros-sanitarios",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "151584d6bc45b71c083c638bc4074f6ded94656007eb643c57a92fbf3b05a4bc",
+      "bytes_observed": 98041,
+      "truncated": false
+    },
+    "https://www.bfarm.de/DE/Arzneimittel/Arzneimittelinformationen/Arzneimittel-recherchieren/AMIce/_artikel.html": {
+      "observed_at": "2026-10-29T20:18:06.443890+00:00",
+      "status": 200,
+      "final_url": "https://www.bfarm.de/DE/Arzneimittel/Arzneimittelinformationen/Arzneimittel-recherchieren/AMIce/_artikel.html",
+      "sha256": "1bf4adfc292627e10d5d007f628193bee4b962670cadbb087c1c6d2812f16bec"
+    },
+    "https://laegemiddelstyrelsen.dk/en/reimbursement/prices/medicine-prices-for-companies": {
+      "observed_at": "2026-10-29T19:54:56.779399+00:00",
+      "status": 200,
+      "final_url": "https://laegemiddelstyrelsen.dk/en/reimbursement/prices/medicine-prices-for-companies",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "9d665ca69e8991ab46970dade355a944e57d0ba34273fb35ec49fb9f3f202fb2",
+      "bytes_observed": 121412,
+      "truncated": false
+    },
+    "https://laegemiddelstyrelsen.dk/en/about/copyright-and-logo/": {
+      "observed_at": "2026-10-29T19:54:56.955093+00:00",
+      "status": 200,
+      "final_url": "https://laegemiddelstyrelsen.dk/en/about/copyright-and-logo/",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "5b2609cfa1a56d9ef5bc91dde1c92bf61430732996f76fc7780ce81134ac992d",
+      "bytes_observed": 114986,
+      "truncated": false
+    },
+    "https://erhverv.medicinpriser.dk/vejledning/download.aspx": {
+      "observed_at": "2026-10-29T20:01:10.461971+00:00",
+      "status": 200,
+      "final_url": "https://erhverv.medicinpriser.dk/vejledning/download.aspx",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "6e4b6d9f3a23a107f43e0589488d9342c5d822a03626f0df93255c05ded48aea",
+      "bytes_observed": 11053,
+      "truncated": false
+    },
+    "https://medstat.dk/": {
+      "observed_at": "2026-10-29T19:54:57.009407+00:00",
+      "status": 200,
+      "final_url": "https://medstat.dk/",
+      "content_type": "text/html",
+      "sha256": "fbb3678344efb19c66c821ae86eaa6409e16cbf5bcca14a2f920a2219f8014bf",
+      "bytes_observed": 4851,
+      "truncated": false
+    },
+    "https://www.edaegypt.gov.eg/": {
+      "observed_at": "2026-10-29T19:54:57.328689+00:00",
+      "status": 200,
+      "final_url": "https://www.edaegypt.gov.eg/",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "b9e4270ac8cc92685fffe8901d594365892768674b7813d978baa1a52a8826d9",
+      "bytes_observed": 122627,
+      "truncated": false
+    },
+    "http://eservices.edaegypt.gov.eg/EDASearch/SearchLicences.aspx": {
+      "observed_at": "2026-10-29T19:54:57.485684+00:00",
+      "status": 200,
+      "final_url": "http://eservices.edaegypt.gov.eg/EDASearch/SearchLicences.aspx",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "0d730f78964d1c757d61e9270558f15a5de31e2d896c5bb8f3672e8194f07211",
+      "bytes_observed": 33252,
+      "truncated": false
+    },
+    "https://www.ema.europa.eu/en/medicines": {
+      "observed_at": "2026-10-29T19:54:58.008158+00:00",
+      "status": 200,
+      "final_url": "https://www.ema.europa.eu/en/medicines",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "a31310f23c30ac178b147fcdad3223a60997ae12ecfd4d7b516e30025c144dc3",
+      "bytes_observed": 75078,
+      "truncated": false
+    },
+    "https://www.ema.europa.eu/en/about-us/about-website/legal-notice": {
+      "observed_at": "2026-10-29T20:31:42.989531+00:00",
+      "status": 200,
+      "final_url": "https://www.ema.europa.eu/en/about-us/about-website/legal-notice",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "4ab5b24acb84a8f74cf40b6fa5948cff5a08bc6bc75fcc09ba8eb50823092f04",
+      "bytes_observed": 67927,
+      "truncated": false
+    },
+    "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/pharmacovigilance-post-authorisation/safety-communication": {
+      "observed_at": "2026-10-29T19:54:58.422275+00:00",
+      "status": 404,
+      "final_url": "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/pharmacovigilance-post-authorisation/safety-communication",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "5beb0dc1231d925309210023c7420e9e682edbf29afe48eaa5f70d10066c1219",
+      "bytes_observed": 55547,
+      "truncated": false
+    },
+    "https://spor.ema.europa.eu/sporwi/": {
+      "observed_at": "2026-10-29T19:54:58.520377+00:00",
+      "status": 200,
+      "final_url": "https://spor.ema.europa.eu/sporwi/",
+      "content_type": "text/html",
+      "sha256": "5491a81467b1facf27b3687f29400816fba5553305bcb47f5a194f9599e19f3f",
+      "bytes_observed": 8969,
+      "truncated": false
+    },
+    "https://products.mhra.gov.uk/": {
+      "observed_at": "2026-10-29T19:54:59.486704+00:00",
+      "status": 200,
+      "final_url": "https://products.mhra.gov.uk/",
+      "content_type": "text/html",
+      "sha256": "f8e019066ec32e9941dc5d0134cd87807e5574d676aed5bd746dbddbaffde56c",
+      "bytes_observed": 124886,
+      "truncated": false
+    },
+    "https://www.gov.uk/government/publications/reproduce-or-re-use-mhra-information/reproduce-or-re-use-mhra-information": {
+      "observed_at": "2026-10-29T20:31:43.115851+00:00",
+      "status": 200,
+      "final_url": "https://www.gov.uk/government/publications/reproduce-or-re-use-mhra-information/reproduce-or-re-use-mhra-information",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "bc96060740ecbfc9a904197c6e2140c5c9f9fb28425955e27b096b689850f511",
+      "bytes_observed": 88061,
+      "truncated": false
+    },
+    "https://yellowcard.mhra.gov.uk/idaps": {
+      "observed_at": "2026-10-29T19:54:59.582823+00:00",
+      "status": 200,
+      "final_url": "https://yellowcard.mhra.gov.uk/idaps",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "efe9b1019784c8161e74bfb6ab607f0533e73daaa16ee0cb20185755fecba01e",
+      "bytes_observed": 407356,
+      "truncated": false
+    },
+    "https://www.england.nhs.uk/": {
+      "observed_at": "2026-10-29T19:54:59.638238+00:00",
+      "status": 202,
+      "final_url": "https://www.england.nhs.uk/",
+      "content_type": "text/html; charset=UTF-8",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes_observed": 0,
+      "truncated": false
+    },
+    "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/": {
+      "observed_at": "2026-10-29T19:54:59.907171+00:00",
+      "status": 200,
+      "final_url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+      "content_type": "text/html",
+      "sha256": "f5b2b9f2af63647cde889fa6c3508f5705925295b74912c68caa28dd37e64aa5",
+      "bytes_observed": 10450,
+      "truncated": false
+    },
+    "https://www.england.nhs.uk/terms-and-conditions-2/": {
+      "observed_at": "2026-10-29T19:55:00.172863+00:00",
+      "status": 202,
+      "final_url": "https://www.england.nhs.uk/terms-and-conditions-2/",
+      "content_type": "text/html; charset=UTF-8",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes_observed": 0,
+      "truncated": false
+    },
+    "https://www.england.nhs.uk/terms-and-conditions/comment-policy/": {
+      "observed_at": "2026-10-29T19:55:00.633249+00:00",
+      "status": 202,
+      "final_url": "https://www.england.nhs.uk/terms-and-conditions/comment-policy/",
+      "content_type": "text/html; charset=UTF-8",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes_observed": 0,
+      "truncated": false
+    },
+    "https://www.nice.org.uk/what-nice-does/our-guidance/about-technology-appraisal-guidance": {
+      "observed_at": "2026-10-29T19:55:00.637080+00:00",
+      "status": 200,
+      "final_url": "https://www.nice.org.uk/what-nice-does/our-guidance/about-technology-appraisal-guidance",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "19aef8dc67ca6f31ab66bcfbb894e2d55adae3983e9f6a31139f62c273bda5e9",
+      "bytes_observed": 77675,
+      "truncated": false
+    },
+    "https://www.nice.org.uk/reusing-our-content/nice-uk-open-content-licence": {
+      "observed_at": "2026-10-29T19:55:00.858596+00:00",
+      "status": 200,
+      "final_url": "https://www.nice.org.uk/reusing-our-content/nice-uk-open-content-licence",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "55712583299ea61178c5633de9ecdeff807720ea0cd41b99893c7807e08fde7b",
+      "bytes_observed": 104717,
+      "truncated": false
+    },
+    "https://www.nice.org.uk/terms-and-conditions": {
+      "observed_at": "2026-10-29T19:55:01.025325+00:00",
+      "status": 200,
+      "final_url": "https://www.nice.org.uk/terms-and-conditions",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "089c961080b8becca911c9060788e1807aefa6938e7d34dc13da0ae22b9e8527",
+      "bytes_observed": 115906,
+      "truncated": false
+    },
+    "https://www.nice.org.uk/terms-and-conditions#notice-of-rights": {
+      "observed_at": "2026-10-29T19:55:01.136602+00:00",
+      "status": 200,
+      "final_url": "https://www.nice.org.uk/terms-and-conditions#notice-of-rights",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "089c961080b8becca911c9060788e1807aefa6938e7d34dc13da0ae22b9e8527",
+      "bytes_observed": 115906,
+      "truncated": false
+    },
+    "https://ghc.sa/": {
+      "observed_at": "2026-10-29T19:55:01.337393+00:00",
+      "status": 200,
+      "final_url": "https://www.ghc.sa/",
+      "content_type": "text/html; charset=UTF-8",
+      "sha256": "0ae4affc787d740a3b5103be8b09e06312b56c38186f509cd0762427c34281ac",
+      "bytes_observed": 200132,
+      "truncated": false
+    },
+    "https://www.ghc.sa/terms-of-use/": {
+      "observed_at": "2026-10-29T19:55:01.503235+00:00",
+      "status": 200,
+      "final_url": "https://www.ghc.sa/terms-of-use/",
+      "content_type": "text/html; charset=UTF-8",
+      "sha256": "dc330550d1751273e762d399f5523b27f0dc1b4d6f07ed161155c41f22159de1",
+      "bytes_observed": 130280,
+      "truncated": false
+    },
+    "https://www.ghc.sa/en/terms-of-use/": {
+      "observed_at": "2026-10-29T20:18:06.444366+00:00",
+      "status": 200,
+      "final_url": "https://www.ghc.sa/en/terms-of-use/",
+      "sha256": "6bd97e93e1657e2830e7baa16a32e204053bd929e7909511667521bedbd81848"
+    },
+    "https://fdaghana.gov.gh/": {
+      "observed_at": "2026-10-29T19:55:01.847624+00:00",
+      "status": 200,
+      "final_url": "https://fdaghana.gov.gh/",
+      "content_type": "text/html; charset=UTF-8",
+      "sha256": "de5dc3d9a02fdbfde2313c9f0518989cd48b2bf9dc62dd56e195194391981cb5",
+      "bytes_observed": 346507,
+      "truncated": false
+    },
+    "https://www.who.int/teams/global-hiv-hepatitis-and-stis-programmes/hiv/treatment/aids-medicines-and-diagnostics-service": {
+      "observed_at": "2026-10-29T19:55:02.730810+00:00",
+      "status": 404,
+      "final_url": "https://www.who.int/teams/global-hiv-hepatitis-and-stis-programmes/hiv/treatment/aids-medicines-and-diagnostics-service",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "22e1920b65395ccd64a560a814df716d50983153ce9cfcfcbae2c4fee2c884f5",
+      "bytes_observed": 72505,
+      "truncated": false
+    },
+    "https://www.who.int/about/policies/terms-of-use": {
+      "observed_at": "2026-10-29T19:55:02.743763+00:00",
+      "status": 200,
+      "final_url": "https://www.who.int/about/policies/terms-of-use",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "0affb017cec97e51b77577790e7aeb2747c76e3a036cecb34ee2c040d036776f",
+      "bytes_observed": 76597,
+      "truncated": false
+    },
+    "https://www.who.int/redirect-pages/footer/who-policies/terms-of-use": {
+      "observed_at": "2026-10-29T19:55:02.921231+00:00",
+      "status": 200,
+      "final_url": "https://www.who.int/about/policies/terms-of-use",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "0affb017cec97e51b77577790e7aeb2747c76e3a036cecb34ee2c040d036776f",
+      "bytes_observed": 76597,
+      "truncated": false
+    },
+    "https://www.who.int/teams/health-product-and-policy-standards/medicines-selection-ip-and-affordability/affordability-pricing": {
+      "observed_at": "2026-10-29T19:55:03.414499+00:00",
+      "status": 200,
+      "final_url": "https://www.who.int/teams/health-product-and-policy-standards/medicines-selection-ip-and-affordability/affordability-pricing",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "eeef5ae115dee48683a4191bfb8d6cb1caafc364a0f745872d30c10a8aee6f8f",
+      "bytes_observed": 276893,
+      "truncated": false
+    },
+    "https://www.who.int/about/policies/publishing/data-policy/terms-and-conditions": {
+      "observed_at": "2026-10-29T20:31:43.866784+00:00",
+      "status": 200,
+      "final_url": "https://www.who.int/about/policies/publishing/data-policy/terms-and-conditions",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "9a2982f817fe6abc4dcda0c3c9f886d88232c5a1c2d6fb44e844bea3b0e503ef",
+      "bytes_observed": 85086,
+      "truncated": false
+    },
+    "https://www.who.int/tools/monitoring-and-evaluation/databases": {
+      "observed_at": "2026-10-29T19:55:03.430445+00:00",
+      "status": 200,
+      "final_url": "https://www.who.int/tools/monitoring-and-evaluation/databases",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "733baf74db9af7eeadaf659d689b4c980d3f3f1cbc73ae1814266a78137c0465",
+      "bytes_observed": 90382,
+      "truncated": false
+    },
+    "https://www.who.int/groups/expert-committee-on-selection-and-use-of-essential-medicines/essential-medicines-lists": {
+      "observed_at": "2026-10-29T19:55:03.768039+00:00",
+      "status": 200,
+      "final_url": "https://www.who.int/groups/expert-committee-on-selection-and-use-of-essential-medicines/essential-medicines-lists",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "0971c74641f385d7d4a6b2ca67a7c749fc37f21fca467fabc5433ad007d1916a",
+      "bytes_observed": 92821,
+      "truncated": false
+    },
+    "https://www.who.int/teams/immunization-vaccines-and-biologicals/vaccine-access/mi4a": {
+      "observed_at": "2026-10-29T19:55:04.196635+00:00",
+      "status": 200,
+      "final_url": "https://www.who.int/teams/immunization-vaccines-and-biologicals/vaccine-access/mi4a",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "27872e4ba7e47d74aa9ad2882e47f340cba5013fac457990eb26c461f13ad4d2",
+      "bytes_observed": 85885,
+      "truncated": false
+    },
+    "https://www.who.int/teams/health-product-policy-and-standards/assistive-and-medical-technology/essential-medicines/national-emls": {
+      "observed_at": "2026-10-29T19:55:04.298930+00:00",
+      "status": 200,
+      "final_url": "https://www.who.int/teams/health-product-policy-and-standards/assistive-and-medical-technology/essential-medicines/national-emls",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "d4e40480e9611675dc2651227a521ab0e885d31aeccc25c804306518530e5262",
+      "bytes_observed": 346946,
+      "truncated": false
+    },
+    "https://www.who.int/teams/regulation-prequalification": {
+      "observed_at": "2026-10-29T19:55:04.846520+00:00",
+      "status": 200,
+      "final_url": "https://www.who.int/teams/regulation-prequalification",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "af675dec004148d438735afdd040c23d7ed706452078443ae7dc78bda68bd391",
+      "bytes_observed": 297506,
+      "truncated": false
+    },
+    "https://cekbpom.pom.go.id/": {
+      "observed_at": "2026-10-29T19:55:05.133961+00:00",
+      "status": 200,
+      "final_url": "https://cekbpom.pom.go.id/",
+      "content_type": "text/html; charset=UTF-8",
+      "sha256": "b3efcce1b3ac6326aed4a51a8580b53a8aaa00727afdb2d2b1888e09b4cf1af0",
+      "bytes_observed": 65336,
+      "truncated": false
+    },
+    "https://about.hse.ie/publications/pcrs-statistical-analysis-of-claims-and-payments-2024/": {
+      "observed_at": "2026-10-29T19:55:06.076410+00:00",
+      "status": 200,
+      "final_url": "https://about.hse.ie/publications/pcrs-statistical-analysis-of-claims-and-payments-2024/",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "b0e9ddeb91da1f03d84562ed25252c63b48df5f4e884d0c3855ff11f632c3d41",
+      "bytes_observed": 46067,
+      "truncated": false
+    },
+    "https://cdsco.gov.in/opencms/opencms/en/Approval_new/Approved-New-Drugs/": {
+      "observed_at": "2026-10-29T19:55:06.394844+00:00",
+      "status": 200,
+      "final_url": "https://cdsco.gov.in/opencms/opencms/en/Approval_new/Approved-New-Drugs/",
+      "content_type": "text/html;charset=UTF-8",
+      "sha256": "fc5851a8252a38425fad97c8257df62395e8dec581dcb681d95e81855642f7cf",
+      "bytes_observed": 68115,
+      "truncated": false
+    },
+    "https://cdsco.gov.in/opencms/opencms//en/Copyright-Policy/": {
+      "observed_at": "2026-10-29T19:55:07.009268+00:00",
+      "status": 200,
+      "final_url": "https://cdsco.gov.in/opencms/opencms//en/Copyright-Policy/",
+      "content_type": "text/html;charset=UTF-8",
+      "sha256": "946b02073fd3ff94da89c413c81ad7782aa859672b76651f4ddc1d9a77b95530",
+      "bytes_observed": 56707,
+      "truncated": false
+    },
+    "https://cdsco.gov.in/opencms/opencms/en/Central-Licences-Approving-Authority/": {
+      "observed_at": "2026-10-29T19:55:07.099842+00:00",
+      "status": 200,
+      "final_url": "https://cdsco.gov.in/opencms/opencms/en/Central-Licences-Approving-Authority/",
+      "content_type": "text/html;charset=UTF-8",
+      "sha256": "3e0a373fcc5b925b668cd4485a13f8707438694104f99c0316d25fc379f0d7ed",
+      "bytes_observed": 61207,
+      "truncated": false
+    },
+    "https://cdsco.gov.in/opencms/opencms/en/terms_conditions/": {
+      "observed_at": "2026-10-29T19:55:07.211074+00:00",
+      "status": 200,
+      "final_url": "https://cdsco.gov.in/opencms/opencms/en/terms_conditions/",
+      "content_type": "text/html;charset=UTF-8",
+      "sha256": "5691e23141cedde18410c940717f0725fdd6bddbc744cbf7b37fb2098c113d04",
+      "bytes_observed": 57577,
+      "truncated": false
+    },
+    "https://cdsco.gov.in/": {
+      "observed_at": "2026-10-29T19:55:07.667434+00:00",
+      "status": 200,
+      "final_url": "https://cdsco.gov.in/opencms/opencms/en/Home/",
+      "content_type": "text/html;charset=UTF-8",
+      "sha256": "337e2a4ccca6937e85b33b033f0b75440b79218f9d121a6d57d6aa40d370db1d",
+      "bytes_observed": 97976,
+      "truncated": false
+    },
+    "https://www.nppaindia.nic.in/": {
+      "observed_at": "2026-10-29T19:55:07.991467+00:00",
+      "error": "ConnectError: [Errno 8] nodename nor servname provided, or not known"
+    },
+    "https://nppa.gov.in/en/websitepolicy": {
+      "observed_at": "2026-10-29T20:20:30.689605+00:00",
+      "error": "ConnectError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1144)"
+    },
+    "https://nppa.gov.in/en/ceiling-price": {
+      "observed_at": "2026-10-29T20:31:42.381425+00:00",
+      "error": "ConnectError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1144)"
+    },
+    "https://gem.gov.in/": {
+      "observed_at": "2026-10-29T19:55:08.262301+00:00",
+      "error": "ConnectError: [Errno 61] Connection refused"
+    },
+    "https://www.mhlw.go.jp/ndb/opendatasite/": {
+      "observed_at": "2026-10-29T19:55:09.793661+00:00",
+      "status": 200,
+      "final_url": "https://www.mhlw.go.jp/ndb/opendatasite/",
+      "content_type": "text/html; charset=UTF-8",
+      "sha256": "ca932eacdc0b393923eb3c3b180342fa07ae9cc60605f2f885ca3953eb17cc58",
+      "bytes_observed": 158169,
+      "truncated": false
+    },
+    "https://www.mhlw.go.jp/topics/2025/04/tp20250401-01.html": {
+      "observed_at": "2026-10-29T19:55:09.813082+00:00",
+      "status": 200,
+      "final_url": "https://www.mhlw.go.jp/topics/2025/04/tp20250401-01.html",
+      "content_type": "text/html",
+      "sha256": "b062a517e0e338117136fab39680d98c5c63fc6a6e90c333c56cfc5cca7bdfd5",
+      "bytes_observed": 30855,
+      "truncated": false
+    },
+    "https://www.pmda.go.jp/english/review-services/reviews/approved-information/drugs/0001.html": {
+      "observed_at": "2026-10-29T19:55:09.856852+00:00",
+      "status": 200,
+      "final_url": "https://www.pmda.go.jp/english/review-services/reviews/approved-information/drugs/0001.html",
+      "content_type": "text/html",
+      "sha256": "7f2d2e5507506dc6202f12721a0970d0a0b69f3222d5d36889db614fbaab3df4",
+      "bytes_observed": 270136,
+      "truncated": false
+    },
+    "https://www.pmda.go.jp/english/0013.html": {
+      "observed_at": "2026-10-29T20:31:43.174645+00:00",
+      "status": 200,
+      "final_url": "https://www.pmda.go.jp/english/0013.html",
+      "content_type": "text/html",
+      "sha256": "ab250b54805786b7e08647c3c6904e86c35765dfc6aa3ee1ad7a7876d6e750ce",
+      "bytes_observed": 47280,
+      "truncated": false
+    },
+    "https://www.info.pmda.go.jp/psearch/tenpulist.jsp": {
+      "observed_at": "2026-10-29T19:55:09.898705+00:00",
+      "status": 200,
+      "final_url": "https://www.info.pmda.go.jp/psearch/tenpulist.jsp",
+      "content_type": "text/html;charset=UTF-8",
+      "sha256": "32cc64899e77fee4cc1348d0e219551eecd7de1420148c04f7f82eb3b437b744",
+      "bytes_observed": 17359,
+      "truncated": false
+    },
+    "https://www.pmda.go.jp/english/safety/info-services/0001.html": {
+      "observed_at": "2026-10-29T19:55:10.340750+00:00",
+      "status": 200,
+      "final_url": "https://www.pmda.go.jp/english/safety/info-services/0001.html",
+      "content_type": "text/html",
+      "sha256": "2c195f623769bf405247626f3963eda8bdc50b2f6999604b481ebd5d8a01b922",
+      "bytes_observed": 54329,
+      "truncated": false
+    },
+    "https://www.pharmacyboardkenya.org/": {
+      "observed_at": "2026-10-29T19:55:11.008152+00:00",
+      "error": "ConnectError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1144)"
+    },
+    "https://web.pharmacyboardkenya.org/terms-and-conditions/": {
+      "status": 200
+    },
+    "https://www.moh.gov.kw/": {
+      "observed_at": "2026-10-29T19:55:11.407033+00:00",
+      "error": "ConnectTimeout: timed out"
+    },
+    "https://health.govmu.org/": {
+      "observed_at": "2026-10-29T20:20:30.694249+00:00",
+      "status": 200,
+      "final_url": "https://health.govmu.org/health/",
+      "sha256": "5e638f62c25763d3cc8f52f56260dddd744b1eaf2c8aca722e4f52d13cde3585"
+    },
+    "https://www.gob.mx/cofepris": {
+      "observed_at": "2026-10-29T19:55:11.656563+00:00",
+      "status": 200,
+      "final_url": "https://www.gob.mx/cofepris",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "22f787726987b8c7e890f31a5ed0ca818f27b139d91be7d61704e8e202de6ca9",
+      "bytes_observed": 908332,
+      "truncated": false
+    },
+    "https://www.csg.gob.mx/Compendio/CNIS/cnis.html": {
+      "observed_at": "2026-10-29T19:55:12.072710+00:00",
+      "error": "ConnectTimeout: timed out"
+    },
+    "https://quest3plus.bpfk.gov.my/front-end/product-search.php": {
+      "observed_at": "2026-10-29T19:55:12.476680+00:00",
+      "status": 404,
+      "final_url": "https://quest3plus.bpfk.gov.my/front-end/product-search.php",
+      "content_type": "text/html; charset=iso-8859-1",
+      "sha256": "0e9d6ac12f48b091c64374216f589ea66c2f0176725c128344e9672b40176756",
+      "bytes_observed": 226,
+      "truncated": false
+    },
+    "https://greenbook.nafdac.gov.ng/": {
+      "observed_at": "2026-10-29T19:55:13.402784+00:00",
+      "status": 200,
+      "final_url": "https://greenbook.nafdac.gov.ng/",
+      "content_type": "text/html; charset=UTF-8",
+      "sha256": "fddf870a05ee5a5b83c7cc90d169597b4369ca4640a5fb71cd57cb3555e5dc56",
+      "bytes_observed": 19905,
+      "truncated": false
+    },
+    "https://www.nafdac.gov.ng/": {
+      "observed_at": "2026-10-29T19:55:14.919020+00:00",
+      "status": 200,
+      "final_url": "https://nafdac.gov.ng/",
+      "content_type": "text/html; charset=UTF-8",
+      "sha256": "b2369c6a8572718c04d711a47a5cf5a172ac2464f022b74156d0e5471b202b8c",
+      "bytes_observed": 291061,
+      "truncated": false
+    },
+    "https://nafdac.gov.ng/wp-content/uploads/Files/Resources/LOCAL_FOREIGN_INSPECTION/List-of-Inspected-Foreign-Manufacturing-Facilities-with-Valid-Licenses.pdf": {
+      "observed_at": "2026-10-29T19:55:17.794633+00:00",
+      "status": 200,
+      "final_url": "https://nafdac.gov.ng/wp-content/uploads/Files/Resources/LOCAL_FOREIGN_INSPECTION/List-of-Inspected-Foreign-Manufacturing-Facilities-with-Valid-Licenses.pdf",
+      "content_type": "application/pdf",
+      "sha256": "92540e087cd69c21d26993b17b105e18294ca4f6a13d1f36d9a3c95f6bb7974b",
+      "bytes_observed": 554945,
+      "truncated": false
+    },
+    "https://nsw.gov.ng/nsw/cusLogin/login.cl": {
+      "observed_at": "2026-10-29T19:55:18.445852+00:00",
+      "status": 200,
+      "final_url": "https://nsw.gov.ng/nsw/cusLogin/login.cl",
+      "content_type": "text/html;charset=utf-8",
+      "sha256": "64d8951dd5d914b4f38478368d1bba20f8207ad1f07c88ade78afb17bb17546f",
+      "bytes_observed": 30711,
+      "truncated": false
+    },
+    "https://trade.gov.ng/nafdac": {
+      "observed_at": "2026-10-29T19:55:18.830367+00:00",
+      "error": "ConnectError: [Errno 8] nodename nor servname provided, or not known"
+    },
+    "https://www.nhia.gov.ng/": {
+      "observed_at": "2026-10-29T19:55:20.299419+00:00",
+      "status": 200,
+      "final_url": "https://www.nhia.gov.ng/",
+      "content_type": "text/html; charset=UTF-8",
+      "sha256": "5be6aa5be411b981a8333b54fc0272d72a41b289586eaf8c911f75f95f2ed5e1",
+      "bytes_observed": 208248,
+      "truncated": false
+    },
+    "https://www.medicijnkosten.nl/": {
+      "observed_at": "2026-10-29T19:55:20.486884+00:00",
+      "status": 200,
+      "final_url": "https://www.medicijnkosten.nl/",
+      "content_type": "text/html;charset=UTF-8",
+      "sha256": "f0ded69c46d1f0c18566ae7871b190b57fc889474cd0bed08c05b5c09f276f96",
+      "bytes_observed": 14767,
+      "truncated": false
+    },
+    "https://www.medicijnkosten.nl/algemeen/copyright": {
+      "observed_at": "2026-10-29T20:18:07.086262+00:00",
+      "status": 200,
+      "final_url": "https://www.medicijnkosten.nl/algemeen/copyright",
+      "sha256": "a867c222751f3bd454ef899a50adae9c528996bc4f5de35ca24c2deaf24f4e41"
+    },
+    "https://www.dmp.no/om-oss/distribusjon-av-legemiddeldata/FHIR-tjenesten/innhold-i-tjenesten": {
+      "observed_at": "2026-10-29T19:55:22.112551+00:00",
+      "status": 200,
+      "final_url": "https://www.dmp.no/om-oss/distribusjon-av-legemiddeldata/FHIR-tjenesten/innhold-i-tjenesten",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "b3e841d48e55b377cabd6d35c05ace8015bdff3433007c96a3271c1384eca83e",
+      "bytes_observed": 481904,
+      "truncated": false
+    },
+    "https://www.dmp.no/godkjenning/nls/Standarder/standardbetegenlser-standard-terms-med-henvisninger-til-rmsspor": {
+      "observed_at": "2026-10-29T19:55:22.160629+00:00",
+      "status": 200,
+      "final_url": "https://www.dmp.no/godkjenning/nls/Standarder/standardbetegenlser-standard-terms-med-henvisninger-til-rmsspor",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "40c8090902ab8eefdb4cce1c11d4ab6f3655d074ec856d788f639138a3a42e80",
+      "bytes_observed": 487568,
+      "truncated": false
+    },
+    "https://www.dmp.no/en/about-us/distribution-of-data-on-medicinal-products/FHIR-service/how-to-access-the-fhir-service": {
+      "observed_at": "2026-10-29T20:01:10.313410+00:00",
+      "status": 200,
+      "final_url": "https://www.dmp.no/en/about-us/distribution-of-data-on-medicinal-products/FHIR-service/how-to-access-the-fhir-service",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "c62ff6e81060ec307ef134d91625e769e6480679b2030849f7e54988575f9758",
+      "bytes_observed": 243162,
+      "truncated": false
+    },
+    "https://statistikk.fhi.no/lmr/default.aspx": {
+      "observed_at": "2026-10-29T19:55:23.592238+00:00",
+      "status": 200,
+      "final_url": "https://statistikk.fhi.no/lmr/default.aspx",
+      "content_type": "text/html",
+      "sha256": "014126e8c27b227dd9052ec1db96498d315e5b93637578cca56c786841049d58",
+      "bytes_observed": 31990,
+      "truncated": false
+    },
+    "https://www.medsafe.govt.nz/DbSearch/InfoSearch": {
+      "observed_at": "2026-10-29T19:55:24.012403+00:00",
+      "status": 200,
+      "final_url": "https://www.medsafe.govt.nz/DbSearch/InfoSearch",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "172a08528525477f71d7960c9fbc1774b88096f3321de4d2e0c363d9f243f91b",
+      "bytes_observed": 22061,
+      "truncated": false
+    },
+    "https://www.medsafe.govt.nz/regulatory/licensed.asp": {
+      "observed_at": "2026-10-29T19:55:24.028135+00:00",
+      "status": 200,
+      "final_url": "https://www.medsafe.govt.nz/regulatory/licensed.asp",
+      "content_type": "text/html",
+      "sha256": "d60dbd563faa221fe88e36271edbf9ad0c4e29fe7b9597582086645e52f9aaaf",
+      "bytes_observed": 24137,
+      "truncated": false
+    },
+    "https://www.medsafe.govt.nz/regulatory/packers.asp": {
+      "observed_at": "2026-10-29T19:55:24.529857+00:00",
+      "status": 200,
+      "final_url": "https://www.medsafe.govt.nz/regulatory/packers.asp",
+      "content_type": "text/html",
+      "sha256": "d57a13b83863659df02ab70ee7bb061cbaa65edb9375847f717eef6532d42cf4",
+      "bytes_observed": 17118,
+      "truncated": false
+    },
+    "https://www.medsafe.govt.nz/other/siteinfo.asp": {
+      "observed_at": "2026-10-29T20:01:09.976079+00:00",
+      "status": 200,
+      "final_url": "https://www.medsafe.govt.nz/other/siteinfo.asp",
+      "content_type": "text/html",
+      "sha256": "81b1fb5ef7347c70f6d742a9f69a16db5dbb7f05302058287572e0a22804b90c",
+      "bytes_observed": 18062,
+      "truncated": false
+    },
+    "https://www.moh.gov.om/": {
+      "observed_at": "2026-10-29T19:55:24.556797+00:00",
+      "status": 200,
+      "final_url": "https://www.moh.gov.om/ar",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "2b06865995c16266d06b7dbb2b2719052665ed49afe61e52f60e538561df07f6",
+      "bytes_observed": 145224,
+      "truncated": false
+    },
+    "https://www.moh.gov.om/en/open-date/open-data/": {
+      "status": 200
+    },
+    "https://verification.fda.gov.ph/": {
+      "observed_at": "2026-10-29T19:55:24.902871+00:00",
+      "status": 200,
+      "final_url": "https://verification.fda.gov.ph/",
+      "content_type": "text/html; charset=UTF-8",
+      "sha256": "8f17eaaa4aa664bca5e4065624dd640562be046bc22f40e18d18c74685f414a8",
+      "bytes_observed": 864,
+      "truncated": false
+    },
+    "https://www.dra.gov.pk/": {
+      "observed_at": "2026-10-29T19:55:25.329987+00:00",
+      "status": 200,
+      "final_url": "https://www.dra.gov.pk/",
+      "content_type": "text/html; charset=UTF-8",
+      "sha256": "f8d9c79aecb6d488fc992bcb200ac1b17e4b789b855738e694d48afb5ae5f427",
+      "bytes_observed": 102795,
+      "truncated": false
+    },
+    "https://www.moph.gov.qa/": {
+      "observed_at": "2026-10-29T19:55:25.685438+00:00",
+      "status": 200,
+      "final_url": "https://www.moph.gov.qa/",
+      "content_type": "text/html",
+      "sha256": "de48531ae6eae212071932605aa0cab8497e056949516935fd59e29fca37df63",
+      "bytes_observed": 48439,
+      "truncated": false
+    },
+    "https://www.moph.gov.qa/arabic/Pages/Terms-Conditions.aspx": {
+      "observed_at": "2026-10-29T19:55:26.116155+00:00",
+      "status": 200,
+      "final_url": "https://www.moph.gov.qa/arabic/Pages/Terms-Conditions.aspx",
+      "content_type": "text/html",
+      "sha256": "13cb75ae168f06337c635cf8117e5f747f97dcf0380d9d677a5299392f3915f7",
+      "bytes_observed": 45191,
+      "truncated": false
+    },
+    "https://rwandafda.gov.rw/": {
+      "observed_at": "2026-10-29T20:31:39.153547+00:00",
+      "status": 200,
+      "final_url": "https://www.rwandafda.gov.rw/",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "d281fec94f968da0bd281b6267554c706191d6ffa1c02cb70a43bf4f4fbc433d",
+      "bytes_observed": 147026,
+      "truncated": false
+    },
+    "https://rwandafda.gov.rw/licensed-food-business-operators/": {
+      "observed_at": "2026-10-29T19:55:27.907129+00:00",
+      "status": 404,
+      "final_url": "https://www.rwandafda.gov.rw/licensed-food-business-operators/",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "7fffcea385a9ca82c76997d77536f8a08c31dfb63ff90943b354339297a76271",
+      "bytes_observed": 85391,
+      "truncated": false
+    },
+    "https://rwandafda.gov.rw/medical-cosmetics-households-chemicals-inspection-registered-and-licensed-premises/": {
+      "observed_at": "2026-10-29T19:55:27.976354+00:00",
+      "status": 404,
+      "final_url": "https://www.rwandafda.gov.rw/medical-cosmetics-households-chemicals-inspection-registered-and-licensed-premises/",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "7fffcea385a9ca82c76997d77536f8a08c31dfb63ff90943b354339297a76271",
+      "bytes_observed": 85391,
+      "truncated": false
+    },
+    "https://rwandafda.gov.rw/medical-devices-inspection-registered-and-licensed-premises/": {
+      "observed_at": "2026-10-29T19:55:30.525562+00:00",
+      "status": 404,
+      "final_url": "https://www.rwandafda.gov.rw/medical-devices-inspection-registered-and-licensed-premises/",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "7fffcea385a9ca82c76997d77536f8a08c31dfb63ff90943b354339297a76271",
+      "bytes_observed": 85391,
+      "truncated": false
+    },
+    "https://rwandafda.gov.rw/medicines-inspection-closed-premise-licenses/": {
+      "observed_at": "2026-10-29T19:55:32.244541+00:00",
+      "status": 404,
+      "final_url": "https://www.rwandafda.gov.rw/medicines-inspection-closed-premise-licenses/",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "7fffcea385a9ca82c76997d77536f8a08c31dfb63ff90943b354339297a76271",
+      "bytes_observed": 85391,
+      "truncated": false
+    },
+    "https://rwandafda.gov.rw/medicines-inspection-licensed-premises/": {
+      "observed_at": "2026-10-29T19:55:35.946540+00:00",
+      "status": 404,
+      "final_url": "https://www.rwandafda.gov.rw/medicines-inspection-licensed-premises/",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "7fffcea385a9ca82c76997d77536f8a08c31dfb63ff90943b354339297a76271",
+      "bytes_observed": 85391,
+      "truncated": false
+    },
+    "https://rwandafda.gov.rw/medicines-inspection-suspended-premise-licenses/": {
+      "observed_at": "2026-10-29T19:55:36.394848+00:00",
+      "status": 404,
+      "final_url": "https://www.rwandafda.gov.rw/medicines-inspection-suspended-premise-licenses/",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "7fffcea385a9ca82c76997d77536f8a08c31dfb63ff90943b354339297a76271",
+      "bytes_observed": 85391,
+      "truncated": false
+    },
+    "https://rwandafda.gov.rw/revoked-licenses/": {
+      "observed_at": "2026-10-29T19:55:36.511838+00:00",
+      "status": 404,
+      "final_url": "https://www.rwandafda.gov.rw/revoked-licenses/",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "7fffcea385a9ca82c76997d77536f8a08c31dfb63ff90943b354339297a76271",
+      "bytes_observed": 85391,
+      "truncated": false
+    },
+    "https://rwandafda.gov.rw/revoked-premise-licenses/": {
+      "observed_at": "2026-10-29T19:55:37.245386+00:00",
+      "status": 404,
+      "final_url": "https://www.rwandafda.gov.rw/revoked-premise-licenses/",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "7fffcea385a9ca82c76997d77536f8a08c31dfb63ff90943b354339297a76271",
+      "bytes_observed": 85391,
+      "truncated": false
+    },
+    "https://www.chi.gov.sa/": {
+      "observed_at": "2026-10-29T19:55:37.879290+00:00",
+      "error": "ConnectError: [Errno 65] No route to host"
+    },
+    "https://www.socialstyrelsen.se/statistik-och-data/statistik/statistikamnen/lakemedel/": {
+      "observed_at": "2026-10-29T19:55:38.457960+00:00",
+      "status": 200,
+      "final_url": "https://www.socialstyrelsen.se/statistik-och-data/statistik/alla-statistikamnen/lakemedel/",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "d2c979375e74fed93d1b44e86f3bed2ec9367f66943b6ad85f7e9d86909f81aa",
+      "bytes_observed": 765973,
+      "truncated": false
+    },
+    "https://www.tlv.se/lakemedelsforetag/pris-och-subvention-av-lakemedel/subventionerade-lakemedel.html": {
+      "observed_at": "2026-10-29T19:55:41.518660+00:00",
+      "status": 200,
+      "final_url": "https://www.tlv.se/lakemedelsforetag/pris-och-subvention-av-lakemedel/subventionerade-lakemedel.html",
+      "content_type": "text/html;charset=UTF-8",
+      "sha256": "07a6222008aef37413ff19ae92a77062a27486304903acbf434b88671435e6da",
+      "bytes_observed": 72556,
+      "truncated": false
+    },
+    "https://www.hsa.gov.sg/therapeutic-products/registration-of-therapeutic-products/tools-and-resources/listing-of-approvals-and-post-registration-actions/listing-of-approvals/": {
+      "observed_at": "2026-10-29T19:55:41.551323+00:00",
+      "status": 200,
+      "final_url": "https://www.hsa.gov.sg/therapeutic-products/registration-of-therapeutic-products/tools-and-resources/listing-of-approvals-and-post-registration-actions/listing-of-approvals/",
+      "content_type": "text/html",
+      "sha256": "128dfe954940d40e1326f14e44a97aecb87227f6a515fd7763cf2189f2092e8a",
+      "bytes_observed": 2021902,
+      "truncated": true
+    },
+    "https://www.hsa.gov.sg/terms-of-use/": {
+      "observed_at": "2026-10-29T19:55:42.808556+00:00",
+      "status": 200,
+      "final_url": "https://www.hsa.gov.sg/terms-of-use/",
+      "content_type": "text/html",
+      "sha256": "87cf5c9a30653ca960b4b16e0f4f685adac8019bccafcb823633885fcee082cd",
+      "bytes_observed": 456354,
+      "truncated": false
+    },
+    "https://www.hsa.gov.sg/therapeutic-products/register": {
+      "observed_at": "2026-10-29T19:55:41.735598+00:00",
+      "status": 200,
+      "final_url": "https://www.hsa.gov.sg/therapeutic-products/registration-of-therapeutic-products/register-your-therapeutic-product/",
+      "content_type": "text/html",
+      "sha256": "c2e95bcb1409e1e52fbda0daa5d27c44ac0a57198226331d4a8e1454517d345a",
+      "bytes_observed": 421835,
+      "truncated": false
+    },
+    "https://www.moh.gov.sg/managing-expenses/schemes-and-subsidies/drug-subsidies-schemes": {
+      "observed_at": "2026-10-29T19:55:43.299038+00:00",
+      "status": 404,
+      "final_url": "https://www.moh.gov.sg/managing-expenses/schemes-and-subsidies/drug-subsidies-schemes/",
+      "content_type": "text/html",
+      "sha256": "2f023662193de3fe4fdff105d096ab17621f95b640a0c0e94f8b1109a31629e5",
+      "bytes_observed": 399764,
+      "truncated": false
+    },
+    "https://www.moh.gov.sg/terms-of-use/": {
+      "observed_at": "2026-10-29T20:18:06.443101+00:00",
+      "status": 200,
+      "final_url": "https://www.moh.gov.sg/terms-of-use/",
+      "sha256": "21310401401e96adda98abd3e7e9f3139e13b3235f627a6ef2a1d86df1dcccd6"
+    },
+    "https://www.moh.gov.sg/managing-expenses/schemes-and-subsidies/list-of-subsidised-drugs/": {
+      "observed_at": "2026-10-29T20:20:31.539851+00:00",
+      "status": 200,
+      "final_url": "https://www.moh.gov.sg/managing-expenses/schemes-and-subsidies/list-of-subsidised-drugs/",
+      "sha256": "c07be9739e191293bae1aa33d94091033eb79f28e2b171b7dfe4203cc9624c63"
+    },
+    "https://www.sante.gouv.sn/": {
+      "observed_at": "2026-10-29T19:55:43.617245+00:00",
+      "status": 200,
+      "final_url": "https://www.sante.gouv.sn/",
+      "content_type": "text/html",
+      "sha256": "5431d23d664f4926b5a03bcc105c40d592d56e177fc41073ad6e58d255bb9962",
+      "bytes_observed": 13118,
+      "truncated": false
+    },
+    "https://pertento.fda.moph.go.th/FDA_SEARCH_DRUG/SEARCH_DRUG/FRM_SEARCH_PAGE.aspx": {
+      "observed_at": "2026-10-29T19:55:44.078641+00:00",
+      "status": 404,
+      "final_url": "https://pertento.fda.moph.go.th/FDA_SEARCH_DRUG/SEARCH_DRUG/FRM_SEARCH_PAGE.aspx",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "5c97351f9e11cf71e973144d7123932938cf67c37e85ddf5021f85321da3f3eb",
+      "bytes_observed": 3834,
+      "truncated": false
+    },
+    "https://www.tmda.go.tz/": {
+      "observed_at": "2026-10-29T19:55:44.096242+00:00",
+      "status": 200,
+      "final_url": "https://www.tmda.go.tz/",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "fd5a874c40f71251aca1d4e007f24302d5ef62fb5e7f36de727284973373b0a3",
+      "bytes_observed": 127467,
+      "truncated": false
+    },
+    "https://www.tmda.go.tz/copyright": {
+      "observed_at": "2026-10-29T20:18:07.537440+00:00",
+      "status": 200,
+      "final_url": "https://www.tmda.go.tz/copyright",
+      "sha256": "81141d86754cce572eeee2ca7687a2adb6e7c0ff394d5fdb79fe325583ba53c1"
+    },
+    "https://www.tmda.go.tz/terms-and-conditions": {
+      "observed_at": "2026-10-29T19:55:45.362845+00:00",
+      "status": 200,
+      "final_url": "https://www.tmda.go.tz/terms-and-conditions",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "e77477a387ee4ec9d374f67d77415def3094b0291a973d0caabbb536360e1bf8",
+      "bytes_observed": 59482,
+      "truncated": false
+    },
+    "https://www.nda.or.ug/": {
+      "observed_at": "2026-10-29T19:55:45.701429+00:00",
+      "status": 403,
+      "final_url": "https://www.nda.or.ug/",
+      "content_type": "text/html; charset=UTF-8",
+      "sha256": "1d63fd44f90feaf271d214ef060d5738253e9f244e77cf636d8287701e307cae",
+      "bytes_observed": 5286,
+      "truncated": false
+    },
+    "https://www.nda.or.ug/drug-shops-licensed-in-2020/": {
+      "observed_at": "2026-10-29T19:55:46.278870+00:00",
+      "status": 403,
+      "final_url": "https://www.nda.or.ug/drug-shops-licensed-in-2020/",
+      "content_type": "text/html; charset=UTF-8",
+      "sha256": "9074c902929d5e553e1318bd290320761687e808e217f651bbde8da29715ee98",
+      "bytes_observed": 5392,
+      "truncated": false
+    },
+    "https://www.nda.or.ug/drug-shops-licensed/": {
+      "observed_at": "2026-10-29T19:55:46.406672+00:00",
+      "status": 403,
+      "final_url": "https://www.nda.or.ug/drug-shops-licensed/",
+      "content_type": "text/html; charset=UTF-8",
+      "sha256": "86b1a0fe85d83100b9f5ddbb09e741d60d968459b24eb5960513bf0e2507f8c9",
+      "bytes_observed": 5368,
+      "truncated": false
+    },
+    "https://www.nda.or.ug/licensed-outlets-statistics/": {
+      "observed_at": "2026-10-29T19:55:46.536387+00:00",
+      "status": 403,
+      "final_url": "https://www.nda.or.ug/licensed-outlets-statistics/",
+      "content_type": "text/html; charset=UTF-8",
+      "sha256": "6366a509dc0596be9c46895f9bb993a16db15827ee87ca4100507ae9cec4e0a9",
+      "bytes_observed": 5392,
+      "truncated": false
+    },
+    "https://www.nda.or.ug/licensed-outlets/": {
+      "observed_at": "2026-10-29T19:55:46.754682+00:00",
+      "status": 403,
+      "final_url": "https://www.nda.or.ug/licensed-outlets/",
+      "content_type": "text/html; charset=UTF-8",
+      "sha256": "25c5ab6eaae8efb91ff8aa4228aaf0f0a2d604587aecb3b701d74f610c94c901",
+      "bytes_observed": 5359,
+      "truncated": false
+    },
+    "https://data.medicaid.gov/datasets": {
+      "observed_at": "2026-10-29T19:55:46.784411+00:00",
+      "status": 200,
+      "final_url": "https://data.medicaid.gov/datasets",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "321f3b61180413977fbe27a88c5cfcd3b64f3703927a6f89caf4bae0883952a5",
+      "bytes_observed": 13132,
+      "truncated": false
+    },
+    "https://gsrs.ncats.nih.gov/": {
+      "observed_at": "2026-10-29T19:55:46.879423+00:00",
+      "status": 200,
+      "final_url": "https://gsrs.ncats.nih.gov/",
+      "content_type": "text/html;charset=UTF-8",
+      "sha256": "c303d7dba00a75b602d138c7e7a2806ef555bd17a30e2ca1374243148c61f721",
+      "bytes_observed": 61273,
+      "truncated": false
+    },
+    "https://www.sahpra.org.za/registered-health-products/": {
+      "observed_at": "2026-10-29T19:55:47.158863+00:00",
+      "status": 200,
+      "final_url": "https://medapps.sahpra.org.za:6006",
+      "content_type": "text/html; charset=utf-8",
+      "sha256": "88885f8e86ab5f6418d20fe615d38792d3549922f2c6b9778bff7a30427befad",
+      "bytes_observed": 17893,
+      "truncated": false
+    },
+    "https://www.sahpra.org.za/": {
+      "observed_at": "2026-10-29T19:55:47.392496+00:00",
+      "status": 200,
+      "final_url": "https://www.sahpra.org.za/",
+      "content_type": "text/html; charset=UTF-8",
+      "sha256": "e2f9ff551ffbd161b09f543f0086b480c56818cd2a321ad0d55211f56f5dd621",
+      "bytes_observed": 290531,
+      "truncated": false
+    },
+    "https://www.sahpra.org.za/approved-licences-and-registrations/": {
+      "observed_at": "2026-10-29T19:55:48.664535+00:00",
+      "status": 200,
+      "final_url": "https://www.sahpra.org.za/approved-licences/",
+      "content_type": "text/html; charset=UTF-8",
+      "sha256": "7a5d91acb18b6cdbfdd5e05523a64cd63d033eb38fc76d43079673ff5f0bd88c",
+      "bytes_observed": 294812,
+      "truncated": false
+    },
+    "https://www.sahpra.org.za/approved-licences/": {
+      "observed_at": "2026-10-29T19:55:48.837173+00:00",
+      "status": 200,
+      "final_url": "https://www.sahpra.org.za/approved-licences/",
+      "content_type": "text/html; charset=UTF-8",
+      "sha256": "2a99ec7e9c5815558deaee060cd19b7dfbc2d8edb2e25fa5240cdedfa823d080",
+      "bytes_observed": 294814,
+      "truncated": false
+    },
+    "https://www.sahpra.org.za/inspectorate-pharma-licencing-and-regulatory-compliance/": {
+      "observed_at": "2026-10-29T19:55:48.861482+00:00",
+      "status": 200,
+      "final_url": "https://www.sahpra.org.za/inspectorate-pharma-licencing-and-regulatory-compliance/",
+      "content_type": "text/html; charset=UTF-8",
+      "sha256": "f43389436ed57ad234ecfda4101e1c21c4adb32d07e352410aeaeea72a64b630",
+      "bytes_observed": 248994,
+      "truncated": false
+    },
+    "https://www.sahpra.org.za/medical-devices-licences-issued/": {
+      "observed_at": "2026-10-29T19:55:49.583518+00:00",
+      "status": 200,
+      "final_url": "https://www.sahpra.org.za/medical-devices-licences-issued/",
+      "content_type": "text/html; charset=UTF-8",
+      "sha256": "01f91fe4baf7f766df6e85501ac8619e472e6241eafd13ca1e56a51085a504ee",
+      "bytes_observed": 189194,
+      "truncated": false
+    },
+    "https://www.sahpra.org.za/revoked-or-suspended-pharma-licences/": {
+      "observed_at": "2026-10-29T19:55:49.625525+00:00",
+      "status": 200,
+      "final_url": "https://www.sahpra.org.za/revoked-or-suspended-pharma-licences/",
+      "content_type": "text/html; charset=UTF-8",
+      "sha256": "66e95a19a0983a2599835df52bfacc2b4ffe72e6572feb4c0a90633a033a4956",
+      "bytes_observed": 312897,
+      "truncated": false
+    },
+    "https://www.mcaz.co.zw/": {
+      "observed_at": "2026-10-29T19:55:51.374144+00:00",
+      "status": 403,
+      "final_url": "https://www.mcaz.co.zw/",
+      "content_type": "text/html",
+      "sha256": "32f2fa940d4b4fe19aca1e53a24e5aac29c57b7c5ee78588325b87f1b649c864",
+      "bytes_observed": 146,
+      "truncated": false
+    },
+    "https://portal.dimdi.de/amgui/free/termsofuse.xhtml": {
+      "status": 503,
+      "final_url": "https://portal.dimdi.de/amgui/free/termsofuse.xhtml",
+      "sha256": "924c23ea19876746092f6faad6fdb340efb7a0f41f9f085b6fdf0abadc256dda",
+      "observed_at": "2026-10-29T20:53:00Z"
+    }
+  },
+  "transport_observations": [
+    {
+      "source_id": "in-nppa-ceiling-prices",
+      "hostname": "nppa.gov.in",
+      "observed_at": "2026-10-29T20:43:00Z",
+      "server_certificate_subject": "CN=nppa.gov.in",
+      "issuer": "C=GB, O=Sectigo Limited, CN=Sectigo Public Server Authentication CA DV R36",
+      "openssl_verification_errors": [
+        "20: unable to get local issuer certificate",
+        "21: unable to verify the first certificate"
+      ],
+      "shared_python_transport": "certificate chain rejected",
+      "macos_curl_securetransport": "HTTP 200 with TLS verification enabled",
+      "tls_verification_disabled": false,
+      "scope": "Current observed transport qualification gap; not permanent global unavailability"
+    }
+  ],
+  "hosted_payloads_matching_local_format_validation": 39,
+  "bounded_execution_complete": true,
+  "publication_runs": [
+    {
+      "run_id": 40953774717,
+      "batch": "brazil-conitec-20261030",
+      "commit": "c20cfe39c8fb8159d713b64d532d76bea3a1038c",
+      "public_revision": "0620a7a7830f6afb0fcca7f7f874211607fa2c28",
+      "verified_payload_count": 1
+    },
+    {
+      "run_id": 40953871272,
+      "batch": "brazil-register-20261030",
+      "commit": "c20cfe39c8fb8159d713b64d532d76bea3a1038c",
+      "public_revision": "6ba60e15b16b7f5b13ad0af7fbaf38957c2cab22",
+      "verified_payload_count": 1
+    },
+    {
+      "run_id": 40954052124,
+      "batch": "cms-medicaid-20261030",
+      "commit": "c20cfe39c8fb8159d713b64d532d76bea3a1038c",
+      "public_revision": "16e3c22b082e05c2435d5b49bfb3331e700925b9",
+      "verified_payload_count": 2
+    },
+    {
+      "run_id": 40954235719,
+      "batch": "colombia-register-20261030",
+      "commit": "c20cfe39c8fb8159d713b64d532d76bea3a1038c",
+      "public_revision": "4bdd05123581aad6ff1effdae93e6de100e0d5e8",
+      "verified_payload_count": 1
+    },
+    {
+      "run_id": 40969299618,
+      "batch": "east-africa-eml-20261030",
+      "commit": "c20cfe39c8fb8159d713b64d532d76bea3a1038c",
+      "public_revision": "b2ee0364d3a1b44ae755496b843da9e4f6a350ff",
+      "verified_payload_count": 2
+    },
+    {
+      "run_id": 40968979673,
+      "batch": "japan-mhlw-20261030",
+      "commit": "c20cfe39c8fb8159d713b64d532d76bea3a1038c",
+      "public_revision": "d311e456790ffc9c43bd98476aca81b4f1ca1f3d",
+      "verified_payload_count": 26
+    },
+    {
+      "run_id": 40953643767,
+      "batch": "singapore-register-20261030",
+      "commit": "c20cfe39c8fb8159d713b64d532d76bea3a1038c",
+      "public_revision": "f5783a0e53744368f74d1fc69b2b70361f481996",
+      "verified_payload_count": 1
+    },
+    {
+      "run_id": 40969126588,
+      "batch": "sweden-tlv-20261030",
+      "commit": "c20cfe39c8fb8159d713b64d532d76bea3a1038c",
+      "public_revision": "a40a3932063d354331c2cbf8a862c1d7cc118c57",
+      "verified_payload_count": 1
+    },
+    {
+      "run_id": 40969211869,
+      "batch": "who-eml-20261030",
+      "commit": "c20cfe39c8fb8159d713b64d532d76bea3a1038c",
+      "public_revision": "89238704c0e97d00f628b5a06d8e959be51418f1",
+      "verified_payload_count": 2
+    },
+    {
+      "run_id": 40969487061,
+      "batch": "who-mi4a-20261030",
+      "commit": "c20cfe39c8fb8159d713b64d532d76bea3a1038c",
+      "public_revision": "6d5ca17d1fcf21fb6e1acb9410f74402973c3f11",
+      "verified_payload_count": 2
+    }
+  ],
+  "integration": {
+    "headRefOid": "281ac69eab6caecee54bc40afa443cd8575726e3",
+    "mergeCommit": {
+      "oid": "c20cfe39c8fb8159d713b64d532d76bea3a1038c"
+    },
+    "mergedAt": "2026-10-29T20:57:51Z",
+    "state": "MERGED",
+    "url": "https://github.com/edithatogo/global-medicines-atlas/pull/1383",
+    "tree": "10f866fc1ad6e1d392331fe382459f2248e9d320",
+    "required_check_count": 29
+  },
+  "archive_all_counts": {
+    "blocked_rights": 35,
+    "blocked_rights_unestablished": 34,
+    "excluded_auth": 15,
+    "reused_verified_archive": 50,
+    "blocked_endpoint_and_rights": 13,
+    "blocked_access": 2,
+    "blocked_export_contract": 1,
+    "blocked_document_rights": 8,
+    "blocked_mixed_document_rights": 2,
+    "blocked_access_and_rights": 1,
+    "retained_private_publication_blocked": 4,
+    "blocked_endpoint": 2,
+    "blocked_third_party_rights": 2,
+    "blocked_heterogeneous_source_rights": 4,
+    "blocked_automated_access": 3
+  },
+  "archive_all_source_count": 176
+}
