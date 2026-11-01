@@ -129,9 +129,7 @@ def iter_pbs_domain_batches(
         if family is None:
             yield batch
             continue
-        selected = batch.filter(
-            pc.equal(batch.column("mapping_target"), family)
-        )
+        selected = batch.filter(pc.field("mapping_target") == family)
         if selected.num_rows:
             yield selected
 
