@@ -116,3 +116,15 @@ startup verification using existing synthetic inputs. This does not reopen
 Australian federation, acquire sources or authorize a public deployment.
 Live deployment, canonical production-data and deployed-browser receipts remain
 mandatory; see [the scoped plan](../docs/qualification/configured-service-61.md).
+
+## Authorized #342 follow-up — 3 November 2026
+
+After #1398 merged, the maintainer again requested the simplest remaining
+unblocked work, review and protected integration. The selected finite gap is
+installed verification of local research packages: the current clean-consumer
+harness accepts metadata but cannot supply the result sidecar required by the
+local format. Extend that existing harness and synthetic cross-platform canary.
+Stop after protected integration and retain actual-source independent clean-room
+restoration, public availability, all other federation and #61 deployment gates.
+No source acquisition, publication, dependency upgrade or release is authorized
+by this follow-up.

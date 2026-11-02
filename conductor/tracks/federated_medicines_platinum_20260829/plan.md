@@ -1807,3 +1807,32 @@ authoritative contract, reconciliation, and bound receipts.
   `quality/qualifications/platinum-research-package-merged-canary-20261029.json`.
   A separate process verified the saved archive in the same environment.
   Independent clean-room restoration remains open.
+
+## Installed local research export qualification — 3 November 2026
+
+Owner: chat `01a19600-56dd-73a2-9ff5-4a2484a54493`, checkout
+`/Volumes/PortableSSD/GitHub/global-medicines-atlas`, scoped branch
+`codex/342-local-export-consumer`, base `99c9088d`. Prior assignments are history.
+This lane owns the existing clean-consumer harness, consumer/E2E tests and
+scoped documentation/scheduling. No other writer or native operation observed.
+
+Existing gate: AC-07 reproducible research exports. Concrete failure: the
+installed verifier cannot receive the mandatory canonical result sidecar for
+local exports. Four new regressions fail before the change. Reuse the existing
+local-format verifier and synthetic medallion pipeline; add no parallel exporter.
+
+- [x] Accept an explicitly supplied bounded regular result file; reject orphan,
+  oversized and symlink inputs before package building. Verify exact bytes in
+  each installed environment with isolated Python import resolution.
+- [x] Exercise the existing synthetic pipeline's local metadata and result
+  through built wheel and sdist; retain aggregate hashes without result values.
+- [ ] Review, run focused checks and final-head protected CI, then merge.
+
+Stop after this software increment. The synthetic installed-package check does
+not complete real-source clean-room restoration, independent recovery authority,
+public package availability or the whole #342 issue.
+
+Local evidence: `quality/qualifications/platinum-local-export-installed-20261103.json`
+binds the exact `db1eb4a7` commit/tree and installed artifact identities. Both
+local and public forms pass in each core-only environment. Review preserved
+the original public-form installed checks; no existing gate was relaxed.

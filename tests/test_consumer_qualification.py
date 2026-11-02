@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import json
+import sys
 from pathlib import Path
 
 import pytest
@@ -17,6 +18,143 @@ from global_medicines_atlas.consumer_qualification import (
 
 ROOT = Path(__file__).resolve().parents[1]
 BASELINE = ROOT / "contracts/openapi-v1.json"
+
+
+def test_cli_exposes_local_and_public_export_checks(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    from scripts import qualify_clean_consumer
+
+    output = tmp_path / "receipt.json"
+    local = tmp_path / "local.zip"
+    result = tmp_path / "result.json"
+    public = tmp_path / "public.zip"
+
+    def fake_qualify(
+        selected_output: Path,
+        *,
+        research_export: Path | None = None,
+        research_result: Path | None = None,
+        public_research_export: Path | None = None,
+    ) -> dict[str, str]:
+        assert (
+            selected_output,
+            research_export,
+            research_result,
+            public_research_export,
+        ) == (output, local, result, public)
+        return {"state": "both_formats_selected"}
+
+    monkeypatch.setattr(qualify_clean_consumer, "qualify", fake_qualify)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "qualify_clean_consumer.py",
+            "--output",
+            str(output),
+            "--research-export",
+            str(local),
+            "--research-result",
+            str(result),
+            "--public-research-export",
+            str(public),
+        ],
+    )
+    qualify_clean_consumer.main()
+    assert json.loads(capsys.readouterr().out) == {
+        "state": "both_formats_selected"
+    }
+
+
+def test_installed_probe_verifies_local_result_and_rejects_tampering(
+    tmp_path: Path,
+) -> None:
+    from scripts import qualify_clean_consumer
+    from tests import test_research_export_package
+
+    from global_medicines_atlas.research_export_package import (
+        build_research_export_package,
+    )
+
+    manifest, crate, lineage, result = (
+        test_research_export_package._local_inputs()
+    )
+    archive = tmp_path / "__RESULT__.zip"
+    archive.write_bytes(
+        build_research_export_package(
+            manifest=manifest, crate=crate, lineage=lineage
+        ).archive_bytes()
+    )
+    sidecar = tmp_path / "__ARCHIVE__.json"
+    sidecar.write_bytes(result)
+    probe = qualify_clean_consumer._research_export_probe(archive, sidecar)
+    output = qualify_clean_consumer._run(
+        ["python", "-I", "-c", probe], environment=Path(sys.prefix)
+    )
+    receipt = json.loads(output)
+    assert receipt["research_export"] == "passed"
+    assert receipt["research_result_verified"] is True
+    assert "1001" not in output
+    public_manifest, public_crate, public_lineage = (
+        test_research_export_package._inputs()
+    )
+    public = tmp_path / "public-metadata.zip"
+    public.write_bytes(
+        build_research_export_package(
+            manifest=public_manifest, crate=public_crate, lineage=public_lineage
+        ).archive_bytes()
+    )
+    both = qualify_clean_consumer._research_probes(
+        Path(sys.prefix), archive, sidecar, public
+    )
+    assert both["public_research_export"] == "passed"
+    assert both["public_research_result_verified"] is False
+    assert both["research_result_verified"] is True
+    sidecar.write_bytes(b"[]")
+    with pytest.raises(
+        RuntimeError, match="local research result digest differs"
+    ):
+        qualify_clean_consumer._run(
+            ["python", "-I", "-c", probe], environment=Path(sys.prefix)
+        )
+
+
+@pytest.mark.parametrize("kind", ["oversized", "symlink", "orphan"])
+def test_clean_consumer_rejects_invalid_result_before_build(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    kind: str,
+) -> None:
+    from scripts import qualify_clean_consumer
+
+    sidecar = tmp_path / "result.json"
+    sidecar.write_bytes(b"[]")
+    archive = tmp_path / "metadata.zip"
+    archive.write_bytes(b"placeholder; must not reach build")
+    if kind == "oversized":
+        with sidecar.open("wb") as stream:
+            stream.truncate(1024 * 1024 + 1)
+    elif kind == "symlink":
+        link = tmp_path / "link.json"
+        link.symlink_to(sidecar)
+        sidecar = link
+
+    def unexpected_build(
+        _command: list[str], *, environment: Path | None = None
+    ) -> str:
+        del environment
+        pytest.fail("invalid input must be rejected before build")
+
+    monkeypatch.setattr(qualify_clean_consumer, "_run", unexpected_build)
+    with pytest.raises(ValueError, match="research result"):
+        qualify_clean_consumer.qualify(
+            tmp_path / "receipt.json",
+            research_export=None if kind == "orphan" else archive,
+            research_result=sidecar,
+        )
 
 
 def test_clean_consumer_uses_and_checks_the_governed_runtime() -> None:

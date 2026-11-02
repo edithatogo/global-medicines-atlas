@@ -13,5 +13,45 @@ reference identifies bytes; it is not a downloadable URL or proof of publication
 The archive does not establish source availability, rights, admission or the
 accuracy of source semantics. Those remain bound to their own receipts.
 
-The implementation has focused synthetic validation. An actual admitted-source
-package canary, exact-commit evidence and protected CI remain outstanding.
+The initial implementation had focused synthetic validation. A later merged
+real-source canary verified a saved archive in a separate process on the same
+machine and environment; independent clean-room restoration remains open.
+
+## Installed consumer verification
+
+The clean-consumer harness accepts both metadata and its separate local result:
+
+```sh
+uv run --python 3.15.1 python scripts/qualify_clean_consumer.py \
+  --research-export /absolute/path/metadata.zip \
+  --research-result /absolute/path/query-result.json \
+  --output build/quality-receipts/local-research-consumer.json
+```
+
+The metadata limit is 8 MiB and the canonical JSON result limit is 1 MiB.
+Both must be regular files, not symlinks. A result requires a metadata archive.
+The existing verifier rejects missing, altered, noncanonical or mismatched local
+results and continues to reject a result sidecar for the public metadata form.
+Public-form consumers can continue to omit `--research-result`. To check both
+forms in the same installed environments, add
+`--public-research-export /absolute/path/public-metadata.zip` to the command
+above. That path is metadata input; it does not fetch or publish any result.
+
+Each built wheel and sdist is installed in a fresh environment. The research
+probe runs with isolated Python import resolution (`-I`), verifies the archive
+and result, and rebuilds identical metadata. Its receipt records hashes, lengths
+and status without source/result values. The existing cross-platform synthetic
+medallion canary supplies its exact query result to this local-format check;
+both the local and public metadata forms are verified in each installed
+environment before any server/federation extras are installed. The public
+metadata form is also rebuilt and verified in the pipeline.
+
+This is installed-package verification using synthetic evidence. It establishes
+neither an actual-source clean-room recovery nor independent storage/recovery
+authority, source semantics, public availability or federation acceptance.
+The earlier real-source canary is recorded separately in
+`quality/qualifications/platinum-research-package-merged-canary-20261029.json`.
+
+The [executed synthetic installed receipt](../../quality/qualifications/platinum-local-export-installed-20261103.json)
+binds the tested commit/tree, wheel/sdist identities and both export forms.
+Protected CI must pass on the final PR head before integration.
