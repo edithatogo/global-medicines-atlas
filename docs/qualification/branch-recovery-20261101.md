@@ -4,8 +4,7 @@ The 1 November audit examined 604 local tips outside main ancestry and 48
 registered worktrees. Exact merged PR heads account for 482 tips and merged
 PR ancestry accounts for 22 more. Seven of the remaining 100 merge trees
 contribute no changes. One would duplicate an existing ledger row. The Apache
-notice branch contributes a missing source-distribution inclusion. The other
-91 require reconciliation against subsequent implementations.
+notice branch contributes a missing source-distribution inclusion. The remaining 91 were reviewed against subsequent implementations.
 
 ## Recovered changes
 
@@ -44,14 +43,28 @@ The older rights-preflight snapshot remains historical evidence.
 The PBS semantic-closeout source matches a historical main blob. Its current
 successor remains in place. Original source worktrees were not reset or cleaned.
 
-## Remaining review limits
+## Terminal source audit — 2 November 2026
+
+The retained [100-tip audit](../../quality/qualifications/branch-tip-reconciliation-20261102.json)
+assigns five scoped recoveries, seven empty merge trees, one duplicate ledger
+record and 87 current-successor dispositions. It includes the exact frozen
+branch tips, current symbol comparison, corroborating merged changes and five
+dirty-worktree fingerprints. The original branch refs and worktree files remain
+preserved.
 
 Earlier P7 date-selection implementations conflict with later tests requiring
-an unset operational date profile. Source-era acceptance remains required.
-The old PBS v3 table proposal labelled structural classifications as ATC. The
-recovered selector uses current native structural families.
+an unset operational date profile. The old PBS v3 table proposal labelled
+structural classifications as ATC. The recovered family selector retains native
+structural labels. The missing local JSON helper is replaced by the shared
+strict JSON decoder. RDF helpers and research receipts have shared typed
+successors. PBS Gold has later node-field, edge and graph-closure validators.
 
-Similar merged PRs and passing successor tests cannot establish that every
-historical difference is superseded. Per-branch comparisons retain unmatched
-evidence and source differences. Repository-wide reconciliation remains open
-until every remaining difference has a terminal disposition.
+The current integrating owner is chat
+01a19600-56dd-73a2-9ff5-4a2484a54493 in
+/Volumes/PortableSSD/GitHub/.codex-worktrees/pbs-hosted-publication-20261029.
+Its owned paths are this recovery report, the frozen branch audit and the
+subsequent exact PBS publication receipt packet. The user transferred PR 1377
+integration ownership to this chat and approved one exact reproduced PBS
+append. Earlier assignments remain historical. Native scope is the approved
+output at the pinned parent only. The next native operation is a single hosted
+append after PRs 1390 and 1388 merge, followed by anonymous digest verification.
