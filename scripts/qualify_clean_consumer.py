@@ -11,6 +11,7 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
+from string import Template
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -175,12 +176,12 @@ from pathlib import Path
 from global_medicines_atlas.research_export_package import (
     verify_research_export_package,
 )
-archive_path = Path(__ARCHIVE__)
+archive_path = Path($ARCHIVE)
 assert archive_path.is_file() and not archive_path.is_symlink()
 with archive_path.open('rb') as archive_file:
     archive = archive_file.read(8 * 1024 * 1024 + 1)
 assert len(archive) <= 8 * 1024 * 1024
-result_path = __RESULT__
+result_path = $RESULT
 result = None
 if result_path is not None:
     result_path = Path(result_path)
@@ -201,8 +202,9 @@ print(json.dumps({
     ),
 }, sort_keys=True))
 """
-    return template.replace("__ARCHIVE__", repr(str(archive))).replace(
-        "__RESULT__", repr(str(result)) if result is not None else "None"
+    return Template(template).substitute(
+        ARCHIVE=repr(str(archive)),
+        RESULT=repr(str(result)) if result is not None else "None",
     )
 
 

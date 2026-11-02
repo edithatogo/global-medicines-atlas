@@ -82,13 +82,13 @@ def test_installed_probe_verifies_local_result_and_rejects_tampering(
     manifest, crate, lineage, result = (
         test_research_export_package._local_inputs()
     )
-    archive = tmp_path / "metadata.zip"
+    archive = tmp_path / "__RESULT__.zip"
     archive.write_bytes(
         build_research_export_package(
             manifest=manifest, crate=crate, lineage=lineage
         ).archive_bytes()
     )
-    sidecar = tmp_path / "result.json"
+    sidecar = tmp_path / "__ARCHIVE__.json"
     sidecar.write_bytes(result)
     probe = qualify_clean_consumer._research_export_probe(archive, sidecar)
     output = qualify_clean_consumer._run(
