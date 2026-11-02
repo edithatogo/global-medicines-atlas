@@ -84,3 +84,19 @@
   - [x] Verify clean-clone and bundle restoration procedures
   - [x] Record remaining external archive or publication gates
 - [x] Task: Phase Verification & Checkpoint
+
+## Rights follow-up #51 — 2 November 2026
+
+The archived migration's original acceptance remains complete. The maintainer
+explicitly selected this rights/publication follow-up; Australian federation
+and Stable qualification remain deferred.
+
+- [x] Verify official terms source by source without publishing private evidence.
+- [x] Reconcile the 162-asset historical inventory and current file availability.
+- [x] Verify the unchanged 15-file software cohort and anonymously verify the five existing Pharmac/RxNorm public objects; reuse exact snapshots without duplicate uploads.
+- [x] Publish the source-specific written decisions and updated public metadata manifest through a protected technical PR.
+- [ ] Unrestricted publication of licensed NZF content, full SNOMED/AMT semantics or proprietary RxNorm source-vocabulary content: confirmed source restrictions remain; Medsafe commercial-use conditions also remain attached to its data.
+
+See [the current review](../../../docs/migrations/nz-rights-review-20261102.md)
+and its hash-bound receipt. Missing local 2023 payloads are an availability
+finding, not a finding that NZULM or Pharmac prohibit redistribution.

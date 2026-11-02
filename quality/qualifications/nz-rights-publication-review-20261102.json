@@ -1,0 +1,1792 @@
+{
+  "schema_id": "global-medicines-atlas.nz-rights-publication-review",
+  "schema_version": 1,
+  "review_date": "2026-11-02",
+  "issue": "https://github.com/edithatogo/global-medicines-atlas/issues/51",
+  "migration_backlink": "https://github.com/edithatogo/global-medicines-atlas/issues/6",
+  "maintainer_publication_approved": true,
+  "private_permission_evidence_published": false,
+  "private_source_bytes_published": false,
+  "new_payload_uploads": 0,
+  "issue_disposition": "open_for_confirmed_licensed_content_restrictions",
+  "terms": [
+    {
+      "id": "nzulm",
+      "official_url": "https://info.nzulm.org.nz/data-access",
+      "local_retrieval_error": "HTTP Error 403: Forbidden",
+      "verification_route": "official_page_rendered_by_web_tool",
+      "content_sha256": null
+    },
+    {
+      "id": "medsafe",
+      "official_url": "https://www.medsafe.govt.nz/other/siteinfo.asp",
+      "local_retrieval_error": "HTTP Error 403: Forbidden",
+      "verification_route": "official_page_rendered_by_web_tool",
+      "content_sha256": null
+    },
+    {
+      "id": "pharmac",
+      "official_url": "https://www.pharmac.govt.nz/about-this-site/copyright",
+      "final_url": "https://www.pharmac.govt.nz/about-this-site/copyright",
+      "http_status": 200,
+      "content_sha256": "9f8cd1b6620682e77fea40341ff88ea570602c59365b25921caf1b7b73308206",
+      "verification_route": "official_page_and_direct_anonymous_http"
+    },
+    {
+      "id": "nzf",
+      "official_url": "https://nzformulary.org/faq.html",
+      "final_url": "https://nzformulary.org/faq.html",
+      "http_status": 200,
+      "content_sha256": "df87d0f1976fb658ba0938f5af14e3dee2e631f2ed7cc59f5de52473d8182825",
+      "verification_route": "official_page_and_direct_anonymous_http"
+    },
+    {
+      "id": "rxnorm",
+      "official_url": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/termsofservice.html",
+      "final_url": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/termsofservice.html",
+      "http_status": 200,
+      "content_sha256": "c92d6431b4699e1ff8a533f1f4a2a7f529c5bc201114f4179d763c7aec4b4229",
+      "verification_route": "official_page_and_direct_anonymous_http"
+    },
+    {
+      "id": "snomed",
+      "official_url": "https://www.snomed.org/get-snomed",
+      "final_url": "https://www.snomed.org/get-snomed",
+      "http_status": 200,
+      "content_sha256": "43ce98beed5bb969b4f7da5e63e0fa9365fabc4f5b42b1eaac5a5526663d682e",
+      "verification_route": "official_page_and_direct_anonymous_http"
+    },
+    {
+      "id": "snomed-gps",
+      "official_url": "https://docs.snomed.org/implementation-guides/gps-implementation-guide/technical-application",
+      "local_retrieval_error": "HTTP Error 403: Forbidden",
+      "verification_route": "official_page_rendered_by_web_tool",
+      "content_sha256": null
+    }
+  ],
+  "approved_public_software": {
+    "manifest": "quality/qualifications/nz-public-artifact-manifest-20260821.json",
+    "manifest_sha256": "04e7330c20cc5fcf0b450050cc7de78830d8b8277201ae71621efbb135f034c3",
+    "file_count": 15,
+    "all_hashes_match": true,
+    "public_git_commit": "495f08c34092137df0e86de703c22fe379d50d4a"
+  },
+  "approved_public_data_reuse": {
+    "observed_at": "2026-11-02T09:55:41.187751+00:00",
+    "dataset": "edithatogo/global-medicines-atlas-international-permissive-20260821",
+    "revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+    "manifest_sha256": "fc29fc2e7896ebcb066de3f4bc43b1cb480e78204f518a82f438a47227731148",
+    "anonymous": true,
+    "new_publication_performed": false,
+    "files": [
+      {
+        "source_id": "global-rxnorm",
+        "path": "data/global-rxnorm/rxcui-identifiers.json",
+        "sha256": "7cdb5e87850c463fbc6d9d428eee4d9c5693085b69f77c7b9c06bf6e6537321b",
+        "byte_count": 739441,
+        "rights": "NLM-created-RXCUI-identifiers-only",
+        "verified_anonymously": true
+      },
+      {
+        "source_id": "nz-pharmac-hml",
+        "path": "data/nz-pharmac-hml/HML-current.pdf",
+        "sha256": "24d2ee2bf5b580af45b118dd2bff11cf17fa9cd8d7346b0ac8f49871486c5869",
+        "byte_count": 1703334,
+        "rights": "CC-BY-4.0",
+        "verified_anonymously": true
+      },
+      {
+        "source_id": "nz-pharmac-schedule",
+        "path": "data/nz-pharmac-schedule/Schedule-current.pdf",
+        "sha256": "9df34e257a1deb5ec59f1e1d6d91b3076fed4dbbcc895ce0a60100ad6338e790",
+        "byte_count": 1737289,
+        "rights": "CC-BY-4.0",
+        "verified_anonymously": true
+      },
+      {
+        "source_id": "nz-pharmac-schedule-xml",
+        "path": "data/nz-pharmac-schedule-xml/Schedule_2026-08.xml",
+        "sha256": "e1627e6553ed5ea3bdee193a3286f52db97acfbc1ec7cb82657714bc1bb08f5c",
+        "byte_count": 2876983,
+        "rights": "CC-BY-4.0",
+        "verified_anonymously": true
+      },
+      {
+        "source_id": "us-rxnorm-api",
+        "path": "data/us-rxnorm-api/rxcui-identifiers.json",
+        "sha256": "7cdb5e87850c463fbc6d9d428eee4d9c5693085b69f77c7b9c06bf6e6537321b",
+        "byte_count": 739441,
+        "rights": "NLM-created-RXCUI-identifiers-only",
+        "verified_anonymously": true
+      }
+    ],
+    "repository_private": false,
+    "repository_gated": false
+  },
+  "historical_inventory": {
+    "path": "conductor/archive/nzmedicines_migration_20260727/nz-asset-inventory.json",
+    "sha256": "87cf461263bf4af20f4fc43ac3539561d46da58500d454ceaf2af3b4fb39bee0",
+    "asset_count": 162,
+    "current_checkout_present_count": 4,
+    "families": {
+      "upstream_workflow": 1,
+      "upstream_generated_index": 3,
+      "upstream_fhir_document_reference": 4,
+      "upstream_fhir_medication": 14,
+      "upstream_design_rationale": 1,
+      "upstream_fhir_substance": 2,
+      "derived_comparison": 1,
+      "implementation_support": 9,
+      "curated_sample": 2,
+      "medsafe_derived_export": 7,
+      "database_sidecar": 2,
+      "legacy_derived_database": 1,
+      "release_archive": 2,
+      "nzmt_supporting_source": 10,
+      "governance_and_schema_documentation": 26,
+      "nzmt_hierarchy_source": 19,
+      "terminology_mapping_source": 12,
+      "funding_formulary_source": 22,
+      "medsafe_regulatory_source": 19,
+      "nz_fhir_adapter": 2,
+      "nzmt_ingestor": 3
+    },
+    "assets": [
+      {
+        "path": "vendor/nzmedicines/.github/workflows/regenerate-indexes.yml",
+        "family": "upstream_workflow",
+        "historical_scope": "upstream",
+        "historical_sha256": "30c51d73ec0b1a5e458bbbf5a899f99e19d5394c56edee9253f3f83d2883aef4",
+        "present_in_current_checkout": false,
+        "rights_decision": "Maintainer-owned code may be published; historical workflow remains superseded",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "vendor/nzmedicines/document-references/index.txt",
+        "family": "upstream_generated_index",
+        "historical_scope": "upstream",
+        "historical_sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+        "present_in_current_checkout": false,
+        "rights_decision": "Generated metadata does not license referenced payloads",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "vendor/nzmedicines/document-references/nzf-monograph-ibuprofen-adult.json",
+        "family": "upstream_fhir_document_reference",
+        "historical_scope": "upstream",
+        "historical_sha256": "ed0dc02b8d809f5ea29b1139222a76ca37236da97ce7bea2437da72d956561ff",
+        "present_in_current_checkout": false,
+        "rights_decision": "References only; NZF linked content has confirmed geographic licensing restrictions",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "vendor/nzmedicines/document-references/nzf-monograph-paracetamol-adult.json",
+        "family": "upstream_fhir_document_reference",
+        "historical_scope": "upstream",
+        "historical_sha256": "e5d5028140301ab61fec4b0078960faa1e74522bf5189a946d5e743c206157b3",
+        "present_in_current_checkout": false,
+        "rights_decision": "References only; NZF linked content has confirmed geographic licensing restrictions",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "vendor/nzmedicines/document-references/nzf-pil-ibuprofen.json",
+        "family": "upstream_fhir_document_reference",
+        "historical_scope": "upstream",
+        "historical_sha256": "310e871d53382f8d773878ddf910b492dc2af897ea37d5624203e91a0990e74e",
+        "present_in_current_checkout": false,
+        "rights_decision": "References only; NZF linked content has confirmed geographic licensing restrictions",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "vendor/nzmedicines/document-references/nzf-pil-paracetamol.json",
+        "family": "upstream_fhir_document_reference",
+        "historical_scope": "upstream",
+        "historical_sha256": "345de31ea02801a3c6e8a6e10c5e5f85d8f1b6f054eae6336910850dc71fb9c9",
+        "present_in_current_checkout": false,
+        "rights_decision": "References only; NZF linked content has confirmed geographic licensing restrictions",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "vendor/nzmedicines/medications/10013261000116103-ibuprofen_200_mg_tablet.json",
+        "family": "upstream_fhir_medication",
+        "historical_scope": "upstream",
+        "historical_sha256": "0bd581fbc8763bbea07e63acfd93b01fcadf91f71a604f70b3ebd36dcaaa2d45",
+        "present_in_current_checkout": false,
+        "rights_decision": "Mixed source projection; apply NZULM and any separate terminology conditions; not an unrestricted terminology grant",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "vendor/nzmedicines/medications/10013271000116100-ibuprofen_400_mg_tablet.json",
+        "family": "upstream_fhir_medication",
+        "historical_scope": "upstream",
+        "historical_sha256": "e0b8082bc15d284ed59c34c3ed0deb86f201342b1ab9e8bc264d7d8f87db2ad6",
+        "present_in_current_checkout": false,
+        "rights_decision": "Mixed source projection; apply NZULM and any separate terminology conditions; not an unrestricted terminology grant",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "vendor/nzmedicines/medications/10013281000116102-ibuprofen_200_mg_tablet_24_tablets.json",
+        "family": "upstream_fhir_medication",
+        "historical_scope": "upstream",
+        "historical_sha256": "30b1ec61ded5b44405c1677ec11d4b544829140ecf9437de90f8523d8570f186",
+        "present_in_current_checkout": false,
+        "rights_decision": "Mixed source projection; apply NZULM and any separate terminology conditions; not an unrestricted terminology grant",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "vendor/nzmedicines/medications/10013291000116104-ibuprofen_400_mg_tablet_100_tablets.json",
+        "family": "upstream_fhir_medication",
+        "historical_scope": "upstream",
+        "historical_sha256": "8767b5a9db527cfe06e7525caa97fe5eb41b4e3acb43c205a3f01af9e191a2c8",
+        "present_in_current_checkout": false,
+        "rights_decision": "Mixed source projection; apply NZULM and any separate terminology conditions; not an unrestricted terminology grant",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "vendor/nzmedicines/medications/10037191000116105-paracetamol.json",
+        "family": "upstream_fhir_medication",
+        "historical_scope": "upstream",
+        "historical_sha256": "4be16bb9fd4a36c83247fa2792e858d0f0d7d94e8fb0ebe958da7864f901484f",
+        "present_in_current_checkout": false,
+        "rights_decision": "Mixed source projection; apply NZULM and any separate terminology conditions; not an unrestricted terminology grant",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "vendor/nzmedicines/medications/10037271000116101-paracetamol_120_mg_5_mL_oral_liquid.json",
+        "family": "upstream_fhir_medication",
+        "historical_scope": "upstream",
+        "historical_sha256": "2b4efd903f32a62d7ae1a5cee36f492a1991a54de5e691a81fa9cba73397947c",
+        "present_in_current_checkout": false,
+        "rights_decision": "Mixed source projection; apply NZULM and any separate terminology conditions; not an unrestricted terminology grant",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "vendor/nzmedicines/medications/10194111000116109-warfarin/10194171000116101-coumadin.json",
+        "family": "upstream_fhir_medication",
+        "historical_scope": "upstream",
+        "historical_sha256": "307ababf911a359df863ede6f91ce130d3c8180a5d60e7a6a3b441cbd375eb04",
+        "present_in_current_checkout": false,
+        "rights_decision": "Mixed source projection; apply NZULM and any separate terminology conditions; not an unrestricted terminology grant",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "vendor/nzmedicines/medications/10194111000116109-warfarin/10429461000116106-marevan.json",
+        "family": "upstream_fhir_medication",
+        "historical_scope": "upstream",
+        "historical_sha256": "3980a4b7d43b0d272e586848572cfe901075551f36b0e5ff93122cb397178a9e",
+        "present_in_current_checkout": false,
+        "rights_decision": "Mixed source projection; apply NZULM and any separate terminology conditions; not an unrestricted terminology grant",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "vendor/nzmedicines/medications/10194111000116109-warfarin/_index.json",
+        "family": "upstream_generated_index",
+        "historical_scope": "upstream",
+        "historical_sha256": "eba7a44a3a6dc0b027cc038ec6348e62630b027a011e0a4119b82bcc3f8dc7cb",
+        "present_in_current_checkout": false,
+        "rights_decision": "Generated metadata does not license referenced payloads",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "vendor/nzmedicines/medications/10194111000116109-warfarin/generic.json",
+        "family": "upstream_fhir_medication",
+        "historical_scope": "upstream",
+        "historical_sha256": "814b3a97c2f933449c0f2ed980e0ba27dc5c1d1db0a4ca900669e2998f716456",
+        "present_in_current_checkout": false,
+        "rights_decision": "Mixed source projection; apply NZULM and any separate terminology conditions; not an unrestricted terminology grant",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "vendor/nzmedicines/medications/10527591000116101-paracetamol_500_mg_tablet_100_tablets.json",
+        "family": "upstream_fhir_medication",
+        "historical_scope": "upstream",
+        "historical_sha256": "79c4cab778c19a27004b6ddb441a01a980fc845fa1c8a3511fe21177343468b5",
+        "present_in_current_checkout": false,
+        "rights_decision": "Mixed source projection; apply NZULM and any separate terminology conditions; not an unrestricted terminology grant",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "vendor/nzmedicines/medications/44282231000116104-paracetamol_500_mg_tablet.json",
+        "family": "upstream_fhir_medication",
+        "historical_scope": "upstream",
+        "historical_sha256": "99a3c061661054ce348f5490377a48db03d2399f2496ccf9874c73510b0b233b",
+        "present_in_current_checkout": false,
+        "rights_decision": "Mixed source projection; apply NZULM and any separate terminology conditions; not an unrestricted terminology grant",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "vendor/nzmedicines/medications/50013251000116105-Nurofen_200_mg_tablet_film-coated_24_tablets_blister_pack.json",
+        "family": "upstream_fhir_medication",
+        "historical_scope": "upstream",
+        "historical_sha256": "ad718712bc732ed6f6999bb66a6efec67bd6bb2cc6d7a910c9f5c8f953fd5df2",
+        "present_in_current_checkout": false,
+        "rights_decision": "Mixed source projection; apply NZULM and any separate terminology conditions; not an unrestricted terminology grant",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "vendor/nzmedicines/medications/50013261000116102-Brufen_400_mg_tablet_100_tablets_bottle.json",
+        "family": "upstream_fhir_medication",
+        "historical_scope": "upstream",
+        "historical_sha256": "b528365d23cb69b1a54af465c8291e871fe95cd9ec4dca2e1203f26d91d8785c",
+        "present_in_current_checkout": false,
+        "rights_decision": "Mixed source projection; apply NZULM and any separate terminology conditions; not an unrestricted terminology grant",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "vendor/nzmedicines/medications/50066491000116104-Panadol_500_mg_tablet_film-coated_100_tablets_bottle.json",
+        "family": "upstream_fhir_medication",
+        "historical_scope": "upstream",
+        "historical_sha256": "d1e5cf114f76c476f72d61b730aae7d5475e96b8a25767429a758f5091605226",
+        "present_in_current_checkout": false,
+        "rights_decision": "Mixed source projection; apply NZULM and any separate terminology conditions; not an unrestricted terminology grant",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "vendor/nzmedicines/readme.md",
+        "family": "upstream_design_rationale",
+        "historical_scope": "upstream",
+        "historical_sha256": "28cc4cfa352266968cce4a329964266ea55c5fc9716d8d6c1704a6108f3cdad7",
+        "present_in_current_checkout": false,
+        "rights_decision": "Maintainer-owned rationale may be published; source licences remain separate",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "vendor/nzmedicines/substance/2211011000036101-ibuprofen.json",
+        "family": "upstream_fhir_substance",
+        "historical_scope": "upstream",
+        "historical_sha256": "5c5330d0493775d54ecf66a5cbe8615148810825feb2ba9417399cc9155ebb8c",
+        "present_in_current_checkout": false,
+        "rights_decision": "Source projection; apply NZULM and any separate terminology conditions",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "vendor/nzmedicines/substance/2442011000036104-paracetamol.json",
+        "family": "upstream_fhir_substance",
+        "historical_scope": "upstream",
+        "historical_sha256": "6523cbfef2c995898ebd55a28d3db2d4b38c2d9bb00f78e35f9cdb80ba248e6e",
+        "present_in_current_checkout": false,
+        "rights_decision": "Source projection; apply NZULM and any separate terminology conditions",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "vendor/nzmedicines/substance/substance.txt",
+        "family": "upstream_generated_index",
+        "historical_scope": "upstream",
+        "historical_sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+        "present_in_current_checkout": false,
+        "rights_decision": "Generated metadata does not license referenced payloads",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "comparisons/atc_enriched/medsafe_products_with_atc.csv",
+        "family": "derived_comparison",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Mixed derivative; retain source-specific Medsafe and terminology conditions",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "docs/adr/004-nzulm-integration.md",
+        "family": "implementation_support",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "First-party software may be published under Apache-2.0; no source data licence inferred",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "docs/medsafe_sqlite.md",
+        "family": "implementation_support",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "First-party software may be published under Apache-2.0; no source data licence inferred",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "docs/nzulm_2023_integration.md",
+        "family": "implementation_support",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "First-party software may be published under Apache-2.0; no source data licence inferred",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "medsafe_applications_paracetamol.csv",
+        "family": "curated_sample",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Retain applicable Medsafe source conditions; no unrestricted relicensing",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "medsafe_exports/medsafe.sqlite",
+        "family": "medsafe_derived_export",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Retain Medsafe noncommercial use conditions and source provenance",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "medsafe_exports/medsafe.sqlite-shm",
+        "family": "database_sidecar",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Ephemeral database state; excluded from publication",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "medsafe_exports/medsafe.sqlite-wal",
+        "family": "database_sidecar",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Ephemeral database state; excluded from publication",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "medsafe_exports/medsafe_applications.csv",
+        "family": "medsafe_derived_export",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Retain Medsafe noncommercial use conditions and source provenance",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "medsafe_exports/medsafe_applications.parquet",
+        "family": "medsafe_derived_export",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Retain Medsafe noncommercial use conditions and source provenance",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "medsafe_exports/medsafe_applications.xlsx",
+        "family": "medsafe_derived_export",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Retain Medsafe noncommercial use conditions and source provenance",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "medsafe_exports/medsafe_products.csv",
+        "family": "medsafe_derived_export",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Retain Medsafe noncommercial use conditions and source provenance",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "medsafe_exports/medsafe_products.parquet",
+        "family": "medsafe_derived_export",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Retain Medsafe noncommercial use conditions and source provenance",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "medsafe_exports/medsafe_products.xlsx",
+        "family": "medsafe_derived_export",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Retain Medsafe noncommercial use conditions and source provenance",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "medsafe_products_paracetamol.csv",
+        "family": "curated_sample",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Retain applicable Medsafe source conditions; no unrestricted relicensing",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm.db",
+        "family": "legacy_derived_database",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Mixed derivative; requires field-level source/rights manifest before publication",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023.zip",
+        "family": "release_archive",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Mixed container; requires member-level applicable notices before publication",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/abbreviations_dump.csv",
+        "family": "nzmt_supporting_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; retain source-specific supplier terms",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/Basis_of_Strength_Substance_Information_20Mar12.docx",
+        "family": "governance_and_schema_documentation",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Package/source-specific notices remain authoritative; no assumed transfer of supplier copyright",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/Change Report 231127.xlsx",
+        "family": "governance_and_schema_documentation",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Package/source-specific notices remain authoritative; no assumed transfer of supplier copyright",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/charting_term_index_dump.csv",
+        "family": "nzmt_supporting_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; retain source-specific supplier terms",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/CT_dump.csv",
+        "family": "nzmt_hierarchy_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; package terms and supplier notices required; not full SNOMED permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/CTPP_dump.csv",
+        "family": "nzmt_hierarchy_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; package terms and supplier notices required; not full SNOMED permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ctpp_pharmacodes_dump.csv",
+        "family": "terminology_mapping_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Separate terminology terms apply; full SNOMED/AMT semantic content cannot be unrestricted; NLM core RxNorm is public domain; GPS is a separate CC BY exception",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ctpp_related_ids.csv",
+        "family": "terminology_mapping_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Separate terminology terms apply; full SNOMED/AMT semantic content cannot be unrestricted; NLM core RxNorm is public domain; GPS is a separate CC BY exception",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/description_types_dump.csv",
+        "family": "nzmt_supporting_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; retain source-specific supplier terms",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/descriptions_dump.csv",
+        "family": "nzmt_supporting_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; retain source-specific supplier terms",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/doseform_dump.csv",
+        "family": "nzmt_supporting_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; retain source-specific supplier terms",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/flags_dump.csv",
+        "family": "nzmt_supporting_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; retain source-specific supplier terms",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/gtins_dump.csv",
+        "family": "terminology_mapping_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Separate terminology terms apply; full SNOMED/AMT semantic content cannot be unrestricted; NLM core RxNorm is public domain; GPS is a separate CC BY exception",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/gtins_extended_dump.csv",
+        "family": "terminology_mapping_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Separate terminology terms apply; full SNOMED/AMT semantic content cannot be unrestricted; NLM core RxNorm is public domain; GPS is a separate CC BY exception",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/hml_atc_dump.csv",
+        "family": "funding_formulary_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM supplier Pharmac terms; permitted with attribution and supplied licence retained",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/hml_brand_dump.csv",
+        "family": "funding_formulary_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM supplier Pharmac terms; permitted with attribution and supplied licence retained",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/hml_cfbp_dump.csv",
+        "family": "funding_formulary_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM supplier Pharmac terms; permitted with attribution and supplied licence retained",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/hml_chemical_dump.csv",
+        "family": "funding_formulary_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM supplier Pharmac terms; permitted with attribution and supplied licence retained",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/hml_formulation_dump.csv",
+        "family": "funding_formulary_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM supplier Pharmac terms; permitted with attribution and supplied licence retained",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/hml_note_dump.csv",
+        "family": "funding_formulary_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM supplier Pharmac terms; permitted with attribution and supplied licence retained",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/hml_pack_dump.csv",
+        "family": "funding_formulary_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM supplier Pharmac terms; permitted with attribution and supplied licence retained",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/hml_request_dump.csv",
+        "family": "funding_formulary_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM supplier Pharmac terms; permitted with attribution and supplied licence retained",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/hml_rule_dump.csv",
+        "family": "funding_formulary_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM supplier Pharmac terms; permitted with attribution and supplied licence retained",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/hml_schedule_dump.csv",
+        "family": "funding_formulary_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM supplier Pharmac terms; permitted with attribution and supplied licence retained",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/IMPORTANT_Read this before using the NZULM data download.docx",
+        "family": "governance_and_schema_documentation",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Package/source-specific notices remain authoritative; no assumed transfer of supplier copyright",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/IMPORTANT_Read this before using the NZULM data download.pdf",
+        "family": "governance_and_schema_documentation",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Package/source-specific notices remain authoritative; no assumed transfer of supplier copyright",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/LBL160 Label Terms notes.docx",
+        "family": "governance_and_schema_documentation",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Package/source-specific notices remain authoritative; no assumed transfer of supplier copyright",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/LBL160 Label Terms notes.pdf",
+        "family": "governance_and_schema_documentation",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Package/source-specific notices remain authoritative; no assumed transfer of supplier copyright",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/medsafe_restrictions_dump.csv",
+        "family": "medsafe_regulatory_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Academic/personal/clinical reuse permitted; commercial reuse requires permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/MHM_dump.csv",
+        "family": "nzmt_hierarchy_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; package terms and supplier notices required; not full SNOMED permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/MP_dump.csv",
+        "family": "nzmt_hierarchy_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; package terms and supplier notices required; not full SNOMED permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/MP_has_substance_dump.csv",
+        "family": "nzmt_hierarchy_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; package terms and supplier notices required; not full SNOMED permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/MPP_dump.csv",
+        "family": "nzmt_hierarchy_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; package terms and supplier notices required; not full SNOMED permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/MPUU_dump.csv",
+        "family": "nzmt_hierarchy_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; package terms and supplier notices required; not full SNOMED permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/MPUUSAI_dump.csv",
+        "family": "nzmt_hierarchy_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; package terms and supplier notices required; not full SNOMED permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ms_alias_dump.csv",
+        "family": "medsafe_regulatory_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Academic/personal/clinical reuse permitted; commercial reuse requires permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ms_application_dump.csv",
+        "family": "medsafe_regulatory_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Academic/personal/clinical reuse permitted; commercial reuse requires permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ms_classification_dump.csv",
+        "family": "medsafe_regulatory_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Academic/personal/clinical reuse permitted; commercial reuse requires permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ms_component_dump.csv",
+        "family": "medsafe_regulatory_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Academic/personal/clinical reuse permitted; commercial reuse requires permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ms_dataset_dump.csv",
+        "family": "medsafe_regulatory_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Academic/personal/clinical reuse permitted; commercial reuse requires permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ms_ingredient_dump.csv",
+        "family": "medsafe_regulatory_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Academic/personal/clinical reuse permitted; commercial reuse requires permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ms_ingredient_type_dump.csv",
+        "family": "medsafe_regulatory_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Academic/personal/clinical reuse permitted; commercial reuse requires permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ms_name_and_address_dump.csv",
+        "family": "medsafe_regulatory_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Academic/personal/clinical reuse permitted; commercial reuse requires permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ms_pack_shelf_life_dump.csv",
+        "family": "medsafe_regulatory_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Academic/personal/clinical reuse permitted; commercial reuse requires permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ms_package_dump.csv",
+        "family": "medsafe_regulatory_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Academic/personal/clinical reuse permitted; commercial reuse requires permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ms_prod_atc_dump.csv",
+        "family": "medsafe_regulatory_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Academic/personal/clinical reuse permitted; commercial reuse requires permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ms_prod_report_dump.csv",
+        "family": "medsafe_regulatory_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Academic/personal/clinical reuse permitted; commercial reuse requires permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ms_product_dump.csv",
+        "family": "medsafe_regulatory_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Academic/personal/clinical reuse permitted; commercial reuse requires permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ms_production_chain_dump.csv",
+        "family": "medsafe_regulatory_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Academic/personal/clinical reuse permitted; commercial reuse requires permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ms_route_of_admin_dump.csv",
+        "family": "medsafe_regulatory_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Academic/personal/clinical reuse permitted; commercial reuse requires permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ms_substance_dump.csv",
+        "family": "medsafe_regulatory_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Academic/personal/clinical reuse permitted; commercial reuse requires permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ms_substance_name_dump.csv",
+        "family": "medsafe_regulatory_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Academic/personal/clinical reuse permitted; commercial reuse requires permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ms_substance_sct_dump.csv",
+        "family": "medsafe_regulatory_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Academic/personal/clinical reuse permitted; commercial reuse requires permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/MSP_dump.csv",
+        "family": "nzmt_hierarchy_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; package terms and supplier notices required; not full SNOMED permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/NZMT to SNOMED CT international edition map analysts guide version 2.docx",
+        "family": "terminology_mapping_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Separate terminology terms apply; full SNOMED/AMT semantic content cannot be unrestricted; NLM core RxNorm is public domain; GPS is a separate CC BY exception",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/NZMT to SNOMED CT international edition map analysts guide version 2.pdf",
+        "family": "terminology_mapping_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Separate terminology terms apply; full SNOMED/AMT semantic content cannot be unrestricted; NLM core RxNorm is public domain; GPS is a separate CC BY exception",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/nzmt_atc_codes_dump.csv",
+        "family": "terminology_mapping_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Separate terminology terms apply; full SNOMED/AMT semantic content cannot be unrestricted; NLM core RxNorm is public domain; GPS is a separate CC BY exception",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/nzmt_atc_links_dump.csv",
+        "family": "terminology_mapping_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Separate terminology terms apply; full SNOMED/AMT semantic content cannot be unrestricted; NLM core RxNorm is public domain; GPS is a separate CC BY exception",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/nzmt_pharmac_subsidy_codes_dump.csv",
+        "family": "funding_formulary_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM supplier Pharmac terms; permitted with attribution and supplied licence retained",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/nzmt_status_codes_dump.csv",
+        "family": "nzmt_supporting_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; retain source-specific supplier terms",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/nzmt_to_snomed_ct_international_edition_map_dump.csv",
+        "family": "terminology_mapping_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Separate terminology terms apply; full SNOMED/AMT semantic content cannot be unrestricted; NLM core RxNorm is public domain; GPS is a separate CC BY exception",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/NZULM - Getting Started.docx",
+        "family": "governance_and_schema_documentation",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Package/source-specific notices remain authoritative; no assumed transfer of supplier copyright",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/NZULM - Getting Started.pdf",
+        "family": "governance_and_schema_documentation",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Package/source-specific notices remain authoritative; no assumed transfer of supplier copyright",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/NZULM Data Overview - SNOMED-CT Mapping Table.docx",
+        "family": "terminology_mapping_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Separate terminology terms apply; full SNOMED/AMT semantic content cannot be unrestricted; NLM core RxNorm is public domain; GPS is a separate CC BY exception",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/NZULM Data Overview - SNOMED-CT Mapping Table.pdf",
+        "family": "terminology_mapping_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Separate terminology terms apply; full SNOMED/AMT semantic content cannot be unrestricted; NLM core RxNorm is public domain; GPS is a separate CC BY exception",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/NZULM Data Overview v2.12.8.0.docx",
+        "family": "governance_and_schema_documentation",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Package/source-specific notices remain authoritative; no assumed transfer of supplier copyright",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/NZULM Data Overview v2.12.8.0.pdf",
+        "family": "governance_and_schema_documentation",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Package/source-specific notices remain authoritative; no assumed transfer of supplier copyright",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/NZULM Data Overview v3.8.2.0.docx",
+        "family": "governance_and_schema_documentation",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Package/source-specific notices remain authoritative; no assumed transfer of supplier copyright",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/NZULM Data Overview v3.8.2.0.pdf",
+        "family": "governance_and_schema_documentation",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Package/source-specific notices remain authoritative; no assumed transfer of supplier copyright",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/NZULM disclaimer statement.txt",
+        "family": "governance_and_schema_documentation",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Package/source-specific notices remain authoritative; no assumed transfer of supplier copyright",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/NZULM Information ownership statement.txt",
+        "family": "governance_and_schema_documentation",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Package/source-specific notices remain authoritative; no assumed transfer of supplier copyright",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/NZULM MYSQL Schema v2.12.0.0.txt",
+        "family": "governance_and_schema_documentation",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Package/source-specific notices remain authoritative; no assumed transfer of supplier copyright",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/NZULM MYSQL Schema v3.8.0.0.txt",
+        "family": "governance_and_schema_documentation",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Package/source-specific notices remain authoritative; no assumed transfer of supplier copyright",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/NZULM Release Notes December 2023 v2.12.27.2.docx",
+        "family": "governance_and_schema_documentation",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Package/source-specific notices remain authoritative; no assumed transfer of supplier copyright",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/NZULM Release Notes December 2023 v2.12.27.2.pdf",
+        "family": "governance_and_schema_documentation",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Package/source-specific notices remain authoritative; no assumed transfer of supplier copyright",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/NZULM Release Notes November 2023 v2.12.26.1.docx",
+        "family": "governance_and_schema_documentation",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Package/source-specific notices remain authoritative; no assumed transfer of supplier copyright",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/NZULM Release Notes November 2023 v2.12.26.1.pdf",
+        "family": "governance_and_schema_documentation",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Package/source-specific notices remain authoritative; no assumed transfer of supplier copyright",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/nzulm_2023.zip",
+        "family": "release_archive",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Mixed container; requires member-level applicable notices before publication",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/partition_code_mapping table definition.docx",
+        "family": "governance_and_schema_documentation",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Package/source-specific notices remain authoritative; no assumed transfer of supplier copyright",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/partition_code_mapping table definition.pdf",
+        "family": "governance_and_schema_documentation",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Package/source-specific notices remain authoritative; no assumed transfer of supplier copyright",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/partition_code_mapping_dump.csv",
+        "family": "nzmt_supporting_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; retain source-specific supplier terms",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/PF_dump.csv",
+        "family": "nzmt_hierarchy_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; package terms and supplier notices required; not full SNOMED permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/PMI_dump.csv",
+        "family": "nzmt_hierarchy_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; package terms and supplier notices required; not full SNOMED permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/preferredterm_index_dump.csv",
+        "family": "nzmt_supporting_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; retain source-specific supplier terms",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/prescribing_term_index_dump.csv",
+        "family": "nzmt_supporting_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; retain source-specific supplier terms",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/prescribing_term_selection_list_dump.csv",
+        "family": "funding_formulary_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM supplier Pharmac terms; permitted with attribution and supplied licence retained",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ps_atc_dump.csv",
+        "family": "funding_formulary_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM supplier Pharmac terms; permitted with attribution and supplied licence retained",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ps_brand_dump.csv",
+        "family": "funding_formulary_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM supplier Pharmac terms; permitted with attribution and supplied licence retained",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ps_cfbp_dump.csv",
+        "family": "funding_formulary_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM supplier Pharmac terms; permitted with attribution and supplied licence retained",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ps_chemical_dump.csv",
+        "family": "funding_formulary_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM supplier Pharmac terms; permitted with attribution and supplied licence retained",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ps_formulation_dump.csv",
+        "family": "funding_formulary_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM supplier Pharmac terms; permitted with attribution and supplied licence retained",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ps_note_dump.csv",
+        "family": "funding_formulary_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM supplier Pharmac terms; permitted with attribution and supplied licence retained",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ps_pack_dump.csv",
+        "family": "funding_formulary_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM supplier Pharmac terms; permitted with attribution and supplied licence retained",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ps_request_dump.csv",
+        "family": "funding_formulary_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM supplier Pharmac terms; permitted with attribution and supplied licence retained",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ps_rule_dump.csv",
+        "family": "funding_formulary_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM supplier Pharmac terms; permitted with attribution and supplied licence retained",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/ps_schedule_dump.csv",
+        "family": "funding_formulary_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM supplier Pharmac terms; permitted with attribution and supplied licence retained",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/PSRT_dump.csv",
+        "family": "nzmt_hierarchy_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; package terms and supplier notices required; not full SNOMED permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/substance_dump.csv",
+        "family": "nzmt_hierarchy_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; package terms and supplier notices required; not full SNOMED permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/The New Zealand Universal List of Medicines Tall Man lettering resource.docx",
+        "family": "governance_and_schema_documentation",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Package/source-specific notices remain authoritative; no assumed transfer of supplier copyright",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/The New Zealand Universal List of Medicines Tall Man lettering resource.pdf",
+        "family": "governance_and_schema_documentation",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Package/source-specific notices remain authoritative; no assumed transfer of supplier copyright",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/THT_dump.csv",
+        "family": "nzmt_hierarchy_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; package terms and supplier notices required; not full SNOMED permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/TP_dump.csv",
+        "family": "nzmt_hierarchy_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; package terms and supplier notices required; not full SNOMED permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/TPP_dump.csv",
+        "family": "nzmt_hierarchy_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; package terms and supplier notices required; not full SNOMED permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/TPUU_dump.csv",
+        "family": "nzmt_hierarchy_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; package terms and supplier notices required; not full SNOMED permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/UDFI_dump.csv",
+        "family": "nzmt_hierarchy_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; package terms and supplier notices required; not full SNOMED permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/UOM_dump.csv",
+        "family": "nzmt_hierarchy_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "NZULM conditional sharing; package terms and supplier notices required; not full SNOMED permission",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/Use Cases v3.docx",
+        "family": "governance_and_schema_documentation",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Package/source-specific notices remain authoritative; no assumed transfer of supplier copyright",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/version.txt",
+        "family": "governance_and_schema_documentation",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Package/source-specific notices remain authoritative; no assumed transfer of supplier copyright",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "nzulm_2023_data/who_atc_dump.csv",
+        "family": "terminology_mapping_source",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "Separate terminology terms apply; full SNOMED/AMT semantic content cannot be unrestricted; NLM core RxNorm is public domain; GPS is a separate CC BY exception",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "scripts/integrate_nzulm_2023.py",
+        "family": "implementation_support",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "First-party software may be published under Apache-2.0; no source data licence inferred",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "scripts/medsafe_scraper.py",
+        "family": "implementation_support",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "First-party software may be published under Apache-2.0; no source data licence inferred",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "scripts/refresh_medsafe_edges.sh",
+        "family": "implementation_support",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "First-party software may be published under Apache-2.0; no source data licence inferred",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "sources/nz/nzulm_fhir/__init__.py",
+        "family": "nz_fhir_adapter",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": true,
+        "rights_decision": "First-party code already included in the approved public software manifest",
+        "publication_status": "approved_software_in_git",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "sources/nz/nzulm_fhir/adapter.py",
+        "family": "nz_fhir_adapter",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": true,
+        "rights_decision": "First-party code already included in the approved public software manifest",
+        "publication_status": "approved_software_in_git",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "terminology/nzulm/__init__.py",
+        "family": "nzmt_ingestor",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "First-party software may be published under Apache-2.0; no source data licence inferred",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "terminology/nzulm/ingestor.py",
+        "family": "nzmt_ingestor",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "First-party software may be published under Apache-2.0; no source data licence inferred",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "terminology/nzulm/README.md",
+        "family": "nzmt_ingestor",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "First-party software may be published under Apache-2.0; no source data licence inferred",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "tests/test_nzulm_fhir_adapter.py",
+        "family": "implementation_support",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": true,
+        "rights_decision": "First-party software may be published under Apache-2.0; no source data licence inferred",
+        "publication_status": "approved_software_in_git",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "tests/test_nzulm_fhir_properties.py",
+        "family": "implementation_support",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": true,
+        "rights_decision": "First-party software may be published under Apache-2.0; no source data licence inferred",
+        "publication_status": "approved_software_in_git",
+        "payload_inspected_or_hydrated": false
+      },
+      {
+        "path": "tests/test_nzulm_ingestor.py",
+        "family": "implementation_support",
+        "historical_scope": "local",
+        "historical_sha256": null,
+        "present_in_current_checkout": false,
+        "rights_decision": "First-party software may be published under Apache-2.0; no source data licence inferred",
+        "publication_status": "not_republished; historical_inventory_only",
+        "payload_inspected_or_hydrated": false
+      }
+    ]
+  },
+  "confirmed_restrictions": [
+    "NZF licensed-content geographic access limits",
+    "Full SNOMED/AMT terminology licensing and deployment conditions; GPS is a separate open exception",
+    "Proprietary RxNorm source vocabularies retain source-specific restrictions; NLM-created names and codes are public domain",
+    "Medsafe commercial reuse requires written permission; academic/personal/clinical reuse is permitted with attribution"
+  ],
+  "availability_findings": {
+    "named_2023_archives_located": false,
+    "preserved_bundle_located": false,
+    "search": "Bounded metadata-only filename search of checkout estate, retained recovery area and existing OneDrive location; no hydration",
+    "interpretation": "Does not establish deletion, rights prohibition or current corpus coverage"
+  },
+  "all_source_payloads_published": false,
+  "coverage_complete": false,
+  "clinical_inference_permitted": false
+}
