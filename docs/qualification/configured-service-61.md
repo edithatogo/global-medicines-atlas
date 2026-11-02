@@ -59,6 +59,13 @@ the initial server extra; it is now explicit, and the consumer no longer masks
 that dependency with a concurrent federation-extra install. An offline lock attempt lacked cached metadata; the supported
 online lock refresh succeeded, changing only the project's new extra metadata.
 
+The [executed clean-artifact receipt](../../quality/qualifications/external-product-clean-start-20261102.json)
+binds the tested source commit/tree, Python/uv versions and both distribution
+hashes. Server-only installation, real loopback startup and HTTP checks passed
+for the wheel and sdist. This satisfies the first #61 gate for that candidate;
+all three external gates remain false. Required final-head CI independently
+builds and exercises the integrated candidate on Linux, macOS and Windows.
+
 ## Remaining external gates
 
 #61 stays open until these observations exist for the actual product deployment:
