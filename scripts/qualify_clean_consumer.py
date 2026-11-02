@@ -215,6 +215,69 @@ print(json.dumps({'atlas_page': 'passed', 'atlas_static_asset': 'passed'}, sort_
 """
 
 
+def _serving_probe(database: Path) -> str:
+    """Start the installed ASGI factory on loopback using synthetic data."""
+    server = """
+import asyncio, json, socket, sys
+from pathlib import Path
+import uvicorn
+from global_medicines_atlas.serving import create_app
+app = create_app()
+listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+listener.bind(("127.0.0.1", 0))
+listener.listen(128)
+Path(sys.argv[1]).write_text(json.dumps({
+    "url": f"http://127.0.0.1:{listener.getsockname()[1]}"
+}))
+server = uvicorn.Server(uvicorn.Config(
+    app, access_log=False, log_level="error"
+))
+asyncio.run(server.serve(sockets=[listener]))
+"""
+    template = """
+import json, os, subprocess, sys, tempfile, time
+from pathlib import Path
+from urllib.request import urlopen
+environment = dict(os.environ)
+environment["GMA_DATABASE_PATH"] = __DATABASE__
+environment["GMA_CURSOR_SECRET"] = "clean-consumer-synthetic-secret-only"
+with tempfile.TemporaryDirectory(prefix="gma-installed-serving-") as raw:
+    ready = Path(raw) / "ready.json"
+    process = subprocess.Popen(
+        [sys.executable, "-c", __SERVER__, str(ready)],
+        env=environment, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,
+    )
+    try:
+        deadline = time.monotonic() + 20
+        while not ready.exists():
+            if process.poll() is not None or time.monotonic() > deadline:
+                raise RuntimeError("Installed configured service did not start")
+            time.sleep(0.05)
+        url = json.loads(ready.read_text())["url"]
+        for path in ("/api/v1/health", "/api/v1/readiness", "/", "/static/atlas.css"):
+            with urlopen(url + path, timeout=10) as response:
+                assert response.status == 200
+                assert response.read()
+    finally:
+        process.terminate()
+        try:
+            process.communicate(timeout=10)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.communicate(timeout=10)
+print(json.dumps({
+    "configured_service_start": "passed",
+    "configured_service_http": "passed",
+    "configured_service_data_scope": "synthetic_fixture_only",
+    "live_deployment_verified": False,
+    "production_data_verified": False,
+}, sort_keys=True))
+"""
+    return template.replace("__DATABASE__", repr(str(database))).replace(
+        "__SERVER__", repr(server)
+    )
+
+
 def qualify(
     output: Path, *, research_export: Path | None = None
 ) -> dict[str, Any]:
@@ -300,14 +363,27 @@ def qualify(
                 "install",
                 "--python",
                 str(environment),
-                f"{artifact}[federation]",
+                f"{artifact}[federation,server]",
             ])
             atlas_probe = json.loads(
                 _run(["python", "-c", _atlas_probe()], environment=environment)
             )
+            serving_probe = json.loads(
+                _run(
+                    [
+                        "python",
+                        "-c",
+                        _serving_probe(
+                            Path(temporary) / "synthetic-atlas.duckdb"
+                        ),
+                    ],
+                    environment=environment,
+                )
+            )
             probe = {
                 **core_probe,
                 **atlas_probe,
+                **serving_probe,
                 **research_export_probe,
             }
             _run([

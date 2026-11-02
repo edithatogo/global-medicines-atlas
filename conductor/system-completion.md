@@ -105,3 +105,14 @@ coherent milestone. Existing protected CI lanes and final release checks remain
 in effect; policy, scheduling, and evidence edits do not by themselves require
 a full local suite. All rights, release, privacy, source integrity, and absolute
 outbound communications guardrails continue to apply.
+
+## Authorized #61 follow-up — 2 November 2026
+
+After the bounded checklist completed, the maintainer explicitly selected the
+simplest remaining issue and authorized its unblocked implementation, review
+and protected integration. #61 is selected for its finite external-product
+criteria. Scope is a configured packaged ASGI service and actual wheel/sdist
+startup verification using existing synthetic inputs. This does not reopen
+Australian federation, acquire sources or authorize a public deployment.
+Live deployment, canonical production-data and deployed-browser receipts remain
+mandatory; see [the scoped plan](../docs/qualification/configured-service-61.md).

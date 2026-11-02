@@ -34,6 +34,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+server = [
+  "uvicorn>=0.54,<0.55",
+]
 federation = [
   "jsonschema[format-nongpl]>=4.25",
 ]
