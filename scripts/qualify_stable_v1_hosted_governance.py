@@ -246,13 +246,13 @@ def _rest(
 def _mapping(value: JsonValue, label: str) -> dict[str, JsonValue]:
     if not isinstance(value, dict):
         raise TypeError(f"{label} must be an object")
-    return cast("dict[str, JsonValue]", value)
+    return value
 
 
 def _sequence(value: JsonValue, label: str) -> list[JsonValue]:
     if not isinstance(value, list):
         raise TypeError(f"{label} must be an array")
-    return cast("list[JsonValue]", value)
+    return value
 
 
 def _text(value: JsonValue, label: str) -> str:
@@ -439,7 +439,23 @@ def _graphql(
     if returncode or errors is not None:
         serialized = json.dumps(errors, sort_keys=True)
         unavailable = (
-            "FORBIDDEN" in serialized or "not have access" in serialized
+            isinstance(errors, list)
+            and bool(errors)
+            and all(
+                isinstance(item, dict)
+                and (
+                    (
+                        isinstance(item.get("type"), str)
+                        and item.get("type")
+                        in {"FORBIDDEN", "INSUFFICIENT_SCOPES"}
+                    )
+                    or (
+                        item.get("type") is None
+                        and "not have access" in str(item.get("message", ""))
+                    )
+                )
+                for item in errors
+            )
         )
         return make_observation(
             name=name,

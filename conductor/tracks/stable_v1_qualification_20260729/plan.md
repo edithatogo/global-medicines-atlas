@@ -1218,3 +1218,19 @@ and Stable v1 release conditions remain unchanged and open.
 - [x] PR #1378 merged at `f0b3de8b` after protected checks passed, closing
   the bounded software milestone. Stable promotion remains conditional on the
   Australian federation gate and the exact candidate verification requirements.
+
+## Repository estate and hardening reconciliation (2026-11-02)
+
+- [x] Preserve the reconciled branch/worktree estate in a verified Git bundle
+  and exact dirty-lane backups; retire stale worktrees and refs. The primary
+  checkout follows current main; no unique supported source work is discarded.
+- [x] Reconcile all 15 open issues against actual acceptance. Retain incomplete
+  live-source, rights, federation, recovery and stable-release requirements.
+- [x] Repair squash-only repository settings and retain a fresh governance
+  drift receipt. Project metadata remains permission-unavailable without
+  `read:project`; no new scope or project acceptance is inferred.
+- [x] Reproduce and fix GraphQL scope-denial classification, retaining failures
+  for mixed operational errors. Six regression cases are included in 83 passing checks; Ruff, ty and focused BasedPyright checks pass with zero diagnostics.
+- [~] Integrate the first Renovate patch PR #1394 after repairing its stale
+  monitoring digest, complete protected CI, and close only completed issues
+  #14, #81 and #82. The wider Stable v1 track remains incomplete.

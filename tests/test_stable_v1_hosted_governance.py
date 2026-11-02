@@ -10,6 +10,7 @@ import pytest
 import yaml
 from pydantic import JsonValue, ValidationError
 from scripts import prepare_codecov_cli
+from scripts import qualify_stable_v1_hosted_governance as runner
 from scripts.qualify_stable_v1_hosted_governance import check_artifacts
 
 from global_medicines_atlas.stable_v1_hosted_governance import (
@@ -868,3 +869,36 @@ def test_generated_json_schemas_validate_committed_artifacts() -> None:
         jsonschema.Draft202012Validator(schema).validate(
             json.loads(artifact_path.read_text(encoding="utf-8"))
         )
+
+
+@pytest.mark.parametrize(
+    ("error_types", "expected"),
+    [
+        (["INSUFFICIENT_SCOPES"], Availability.PERMISSION_UNAVAILABLE),
+        (["FORBIDDEN"], Availability.PERMISSION_UNAVAILABLE),
+        (["INTERNAL"], Availability.FAILED),
+        (["INSUFFICIENT_SCOPES", "INTERNAL"], Availability.FAILED),
+        (["FORBIDDEN", "INTERNAL"], Availability.FAILED),
+        ([[]], Availability.FAILED),
+    ],
+)
+def test_graphql_scope_denial_is_unavailable_without_accepting_other_errors(
+    monkeypatch: pytest.MonkeyPatch,
+    error_types: list[JsonValue],
+    expected: Availability,
+) -> None:
+    response = json.dumps({
+        "errors": [{"type": value} for value in error_types]
+    })
+    monkeypatch.setattr(
+        runner, "_gh", lambda *_args, **_kwargs: (1, response, "")
+    )
+    observation = runner._graphql(
+        name="project",
+        query_name="scope-probe",
+        query="query { viewer { login } }",
+        variables={},
+        normalize=lambda data: data,
+    )
+    assert observation.availability is expected
+    assert observation.data is None
