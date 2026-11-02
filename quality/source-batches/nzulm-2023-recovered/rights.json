@@ -1,0 +1,39 @@
+{
+  "schema_id": "global-medicines-atlas.nzulm-source-rights",
+  "schema_version": 1,
+  "reviewed_on": "2026-11-02",
+  "publication_approved_by": "repository_maintainer",
+  "source_package_usage_agreement_checked": true,
+  "data_relicensed_under_software_license": false,
+  "private_evidence_included": false,
+  "families": {
+    "nzulm-data-usage-agreement": {
+      "terms": "https://info.nzulm.org.nz/data-access",
+      "conditions": "Credit NZULM and information originators, retain source package agreement, disclaimer, ownership statement and all applicable supplier terms."
+    },
+    "pharmac-cc-by-3.0-nz-via-nzulm": {
+      "terms": "https://creativecommons.org/licenses/by/3.0/nz/",
+      "conditions": "Credit Pharmac and NZULM, link sources and licence, identify historical edition and preserve the supplied version of the licence."
+    },
+    "medsafe-academic-clinical-noncommercial": {
+      "terms": "https://www.medsafe.govt.nz/other/siteinfo.asp",
+      "conditions": "Credit Medsafe and NZULM. Personal, academic or clinical reproduction is permitted. Commercial use requires written permission. Sponsor documents and SMARS have separate conditions; SMARS is excluded."
+    },
+    "who-atc-noncommercial-no-modification": {
+      "terms": "https://atcddd.fhi.no/copyright_disclaimer/",
+      "conditions": "Credit WHO Collaborating Centre for Drug Statistics Methodology, Oslo, Norway, and NZULM. No commercial copying/distribution or modification. Preserve original bytes and all applicable Pharmac/Medsafe conditions for their ATC-linked rows."
+    }
+  },
+  "excluded": [
+    "Six exact SNOMED mapping/guide members named in manifest.json",
+    "Original mixed ZIP and backup containers",
+    "NZF licensed content, full SNOMED/AMT release content and proprietary RxNorm vocabulary",
+    "Private recovery paths, cloud identifiers, signed URLs, credentials and private evidence"
+  ],
+  "claims": {
+    "historical_research_only": true,
+    "current_clinical_status": false,
+    "coverage_complete": false,
+    "regulatory_or_funding_equivalence": false
+  }
+}

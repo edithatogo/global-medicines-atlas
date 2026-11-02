@@ -100,3 +100,16 @@ and Stable qualification remain deferred.
 See [the current review](../../../docs/migrations/nz-rights-review-20261102.md)
 and its hash-bound receipt. Missing local 2023 payloads are an availability
 finding, not a finding that NZULM or Pharmac prohibit redistribution.
+
+## Explicit recovery follow-up — 2 November 2026
+
+The maintainer separately authorized locating/recovering the historical 2023
+corpus, publishing permitted members through Actions and anonymous digest
+verification. The completed migration and #51 rights-review acceptance remain
+unchanged. See [the recovery plan and execution boundary](../../../docs/migrations/nzulm-2023-recovery-publication.md).
+
+Recovery located a valid independent ZIP after rejecting a zero-filled backup.
+All 108 members match recorded names/sizes; 102 members are prepared for
+publication and six SNOMED mapping/guide members are explicitly excluded.
+Hosted publication and its temporary protected read-URL handoff remain separate
+observable operations; local preparation is not a publication receipt.

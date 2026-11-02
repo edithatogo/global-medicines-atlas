@@ -1,0 +1,1015 @@
+{
+  "schema_id": "global-medicines-atlas.nzulm-2023-recovered-publication",
+  "schema_version": 1,
+  "publication_approved": true,
+  "approval_date": "2026-11-02",
+  "approval_scope": "Recover historical 2023 corpus and publish permitted members through GitHub Actions; preserve confirmed exclusions and private evidence",
+  "repository": "edithatogo/nzulm-2023-source-archive",
+  "source_archive": {
+    "filename": "nzulm_2023.zip",
+    "size_bytes": 36527993,
+    "sha256": "757fb82b383f8d4d67ad7a1f7e26c25c2eaf05081a80290f4849f586fe58ffd9",
+    "member_count": 108,
+    "included_in_publication": false
+  },
+  "source_version": {
+    "build_timestamp": "2023-11-27T11:56:38+13:00",
+    "pharmac_edition": "December 2023",
+    "pharmac_published_date": "2023-12-01"
+  },
+  "files": [
+    {
+      "member": "Basis_of_Strength_Substance_Information_20Mar12.docx",
+      "path": "data/Basis_of_Strength_Substance_Information_20Mar12.docx",
+      "size_bytes": 16679,
+      "sha256": "a6e1fd9e00c7daedecc21fbef8b4118dccc1eab0fcb66f5f0865a373fa547e8b",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "CTPP_dump.csv",
+      "path": "data/CTPP_dump.csv",
+      "size_bytes": 7037845,
+      "sha256": "fc04c44af6e9f9c9433046caea89e664f9329c185d84bf31fc20e6442d46501a",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "CT_dump.csv",
+      "path": "data/CT_dump.csv",
+      "size_bytes": 4664,
+      "sha256": "0d6211d54206ed159d183af303f3dcf7a2335b65e6ebba6373e55aa42b85d6ea",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "Change Report 231127.xlsx",
+      "path": "data/Change Report 231127.xlsx",
+      "size_bytes": 197351,
+      "sha256": "7bdce32cd7d00b75e986369af748d5406de6bb18cebc5e844bce20c9e69aebf8",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "IMPORTANT_Read this before using the NZULM data download.docx",
+      "path": "data/IMPORTANT_Read this before using the NZULM data download.docx",
+      "size_bytes": 20306,
+      "sha256": "f802cb57970d18d243704eb5ee370fea3c95aca5f47b6f6fd897582762c57691",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "IMPORTANT_Read this before using the NZULM data download.pdf",
+      "path": "data/IMPORTANT_Read this before using the NZULM data download.pdf",
+      "size_bytes": 75588,
+      "sha256": "06c7e618b2c270d26912909f04c80743869a75e7788aa8a28e88b10bb951848a",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "LBL160 Label Terms notes.docx",
+      "path": "data/LBL160 Label Terms notes.docx",
+      "size_bytes": 85293,
+      "sha256": "34d86943f43db0c4a48d636ba9ead7540ce4be92c238b72be80aebeeca68a54e",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "LBL160 Label Terms notes.pdf",
+      "path": "data/LBL160 Label Terms notes.pdf",
+      "size_bytes": 161343,
+      "sha256": "78474ba1741b9869f72e8b5ca72301e359ce6071cd26a22d3a25c8efacdbf90f",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "MHM_dump.csv",
+      "path": "data/MHM_dump.csv",
+      "size_bytes": 1518506,
+      "sha256": "e470b2186d75273edf9716865499b45dae7d4d1cdc8a0e3a283bf88510b38977",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "MPP_dump.csv",
+      "path": "data/MPP_dump.csv",
+      "size_bytes": 3684177,
+      "sha256": "4ae92e801f71a76aba3d758bdaa0ab29d84c81b556c70689ba81ed47ef75c2e0",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "MPUUSAI_dump.csv",
+      "path": "data/MPUUSAI_dump.csv",
+      "size_bytes": 3138559,
+      "sha256": "1f2498bde35b27df08ffc6118837a6fe88dc396249509d4a6a7643ef445ed4f2",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "MPUU_dump.csv",
+      "path": "data/MPUU_dump.csv",
+      "size_bytes": 2303755,
+      "sha256": "bb443ff863888673b74ed8f89d71e797d30c095ed7fda478f0b7ca81b8180f59",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "MP_dump.csv",
+      "path": "data/MP_dump.csv",
+      "size_bytes": 350397,
+      "sha256": "f0a8a339150f4ebf222d45f41b30f43ef6915ebf04e6255adcd47064d8d4d48d",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "MP_has_substance_dump.csv",
+      "path": "data/MP_has_substance_dump.csv",
+      "size_bytes": 311292,
+      "sha256": "1d75f7155a009931fe54de2241d807afc7a8eb393559174fda6eddb7931f4d82",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "MSP_dump.csv",
+      "path": "data/MSP_dump.csv",
+      "size_bytes": 120377,
+      "sha256": "ee0f8880f9cb36366b721ffbbfb07e75cc414dd35631818a9907eb2a4f74e27f",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "NZULM - Getting Started.docx",
+      "path": "data/NZULM - Getting Started.docx",
+      "size_bytes": 230068,
+      "sha256": "91fb53199cb85b8d17374782703bdddc49b3ea9da6f550df5be253547459e6a5",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "NZULM - Getting Started.pdf",
+      "path": "data/NZULM - Getting Started.pdf",
+      "size_bytes": 604321,
+      "sha256": "7f41d6de0444d6d692e220ad09132511bed70347ae2973124ac9336fdcc6a2e8",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "NZULM Data Overview v2.12.8.0.docx",
+      "path": "data/NZULM Data Overview v2.12.8.0.docx",
+      "size_bytes": 2718832,
+      "sha256": "97d57dd9e6bdf92cce3e1a7360abb84d9e2bd21a679cac85a1ca70a39194cbb0",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "NZULM Data Overview v2.12.8.0.pdf",
+      "path": "data/NZULM Data Overview v2.12.8.0.pdf",
+      "size_bytes": 975992,
+      "sha256": "372ed55307645805776ad32d66613bc48a9d55570d6731f8ed0fcc8e4604f193",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "NZULM Data Overview v3.8.2.0.docx",
+      "path": "data/NZULM Data Overview v3.8.2.0.docx",
+      "size_bytes": 3142818,
+      "sha256": "941bc04be3fe7174737c3eb22f3614b6a06d02af23c1a4829bb8a9772ef5136e",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "NZULM Data Overview v3.8.2.0.pdf",
+      "path": "data/NZULM Data Overview v3.8.2.0.pdf",
+      "size_bytes": 1187494,
+      "sha256": "77f68afb7273b6c18e8e63e207a735bf6a033ea3b972b4d2b13f812a091f9355",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "NZULM Information ownership statement.txt",
+      "path": "data/NZULM Information ownership statement.txt",
+      "size_bytes": 473,
+      "sha256": "9971fe33435a916932bcf3d3913abb408e6a33d5e63b9c1c95cc5816cd3335a9",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "NZULM MYSQL Schema v2.12.0.0.txt",
+      "path": "data/NZULM MYSQL Schema v2.12.0.0.txt",
+      "size_bytes": 47024,
+      "sha256": "a2e2dba25d3a27da875aaee464335a68378ff66bf97758eca6939c18e924a235",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "NZULM MYSQL Schema v3.8.0.0.txt",
+      "path": "data/NZULM MYSQL Schema v3.8.0.0.txt",
+      "size_bytes": 62534,
+      "sha256": "5b4592ea2f6b668176aa1264049d3631180f7437039aa90f6895f4dcee4ebc26",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "NZULM Release Notes December 2023 v2.12.27.2.docx",
+      "path": "data/NZULM Release Notes December 2023 v2.12.27.2.docx",
+      "size_bytes": 78096,
+      "sha256": "08824b702c3dd47998a75c2117e3814a3e45e1bf2699dd8e2bd13ad730c3fae7",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "NZULM Release Notes December 2023 v2.12.27.2.pdf",
+      "path": "data/NZULM Release Notes December 2023 v2.12.27.2.pdf",
+      "size_bytes": 209207,
+      "sha256": "f4e3a2b231e1522e1b3b6f31749b390ab6039f3ce6a1b5b80035a0c32eedd5ac",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "NZULM Release Notes November 2023 v2.12.26.1.docx",
+      "path": "data/NZULM Release Notes November 2023 v2.12.26.1.docx",
+      "size_bytes": 77545,
+      "sha256": "046818791c1c8787d4046aa1ab36256e404e124fea91b4886ae9ce35c24d0793",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "NZULM Release Notes November 2023 v2.12.26.1.pdf",
+      "path": "data/NZULM Release Notes November 2023 v2.12.26.1.pdf",
+      "size_bytes": 208483,
+      "sha256": "0b5bd5dc04a948fe94f54e36857af98969ab6f3ec0d0cbf5863ec560fe7bb4ca",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "NZULM disclaimer statement.txt",
+      "path": "data/NZULM disclaimer statement.txt",
+      "size_bytes": 627,
+      "sha256": "a8cc8d020a4266f1d408733cf6c335c67ce6ab643b321af27e86e355f4ac107f",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "PF_dump.csv",
+      "path": "data/PF_dump.csv",
+      "size_bytes": 1346,
+      "sha256": "815b1589fc6b490aa915287cc41627d15bb5f88759fdc37aaa2cfe2e77a0c862",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "PMI_dump.csv",
+      "path": "data/PMI_dump.csv",
+      "size_bytes": 220,
+      "sha256": "5cb2b423c5cfb0a471c64abf5bbe1c937e32d06244380b0710c5faf012ab12d0",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "PSRT_dump.csv",
+      "path": "data/PSRT_dump.csv",
+      "size_bytes": 703,
+      "sha256": "7054074e99b443a6b7d0f35d1074e3fbb7dec57d9a55975cc17917b6a650c847",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "THT_dump.csv",
+      "path": "data/THT_dump.csv",
+      "size_bytes": 2322808,
+      "sha256": "94959c88504f23f003ac3d01b62776aea0d6b326f00c03ec50deb9b7aa14f8a0",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "TPP_dump.csv",
+      "path": "data/TPP_dump.csv",
+      "size_bytes": 6574774,
+      "sha256": "33062fe8cf1aae1d66ba60353133e6cffa2563f71ffca1b07a5de525495ea094",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "TPUU_dump.csv",
+      "path": "data/TPUU_dump.csv",
+      "size_bytes": 4342593,
+      "sha256": "846a04f4e9535dd3c08fcc35ebbe533bdc409e3c57ef58ead81490f62d6d795b",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "TP_dump.csv",
+      "path": "data/TP_dump.csv",
+      "size_bytes": 678860,
+      "sha256": "44522271a07e04c68afa5fd7e3844bb2401adf9791ff13a926073a1fd43c1d59",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "The New Zealand Universal List of Medicines Tall Man lettering resource.docx",
+      "path": "data/The New Zealand Universal List of Medicines Tall Man lettering resource.docx",
+      "size_bytes": 42851,
+      "sha256": "ba6625fe634628cbf56508163bcd1ba605235852e9402ff1df936cb5d0747292",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "The New Zealand Universal List of Medicines Tall Man lettering resource.pdf",
+      "path": "data/The New Zealand Universal List of Medicines Tall Man lettering resource.pdf",
+      "size_bytes": 317735,
+      "sha256": "bbbab68469696dda5609e0a6bf8b27ca29dc8f28433a9d44d8ce3810825f31d7",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "UDFI_dump.csv",
+      "path": "data/UDFI_dump.csv",
+      "size_bytes": 280,
+      "sha256": "08e609e410dcf34dadb130aab67d0ab71ed63746374ede35a99c83fd39717950",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "UOM_dump.csv",
+      "path": "data/UOM_dump.csv",
+      "size_bytes": 12379,
+      "sha256": "6c1f7a9ae6e9a10d3f2d79c27a38f6c98093b236f8e461912dad973dd856940e",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "Use Cases v3.docx",
+      "path": "data/Use Cases v3.docx",
+      "size_bytes": 26878,
+      "sha256": "b1dca403c97290554b11c334d3c057c5635246de3f919e71a96aeba09234f43c",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "abbreviations_dump.csv",
+      "path": "data/abbreviations_dump.csv",
+      "size_bytes": 2447,
+      "sha256": "49ba4c7d69afb32d4e30f3050c5b2bcdc8e182c7d3965e85e46fd7002c31f79e",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "charting_term_index_dump.csv",
+      "path": "data/charting_term_index_dump.csv",
+      "size_bytes": 6628892,
+      "sha256": "3b22a05bef02c5693c2353cbd886394581f247b4495634d661ef285255c50e45",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "ctpp_pharmacodes_dump.csv",
+      "path": "data/ctpp_pharmacodes_dump.csv",
+      "size_bytes": 395896,
+      "sha256": "a7ca93b26afd8d21e2f0240b1c9f9c230503c4241268024374c44bcd1e315e71",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "ctpp_related_ids.csv",
+      "path": "data/ctpp_related_ids.csv",
+      "size_bytes": 12773922,
+      "sha256": "27b62086e5d663a8d07bf6d7e4c565145aa34fa3babcec4a9f7d6907d0ceae46",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "description_types_dump.csv",
+      "path": "data/description_types_dump.csv",
+      "size_bytes": 1518,
+      "sha256": "53784ae03f94632612274bed08d92763379da8c7c0402acb4a43eee9a002e230",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "descriptions_dump.csv",
+      "path": "data/descriptions_dump.csv",
+      "size_bytes": 55732292,
+      "sha256": "361e95f1591ecaa3a4a58da7923a6676fdbd90dc87cf1993c90e3755fba67cdb",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "doseform_dump.csv",
+      "path": "data/doseform_dump.csv",
+      "size_bytes": 32418,
+      "sha256": "e63615666b1cf4648a019f8bd7089e085156a82442652d29cc061a1fca03f88d",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "flags_dump.csv",
+      "path": "data/flags_dump.csv",
+      "size_bytes": 390310,
+      "sha256": "c5cd4b3e4222102cd348da49664f7631930946b2e2f13c675abd918d171f7047",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "gtins_dump.csv",
+      "path": "data/gtins_dump.csv",
+      "size_bytes": 315336,
+      "sha256": "0865c7187ce09a86f76ed0d38b5aa452b91663fa5ed7f83babf11df43ea42067",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "gtins_extended_dump.csv",
+      "path": "data/gtins_extended_dump.csv",
+      "size_bytes": 357571,
+      "sha256": "a1fcee30f66195f2a791fdcf70baff31e1a1c8c3ef99306dc8d93224336e3925",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "hml_atc_dump.csv",
+      "path": "data/hml_atc_dump.csv",
+      "size_bytes": 31067,
+      "sha256": "c949cfaadeb6062057ad98d6f4783771d6fcdf7de817886769d44c15abf58cea",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "pharmac-cc-by-3.0-nz-via-nzulm",
+        "who-atc-noncommercial-no-modification"
+      ]
+    },
+    {
+      "member": "hml_brand_dump.csv",
+      "path": "data/hml_brand_dump.csv",
+      "size_bytes": 270417,
+      "sha256": "4602ea556c534967cf977f9dd03832c68bd6f81bc1ec4dccfc66321e6ea15d52",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "pharmac-cc-by-3.0-nz-via-nzulm"
+      ]
+    },
+    {
+      "member": "hml_cfbp_dump.csv",
+      "path": "data/hml_cfbp_dump.csv",
+      "size_bytes": 330628,
+      "sha256": "6e61a1d3f7c73e7b27b16638f8aee788102a05b60891417d7a589510c71b044f",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "pharmac-cc-by-3.0-nz-via-nzulm"
+      ]
+    },
+    {
+      "member": "hml_chemical_dump.csv",
+      "path": "data/hml_chemical_dump.csv",
+      "size_bytes": 85727,
+      "sha256": "a1a7fb552411575583f40907adadc4f8cb2719a544cf6ad244cad92404113072",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "pharmac-cc-by-3.0-nz-via-nzulm"
+      ]
+    },
+    {
+      "member": "hml_formulation_dump.csv",
+      "path": "data/hml_formulation_dump.csv",
+      "size_bytes": 280506,
+      "sha256": "933110a37123fae92138207094d29744fba258d3ab353ad9678f68e13aa4069c",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "pharmac-cc-by-3.0-nz-via-nzulm"
+      ]
+    },
+    {
+      "member": "hml_note_dump.csv",
+      "path": "data/hml_note_dump.csv",
+      "size_bytes": 942586,
+      "sha256": "1211915162a2933b4dcbe8f58676f23b35662bdaf0b689daf93e5d87edfd9f46",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "pharmac-cc-by-3.0-nz-via-nzulm"
+      ]
+    },
+    {
+      "member": "hml_pack_dump.csv",
+      "path": "data/hml_pack_dump.csv",
+      "size_bytes": 409085,
+      "sha256": "de40d255305a080f41812f8abc8ee6d6d8de5eedd636cc1f505606b135bfee34",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "pharmac-cc-by-3.0-nz-via-nzulm"
+      ]
+    },
+    {
+      "member": "hml_request_dump.csv",
+      "path": "data/hml_request_dump.csv",
+      "size_bytes": 28980,
+      "sha256": "ac3949b846d97cae672cf904f256114da150f5ae6042564ab85a6b549e69b31a",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "pharmac-cc-by-3.0-nz-via-nzulm"
+      ]
+    },
+    {
+      "member": "hml_rule_dump.csv",
+      "path": "data/hml_rule_dump.csv",
+      "size_bytes": 67444,
+      "sha256": "231305e10b273b4d1f73ab25f11259db204d6df7c95633a9bf17ce964dd881f9",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "pharmac-cc-by-3.0-nz-via-nzulm"
+      ]
+    },
+    {
+      "member": "hml_schedule_dump.csv",
+      "path": "data/hml_schedule_dump.csv",
+      "size_bytes": 223,
+      "sha256": "f8c8087aff75e4376a76d5e10566de0feef5d772f684ad5bd882f1b1c4d498dd",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "pharmac-cc-by-3.0-nz-via-nzulm"
+      ]
+    },
+    {
+      "member": "medsafe_restrictions_dump.csv",
+      "path": "data/medsafe_restrictions_dump.csv",
+      "size_bytes": 4152,
+      "sha256": "f363030df593000d2234ff8ccb6c5f721430ab2f694940771c123bde23d662cd",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "medsafe-academic-clinical-noncommercial"
+      ]
+    },
+    {
+      "member": "ms_alias_dump.csv",
+      "path": "data/ms_alias_dump.csv",
+      "size_bytes": 101074,
+      "sha256": "0f622531e0e43cb2c75f5a89e53bb3c1e9d4f72c920e550f7610c19723a67077",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "medsafe-academic-clinical-noncommercial"
+      ]
+    },
+    {
+      "member": "ms_application_dump.csv",
+      "path": "data/ms_application_dump.csv",
+      "size_bytes": 3370490,
+      "sha256": "7e1afdcbd9856c9ed39dc815b2e6ca97ee32b8a81113e0d8538484a733d46f2d",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "medsafe-academic-clinical-noncommercial"
+      ]
+    },
+    {
+      "member": "ms_classification_dump.csv",
+      "path": "data/ms_classification_dump.csv",
+      "size_bytes": 331743,
+      "sha256": "598b40bdd44cbea5120651860b438f6de357e61f95fe03032e8ff4374ccc38ad",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "medsafe-academic-clinical-noncommercial"
+      ]
+    },
+    {
+      "member": "ms_component_dump.csv",
+      "path": "data/ms_component_dump.csv",
+      "size_bytes": 1039228,
+      "sha256": "a210eeba4de016d107333569534eb2a7140485242313a9935991e6003f82a614",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "medsafe-academic-clinical-noncommercial"
+      ]
+    },
+    {
+      "member": "ms_dataset_dump.csv",
+      "path": "data/ms_dataset_dump.csv",
+      "size_bytes": 103,
+      "sha256": "16180ea210d4271a10824aea46cbff6c3f76a00be4c15401e26b839c67e5aaac",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "medsafe-academic-clinical-noncommercial"
+      ]
+    },
+    {
+      "member": "ms_ingredient_dump.csv",
+      "path": "data/ms_ingredient_dump.csv",
+      "size_bytes": 6950903,
+      "sha256": "8473bb58f18c23998d7940778ab2e612a87f0289cfb6bb254cbf157605603957",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "medsafe-academic-clinical-noncommercial"
+      ]
+    },
+    {
+      "member": "ms_ingredient_type_dump.csv",
+      "path": "data/ms_ingredient_type_dump.csv",
+      "size_bytes": 1823,
+      "sha256": "3de492f170c5dc895c86e235c5f87f3928facc9b145af17ec7606d0bf5fb8e13",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "medsafe-academic-clinical-noncommercial"
+      ]
+    },
+    {
+      "member": "ms_name_and_address_dump.csv",
+      "path": "data/ms_name_and_address_dump.csv",
+      "size_bytes": 1203276,
+      "sha256": "663fc434599acec9c6358abf44a0b3693fa3f76b78619eae4a26a0522a2e4c24",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "medsafe-academic-clinical-noncommercial"
+      ]
+    },
+    {
+      "member": "ms_pack_shelf_life_dump.csv",
+      "path": "data/ms_pack_shelf_life_dump.csv",
+      "size_bytes": 3915381,
+      "sha256": "8f4a6589ee5477404622bab2b50f86bce84589cd7b36fea67692497a45961691",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "medsafe-academic-clinical-noncommercial"
+      ]
+    },
+    {
+      "member": "ms_package_dump.csv",
+      "path": "data/ms_package_dump.csv",
+      "size_bytes": 3544136,
+      "sha256": "6b14014b47a7bdb3fb34a4767cf936697881e444ac261b9c6535ad0c7cc47658",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "medsafe-academic-clinical-noncommercial"
+      ]
+    },
+    {
+      "member": "ms_prod_atc_dump.csv",
+      "path": "data/ms_prod_atc_dump.csv",
+      "size_bytes": 1037805,
+      "sha256": "f4a6e9fc0bb56291a11a699b82b95c3a1791ee6643ef4951771c939ecfd987f8",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "medsafe-academic-clinical-noncommercial",
+        "who-atc-noncommercial-no-modification"
+      ]
+    },
+    {
+      "member": "ms_prod_report_dump.csv",
+      "path": "data/ms_prod_report_dump.csv",
+      "size_bytes": 600913,
+      "sha256": "80399ac571c37192fed2dbc3f57798a716019fad25dc2aaf03c6919354e9d211",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "medsafe-academic-clinical-noncommercial"
+      ]
+    },
+    {
+      "member": "ms_product_dump.csv",
+      "path": "data/ms_product_dump.csv",
+      "size_bytes": 4479011,
+      "sha256": "4eae47677eadea347103327644caa862a194aae2c3c870314c701adcf9973f10",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "medsafe-academic-clinical-noncommercial"
+      ]
+    },
+    {
+      "member": "ms_production_chain_dump.csv",
+      "path": "data/ms_production_chain_dump.csv",
+      "size_bytes": 7199265,
+      "sha256": "9fbad743214f821a27cfeda686ab53fccc2f33059776807ad57c1e7ae550bddf",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "medsafe-academic-clinical-noncommercial"
+      ]
+    },
+    {
+      "member": "ms_route_of_admin_dump.csv",
+      "path": "data/ms_route_of_admin_dump.csv",
+      "size_bytes": 665554,
+      "sha256": "7418004611ec9dd93aba6ddae1e041d0cc5fee95e0eb128b04ae9e7d45df4d68",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "medsafe-academic-clinical-noncommercial"
+      ]
+    },
+    {
+      "member": "ms_substance_dump.csv",
+      "path": "data/ms_substance_dump.csv",
+      "size_bytes": 497252,
+      "sha256": "36ae6d5a8b2aa51db9ee4b7909728bf4dd9ce235f4e9a0412597d2960bf1c70d",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "medsafe-academic-clinical-noncommercial"
+      ]
+    },
+    {
+      "member": "ms_substance_name_dump.csv",
+      "path": "data/ms_substance_name_dump.csv",
+      "size_bytes": 864600,
+      "sha256": "30b30c1c005d49b94d35d59ff7c3e693a0fdef559386c44df41517a7c30138a9",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "medsafe-academic-clinical-noncommercial"
+      ]
+    },
+    {
+      "member": "nzmt_atc_codes_dump.csv",
+      "path": "data/nzmt_atc_codes_dump.csv",
+      "size_bytes": 271567,
+      "sha256": "77aa127d93db0afc20b30ddfde8b4622ca7036e28a5b450d9f29f48a22609d6d",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "who-atc-noncommercial-no-modification"
+      ]
+    },
+    {
+      "member": "nzmt_atc_links_dump.csv",
+      "path": "data/nzmt_atc_links_dump.csv",
+      "size_bytes": 3808136,
+      "sha256": "800fd9ba602b40da5c7e250af8c83e02b941d616ffd07920114863495a8bf836",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "who-atc-noncommercial-no-modification"
+      ]
+    },
+    {
+      "member": "nzmt_pharmac_subsidy_codes_dump.csv",
+      "path": "data/nzmt_pharmac_subsidy_codes_dump.csv",
+      "size_bytes": 534970,
+      "sha256": "64af25e79745d4f8cba8bf81c342374ddfdee0513516335175e387162fcc4f51",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "pharmac-cc-by-3.0-nz-via-nzulm"
+      ]
+    },
+    {
+      "member": "nzmt_status_codes_dump.csv",
+      "path": "data/nzmt_status_codes_dump.csv",
+      "size_bytes": 236,
+      "sha256": "68f0c380bccef0d8f9ca8b3fb4440095e814273e0069b63aa05a60faaf3ae8ee",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "partition_code_mapping table definition.docx",
+      "path": "data/partition_code_mapping table definition.docx",
+      "size_bytes": 21507,
+      "sha256": "ca5aee31b47a099375d8d8a82a217cd7cc5468dfd155ed7511499799a6c2b8e5",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "partition_code_mapping table definition.pdf",
+      "path": "data/partition_code_mapping table definition.pdf",
+      "size_bytes": 551478,
+      "sha256": "4f7a085c6c9f6c4660bc90738f65c8ea94f4a07a4a155379a7ab6c9f0d21f8dd",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "partition_code_mapping_dump.csv",
+      "path": "data/partition_code_mapping_dump.csv",
+      "size_bytes": 13066968,
+      "sha256": "75e13e8acd52238096fcbfb50cb6c9eb0013bb5e943c07e80e561989120c111f",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "preferredterm_index_dump.csv",
+      "path": "data/preferredterm_index_dump.csv",
+      "size_bytes": 17064239,
+      "sha256": "e83d9996c1e99dd531268498b2c4e57c461940a0f17679d21cb33d552429f63e",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "prescribing_term_index_dump.csv",
+      "path": "data/prescribing_term_index_dump.csv",
+      "size_bytes": 7452189,
+      "sha256": "1f0f72d1fa93e4f438c37319de51b349b1549f92f77c7f3314a30ce1e416a304",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "prescribing_term_selection_list_dump.csv",
+      "path": "data/prescribing_term_selection_list_dump.csv",
+      "size_bytes": 2458082,
+      "sha256": "6ad604df6ad334b503879ae29186e0bd3550155484527715b516630594d086fa",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "ps_atc_dump.csv",
+      "path": "data/ps_atc_dump.csv",
+      "size_bytes": 28080,
+      "sha256": "91ba1b5898b8647180b32c81a086f5bb9b0afb8e14fb874b8918a82f775b2e3f",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "pharmac-cc-by-3.0-nz-via-nzulm",
+        "who-atc-noncommercial-no-modification"
+      ]
+    },
+    {
+      "member": "ps_brand_dump.csv",
+      "path": "data/ps_brand_dump.csv",
+      "size_bytes": 208913,
+      "sha256": "80d781a5a2a7792123edb374f8603d84712394014fad3fa091cc0894b804d679",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "pharmac-cc-by-3.0-nz-via-nzulm"
+      ]
+    },
+    {
+      "member": "ps_cfbp_dump.csv",
+      "path": "data/ps_cfbp_dump.csv",
+      "size_bytes": 254989,
+      "sha256": "2b1b47adaf555ae29f14813836f81994cffe28c07dec5ba900993f23df2e2e50",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "pharmac-cc-by-3.0-nz-via-nzulm"
+      ]
+    },
+    {
+      "member": "ps_chemical_dump.csv",
+      "path": "data/ps_chemical_dump.csv",
+      "size_bytes": 59772,
+      "sha256": "fef2fa8eb8e7498312a7e017f1bf6fd119f1db5683be11beb786dd0ff87cb9f7",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "pharmac-cc-by-3.0-nz-via-nzulm"
+      ]
+    },
+    {
+      "member": "ps_formulation_dump.csv",
+      "path": "data/ps_formulation_dump.csv",
+      "size_bytes": 186785,
+      "sha256": "dd93c3dbbdd221aa2e1668c4a824ec466ba20b623b9b39a611147e9fbd3fc682",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "pharmac-cc-by-3.0-nz-via-nzulm"
+      ]
+    },
+    {
+      "member": "ps_note_dump.csv",
+      "path": "data/ps_note_dump.csv",
+      "size_bytes": 953146,
+      "sha256": "d49cc74e9d986a3b4bf2bc1289fc262cb46ebfd041e7363617fb1df3f8b011f6",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "pharmac-cc-by-3.0-nz-via-nzulm"
+      ]
+    },
+    {
+      "member": "ps_pack_dump.csv",
+      "path": "data/ps_pack_dump.csv",
+      "size_bytes": 334951,
+      "sha256": "de430d5438c642e7cd7dfe42f6fde719573dc4845809d538569392ee22843e4e",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "pharmac-cc-by-3.0-nz-via-nzulm"
+      ]
+    },
+    {
+      "member": "ps_request_dump.csv",
+      "path": "data/ps_request_dump.csv",
+      "size_bytes": 17149,
+      "sha256": "c7d1d50f22e69345238174e140cef943285e8bb40629ea47ea6911faead37ed5",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "pharmac-cc-by-3.0-nz-via-nzulm"
+      ]
+    },
+    {
+      "member": "ps_rule_dump.csv",
+      "path": "data/ps_rule_dump.csv",
+      "size_bytes": 109327,
+      "sha256": "4765048d94fa018aa31dd502717e313e2e5cc9639aa95d2d00c0eca6f8daa871",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "pharmac-cc-by-3.0-nz-via-nzulm"
+      ]
+    },
+    {
+      "member": "ps_schedule_dump.csv",
+      "path": "data/ps_schedule_dump.csv",
+      "size_bytes": 224,
+      "sha256": "f2de384260926a0a6e39b64245fffab1e527616f65a27e1b9a8a1c74becac5e1",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "pharmac-cc-by-3.0-nz-via-nzulm"
+      ]
+    },
+    {
+      "member": "substance_dump.csv",
+      "path": "data/substance_dump.csv",
+      "size_bytes": 250300,
+      "sha256": "d0832ad53d676c8d1045ee17f730ae3e215ba01856ad0856a83fc0809ed6b9b7",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "version.txt",
+      "path": "data/version.txt",
+      "size_bytes": 270,
+      "sha256": "f51a41a8034cc7a7f157a648a352417a1ff6e8ab85a270cb73bbcdb2500b4f48",
+      "rights_families": [
+        "nzulm-data-usage-agreement"
+      ]
+    },
+    {
+      "member": "who_atc_dump.csv",
+      "path": "data/who_atc_dump.csv",
+      "size_bytes": 324369,
+      "sha256": "17f0cb833a520297a24e8e288a5c2314c7e5e50bd7a4d9c84d770ffaeaa83a0c",
+      "rights_families": [
+        "nzulm-data-usage-agreement",
+        "who-atc-noncommercial-no-modification"
+      ]
+    }
+  ],
+  "excluded_members": [
+    {
+      "member": "NZMT to SNOMED CT international edition map analysts guide version 2.docx",
+      "reason": "Confirmed full SNOMED/AMT semantic-mapping publication exclusion retained; not opened or uploaded"
+    },
+    {
+      "member": "NZMT to SNOMED CT international edition map analysts guide version 2.pdf",
+      "reason": "Confirmed full SNOMED/AMT semantic-mapping publication exclusion retained; not opened or uploaded"
+    },
+    {
+      "member": "NZULM Data Overview - SNOMED-CT Mapping Table.docx",
+      "reason": "Confirmed full SNOMED/AMT semantic-mapping publication exclusion retained; not opened or uploaded"
+    },
+    {
+      "member": "NZULM Data Overview - SNOMED-CT Mapping Table.pdf",
+      "reason": "Confirmed full SNOMED/AMT semantic-mapping publication exclusion retained; not opened or uploaded"
+    },
+    {
+      "member": "ms_substance_sct_dump.csv",
+      "reason": "Confirmed full SNOMED/AMT semantic-mapping publication exclusion retained; not opened or uploaded"
+    },
+    {
+      "member": "nzmt_to_snomed_ct_international_edition_map_dump.csv",
+      "reason": "Confirmed full SNOMED/AMT semantic-mapping publication exclusion retained; not opened or uploaded"
+    }
+  ],
+  "private_evidence_included": false,
+  "current_clinical_status_claimed": false,
+  "coverage_complete": false,
+  "raw_member_bytes_unchanged": true
+}
