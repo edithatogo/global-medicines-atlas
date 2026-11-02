@@ -13,7 +13,8 @@
     "reference_tests": 125,
     "cms_tests": 133,
     "adapter_tests": 21,
-    "family_and_adjacent_tests": 50
+    "family_and_adjacent_tests": 50,
+    "local_selection_scope": "Supporting 98-file local selection collected before the final temporal-adapter and PBS-family ports; focused checks covered those ports separately. Final-source acceptance uses protected checks on PR 1392 head 362d579f4b07053594b59c333adeceb21264da9f, merged as c3aec9d4ef3f95700748d6b45ef15e48681bc3eb."
   },
   "branches": [
     {
