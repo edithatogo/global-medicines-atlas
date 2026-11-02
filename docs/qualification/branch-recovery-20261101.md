@@ -59,11 +59,18 @@ structural labels. The missing local JSON helper is replaced by the shared
 strict JSON decoder. RDF helpers and research receipts have shared typed
 successors. PBS Gold has later node-field, edge and graph-closure validators.
 
-The current integrating owner is chat
+The durable integration record is
+[closeout PR 1393](https://github.com/edithatogo/global-medicines-atlas/pull/1393),
+with [source recovery PR 1392](https://github.com/edithatogo/global-medicines-atlas/pull/1392),
+the merge commits and the authenticated hosted publication run below.
+
+The local coordination snapshot on 2 November 2026 assigns this lane to chat
 01a19600-56dd-73a2-9ff5-4a2484a54493 in
 /Volumes/PortableSSD/GitHub/.codex-worktrees/pbs-hosted-publication-20261029.
-Its owned paths are this recovery report, the frozen branch audit and the
-subsequent exact PBS publication receipt packet. The user transferred PR 1377
+These local identifiers distinguish concurrent writers during integration;
+the linked PRs and commits provide the durable audit identity. The lane owns
+this recovery report, the frozen branch audit and the exact PBS publication
+receipt packet. The user transferred PR 1377
 integration ownership to this chat and approved one exact reproduced PBS
 append. Earlier assignments remain historical. Native scope is the approved
 output at the pinned parent only. That append is complete; no further append
