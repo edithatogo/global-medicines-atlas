@@ -16,8 +16,8 @@ The repository is qualified to execute bounded catalog, fixture, source-health,
 and deployment-contract checks. It is **not** qualified to claim current live
 source coverage, production deployment, or accessibility of a deployed atlas.
 
-The current source maturity record contains 96 catalogued sources: 36 at M0,
-58 at M1, and 2 at M2. It contains zero live source receipts. Committed
+At that baseline the source maturity record contained 96 catalogued sources:
+36 at M0, 58 at M1 and 2 at M2, with zero live source receipts. Committed
 fixtures and public URLs are not live evidence.
 
 ## #54 live-source boundary
