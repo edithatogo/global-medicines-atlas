@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-11-02",
+  "base_main": "a948ae28d3e4ad2e5435e90c4dad55db9a5012b8",
+  "cleanup": {
+    "original_registered_worktrees": 48,
+    "retired_directories": 41,
+    "missing_registrations_pruned": 5,
+    "initial_local_branches": 648,
+    "local_branches_deleted": 648,
+    "retired_local_main_renamed_before_deletion": true,
+    "cleanup_branch_created": true,
+    "remote_branches_deleted": 32,
+    "dirty_lanes_preserved": 5,
+    "primary_preservation_stash": "eaf2b2a8ae9f1979565dbd952c9867e5370ec00a",
+    "bundle_sha256": "394f6554a9fc87e34d3a730bc6a5926d6f82380c392495a6b47149f72b3fa934",
+    "backup_location": "/Volumes/PortableSSD/GMA-recovery/reconciled-estate-20261102",
+    "all_refs_bundle_verified": true,
+    "unique_supported_work_previously_merged": true,
+    "additional_tip_dispositions": {
+      "0dbeb36f0f5b6e90da8081793f2e3b376db780fc": "All four changed paths are byte-identical to main after PR 1390.",
+      "78e1d794c90a31f771ebf197547b75e7e938e616": "Exact authority JSON is byte-identical to main after PR 1388.",
+      "2bc7f2684755c563db34309f600409645655386a": "Historical keyboard-recovery merge receipt is retained in the later Platinum evidence ledger and plan.",
+      "8c0bb22fd0dd4e903401090f25a48ad4d31fc42c": "Formatting-only tip; current experiment contract and tests retain the validation with later additions.",
+      "7dbc9dd8e9f84a433b62ad1bd2ad5559f90e6602": "Current PBS domain maps exact native item price paths to prices; namespace/item-bound regression remains in current tests.",
+      "3703f70dc17e5693f2b4343fea45859ff82f3727": "Q1 object-identity correction receipt is byte-identical to main.",
+      "b00d3f37cdc0944d9453bedf90d188b58eabddff": "Current Atlas generic failure message and future_internal_reason regression retain this behavior with later additions."
+    },
+    "preserved_stash_count": 2,
+    "stash_bundle_sha256": "5fcf7a81ac38e06bca7ee52ea283f81862b32957f790ff9e24e583461531b6a5",
+    "stash_recovery_verified_in_fresh_bare_repository": true
+  },
+  "issues": [
+    {
+      "number": 491,
+      "title": "Dependency update dashboard",
+      "disposition": "retain",
+      "basis": "Standing Renovate dependency dashboard; current bot readback and qualified patch PR 1394."
+    },
+    {
+      "number": 342,
+      "title": "Deliver federated medicines Platinum products",
+      "disposition": "retain",
+      "basis": "Live admitted-object product/compatibility canaries and federation acceptance remain open."
+    },
+    {
+      "number": 341,
+      "title": "Implement Australian benefits Silver and Gold",
+      "disposition": "retain",
+      "basis": "Historical MBS/PBS semantics, eligible derived-output obligations and Gold acceptance remain incomplete."
+    },
+    {
+      "number": 340,
+      "title": "Establish the public Hugging Face federated data plane",
+      "disposition": "retain",
+      "basis": "Exact PBS append is verified, but mandatory v4 admission, independent recovery and broader federation remain incomplete."
+    },
+    {
+      "number": 339,
+      "title": "Consolidate all Australian MBS/PBS donor functionality and data",
+      "disposition": "retain",
+      "basis": "Full donor functionality/data parity, successor canaries and final archival conditions remain incomplete."
+    },
+    {
+      "number": 170,
+      "title": "Bronze: public ingest and governed-fixture landing",
+      "disposition": "retain",
+      "basis": "The bounded 42-source horizon is qualified; 115 original sources remain deferred, so full landing is not complete."
+    },
+    {
+      "number": 82,
+      "title": "[Quality frontier] Complete evidence-based repository hardening",
+      "disposition": "close_after_integration",
+      "basis": "Child 80 is closed; repository hardening child 81 is evidenced below. No production or release acceptance is inferred."
+    },
+    {
+      "number": 81,
+      "title": "[Quality frontier] Maximise security and solo-maintainer context",
+      "disposition": "close_after_integration",
+      "basis": "Active destructive-update ruleset, strict checks with zero approvals, canonical context, real Codecov OIDC, inherited Renovate configuration and current dashboard are verified. Squash-only merge settings repaired and point-in-time drift receipt retained."
+    },
+    {
+      "number": 61,
+      "title": "v0.6 external product qualification: clean deployment, live data and accessibility",
+      "disposition": "retain",
+      "basis": "Representative package/browser checks do not supply live deployment and production-data qualification."
+    },
+    {
+      "number": 54,
+      "title": "Qualify live global medicine sources, rights, dm+d access, and translation gates",
+      "disposition": "retain",
+      "basis": "Licensed dm+d access, source-specific live rights, population parity and reviewed translation remain gated."
+    },
+    {
+      "number": 51,
+      "title": "Complete NZ medicines preservation and redistribution rights review",
+      "disposition": "retain",
+      "basis": "Source-specific NZULM/NZF/SNOMED and derived-data redistribution decisions are not established by this batch."
+    },
+    {
+      "number": 44,
+      "title": "Roadmap: global medicines atlas v0.1 to stable v1.0",
+      "disposition": "retain",
+      "basis": "Programme parent retains incomplete federation, source qualification and stable release children."
+    },
+    {
+      "number": 43,
+      "title": "v0.9-v1.0: stable release qualification - Phase 3",
+      "disposition": "retain",
+      "basis": "Signed stable package, full federation acceptance and exact final release authority remain open; current project readback is permission-unavailable."
+    },
+    {
+      "number": 40,
+      "title": "v0.9-v1.0: stable release qualification",
+      "disposition": "retain",
+      "basis": "Stable release parent remains incomplete while phase 3 and federation requirements remain open."
+    },
+    {
+      "number": 14,
+      "title": "Activate Renovate GitHub App for the validated repository configuration",
+      "disposition": "close_after_qualified_renovate_pr",
+      "basis": "Current Renovate-authored dashboard and PR 1394 establish installation; retain until its complete protected CI and integration pass."
+    }
+  ],
+  "native_governance": {
+    "receipt": "quality/qualifications/hosted-governance-reconciliation-20261102.json",
+    "merge_commit_and_rebase_methods_disabled": true,
+    "squash_merge_retained": true,
+    "required_approvals": 0,
+    "project_access_scope_expanded": false,
+    "project_metadata": "permission_unavailable",
+    "stable_release_accepted": false
+  },
+  "verification": {
+    "focused_tests_passed": 83,
+    "renovate_monitoring_tests_passed": 12,
+    "scope_regression_failed_before_fix": true,
+    "scope_regression_cases_after_fix": 6,
+    "ruff": "passed",
+    "basedpyright": "0 errors, 0 warnings",
+    "ty": "passed, zero diagnostics"
+  },
+  "maintenance_integration": {
+    "pr": 1395,
+    "checked_head": "768cc32cf0896184462b42c351d27c0ac8694193",
+    "checks_successful": 39,
+    "optional_manual_skipped": 1,
+    "merge_commit": "fb67be2c8b97745be8ac1f25c93e07bdc5b66f1f",
+    "resulting_tree": "19886da1a14f55296c34b6c00ffde57bc535ccfe",
+    "closed_issues": [
+      81,
+      82
+    ]
+  }
+}
