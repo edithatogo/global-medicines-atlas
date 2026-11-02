@@ -95,7 +95,7 @@ and Stable qualification remain deferred.
 - [x] Reconcile the 162-asset historical inventory and current file availability.
 - [x] Verify the unchanged 15-file software cohort and anonymously verify the five existing Pharmac/RxNorm public objects; reuse exact snapshots without duplicate uploads.
 - [x] Publish the source-specific written decisions and updated public metadata manifest through a protected technical PR.
-- [ ] Unrestricted publication of licensed NZF content, full SNOMED/AMT semantics or proprietary RxNorm source-vocabulary content: confirmed source restrictions remain; Medsafe commercial-use conditions also remain attached to its data.
+- [x] Record confirmed NZF, full SNOMED/AMT and proprietary RxNorm restrictions as explicit exclusions, preserve Medsafe commercial-use conditions, and close the rights review without inventing a requirement to publish excluded content.
 
 See [the current review](../../../docs/migrations/nz-rights-review-20261102.md)
 and its hash-bound receipt. Missing local 2023 payloads are an availability

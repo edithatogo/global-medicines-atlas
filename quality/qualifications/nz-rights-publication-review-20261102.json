@@ -8,7 +8,7 @@
   "private_permission_evidence_published": false,
   "private_source_bytes_published": false,
   "new_payload_uploads": 0,
-  "issue_disposition": "open_for_confirmed_licensed_content_restrictions",
+  "issue_disposition": "review_complete_with_confirmed_restrictions_explicitly_excluded",
   "terms": [
     {
       "id": "nzulm",

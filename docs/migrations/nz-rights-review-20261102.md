@@ -51,15 +51,23 @@ reported complete. Eligible source bytes recovered later retain the affirmative
 permissions above and must use Actions-to-public-HF with exact manifest,
 supplier notices and anonymous digest verification.
 
-## Remaining #51 boundary
+## #51 completion boundary
 
 The generic request for public permission paperwork is removed. The written
-review and available approved-publication reconciliation are complete. #51
-remains open specifically for unrestricted publication of licensed NZF content,
-full SNOMED/AMT semantic content and proprietary RxNorm source vocabularies.
-Medsafe's commercial-use restriction must also remain attached to any future
-Medsafe-derived archive. None is a restriction on the already published
-first-party software, eligible Pharmac data or NLM-created identifiers.
+review and available approved-publication reconciliation complete #51. Licensed
+NZF content, full SNOMED/AMT semantic content and proprietary RxNorm source
+vocabularies have an explicit excluded disposition for unrestricted worldwide
+publication. Medsafe's commercial-use restriction remains attached to its data.
+These are confirmed conditions, not unanswered generic rights questions or
+requirements to publish excluded material before closing a rights review.
+None restricts the already published first-party software, eligible Pharmac
+data or NLM-created identifiers. Any later proposal to change these exclusions
+requires new source-specific evidence and an exact publication manifest.
+
+Closure does not claim that the missing historical 2023 corpus was uploaded.
+The frozen inventory records those assets as unavailable here, rather than
+fabricating a digest, licence grant or publication receipt. Their recovery is
+separate from deciding which source terms permit reuse.
 
 No public release, Git history rewrite, compatibility-repository archival,
 federation qualification or clinical-use claim is made by this packet.
