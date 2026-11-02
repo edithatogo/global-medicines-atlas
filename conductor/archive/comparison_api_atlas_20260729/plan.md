@@ -23,3 +23,12 @@
     transferred to durable external qualification gate GitHub issue #61.
 - [x] Task: Record v0.6 product evidence
 - [x] Task: Phase Verification & Checkpoint
+
+## Authorized #61 follow-up — 2 November 2026
+
+The original archived migration acceptance remains unchanged. The maintainer
+selected unblocked work on the smallest remaining finite issue. The scoped
+[configured-service plan](../../../docs/qualification/configured-service-61.md)
+adds an installed ASGI factory and real HTTP startup from wheel/sdist through
+the existing clean-consumer harness. Synthetic-data scope is retained. Actual
+live deployment, production-data and deployed-browser receipts remain in #61.

@@ -2,17 +2,22 @@
 
 This register implements the local qualification boundary for [#54](https://github.com/edithatogo/global-medicines-atlas/issues/54) and [#61](https://github.com/edithatogo/global-medicines-atlas/issues/61).
 
-The authoritative machine-readable record is
+The historical cross-issue baseline is
 [`external-qualification-register.json`](../../quality/qualifications/external-qualification-register.json).
 
-## Current result
+The current #61 clean-artifact follow-up is recorded in
+[the scoped service report](configured-service-61.md) and its
+[executed receipt](../../quality/qualifications/external-product-clean-start-20261102.json).
+Its clean-install/start result does not qualify a live deployment or production data.
+
+## Historical baseline (1 August 2026)
 
 The repository is qualified to execute bounded catalog, fixture, source-health,
 and deployment-contract checks. It is **not** qualified to claim current live
 source coverage, production deployment, or accessibility of a deployed atlas.
 
-The current source maturity record contains 96 catalogued sources: 36 at M0,
-58 at M1, and 2 at M2. It contains zero live source receipts. Committed
+At that baseline the source maturity record contained 96 catalogued sources:
+36 at M0, 58 at M1 and 2 at M2, with zero live source receipts. Committed
 fixtures and public URLs are not live evidence.
 
 ## #54 live-source boundary

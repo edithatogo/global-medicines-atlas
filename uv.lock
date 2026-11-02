@@ -466,6 +466,10 @@ iceberg = [
 semantic = [
     { name = "lancedb" },
 ]
+server = [
+    { name = "jsonschema", extra = ["format-nongpl"] },
+    { name = "uvicorn" },
+]
 
 [package.dev-dependencies]
 dev = [
@@ -564,6 +568,7 @@ requires-dist = [
     { name = "jinja2", specifier = ">=3.1" },
     { name = "jsonschema", extras = ["format-nongpl"], marker = "extra == 'demo'", specifier = ">=4.25" },
     { name = "jsonschema", extras = ["format-nongpl"], marker = "extra == 'federation'", specifier = ">=4.25" },
+    { name = "jsonschema", extras = ["format-nongpl"], marker = "extra == 'server'", specifier = ">=4.25" },
     { name = "lancedb", marker = "extra == 'semantic'", specifier = ">=0.27" },
     { name = "orjson", specifier = ">=3.11" },
     { name = "polars", extras = ["pyarrow"], specifier = ">=1.35" },
@@ -577,8 +582,9 @@ requires-dist = [
     { name = "typer", specifier = ">=0.16" },
     { name = "tzdata", marker = "sys_platform == 'win32'", specifier = ">=2026.2" },
     { name = "uvicorn", marker = "extra == 'demo'", specifier = ">=0.54,<0.55" },
+    { name = "uvicorn", marker = "extra == 'server'", specifier = ">=0.54,<0.55" },
 ]
-provides-extras = ["demo", "federation", "iceberg", "semantic"]
+provides-extras = ["demo", "federation", "iceberg", "semantic", "server"]
 
 [package.metadata.requires-dev]
 dev = [
