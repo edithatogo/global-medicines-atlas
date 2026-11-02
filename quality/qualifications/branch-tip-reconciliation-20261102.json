@@ -1522,5 +1522,250 @@
       ],
       "original_files_preserved": true
     }
-  ]
+  ],
+  "current_worktree_census": {
+    "recorded_on": "2026-11-02",
+    "worktrees": [
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/global-medicines-atlas",
+        "state": "dirty",
+        "changed_paths": 2
+      },
+      {
+        "worktree": "/private/tmp/gma-mbs-field-state-reconciliation",
+        "state": "missing",
+        "changed_paths": null
+      },
+      {
+        "worktree": "/private/tmp/gma-mbs-silver-integrated",
+        "state": "missing",
+        "changed_paths": null
+      },
+      {
+        "worktree": "/private/tmp/gma-p7-date-reconciliation",
+        "state": "missing",
+        "changed_paths": null
+      },
+      {
+        "worktree": "/private/tmp/gma-pbs-domain-audit",
+        "state": "missing",
+        "changed_paths": null
+      },
+      {
+        "worktree": "/private/tmp/gma-pbs-root-version-metadata-20261025",
+        "state": "missing",
+        "changed_paths": null
+      },
+      {
+        "worktree": "/Users/doughnut/.codex/worktrees/australian-source-consolidation-closeout/global-medicines-atlas",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Users/doughnut/.codex/worktrees/federated-consumer-qualification/global-medicines-atlas",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Users/doughnut/.codex/worktrees/mbs-field-era-crosswalk-20261025/global-medicines-atlas",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Users/doughnut/.codex/worktrees/no-outbound-messaging/global-medicines-atlas",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Users/doughnut/.codex/worktrees/pbs-uri-main-reconciliation-20261025",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Users/doughnut/.codex/worktrees/stable-federation-receipt-20261028/global-medicines-atlas",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Users/doughnut/.codex/worktrees/stable-v1-federation-gate/global-medicines-atlas",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-apache-license-alignment-20261024",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-email-approval-guard-20261023",
+        "state": "dirty",
+        "changed_paths": 1
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-frontier-preview-disposition-20261023",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-mbs-formula-cache-profile",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-mbs-header-semantic-adjudication-20261024",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-mbs-historical-value-shape-profile-20261025",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-mbs-p7-date-rule-20261025",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-mbs-value-era-integration-20261024",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-mbs-value-era-rules-20261023",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-mbs-workbook-cohort-merge-20261023",
+        "state": "dirty",
+        "changed_paths": 4
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-mbs-workbook-header-aggregate-20261024",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-mbs-workbook-timeout-retry-20261023",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-p7-exact-main-field-state-20261024",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-date-denominator-20261025",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-domain-semantic-adjudication-20261024",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-field-reconciliation-20261023",
+        "state": "dirty",
+        "changed_paths": 11
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-reference-case-adjudication-20261025",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-reference-meaning-20261023",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-reference-meaning-integration-20261024",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-reference-qualification-20261024",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-root-metadata-preflight-93",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-schema-minor-qualified-20261025",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-semantic-closeout-20261025",
+        "state": "dirty",
+        "changed_paths": 1
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-silver-field-state-20261023",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-uri-codecov-coverage-20261025",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-uri-context-review-20261025",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-uri-failure-codes-20261025",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-uri-resolution-20261025",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-uri-review-binding-20261025",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-phase4-mandatory-output-delivery-20261027",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-relationship-screen-calibration-20261023",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-silver-semantic-adjudication-20261024",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-system-completion-focus-20261025",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/pbs-hosted-publication-20261029",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/pbs-v4-readiness-integration-20261029",
+        "state": "clean",
+        "changed_paths": 0
+      }
+    ]
+  }
 }
