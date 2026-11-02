@@ -13,6 +13,12 @@ when an approved public artifact manifest expressly includes them. See
 
 ## Medicine source data
 
+The current [NZ source-specific review](../migrations/nz-rights-review-20261102.md)
+reconciles #51 against official NZULM, Pharmac, Medsafe, NZF, SNOMED and NLM
+terms and the exact existing public artefacts. It supersedes blanket pending
+statements in the older NZ migration register without changing historical
+receipts or granting unrestricted rights in licensed components.
+
 A future software licence will apply only to material for which the repository
 copyright holder can grant rights. It will not grant rights in third-party
 source data, terminology, documents, identifiers, or other governed content.
