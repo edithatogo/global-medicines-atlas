@@ -1592,3 +1592,10 @@ archive-all accounting covers 176 IDs, with 50 verified public archive reference
 and no unconfigured recipe/review states. This is bounded execution completion,
 not universal archival, historical completeness or federation acceptance. See
 `docs/qualification/unfinished-source-assessment-20261030.md`.
+
+## Reconcile the frozen openFDA bulk inventory
+
+- [x] Reconcile the original 2,392 local downloads and four successful retry
+  downloads against all 2,396 unique manifest partitions. The retained receipt
+  binds each recorded payload digest and file length in a sorted index digest.
+  Public archive verification and current-scope Bronze admission remain open.

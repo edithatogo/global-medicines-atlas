@@ -173,6 +173,8 @@ def _columnar_contracts(batch: pa.RecordBatch) -> Iterator[dict[str, Any]]:
         batch.column(batch.schema.get_field_index("native_fields")),
     )
     offsets = cast("list[int]", nested.offsets.to_pylist())
+    # Flattened values start at zero even when the parent batch is sliced.
+    offsets = [value - offsets[0] for value in offsets]
     flattened = cast("pa.StructArray", pc.list_flatten(nested))
     fields: dict[str, list[Any]] = {
         name: cast(

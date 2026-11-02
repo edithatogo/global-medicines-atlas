@@ -131,7 +131,7 @@ version-file = "src/global_medicines_atlas/_version.py"
 packages = ["src/global_medicines_atlas"]
 
 [tool.hatch.build.targets.sdist]
-only-include = ["LICENSE", "README.md", "pyproject.toml", "src"]
+only-include = ["LICENSE", "NOTICE", "README.md", "pyproject.toml", "src"]
 
 [tool.pytest.ini_options]
 addopts = [

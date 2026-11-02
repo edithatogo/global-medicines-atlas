@@ -252,3 +252,26 @@ def test_mapping_materializes_only_required_columns(monkeypatch):
     monkeypatch.setattr(domain, "_mapping", checked)
     mapped = next(domain._domain_batches(iter([native])))
     assert calls == mapped.num_rows == native.num_rows
+
+
+def test_selected_family_preserves_native_fields_order_and_lineage() -> None:
+    payload = _production_xml()
+    receipt = _receipt(payload, "au-pbs")
+    all_rows = pa.Table.from_batches(
+        list(iter_pbs_domain_batches(payload, receipt))
+    )
+    selected = pa.Table.from_batches(
+        list(
+            iter_pbs_domain_batches(
+                payload, receipt, rows_per_batch=2, family="classifications"
+            )
+        )
+    )
+    assert selected.schema.equals(all_rows.schema, check_metadata=True)
+    assert selected.to_pylist() == [
+        row
+        for row in all_rows.to_pylist()
+        if row["mapping_target"] == "classifications"
+    ]
+    with pytest.raises(ValueError, match="unknown PBS structural family"):
+        list(iter_pbs_domain_batches(payload, receipt, family="atc_codes"))

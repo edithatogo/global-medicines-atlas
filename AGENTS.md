@@ -86,6 +86,14 @@ The pinned Conductor agent plugin is the Git submodule at
   it must fail closed on local upload attempts. Remove temporary local source
   bytes only after the hosted workflow records anonymous digest verification.
 - Preserve dirty work and imported history; do not use destructive Git recovery.
+- **Project-owned code licensing:** project-owned code is licensed under
+  Apache-2.0. Preserve the complete licence and copyright notices, and keep
+  active package declarations and source-distribution licence/notice files
+  aligned. Preserve upstream and third-party licences, notices, attribution,
+  and applicable inherited terms; do not relabel third-party code. This licence
+  does not grant redistribution rights over external documents, manuscripts,
+  policies, datasets, or private evidence, and does not authorize a visibility
+  change or publication.
 - **Absolute outbound communications prohibition:** never send, schedule, queue,
   or otherwise cause an email or message to be sent from the user's account,
   using any application, connector, API, browser, CLI, automation, or other

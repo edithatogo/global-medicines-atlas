@@ -45,6 +45,25 @@ def _file_sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+MAX_JSON_PAYLOAD_BYTES = 256 * 1024 * 1024
+MAX_JSON_RECORDS = 2_000_000
+MAX_SOURCE_COLUMNS = 4096
+MAX_SOURCE_VALUE_BYTES = 1024 * 1024
+
+
+def _unique_json_object(
+    pairs: list[tuple[str, object]],
+) -> dict[str, object]:
+    output: dict[str, object] = {}
+    for key, value in pairs:
+        if key in output:
+            raise ValueError(
+                "CMS Part D spending JSON has a duplicate JSON key"
+            )
+        output[key] = value
+    return output
+
+
 @contextmanager
 def _open_member(
     archive: zipfile.ZipFile,
@@ -208,23 +227,36 @@ def _project_stream(
     )
 
 
-def _project_json(
-    stream: IO[bytes],
-    *,
-    payload_identity: str,
-    outer_member_path: str,
-    output: Path,
-) -> CMSPartDProjection:
+def _read_json(stream: IO[bytes]) -> list[object]:
+    """Decode one bounded list while rejecting ambiguous object keys."""
+    stream.seek(0, io.SEEK_END)
+    if stream.tell() > MAX_JSON_PAYLOAD_BYTES:
+        raise ValueError("CMS Part D spending JSON exceeds its byte limit")
+    stream.seek(0)
     try:
-        raw: object = json.load(io.TextIOWrapper(stream, encoding="utf-8-sig"))
+        raw: object = json.load(
+            io.TextIOWrapper(stream, encoding="utf-8-sig"),
+            object_pairs_hook=_unique_json_object,
+        )
     except (UnicodeDecodeError, json.JSONDecodeError) as error:
         raise ValueError("CMS Part D spending JSON is invalid") from error
     if not isinstance(raw, list) or not raw:
         raise ValueError(
             "CMS Part D spending JSON must be a nonempty record list"
         )
+    items = cast("list[object]", raw)
+    if len(items) > MAX_JSON_RECORDS:
+        raise ValueError("CMS Part D spending JSON exceeds its record limit")
+    return items
+
+
+def _json_source_records(
+    raw: list[object],
+) -> tuple[list[dict[str, str | None]], tuple[str, ...]]:
+    """Validate source-native JSON records before any Arrow allocation."""
     records: list[dict[str, str | None]] = []
-    for candidate in cast("list[object]", raw):
+    columns: dict[str, None] = {}
+    for candidate in raw:
         if not isinstance(candidate, dict):
             raise ValueError(  # ruff: ignore[type-check-without-type-error] - source schema validation
                 "CMS Part D spending JSON records must be objects"
@@ -238,19 +270,42 @@ def _project_json(
                 raise ValueError(
                     "CMS Part D spending JSON values must be strings or null"
                 )
+            if (
+                value is not None
+                and len(value.encode()) > MAX_SOURCE_VALUE_BYTES
+            ):
+                raise ValueError(
+                    "CMS Part D spending JSON value exceeds its byte limit"
+                )
             record[str(key)] = value
+            columns[str(key)] = None
+            if len(columns) > MAX_SOURCE_COLUMNS:
+                raise ValueError(
+                    "CMS Part D spending JSON exceeds its column limit"
+                )
         records.append(record)
-    columns = tuple(dict.fromkeys(key for record in records for key in record))
+    column_names = tuple(columns)
     if (
-        len(columns) < _MIN_COLUMNS
-        or any(not column for column in columns)
-        or _RESERVED.intersection(columns)
+        len(column_names) < _MIN_COLUMNS
+        or any(not column for column in column_names)
+        or _RESERVED.intersection(column_names)
     ):
         raise ValueError("CMS Part D spending JSON fields are unusable")
+    return records, column_names
+
+
+def _project_json(
+    stream: IO[bytes],
+    *,
+    payload_identity: str,
+    outer_member_path: str,
+    output: Path,
+) -> CMSPartDProjection:
+    records, column_names = _json_source_records(_read_json(stream))
     rows: list[dict[str, object]] = []
     for number, record in enumerate(records, start=1):
         row: dict[str, object] = {}
-        for column in columns:
+        for column in column_names:
             value = record.get(column)
             row[column] = value
         row.update({
@@ -261,7 +316,7 @@ def _project_json(
         })
         rows.append(row)
     schema = pa.schema(
-        [(column, pa.string()) for column in columns]
+        [(column, pa.string()) for column in column_names]
         + [
             ("gma_payload_identity", pa.string()),
             ("gma_outer_member_path", pa.string()),
@@ -278,7 +333,7 @@ def _project_json(
         inner_member_path=None,
         parquet_path=output,
         row_count=len(rows),
-        column_count=len(columns),
+        column_count=len(column_names),
         parquet_sha256=_file_sha256(output),
         projection_text_encoding="utf-8-sig",
     )

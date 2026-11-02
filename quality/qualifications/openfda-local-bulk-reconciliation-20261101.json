@@ -1,0 +1,23 @@
+{
+  "scope": "Frozen openFDA bulk download inventory, local acquisition only",
+  "inventory_date": "2026-10-30",
+  "initial": {
+    "finished_at": "2026-10-30T14:37:24.222876+00:00",
+    "downloaded": 2392,
+    "failed": 4
+  },
+  "retry": {
+    "finished_at": "2026-10-30T15:07:07.737993+00:00",
+    "downloaded": 4,
+    "failed": 0
+  },
+  "unique_partitions": 2396,
+  "total_file_bytes": 137563772556,
+  "manifest_sha256": "88624405d747e37cd2488027cda74c97305be1523cb2624f416b6311d98cd352",
+  "retry_manifest_sha256": "eb940b627a03cfceb3688d68584623fa7a82322140b79935fb61d8acdce6dbd8",
+  "receipt_index_sha256": "a3f490801b4144529994be1574f14af640582cf713dcab16fdca4790f1055989",
+  "index_encoding": "UTF-8 compact JSON array of [relative_path,bytes,receipt_sha256_of_payload] sorted by relative_path",
+  "verification": "Manifest identity, local receipt digest field and actual file size verified for every partition. Payload digests were recorded by acquisition and were not independently recomputed.",
+  "public_archive_verified": false,
+  "bronze_admission_changed": false
+}
