@@ -20,6 +20,55 @@ ROOT = Path(__file__).resolve().parents[1]
 BASELINE = ROOT / "contracts/openapi-v1.json"
 
 
+def test_cli_exposes_local_and_public_export_checks(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    from scripts import qualify_clean_consumer
+
+    output = tmp_path / "receipt.json"
+    local = tmp_path / "local.zip"
+    result = tmp_path / "result.json"
+    public = tmp_path / "public.zip"
+
+    def fake_qualify(
+        selected_output: Path,
+        *,
+        research_export: Path | None = None,
+        research_result: Path | None = None,
+        public_research_export: Path | None = None,
+    ) -> dict[str, str]:
+        assert (
+            selected_output,
+            research_export,
+            research_result,
+            public_research_export,
+        ) == (output, local, result, public)
+        return {"state": "both_formats_selected"}
+
+    monkeypatch.setattr(qualify_clean_consumer, "qualify", fake_qualify)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "qualify_clean_consumer.py",
+            "--output",
+            str(output),
+            "--research-export",
+            str(local),
+            "--research-result",
+            str(result),
+            "--public-research-export",
+            str(public),
+        ],
+    )
+    qualify_clean_consumer.main()
+    assert json.loads(capsys.readouterr().out) == {
+        "state": "both_formats_selected"
+    }
+
+
 def test_installed_probe_verifies_local_result_and_rejects_tampering(
     tmp_path: Path,
 ) -> None:

@@ -513,6 +513,11 @@ def main() -> None:
         type=Path,
         help="canonical JSON result sidecar for a local research export",
     )
+    parser.add_argument(
+        "--public-research-export",
+        type=Path,
+        help="also verify public metadata without a result sidecar",
+    )
     args = parser.parse_args()
     print(
         json.dumps(
@@ -520,6 +525,7 @@ def main() -> None:
                 args.output,
                 research_export=args.research_export,
                 research_result=args.research_result,
+                public_research_export=args.public_research_export,
             ),
             sort_keys=True,
         )

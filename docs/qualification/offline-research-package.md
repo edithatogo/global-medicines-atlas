@@ -32,7 +32,10 @@ The metadata limit is 8 MiB and the canonical JSON result limit is 1 MiB.
 Both must be regular files, not symlinks. A result requires a metadata archive.
 The existing verifier rejects missing, altered, noncanonical or mismatched local
 results and continues to reject a result sidecar for the public metadata form.
-Public-form consumers can continue to omit `--research-result`.
+Public-form consumers can continue to omit `--research-result`. To check both
+forms in the same installed environments, add
+`--public-research-export /absolute/path/public-metadata.zip` to the command
+above. That path is metadata input; it does not fetch or publish any result.
 
 Each built wheel and sdist is installed in a fresh environment. The research
 probe runs with isolated Python import resolution (`-I`), verifies the archive
