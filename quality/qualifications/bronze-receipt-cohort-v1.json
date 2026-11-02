@@ -31,7 +31,7 @@
     },
     "qualification_dependencies": {
       "algorithm": "sha256 of the ordered path/existence/content-digest manifest; covers full-scope evaluator evidence, direct current-scope receipt candidates, specialized authorization metadata, and adapter/fixture scan inputs",
-      "sha256": "e05f1c90cfefd0a3a5bc6851ab8127c9b32a72319493228c452695b324b92d49",
+      "sha256": "b303eb726635782170b3b97b1ae03f083823a20d3104767430ec5fb951511e03",
       "file_count": 149,
       "files": [
         {
@@ -62,7 +62,7 @@
         {
           "path": "docs/data-sources/SOURCE_RIGHTS.md",
           "exists": true,
-          "sha256": "8931cf4dfeb10f5c18508387d2aa8129376fc7e52b50e4d074932402d0fb0672"
+          "sha256": "585c6dea09befa48dc5cd568d45a95ea435dbce01573c71ff9a3cbe354747899"
         },
         {
           "path": "quality/bronze-scale-budgets.json",
