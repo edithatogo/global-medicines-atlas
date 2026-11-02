@@ -1768,5 +1768,19 @@
         "changed_paths": 0
       }
     ]
+  },
+  "integration_closeout": {
+    "recovery_pr": 1392,
+    "recovery_merge": "c3aec9d4ef3f95700748d6b45ef15e48681bc3eb",
+    "openfda_pr": 1390,
+    "openfda_merge": "811e73d4fe13d202a1f3faa81a4f42da6f65bc81",
+    "publication_authority_pr": 1388,
+    "publication_authority_merge": "fc42041037b4ae4133acc1ef361dbb4543df201f",
+    "publication_run_id": "41395493749",
+    "publication_run_attempt": 1,
+    "publication_revision": "3995deb3e2a82f09472d6a78020fb13bbbc96056",
+    "publication_status": "published_anonymously_verified_not_admitted",
+    "receipt_directory": "quality/qualifications/pbs-reproduced-publication-20261102-41395493749",
+    "additional_append_authorized": false
   }
 }

@@ -66,5 +66,16 @@ Its owned paths are this recovery report, the frozen branch audit and the
 subsequent exact PBS publication receipt packet. The user transferred PR 1377
 integration ownership to this chat and approved one exact reproduced PBS
 append. Earlier assignments remain historical. Native scope is the approved
-output at the pinned parent only. The next native operation is a single hosted
-append after PRs 1390 and 1388 merge, followed by anonymous digest verification.
+output at the pinned parent only. That append is complete; no further append
+is authorized by this integration transaction. PR 1390 merged as `811e73d4`
+after its cancelled gremlins check passed on one unchanged-head diagnostic
+rerun. PR 1388 merged as `fc420410` after current protected checks passed.
+
+Hosted run [41395493749](https://github.com/edithatogo/global-medicines-atlas/actions/runs/41395493749)
+published revision `3995deb3e2a82f09472d6a78020fb13bbbc96056` on its first attempt.
+The hosted receipt and a separate anonymous streaming read both verified
+637,012,122 bytes against SHA-256
+`86d65b147dc95787c5e3f14b13abe2630562f050e2221a1340939dcc7776a88c`.
+The [retained packet](../../quality/qualifications/pbs-reproduced-publication-20261102-41395493749/manifest.json)
+authenticates publication without asserting v4 admission or consumer canaries.
+Only the audit closeout merge remains within this transaction.
