@@ -292,33 +292,81 @@ print(json.dumps({
     )
 
 
+def _bounded_research_input(
+    path: Path | None, limit: int, label: str
+) -> Path | None:
+    """Reject unsafe or oversized research inputs before package building."""
+    if path is None:
+        return None
+    if path.is_symlink():
+        raise ValueError(f"{label} must be a bounded regular file")
+    path = path.resolve(strict=True)
+    if not path.is_file() or path.stat().st_size > limit:
+        raise ValueError(f"{label} must be a bounded regular file")
+    return path
+
+
+def _research_probes(
+    environment: Path,
+    research_export: Path | None,
+    research_result: Path | None,
+    public_research_export: Path | None,
+) -> dict[str, Any]:
+    """Verify optional local and public forms in the same installed package."""
+    research_export_probe: dict[str, Any] = {}
+    if public_research_export is not None:
+        public_probe = json.loads(
+            _run(
+                [
+                    "python",
+                    "-I",
+                    "-c",
+                    _research_export_probe(public_research_export),
+                ],
+                environment=environment,
+            )
+        )
+        research_export_probe.update({
+            f"public_{key}": value for key, value in public_probe.items()
+        })
+    if research_export is not None:
+        research_export_probe.update(
+            json.loads(
+                _run(
+                    [
+                        "python",
+                        "-I",
+                        "-c",
+                        _research_export_probe(
+                            research_export, research_result
+                        ),
+                    ],
+                    environment=environment,
+                )
+            )
+        )
+    return research_export_probe
+
+
 def qualify(
     output: Path,
     *,
     research_export: Path | None = None,
     research_result: Path | None = None,
+    public_research_export: Path | None = None,
 ) -> dict[str, Any]:
     """Build, install, reinstall, probe, and write a platform receipt."""
-    if research_result is not None:
-        if research_export is None:
-            raise ValueError("research result requires a research export")
-        if research_result.is_symlink():
-            raise ValueError("research result must be a bounded regular file")
-        research_result = research_result.resolve(strict=True)
-        if (
-            not research_result.is_file()
-            or research_result.stat().st_size > 1024 * 1024
-        ):
-            raise ValueError("research result must be a bounded regular file")
-    if research_export is not None:
-        if research_export.is_symlink():
-            raise ValueError("research export must be a bounded regular file")
-        research_export = research_export.resolve(strict=True)
-        if (
-            not research_export.is_file()
-            or research_export.stat().st_size > 8 * 1024 * 1024
-        ):
-            raise ValueError("research export must be a bounded regular file")
+    if research_result is not None and research_export is None:
+        raise ValueError("research result requires a research export")
+    research_export = _bounded_research_input(
+        research_export, 8 * 1024 * 1024, "research export"
+    )
+    public_research_export = _bounded_research_input(
+        public_research_export, 8 * 1024 * 1024, "research export"
+    )
+    research_result = _bounded_research_input(
+        research_result, 1024 * 1024, "research result"
+    )
     dist = ROOT / "build/consumer-dist"
     if dist.exists():
         shutil.rmtree(dist)
@@ -373,21 +421,14 @@ def qualify(
                     environment=environment,
                 )
             )
-            research_export_probe: dict[str, Any] = {}
-            if research_export is not None:
-                research_export_probe = json.loads(
-                    _run(
-                        [
-                            "python",
-                            "-I",
-                            "-c",
-                            _research_export_probe(
-                                research_export, research_result
-                            ),
-                        ],
-                        environment=environment,
-                    )
+            core_probe.update(
+                _research_probes(
+                    environment,
+                    research_export,
+                    research_result,
+                    public_research_export,
                 )
+            )
             _run([
                 "uv",
                 "pip",
@@ -415,7 +456,6 @@ def qualify(
                 **core_probe,
                 **atlas_probe,
                 **serving_probe,
-                **research_export_probe,
             }
             _run([
                 "uv",

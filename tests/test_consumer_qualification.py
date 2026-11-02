@@ -49,6 +49,21 @@ def test_installed_probe_verifies_local_result_and_rejects_tampering(
     assert receipt["research_export"] == "passed"
     assert receipt["research_result_verified"] is True
     assert "1001" not in output
+    public_manifest, public_crate, public_lineage = (
+        test_research_export_package._inputs()
+    )
+    public = tmp_path / "public-metadata.zip"
+    public.write_bytes(
+        build_research_export_package(
+            manifest=public_manifest, crate=public_crate, lineage=public_lineage
+        ).archive_bytes()
+    )
+    both = qualify_clean_consumer._research_probes(
+        Path(sys.prefix), archive, sidecar, public
+    )
+    assert both["public_research_export"] == "passed"
+    assert both["public_research_result_verified"] is False
+    assert both["research_result_verified"] is True
     sidecar.write_bytes(b"[]")
     with pytest.raises(
         RuntimeError, match="local research result digest differs"

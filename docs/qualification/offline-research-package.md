@@ -39,7 +39,9 @@ probe runs with isolated Python import resolution (`-I`), verifies the archive
 and result, and rebuilds identical metadata. Its receipt records hashes, lengths
 and status without source/result values. The existing cross-platform synthetic
 medallion canary supplies its exact query result to this local-format check;
-the public metadata form is still rebuilt and verified in the pipeline.
+both the local and public metadata forms are verified in each installed
+environment before any server/federation extras are installed. The public
+metadata form is also rebuilt and verified in the pipeline.
 
 This is installed-package verification using synthetic evidence. It establishes
 neither an actual-source clean-room recovery nor independent storage/recovery

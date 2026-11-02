@@ -2302,7 +2302,10 @@ def _qualify_installed_medallion_export(tmp_path: Path) -> None:
     )
     receipt_path.parent.mkdir(parents=True, exist_ok=True)
     receipt = qualify_clean_consumer.qualify(
-        receipt_path, research_export=export_archive, research_result=result
+        receipt_path,
+        research_export=export_archive,
+        research_result=result,
+        public_research_export=tmp_path / "research-export.zip",
     )
     assert len(receipt["artifacts"]) == 2
     assert all(
@@ -2311,6 +2314,12 @@ def _qualify_installed_medallion_export(tmp_path: Path) -> None:
         and item["probe"]["research_result_verified"] is True
         and item["probe"]["research_result_sha256"]
         == hashlib.sha256(result.read_bytes()).hexdigest()
+        and item["probe"]["public_research_export"] == "passed"
+        and item["probe"]["public_research_export_sha256"]
+        == hashlib.sha256(
+            (tmp_path / "research-export.zip").read_bytes()
+        ).hexdigest()
+        and item["probe"]["public_research_result_verified"] is False
         for item in receipt["artifacts"]
     )
 
