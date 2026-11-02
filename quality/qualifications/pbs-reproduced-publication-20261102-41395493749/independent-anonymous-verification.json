@@ -1,0 +1,10 @@
+{
+  "dataset": "edithatogo/australian-pbs-source-archive",
+  "revision": "3995deb3e2a82f09472d6a78020fb13bbbc96056",
+  "path": "silver/pbs/v4/2026-04-01/8e8bacdc72ea81ecfbb84d161b3f546eee03bddeae32f82daa7231c3759d23fc/values.parquet",
+  "bytes": 637012122,
+  "sha256": "86d65b147dc95787c5e3f14b13abe2630562f050e2221a1340939dcc7776a88c",
+  "account_authentication_used": false,
+  "local_payload_retained": false,
+  "verification": "independent_streaming_sha256"
+}
