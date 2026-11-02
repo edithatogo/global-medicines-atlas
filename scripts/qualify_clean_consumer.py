@@ -363,7 +363,7 @@ def qualify(
                 "install",
                 "--python",
                 str(environment),
-                f"{artifact}[federation,server]",
+                f"{artifact}[server]",
             ])
             atlas_probe = json.loads(
                 _run(["python", "-c", _atlas_probe()], environment=environment)

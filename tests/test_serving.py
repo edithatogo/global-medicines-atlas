@@ -78,3 +78,18 @@ def test_invalid_database_path_is_not_echoed(
     ) as caught:
         create_app()
     assert "/private" not in str(caught.value)
+
+
+def test_api_dispatch_respects_asgi_root_path(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    database = create_synthetic_query_database(tmp_path / "source.duckdb")
+    monkeypatch.setenv("GMA_DATABASE_PATH", str(database))
+    monkeypatch.setenv("GMA_CURSOR_SECRET", "synthetic-test-secret-long-enough")
+    with TestClient(create_app(), root_path="/atlas") as raw_client:
+        client = cast("Client", raw_client)
+        assert client.get("/atlas/api/v1/health").status_code == 200
+        assert client.post("/atlas/api/v1/health").status_code == 405
+        assert client.get("/atlas/").status_code == 200
+        assert client.get("/atlas").status_code == 200
+        assert client.get("/api/v1/health").status_code == 200

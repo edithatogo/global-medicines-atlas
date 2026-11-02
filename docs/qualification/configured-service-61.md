@@ -13,7 +13,8 @@ external acceptance requirements.
 The built package now provides the ASGI factory
 `global_medicines_atlas.serving:create_app`. Install the selected verified wheel
 with its `server` extra, or install that extra from a qualified source archive.
-It reuses the already-locked Uvicorn dependency; no dependency version is upgraded.
+It reuses the already-locked Uvicorn and Atlas JSON-schema dependencies; no
+dependency version is upgraded.
 
 Configure `GMA_DATABASE_PATH` to the absolute path of an existing compatible
 canonical DuckDB database, and supply the operator-owned `GMA_CURSOR_SECRET`
@@ -42,7 +43,7 @@ not deploy to a public endpoint or make clinical claims.
 
 The existing clean-consumer harness now starts this installed factory as a real
 Uvicorn process on an ephemeral loopback socket after building and installing
-both the wheel and source distribution. It requests health, readiness, Atlas and
+both the wheel and source distribution with the `server` extra alone. It requests health, readiness, Atlas and
 a packaged stylesheet over HTTP, then stops only its owned child process.
 The synthetic database remains explicitly labelled in the resulting receipt.
 Core-only installation and the existing v2 CLI/compatibility checks remain in
@@ -52,7 +53,10 @@ Focused regressions cover missing and invalid configuration, private-error
 redaction, API routing/method handling, unchanged source bytes, and readiness
 failure without database recreation after the source disappears. The original
 root-mount composition failed the 405 regression and was replaced by explicit
-API/Atlas dispatch. An offline lock attempt lacked cached metadata; the supported
+API/Atlas dispatch. A mounted ASGI root-path regression also failed before
+root-path-aware dispatch was added. Review caught a missing Atlas validator in
+the initial server extra; it is now explicit, and the consumer no longer masks
+that dependency with a concurrent federation-extra install. An offline lock attempt lacked cached metadata; the supported
 online lock refresh succeeded, changing only the project's new extra metadata.
 
 ## Remaining external gates

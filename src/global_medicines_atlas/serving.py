@@ -40,6 +40,11 @@ def create_app() -> ASGIApp:
 
     async def application(scope: Scope, receive: Receive, send: Send) -> None:
         path = str(scope.get("path", ""))
+        root_path = str(scope.get("root_path", ""))
+        if root_path and (
+            path == root_path or path.startswith(root_path + "/")
+        ):
+            path = path[len(root_path) :] or "/"
         target = (
             api
             if scope["type"] != "http"
