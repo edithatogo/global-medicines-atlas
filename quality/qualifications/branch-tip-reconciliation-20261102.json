@@ -1,0 +1,1786 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-11-02",
+  "audited_main": "c3aec9d4ef3f95700748d6b45ef15e48681bc3eb",
+  "scope": "100 residual branch tips, source and historical evidence review",
+  "decision_basis": "Scoped recovery of missing supported behavior, retention of later main implementations, original branches preserved. Corroborating commit similarity and tests alone are not proof of equivalence.",
+  "source_comparison": {
+    "definitions_compared": 1608
+  },
+  "validation": {
+    "current_successor_test_files": 98,
+    "passed_tests": 2782,
+    "reference_tests": 125,
+    "cms_tests": 133,
+    "adapter_tests": 21,
+    "family_and_adjacent_tests": 50,
+    "local_selection_scope": "Supporting 98-file local selection collected before the final temporal-adapter and PBS-family ports; focused checks covered those ports separately. Final-source acceptance uses protected checks on PR 1392 head 362d579f4b07053594b59c333adeceb21264da9f, merged as c3aec9d4ef3f95700748d6b45ef15e48681bc3eb."
+  },
+  "branches": [
+    {
+      "branch": "codex/apache-license-alignment-20261024",
+      "head": "a407b81d38ba676df07677760085f298f0115f09",
+      "disposition": "recovered_scoped_changes",
+      "review_reason": "Source distribution NOTICE inclusion and project-owned licensing instructions recovered in PR 1392.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "b9b0d1dac20f6f4893515a283ad1da95f5c30702 Guard selective pytest feedback against accidental full runs (#526)",
+        "af985d6c0ed4e4944589224ee2f58498f114078d Harden the single-maintainer context and verification harness (#18)",
+        "ff7076faeedc86bb50da33bf4ab1a7385c1539d5 Prove synthetic scalar v4 consumer path (#1099)"
+      ]
+    },
+    {
+      "branch": "codex/au-pbs-cli-parity",
+      "head": "89c9fae6d4d42db581ebdd2ad7c8363703743f85",
+      "disposition": "retain_current_successor",
+      "review_reason": "PR 363 explicitly superseded by merged PR 362. scripts/inspect_pbs_v3.py and tests/test_au_pbs_v3.py retain bounded donor inspection. Existing PR disposition: Superseded before merge by concurrent PR #362, which extends the existing inspector. Preserving this branch and its tests as recoverable work; consolidating useful input/output bounds into the canonical inspector rather than merging duplicate CLI surfaces.",
+      "source_symbol_comparison": {
+        "missing-current": 7
+      },
+      "corroborating_main_changes": [
+        "92f84b2cc671005cfdc5cd03f53277b3d662bfb1 Reconcile Australian donor inventory checkpoint (#353)",
+        "4811c2e91a05a3e283ce9a0788d4b1f822f771b7 docs(conductor): record public PBS archive receipt (#361)",
+        "1161be5836d2d09c7b02e13f6a628e5dbeb6b6d9 Audit Australian consolidation acceptance and merged-work cleanup (#370)"
+      ]
+    },
+    {
+      "branch": "codex/australian-m112-root-manifest-readback-20261005",
+      "head": "626c1b60cbfe27ac2307fe916652a79853be129f",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical. Existing PR disposition: Superseded by PR #1067, which preserves this PR's root-manifest readback qualification, append-only Conductor evidence, and plan updates alongside the guarded metadata append implementation. No evidence or acceptance decision was dropped.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "5f3c8a5f826ff5e32d80fadedd10a1a20af8a71a docs(mbs): reconcile current M-112 root manifest",
+        "8de8c9c34516bc1c6442b8c5c081a76ce079e137 Record CMS rights readback validation (#1210)",
+        "51a57bf09b590e2ed84e9bd8fe61ccf2bc8b1104 Correct MBS Gold candidate confidence status (#1131)"
+      ]
+    },
+    {
+      "branch": "codex/australian-producer-fixture-contract",
+      "head": "6aa06ffda1d92127be4353ac4ae87142a649b64d",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "c26c40da3c1fefcc8aa6ef5db4839c1b2583d462 test: strengthen synthetic producer identity contract (#461)",
+        "639587f615a0e5e2cc710bcfc5041fb95a94761c Qualify synthetic full-layer distribution inventory (#823)",
+        "414075510207aadf1c5402e3a641f338c8f3288b test(federation): add synthetic Australian benefits producer (#454)"
+      ]
+    },
+    {
+      "branch": "codex/benefits-cli-config",
+      "head": "418fd4a3f7fd3240af1936ae710817f1c1fa6e8e",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "changed-current": 13,
+        "exact-current": 8
+      },
+      "corroborating_main_changes": [
+        "e28c22b35acf2b99c07f14e7802009e351e0aae6 feat: expose JSON-safe benefits page payload (#475)",
+        "30a5c307eeb0f5a777fce7764c7c7ce52eccc52f feat(federation): integrate benefits queries, graph parity and hosted metadata recovery (#463)",
+        "f794a952410754e108449641eacc66f51bc2ab9c List admitted Platinum dataset identities (#505)"
+      ]
+    },
+    {
+      "branch": "codex/benefits-negative-controls",
+      "head": "40af6c33d07dea10fe654c95839ca2c43046567a",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "changed-current": 22,
+        "exact-current": 38
+      },
+      "corroborating_main_changes": [
+        "30a5c307eeb0f5a777fce7764c7c7ce52eccc52f feat(federation): integrate benefits queries, graph parity and hosted metadata recovery (#463)",
+        "85ad454850dd43814530f4340fa6247776cb4cfc Separate source revision from metadata append parent (#615)",
+        "f794a952410754e108449641eacc66f51bc2ab9c List admitted Platinum dataset identities (#505)"
+      ]
+    },
+    {
+      "branch": "codex/benefits-next-projection",
+      "head": "d182b0111b9be0f3e85a89c02f6f76eab649d03a",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "changed-current": 22,
+        "exact-current": 47
+      },
+      "corroborating_main_changes": [
+        "30a5c307eeb0f5a777fce7764c7c7ce52eccc52f feat(federation): integrate benefits queries, graph parity and hosted metadata recovery (#463)",
+        "85ad454850dd43814530f4340fa6247776cb4cfc Separate source revision from metadata append parent (#615)",
+        "e28c22b35acf2b99c07f14e7802009e351e0aae6 feat: expose JSON-safe benefits page payload (#475)"
+      ]
+    },
+    {
+      "branch": "codex/bronze-cms-json-bounds",
+      "head": "7ee4ae3079dd830e2a4ab78fe169537c296ea710",
+      "disposition": "recovered_scoped_changes",
+      "review_reason": "Payload, record, column and value bounds and duplicate-key rejection recovered in PR 1392 with encoding provenance preserved.",
+      "source_symbol_comparison": {
+        "exact-current": 3,
+        "changed-current": 1
+      },
+      "corroborating_main_changes": [
+        "3d60e0513bd63c89905a0cdd69715d9182705be3 Fix CMS Part D formulary record projection decoding (#527)",
+        "26c68f63b4b7606d0b8bc08b88d8e3bd73cd1471 Bind CMS Part D projections to exact raw inventory (#415)",
+        "38d61425fa4545725c6031f4e9b0d3b1a8dc7680 Project CMS Part D source-native Bronze records (#357)"
+      ]
+    },
+    {
+      "branch": "codex/bronze-recovery-property-merge-receipt-20261017",
+      "head": "77eb6fac078f9a781e40aeb466c35be24053cc40",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "b3bd98a21e8e3a99b8423937b563ab19a31e85e1 docs(bronze): refresh post-PR1061 qualification evidence",
+        "6d092b014200d1b3eeb05e7b733e73de1d21d59b docs(bronze): reconcile property isolation merge (#1062)",
+        "0608b82eb66d65c113c45aa2bf11dd1b0b8210ab docs(conductor): reconcile verified merge tree (#906)"
+      ]
+    },
+    {
+      "branch": "codex/checkpoint-stream-cancellation",
+      "head": "6d8e324d51371f372c272168fdbfcd838c1f6dd5",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "changed-current": 15,
+        "exact-current": 13
+      },
+      "corroborating_main_changes": [
+        "30a5c307eeb0f5a777fce7764c7c7ce52eccc52f feat(federation): integrate benefits queries, graph parity and hosted metadata recovery (#463)",
+        "85ad454850dd43814530f4340fa6247776cb4cfc Separate source revision from metadata append parent (#615)",
+        "e28c22b35acf2b99c07f14e7802009e351e0aae6 feat: expose JSON-safe benefits page payload (#475)"
+      ]
+    },
+    {
+      "branch": "codex/cms-partd-source-records",
+      "head": "73af4c67fc740b27321743d125cb51c4aed78fa7",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "exact-current": 6,
+        "changed-current": 5
+      },
+      "corroborating_main_changes": [
+        "38d61425fa4545725c6031f4e9b0d3b1a8dc7680 Project CMS Part D source-native Bronze records (#357)",
+        "3d60e0513bd63c89905a0cdd69715d9182705be3 Fix CMS Part D formulary record projection decoding (#527)",
+        "26c68f63b4b7606d0b8bc08b88d8e3bd73cd1471 Bind CMS Part D projections to exact raw inventory (#415)"
+      ]
+    },
+    {
+      "branch": "codex/conductor-scope-correction-20260905",
+      "head": "36bc42ac8295a6a620e0fba082ea55bd0ca72f05",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "5ed2f9f86015c5f2dcd8ebb5db8a6f0132e3c188 Project PBS v3 records to canonical funding (#498)",
+        "5b7af3b66911642bbb5d63e789982e2e55964800 feat(pbs): declare source-faithful semantic boundaries (#460)",
+        "771ca393500165ed57fca64fd5c1c8ac523b98f0 Admit observed PBS production XML envelope (#360)"
+      ]
+    },
+    {
+      "branch": "codex/donor-delta",
+      "head": "9d19e641e117a423cbcedb3e8a1440de761ff471",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "exact-current": 12
+      },
+      "corroborating_main_changes": [
+        "254372063b76886f2a0589159ee0b7e6d940971b feat(au): reconcile donor drift and bounded historical comparisons (#401)"
+      ]
+    },
+    {
+      "branch": "codex/donor-history-append-contract",
+      "head": "8f186992799299cfd74c383dea50976510e8bdf5",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "exact-current": 46,
+        "changed-current": 2
+      },
+      "corroborating_main_changes": [
+        "254372063b76886f2a0589159ee0b7e6d940971b feat(au): reconcile donor drift and bounded historical comparisons (#401)",
+        "e75ef6804b7729081981f7cd69c00746217988db feat(au): add scoped comparison and append-only history contracts (#402)",
+        "6dbb91b279d957cda0ba7a4e16e8c765f17dd7b6 Bind donor history append authorization contract (#410)"
+      ]
+    },
+    {
+      "branch": "codex/e2e-row-reconciliation-20261021",
+      "head": "523bc20f40cc5462a0c1c598b5aeb613c3df835c",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "5014f1d9a0f17fd361fbdc4c686903c3c6770b81 Keep Conductor focused on completing the existing system (#1345)",
+        "f0b3de8b442855bdbc9c38005adb3ada6f9ca07a Finish bounded software scope and streamline delivery (#1378)",
+        "4b0559ab6b5c9f1d8bf7efd0c3bd3a5c00afd8d1 docs: register external gate decisions"
+      ]
+    },
+    {
+      "branch": "codex/e2e-source-neutral-closeout-20261017",
+      "head": "67917d66a98c883982d2615435b7ce6549589f2a",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "6bcac5bc75780b1b20ea1a191bc148280998df1e docs(platinum): reconcile current-main E2E merge (#1091)",
+        "9b378ccb9b624f54dc7f92fec7824c968bcd4325 docs(platinum): record current-main synthetic E2E (#1089)",
+        "0b1b7ac7ac35e30c2ead93de987fde45e6042cf6 Record source structure fixture merge (#900)"
+      ]
+    },
+    {
+      "branch": "codex/federation-cdn-compat",
+      "head": "4534d21640ce9281dad6a1eee5655393ed4502c2",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "b402191d55ea99bf51562d4a216e0c2053919268 fix: reject overflowing federation timeouts (#941)",
+        "6c785f6fed362d9f45a2de57a7b77aa071938206 fix: reject invalid federation reader timeouts (#939)",
+        "041f5dc06a1fafef6e7d49c819e1adbaa563c0d9 fix(federation): reject duplicate contract JSON members (#806)"
+      ]
+    },
+    {
+      "branch": "codex/federation-closure-qgifl8",
+      "head": "3e797a244cbfa407e37bb74418383d5f32fa9b3f",
+      "disposition": "retain_current_successor",
+      "review_reason": "Local duplicate JSON helper replaced by shared strict_json.unique_json_object in current closure validator.",
+      "source_symbol_comparison": {
+        "exact-current": 50,
+        "missing-current": 1,
+        "changed-current": 11
+      },
+      "corroborating_main_changes": [
+        "e75ef6804b7729081981f7cd69c00746217988db feat(au): add scoped comparison and append-only history contracts (#402)",
+        "44a603d520f1e66e7951d9a9e1476563cb756b0c feat(au): close bounded evidence gaps without granting admission (#403)",
+        "254372063b76886f2a0589159ee0b7e6d940971b feat(au): reconcile donor drift and bounded historical comparisons (#401)"
+      ]
+    },
+    {
+      "branch": "codex/federation-compatibility-canary",
+      "head": "daf5551288762d93321efd21aa04266b51091ab1",
+      "disposition": "retain_current_successor",
+      "review_reason": "RDF identifier helper replaced by shared rdf_iri_reference. Current stream cancellation and metadata receipt checks retained.",
+      "source_symbol_comparison": {
+        "changed-current": 24,
+        "exact-current": 57,
+        "missing-current": 1
+      },
+      "corroborating_main_changes": [
+        "30a5c307eeb0f5a777fce7764c7c7ce52eccc52f feat(federation): integrate benefits queries, graph parity and hosted metadata recovery (#463)",
+        "85ad454850dd43814530f4340fa6247776cb4cfc Separate source revision from metadata append parent (#615)",
+        "f794a952410754e108449641eacc66f51bc2ab9c List admitted Platinum dataset identities (#505)"
+      ]
+    },
+    {
+      "branch": "codex/federation-current-e2e-evidence-20261017",
+      "head": "80d9371b73b3794dc19328a53ab8f6b55a271a35",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "ba3558a82afcdc37f3473584ea6d2d66db6ce4ad Record merged M-112 lineage qualification (#1183)",
+        "65dd7ed7fd3d8065addb62d845ee67d73c320324 docs(m112): reconcile public HF root manifest receipt",
+        "708b8a3a164a386447d78f6e6c6ff2fcbdb5886e docs(hf): reconcile verified donor history append (#1032)"
+      ]
+    },
+    {
+      "branch": "codex/frontier-evidence-reconciliation-v2",
+      "head": "00fb7a392c0270b3d2723fa748ca9cd2b0946839",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "49516c550796a4fcb0660cf51b9e87043e0803f8 docs(conductor): record graph policy scope merge (#1049)",
+        "1c5d853f4c00efcac86f29fb72b3ce1bc9abe17e docs(conductor): reconcile frontier merge receipt (#936)",
+        "6d849fb6971334093c7d21a656c20cf92f45aed9 Reconcile hosted RDF preview verification (#933)"
+      ]
+    },
+    {
+      "branch": "codex/frontier-graph-parity",
+      "head": "5da960c6c2967e649f52d5caaad2d6c736aa8e2a",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "changed-current": 15,
+        "exact-current": 17
+      },
+      "corroborating_main_changes": [
+        "30a5c307eeb0f5a777fce7764c7c7ce52eccc52f feat(federation): integrate benefits queries, graph parity and hosted metadata recovery (#463)",
+        "85ad454850dd43814530f4340fa6247776cb4cfc Separate source revision from metadata append parent (#615)",
+        "e28c22b35acf2b99c07f14e7802009e351e0aae6 feat: expose JSON-safe benefits page payload (#475)"
+      ]
+    },
+    {
+      "branch": "codex/frontier-matrix-contract",
+      "head": "a59cdc3e5116881c401bf71136ff752c1201b918",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical. Existing PR disposition: Superseded by merged PBS receipt PR #458; preserving this conflicting branch as historical review context.",
+      "source_symbol_comparison": {
+        "changed-current": 2
+      },
+      "corroborating_main_changes": [
+        "414075510207aadf1c5402e3a641f338c8f3288b test(federation): add synthetic Australian benefits producer (#454)",
+        "c26c40da3c1fefcc8aa6ef5db4839c1b2583d462 test: strengthen synthetic producer identity contract (#461)",
+        "409fd7e2c036cde96fb6a5f7fde761f756fdea84 Execute governed datahouse interoperability experiments (#218)"
+      ]
+    },
+    {
+      "branch": "codex/gold-review-ledger-e2e",
+      "head": "ecad45fd53b2f28f9846e33733d192e3d4e951af",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "changed-current": 2
+      },
+      "corroborating_main_changes": [
+        "1bc43c17fe9abb3d1759ed7ebf013e9fed2b899f Label Gold adjudication authority as unverified (#968)",
+        "61f89bb2fa8b23b3612d15b2cb757ed52df70a80 feat(cli): expose deterministic Gold review queue (#918)",
+        "adc2c297056e996fb75b52f3293af65a0a5450bb Require verified authority for Gold review queue removal (#1018)"
+      ]
+    },
+    {
+      "branch": "codex/hf-public-estate-audit-20261001",
+      "head": "0820a61cca04add9e1273ab34ecc2b671e6403c6",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "exact-current": 13,
+        "changed-current": 1
+      },
+      "corroborating_main_changes": [
+        "93031ccfc72a054b9eaeb988b7b029a58603a331 docs(federation): reconcile public estate registry gaps (#678)",
+        "1b64c9bb1d46dfa3cc0e85ac45b69c77726d1502 fix(hf): read full public collection metadata (#692)",
+        "9647d2878e0c5ebe101bb01437209e40eaea3080 test: cover public Hub redirect and size bounds (#679)"
+      ]
+    },
+    {
+      "branch": "codex/historical-comparison",
+      "head": "b22f24ab0edf26c681fdd9224324faae8eddf285",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "exact-current": 12,
+        "changed-current": 2
+      },
+      "corroborating_main_changes": [
+        "51f12d6c94b725c55f2bda897c1e2f19360cd965 test(history): cover literal comparison acceptance cases (#740)",
+        "e75ef6804b7729081981f7cd69c00746217988db feat(au): add scoped comparison and append-only history contracts (#402)",
+        "254372063b76886f2a0589159ee0b7e6d940971b feat(au): reconcile donor drift and bounded historical comparisons (#401)"
+      ]
+    },
+    {
+      "branch": "codex/historical-lineage-clean",
+      "head": "3fe2b63601c3e64952f58da670952e24d6f0f0c8",
+      "disposition": "recovered_scoped_changes",
+      "review_reason": "Family selection recovered in current PBS domain stream. Old ATC labelling rejected in favor of source-native classifications.",
+      "source_symbol_comparison": {
+        "exact-current": 8,
+        "changed-current": 11,
+        "missing-current": 4
+      },
+      "corroborating_main_changes": [
+        "76422f45908e4c615f8700c7d771376c6f774f65 feat: add literal PBS snapshot comparison (#474)",
+        "57ced93ca8f164d639fdd7ae984c2f88519fc5d5 feat: add bounded historical change and lineage services (#467)",
+        "1ba149a29aa6df438a183e258ae9372bcb6f799c frontier: make Xet benchmark denominator explicit (#472)"
+      ]
+    },
+    {
+      "branch": "codex/history-arrow-k6la27",
+      "head": "fd0f360ca17b63731f0b720cb589a6a60af5edd1",
+      "disposition": "no_merge_tree_change",
+      "review_reason": "Merging the frozen tip contributes no tree change against the audited main.",
+      "source_symbol_comparison": {
+        "exact-current": 4
+      },
+      "corroborating_main_changes": [
+        "5b957a9ee5b16abb55860f8441f63516b8835d67 feat(medallion): validate declared MBS profiles and project native comparisons (#406)"
+      ]
+    },
+    {
+      "branch": "codex/installed-atlas-evidence-browser-e2e",
+      "head": "44d09fa0e9405aeb84c740954add5c1693191d14",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical. Existing PR disposition: Superseded by #992, which reapplies the same evidence-only reconciliation on current main after the implementation PR was squash-merged.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "ba2d38f0b4873a8973d88c2e24c99749c846db09 test(platinum): qualify installed v2 API over loopback (#995)",
+        "e52e3141526edb0baf004b3b12c6820bc60464a1 test: exercise installed Atlas evidence journey (#990)",
+        "a1f3cc23eeffc097d1f214ea75aa44a6babd8de8 test(platinum): cover installed v2 browser journey (#993)"
+      ]
+    },
+    {
+      "branch": "codex/installed-scalar-e2e-main-20261018",
+      "head": "7657c1c3883d1631de18462c2a88404b3e462887",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "c4911d3d41182579558c7de010b71a0ef3fb7d55 Record positive MBS candidate date canary (#1149)",
+        "d99c35989032a0c9d523b0f7e8024b192d68fd1d test(mbs): pin scalar canary exact-main receipt (#1136)",
+        "946c71035cf01d5adde44dc84b686859f355ce76 Record refreshed MBS candidate qualification (#1128)"
+      ]
+    },
+    {
+      "branch": "codex/legacy-publication-api-error-20260905",
+      "head": "08842a3b033e9686d7c60adcba684a84e42db36f",
+      "disposition": "retain_current_successor",
+      "review_reason": "Shared RDF encoding, typed ExportSource/ExportCitation and ResearchLineageReceipt replace draft helpers and LineageReceipt. Current hosted metadata test rejects missing run receipts.",
+      "source_symbol_comparison": {
+        "changed-current": 57,
+        "exact-current": 148,
+        "missing-current": 7
+      },
+      "corroborating_main_changes": [
+        "30a5c307eeb0f5a777fce7764c7c7ce52eccc52f feat(federation): integrate benefits queries, graph parity and hosted metadata recovery (#463)",
+        "85ad454850dd43814530f4340fa6247776cb4cfc Separate source revision from metadata append parent (#615)",
+        "57ced93ca8f164d639fdd7ae984c2f88519fc5d5 feat: add bounded historical change and lineage services (#467)"
+      ]
+    },
+    {
+      "branch": "codex/m105-prearchive-search-20261017",
+      "head": "ec0e050565d585fc890a97a84d2050ac56b88687",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "147a99c0aa5c8e7b04f63d504b7359bc8c85f172 docs(m105): record pre-archive chronology audit (#1090)",
+        "54b1415725fe8a6a7bfcee5c1df9707be554e585 docs: record verified Australian legacy archive revision (#465)",
+        "4101b573f69bb2422e62702349150505d493d400 docs: record exact-main MBS comparison evidence (#1118)"
+      ]
+    },
+    {
+      "branch": "codex/m107-merge-evidence-20261018",
+      "head": "496490c1a3479294bbbcbaf1f6fcdcfbdc0e5b59",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "4101b573f69bb2422e62702349150505d493d400 docs: record exact-main MBS comparison evidence (#1118)",
+        "116a9126284a0e3616e836b86bf43ced97e973d6 Reconcile MBS metadata qualification evidence (#582)",
+        "df277c495ffc047bd19ffa1334c56746029f7e2b docs(m105): complete donor history evidence search (#1134)"
+      ]
+    },
+    {
+      "branch": "codex/m109-august-field-diagnostics-20261017",
+      "head": "52c51b0c04055c03c1e5ae72cc1541c444b7bb36",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "changed-current": 1,
+        "exact-current": 1
+      },
+      "corroborating_main_changes": [
+        "a087acdfb935bb79f894ecd3f91530351f3faac8 Qualify August 2026 MBS field semantics (#1108)",
+        "764ee7c757c60243e8963e7482883728b768dc74 Record verified August 2026 MBS DMY profile (#1110)",
+        "19420a008b8b33919aa4a837779e0fb6a15b4a88 Profile August MBS native field presence (#1107)"
+      ]
+    },
+    {
+      "branch": "codex/m109-receipt-merge-20261018",
+      "head": "268354db5526b2903c8f3ce963b2dbf350fdb057",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "4101b573f69bb2422e62702349150505d493d400 docs: record exact-main MBS comparison evidence (#1118)",
+        "116a9126284a0e3616e836b86bf43ced97e973d6 Reconcile MBS metadata qualification evidence (#582)",
+        "df277c495ffc047bd19ffa1334c56746029f7e2b docs(m105): complete donor history evidence search (#1134)"
+      ]
+    },
+    {
+      "branch": "codex/m110-candidate-disposition-20261017",
+      "head": "4f9372079592c04d4b67e56e1a44e08bed860fa0",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "8de8c9c34516bc1c6442b8c5c081a76ce079e137 Record CMS rights readback validation (#1210)",
+        "51a57bf09b590e2ed84e9bd8fe61ccf2bc8b1104 Correct MBS Gold candidate confidence status (#1131)",
+        "c68c6d4dbb0600ea464f2d98e716fd7b47fe4326 Record bounded MBS v3 candidate acceptance (#1124)"
+      ]
+    },
+    {
+      "branch": "codex/m110-consumer-canary-refresh-20261020",
+      "head": "d0cc2bdd8fc93ea906d3d86fd1872d574650c8e8",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "a5753b1c79ccedd9bb54112bf803882ffc9deb96 Record exact-main MBS consumer canary (#1198)",
+        "7f1cdf457a93d4fa03a38aebca72febfdf029191 Require positive MBS candidate date canary (#1148)",
+        "386b6bd292e6a657dc01d17c8355d9fa13d35bfa Bind MBS Gold canaries to reviewed candidate edges (#1215)"
+      ]
+    },
+    {
+      "branch": "codex/m110-postmerge-evidence-20261017",
+      "head": "8a1c469e4681aaf061467d260e0c9d60e31af73f",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "8de8c9c34516bc1c6442b8c5c081a76ce079e137 Record CMS rights readback validation (#1210)",
+        "51a57bf09b590e2ed84e9bd8fe61ccf2bc8b1104 Correct MBS Gold candidate confidence status (#1131)",
+        "c68c6d4dbb0600ea464f2d98e716fd7b47fe4326 Record bounded MBS v3 candidate acceptance (#1124)"
+      ]
+    },
+    {
+      "branch": "codex/m110-scalar-v4-e2e-pre-main-20261017",
+      "head": "41aca96affd9a987a6497009544c8a604cc08314",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "exact-current": 2
+      },
+      "corroborating_main_changes": [
+        "ff7076faeedc86bb50da33bf4ab1a7385c1539d5 Prove synthetic scalar v4 consumer path (#1099)",
+        "4fa44d09af3dd7d6a727454d31425a36ceccfe5f Qualify actual Platinum result evidence (#506)",
+        "2987e07d312e02542f09b2af9ea529b29341c524 test(m110): verify scalar trust path across Atlas surfaces (#1101)"
+      ]
+    },
+    {
+      "branch": "codex/m112-pbs-owner-rights-20261020",
+      "head": "d3546c451826cb4e64a3fcf8a201a8e5a052947d",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "changed-current": 3,
+        "exact-current": 1
+      },
+      "corroborating_main_changes": [
+        "0ddad5bb26815d1591adf603a8a17fd6889de7c1 Reconcile exact raw PBS rights permission (#1220)",
+        "757f3fd3e1d26116e37b08580246a469adfafa11 Reconcile M-112 rights and release readbacks (#1213)",
+        "bc2f0e60453d0172c1224ede174cee8e1751cb94 Attest rights for frozen August MBS projections (#1204)"
+      ]
+    },
+    {
+      "branch": "codex/m112-v4-next-cohort-20261020",
+      "head": "e0469b807fa1678fc6341f1db7279b3a35143138",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical. Existing PR disposition: Superseded by clean-base PR #1239. PR #1238 included already-merged PR #1237 commits in its diff because of the squash merge ancestry; #1239 contains only the canary readback reconciliation on current main.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "516d56e8fd5274b37d65a2192257a41e7cb8cb94 Admit Q2 M-112 raw B2 contract (#1237)",
+        "7db88db6367f0fff25d915340078805d03b291dc Record Q2 M-112 consumer canary readback (#1239)",
+        "4255ae0d187413d24a9055f33bd13f08b73e396e Record Q3 M-112 v4 admission and canary (#1232)"
+      ]
+    },
+    {
+      "branch": "codex/m5-current-main-reconciliation-20261005",
+      "head": "4f634bc4ccf57172a46d699ada5a338fbb879005",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "7f3dcf5d3d52e918b8eeeb8a3e843b4277f1eca2 Rebind Stable v1 M5 maturity to exact current main (#1290)",
+        "49b019681b43f78d1d005d2dd64f2b60e0019446 docs(stable): reconcile current-main M5 maturity (#785)",
+        "d89bead266414f99f0e41447d25fcc56d8a7ba6a Refresh Stable v1 maturity after PR 674 (#675)"
+      ]
+    },
+    {
+      "branch": "codex/m5-pr785-refresh",
+      "head": "693c07c1abcc1cc4edcabf881ed6a4cda42bc1da",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "7f3dcf5d3d52e918b8eeeb8a3e843b4277f1eca2 Rebind Stable v1 M5 maturity to exact current main (#1290)",
+        "49b019681b43f78d1d005d2dd64f2b60e0019446 docs(stable): reconcile current-main M5 maturity (#785)",
+        "d89bead266414f99f0e41447d25fcc56d8a7ba6a Refresh Stable v1 maturity after PR 674 (#675)"
+      ]
+    },
+    {
+      "branch": "codex/mbs-comparison-cohorts",
+      "head": "defb7559a855314fcacd2caba87586ef01fe8f08",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "exact-current": 38,
+        "changed-current": 3
+      },
+      "corroborating_main_changes": [
+        "254372063b76886f2a0589159ee0b7e6d940971b feat(au): reconcile donor drift and bounded historical comparisons (#401)",
+        "e75ef6804b7729081981f7cd69c00746217988db feat(au): add scoped comparison and append-only history contracts (#402)",
+        "406572b484b34a1b16025331b11d90fb06432c83 docs(conductor): reconcile evidence delivery and PBS metadata recovery (#404)"
+      ]
+    },
+    {
+      "branch": "codex/mbs-era-fix-bskp0o",
+      "head": "7fe0388d50dc59d757804c1474b10f20fd3077b4",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "exact-current": 40,
+        "changed-current": 10
+      },
+      "corroborating_main_changes": [
+        "e75ef6804b7729081981f7cd69c00746217988db feat(au): add scoped comparison and append-only history contracts (#402)",
+        "254372063b76886f2a0589159ee0b7e6d940971b feat(au): reconcile donor drift and bounded historical comparisons (#401)",
+        "6dbb91b279d957cda0ba7a4e16e8c765f17dd7b6 Bind donor history append authorization contract (#410)"
+      ]
+    },
+    {
+      "branch": "codex/mbs-field-era-crosswalk-20261025",
+      "head": "29889c43802a3c1be4059035df2216aa8e9b8b68",
+      "disposition": "no_merge_tree_change",
+      "review_reason": "Merging the frozen tip contributes no tree change against the audited main.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "cc5c6615be033b60a2e1bf6c50dc64d2cae9763c Profile P7 workbook date consistency (#1334)"
+      ]
+    },
+    {
+      "branch": "codex/mbs-gold-scalar-query-merge-receipt-20261017",
+      "head": "7bb17f75da97618cff55740e31a2cf5721dff388",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "fa4ece20be0eaae795f1b09c36f14d3bab0dfda6 Record frozen-main full Test-Goblin result (#1078)",
+        "d5054eb267505594168137f03a6dea82b4a5d850 Bind MBS bridge evidence to merge commit (#1076)",
+        "feb372d7d66f897472069a32f257048258bea1e1 docs(m112): record current-main manifest validation"
+      ]
+    },
+    {
+      "branch": "codex/mbs-header-semantic-adjudication-20261024",
+      "head": "cdd058d9c6d2f82345ec07ff85f9cd935bb1fa14",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "b847ac3b6d54ae5ed30a0b29ce25c5e6be417514 Reconcile bounded Silver semantics and PBS reference packet (#1312)"
+      ]
+    },
+    {
+      "branch": "codex/mbs-historical-value-shape-profile-20261025",
+      "head": "38a39329e12c137d53efcde84215b67341ee6c83",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "exact-current": 5
+      },
+      "corroborating_main_changes": [
+        "2040eba53442291203d03c004dd4ab8505a80709 Bind historical MBS workbook value shape diagnostics (#1344)",
+        "2a6b81ee95e296b5aea09bdd9860933b315ea97e feat(silver): reconcile MBS workbook field states (#1300)",
+        "fb21611e2a194a06dd47528484ea22e2d1d6552f Reconcile MBS workbook header and value states (#1326)"
+      ]
+    },
+    {
+      "branch": "codex/mbs-p7-date-profile-reconciliation-20261025",
+      "head": "7197b473fd675dc2f5e8fed1f680f1186a91680d",
+      "disposition": "no_merge_tree_change",
+      "review_reason": "Merging the frozen tip contributes no tree change against the audited main.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "2040eba53442291203d03c004dd4ab8505a80709 Bind historical MBS workbook value shape diagnostics (#1344)"
+      ]
+    },
+    {
+      "branch": "codex/mbs-profile-consumer-20260831",
+      "head": "ff8ce7040fa17af15c51ae6e5083a1c7b931951d",
+      "disposition": "no_merge_tree_change",
+      "review_reason": "Merging the frozen tip contributes no tree change against the audited main.",
+      "source_symbol_comparison": {
+        "exact-current": 4
+      },
+      "corroborating_main_changes": [
+        "5b957a9ee5b16abb55860f8441f63516b8835d67 feat(medallion): validate declared MBS profiles and project native comparisons (#406)"
+      ]
+    },
+    {
+      "branch": "codex/mbs-raw-b2-candidate-profile-20261018-prep",
+      "head": "b31855232f66155d91a0e58dc3b10424c8235c51",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "exact-current": 30,
+        "changed-current": 1
+      },
+      "corroborating_main_changes": [
+        "762707f7c8dee289653cc55d478b6b0a5065aa18 feat(frontier): screen graph content and gate calibration (#1161)",
+        "10f0a818200c4b6857a60e1e7bbeb04242b1f2fe Add candidate-only MBS raw B2 profile (#1163)",
+        "5fabe8e91e230da75a7ef702fe0e04da1ff62f6c Screen MBS relationships and measure matcher calibration (#1168)"
+      ]
+    },
+    {
+      "branch": "codex/mbs-schema-profile-nc0ak5",
+      "head": "9187132eeda7c6852ad914f3e88c3140f90f00a6",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "exact-current": 43,
+        "changed-current": 11
+      },
+      "corroborating_main_changes": [
+        "e75ef6804b7729081981f7cd69c00746217988db feat(au): add scoped comparison and append-only history contracts (#402)",
+        "44a603d520f1e66e7951d9a9e1476563cb756b0c feat(au): close bounded evidence gaps without granting admission (#403)",
+        "2c70f59112280a0d9a137a3b25f5c870061e31e0 Bind MBS schema profiles to native cohorts (#626)"
+      ]
+    },
+    {
+      "branch": "codex/mbs-silver-integrated-candidate-20261025",
+      "head": "b89f28332393b6d82e2ea4a19c8ab85cd9e27b00",
+      "disposition": "retain_current_successor",
+      "review_reason": "Current field-state and value-shape successors retained. Earlier selected P7 DMY profile conflicts with later unselected operational profile and is rejected as current behavior.",
+      "source_symbol_comparison": {
+        "exact-current": 20,
+        "changed-current": 5
+      },
+      "corroborating_main_changes": [
+        "2040eba53442291203d03c004dd4ab8505a80709 Bind historical MBS workbook value shape diagnostics (#1344)",
+        "2a6b81ee95e296b5aea09bdd9860933b315ea97e feat(silver): reconcile MBS workbook field states (#1300)",
+        "b847ac3b6d54ae5ed30a0b29ce25c5e6be417514 Reconcile bounded Silver semantics and PBS reference packet (#1312)"
+      ]
+    },
+    {
+      "branch": "codex/mbs-value-era-integration-20261024",
+      "head": "14188f7196a6fa6704045692a64d21890ac87a98",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "changed-current": 12,
+        "exact-current": 14
+      },
+      "corroborating_main_changes": [
+        "43f72eb7844a1f3adf13ec1fb34788c1bb8faf71 feat(silver): reconcile historical MBS and PBS field semantics (#1296)",
+        "11be72e328affc0df87395fd59165ef4f5bf9055 Qualify uniquely determined P7 workbook dates (#1310)",
+        "b8882b7c99517a2e846899b341846700bfdad05b Qualify PBS amount and restriction field roles (#1329)"
+      ]
+    },
+    {
+      "branch": "codex/mbs-value-era-rules-20261023",
+      "head": "aec0a8b3cdf00347d91baeb3cbe15de9a4c3b9e5",
+      "disposition": "retain_current_successor",
+      "review_reason": "Earlier candidate date selection is superseded by the current unselected operational profile. No date acceptance is restored from draft tests.",
+      "source_symbol_comparison": {
+        "changed-current": 7
+      },
+      "corroborating_main_changes": [
+        "11be72e328affc0df87395fd59165ef4f5bf9055 Qualify uniquely determined P7 workbook dates (#1310)",
+        "d7bdaeb8c276eb50617a6d205aa4b97a02fe22c3 Preserve P7 typed candidate packages and native restore evidence (#1260)",
+        "3c5ecf6d1170bb9d3028ae3c9f7de8a593de5bb6 Integrate bounded P7 DMY inference into Silver candidate (#1336)"
+      ]
+    },
+    {
+      "branch": "codex/mbs-workbook-header-profiles-20261023",
+      "head": "e69125193a6ff8a2b81259a3f4d414a92710420d",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "exact-current": 24
+      },
+      "corroborating_main_changes": [
+        "6dd0e69b8876701c49ba8552ea76c5ced035b0f4 Profile historical MBS workbook header semantics (#1288)",
+        "d338ee01132a615df3b84e1e6f8e524f677b0591 Complete native historical workbook packages and register protected qualification (#1278)",
+        "43f72eb7844a1f3adf13ec1fb34788c1bb8faf71 feat(silver): reconcile historical MBS and PBS field semantics (#1296)"
+      ]
+    },
+    {
+      "branch": "codex/metadata-cas-recovery",
+      "head": "dccb1fa84f100ad80d4bca4ca42c76c2801ec4ef",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "changed-current": 17,
+        "exact-current": 24
+      },
+      "corroborating_main_changes": [
+        "85ad454850dd43814530f4340fa6247776cb4cfc Separate source revision from metadata append parent (#615)",
+        "30a5c307eeb0f5a777fce7764c7c7ce52eccc52f feat(federation): integrate benefits queries, graph parity and hosted metadata recovery (#463)",
+        "e28c22b35acf2b99c07f14e7802009e351e0aae6 feat: expose JSON-safe benefits page payload (#475)"
+      ]
+    },
+    {
+      "branch": "codex/neo4j-receipt-integrity-test",
+      "head": "850d7109228bd39af909e894ed0aa0eda561edc8",
+      "disposition": "no_merge_tree_change",
+      "review_reason": "Merging the frozen tip contributes no tree change against the audited main.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": []
+    },
+    {
+      "branch": "codex/neo4j-receipt-reconciliation",
+      "head": "7d84d4df030f4a28706b8c7c909e275e19bba933",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "4af3d7820b64d6905a11336bc896f2a87a37c410 test(frontier): verify committed Neo4j receipt (#1013)",
+        "24596ebc66e9f0be1949c6c489ccc37de72ca062 conductor(evidence): reconcile corrected Neo4j receipt (#1012)",
+        "efcfbbe7f73aa43a895a229c9bf5b53ac5f46002 test(frontier): execute synthetic graph parity in Neo4j (#1011)"
+      ]
+    },
+    {
+      "branch": "codex/no-outbound-messaging-policy",
+      "head": "d17c3636da0805b87bb1ca1fcc8da1582ed22bde",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "f0b3de8b442855bdbc9c38005adb3ada6f9ca07a Finish bounded software scope and streamline delivery (#1378)",
+        "4b0559ab6b5c9f1d8bf7efd0c3bd3a5c00afd8d1 docs: register external gate decisions",
+        "f2948467c150cd2fe50ed91bf8d43b6bc53175f6 conductor: enable autonomous decision-gated tracks (#73)"
+      ]
+    },
+    {
+      "branch": "codex/p7-exact-main-field-state-20261024",
+      "head": "03f317caaa0eb16df82252520bd770cc4035f6b6",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "changed-current": 6,
+        "exact-current": 1
+      },
+      "corroborating_main_changes": [
+        "b847ac3b6d54ae5ed30a0b29ce25c5e6be417514 Reconcile bounded Silver semantics and PBS reference packet (#1312)",
+        "2a6b81ee95e296b5aea09bdd9860933b315ea97e feat(silver): reconcile MBS workbook field states (#1300)",
+        "fb21611e2a194a06dd47528484ea22e2d1d6552f Reconcile MBS workbook header and value states (#1326)"
+      ]
+    },
+    {
+      "branch": "codex/pbs-date-denominator-20261025",
+      "head": "55a2cc558c85ebe74aea4b5fbd62279839636685",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "85efc7f0a60aab526353d86c0cacddda7a676621 Reconcile PBS date roles and diagnose bounded URI screen (#1318)",
+        "a91ce7f994391a6d7aae182618c92049fcf088d2 Record exact PBS URI resolution outcomes (#1324)",
+        "364350c8f20ee56bdaf2b786af85f0cc3fa283bd docs(conductor): reconcile completed PBS structural qualification (#565)"
+      ]
+    },
+    {
+      "branch": "codex/pbs-domain-field-audit-20261024",
+      "head": "4385b6307c3c023f5d38d7290f6abdbfcf1b21ea",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "changed-current": 1
+      },
+      "corroborating_main_changes": [
+        "3e24eeb2c54a9c243797d4f8afcc7afebbe4a303 Reconcile latest PBS reference context (#1311)",
+        "a8ccaf9dca0b0b1e45005507eb66e75cc39c97f0 Qualify PBS item effective date field roles (#1328)",
+        "1cc13b76eaa92476837cc4fce9d3c2e22b5fd91b feat(pbs): bind field reconciliation to exact-main reference review (#1302)"
+      ]
+    },
+    {
+      "branch": "codex/pbs-domain-semantic-adjudication-20261024",
+      "head": "95a3f2aa72fe5b40f6504a0d1b623bbee05e75fb",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "exact-current": 1,
+        "changed-current": 2
+      },
+      "corroborating_main_changes": [
+        "b847ac3b6d54ae5ed30a0b29ce25c5e6be417514 Reconcile bounded Silver semantics and PBS reference packet (#1312)",
+        "3e24eeb2c54a9c243797d4f8afcc7afebbe4a303 Reconcile latest PBS reference context (#1311)",
+        "1cc13b76eaa92476837cc4fce9d3c2e22b5fd91b feat(pbs): bind field reconciliation to exact-main reference review (#1302)"
+      ]
+    },
+    {
+      "branch": "codex/pbs-gold-graph-20260902",
+      "head": "868d8623a019b739c1725b0c28902c7f1155d344",
+      "disposition": "retain_current_successor",
+      "review_reason": "Merged PR 443 and later current validators bind node fields, edges, ordinals and complete graph closure. Current tests reject relabelling and evidence tampering.",
+      "source_symbol_comparison": {
+        "changed-current": 11,
+        "missing-current": 5,
+        "exact-current": 2
+      },
+      "corroborating_main_changes": [
+        "81232a36618b0077c6f5882ed693943cb054ac29 feat: add evidence-bound PBS Gold candidates (#443)",
+        "1ca89a37edf403f912050be7d6b2f23798b00bee Guard graph previews against restricted metadata (#937)",
+        "be8b69bf644ec1a24811b63d088bae652af8c49a feat(pbs): map native prices to Silver family (#471)"
+      ]
+    },
+    {
+      "branch": "codex/pbs-hosted-publication-20261029",
+      "head": "4c9b0fc0c9dd4e79b49cc23176a63cd8f8659718",
+      "disposition": "no_merge_tree_change",
+      "review_reason": "Merging the frozen tip contributes no tree change against the audited main.",
+      "source_symbol_comparison": {
+        "exact-current": 25
+      },
+      "corroborating_main_changes": [
+        "58fbac80d8c353c05cadbcd609f22997b7cc698d Prepare hosted PBS publication and consumer qualification (#1377)",
+        "2005165bcc48d85dbe1565dd766d92243223d3a7 Fix Atlas browser canary cell comparison (#1356)",
+        "f1c287a7c7739133db6cec65dcaccc4bf21925e3 Add V2 comparison CLI command (#518)"
+      ],
+      "current_local_ref": "9866c0b589b71de25a0c6c22b2b637aa07a9bfcd",
+      "ref_change_reason": "This integrating chat updated the publication branch from main before merging PR 1377. Audited source tip remains retained by its immutable object ID."
+    },
+    {
+      "branch": "codex/pbs-metadata-probe",
+      "head": "83885d0859864007f5c48d9dbf150502428c1d7b",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "exact-current": 44,
+        "changed-current": 11
+      },
+      "corroborating_main_changes": [
+        "e75ef6804b7729081981f7cd69c00746217988db feat(au): add scoped comparison and append-only history contracts (#402)",
+        "254372063b76886f2a0589159ee0b7e6d940971b feat(au): reconcile donor drift and bounded historical comparisons (#401)",
+        "44a603d520f1e66e7951d9a9e1476563cb756b0c feat(au): close bounded evidence gaps without granting admission (#403)"
+      ]
+    },
+    {
+      "branch": "codex/pbs-preparation-dag",
+      "head": "71a55b48e82941918ace4d599cd7f8f04e8ffb7c",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "exact-current": 5,
+        "changed-current": 2
+      },
+      "corroborating_main_changes": [
+        "b3dbd889f724628c981ebe216cfea79e7fa62823 feat(pbs): report value-free reference diagnostics (#567)",
+        "0a116e164999ae6ee5e33c05a94e0d6ddb454c65 Disaggregate PBS qualification preparation (#422)",
+        "cbf81a8b5e48a0556fd65242eec41132123ed74c Repair and disaggregate PBS preparation qualification (#421)"
+      ]
+    },
+    {
+      "branch": "codex/pbs-receipt-reconcile-20260929",
+      "head": "f25ce74e4113347a81b3f01620669ac25a207edf",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "fc01d0c5c28cb7ecec9a213d22c3eda25d9dad0d Reconcile PBS API rights request receipt (#603)",
+        "5111cf4e97a96c275d5cf2afa92ecd016738bec8 docs: preflight PBS public API rights (#594)",
+        "e02516038694c93bf74ec2d373e1609cde1a7d55 Preserve PBS evidence ledger append history (#604)"
+      ]
+    },
+    {
+      "branch": "codex/pbs-reference-assembly-regression",
+      "head": "7216079580dd5bf95b6d4d3f67dba749cbda6cb5",
+      "disposition": "recovered_scoped_changes",
+      "review_reason": "Sliced nested offsets fixed and synthetic Parquet benchmark recovered in PR 1392. Current bounded allocation and row-window validators retained.",
+      "source_symbol_comparison": {
+        "missing-current": 2,
+        "changed-current": 2
+      },
+      "corroborating_main_changes": [
+        "ddadb4afa329d0049e0262335fde75d044dcc919 Repair PBS reference output and add deterministic windows (#419)",
+        "757dc413debee2638edcbac0e64a512126e05cb8 perf(pbs): index reference literals from Arrow columns (#408)",
+        "ccf7570ed1c51210be0a4586ec6aa2f7e33b5a85 Reuse Arrow batches for PBS reference output (#416)"
+      ]
+    },
+    {
+      "branch": "codex/pbs-reference-group-api",
+      "head": "455171234105ac02e3ab5e3f7145ea560e334ce6",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "exact-current": 3
+      },
+      "corroborating_main_changes": [
+        "b3dbd889f724628c981ebe216cfea79e7fa62823 feat(pbs): report value-free reference diagnostics (#567)",
+        "0a116e164999ae6ee5e33c05a94e0d6ddb454c65 Disaggregate PBS qualification preparation (#422)",
+        "cbf81a8b5e48a0556fd65242eec41132123ed74c Repair and disaggregate PBS preparation qualification (#421)"
+      ]
+    },
+    {
+      "branch": "codex/pbs-reference-meaning-20261023",
+      "head": "81fee1b6fae5e2e039886207436bbff65136f90f",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "changed-current": 3,
+        "exact-current": 5
+      },
+      "corroborating_main_changes": [
+        "43f72eb7844a1f3adf13ec1fb34788c1bb8faf71 feat(silver): reconcile historical MBS and PBS field semantics (#1296)",
+        "c9fd61e92bf9c36d46f37d941a0cbdaf3db1b1f4 Bound PBS native reference screen retry after protected failure (#1280)",
+        "a198ffff88531f06a34e4f237af6d55dfc74260a Qualify bounded PBS reference URI context (#1307)"
+      ]
+    },
+    {
+      "branch": "codex/pbs-reference-qualification-20261024",
+      "head": "f65bd948c6322ece273181db93dd85527de79a3a",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "exact-current": 8,
+        "changed-current": 7
+      },
+      "corroborating_main_changes": [
+        "db4da9040f06436df837635f64e5943bc006a8a5 feat(pbs): prepare source reference review packet (#1301)",
+        "771a9a8549b84129a9321b573f6ce596364c95e5 Stratify PBS reference context samples (#1314)",
+        "a198ffff88531f06a34e4f237af6d55dfc74260a Qualify bounded PBS reference URI context (#1307)"
+      ]
+    },
+    {
+      "branch": "codex/pbs-root-metadata-preflight-93",
+      "head": "a929d069e705820bbd0922f64f7e839a9365a5a1",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "d385ebfe5c10be215d0da859a595979f7c583d8b Bind PBS domain profile to schema minor 3.1 (#1340)",
+        "a07ed05e7622a0d59a9fc37bd584d121007f898e Correct P7 date consistency count (#1343)",
+        "41b091e7f5702ce2de435b71c979b2e24c98e10d Reconcile exact-main P7 date consistency inference (#1335)"
+      ]
+    },
+    {
+      "branch": "codex/pbs-stream-reference-index",
+      "head": "af88a210ff1b482bfe146e90d267667e469e5617",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "exact-current": 4
+      },
+      "corroborating_main_changes": [
+        "0a116e164999ae6ee5e33c05a94e0d6ddb454c65 Disaggregate PBS qualification preparation (#422)",
+        "b3dbd889f724628c981ebe216cfea79e7fa62823 feat(pbs): report value-free reference diagnostics (#567)",
+        "cbf81a8b5e48a0556fd65242eec41132123ed74c Repair and disaggregate PBS preparation qualification (#421)"
+      ]
+    },
+    {
+      "branch": "codex/pbs-transport-diagnostic-detail",
+      "head": "1b267373719056c699d97a782412a4d71cc3bbf1",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "exact-current": 30,
+        "changed-current": 10
+      },
+      "corroborating_main_changes": [
+        "254372063b76886f2a0589159ee0b7e6d940971b feat(au): reconcile donor drift and bounded historical comparisons (#401)",
+        "e75ef6804b7729081981f7cd69c00746217988db feat(au): add scoped comparison and append-only history contracts (#402)",
+        "406572b484b34a1b16025331b11d90fb06432c83 docs(conductor): reconcile evidence delivery and PBS metadata recovery (#404)"
+      ]
+    },
+    {
+      "branch": "codex/pbs-uri-codecov-coverage-20261025",
+      "head": "c6074e98ffc8f78031ed56105e9eb7257fe0c0eb",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "changed-current": 6,
+        "exact-current": 6
+      },
+      "corroborating_main_changes": [
+        "1c28c9e14e3944255b0ca956106e35fcd9c262e4 Add bounded PBS source-local URI screen (#1317)",
+        "4029d4bc9dcd3d472fc12452a8c4a9dbc7135950 Bind PBS URI review cases to structural targets (#1321)",
+        "85efc7f0a60aab526353d86c0cacddda7a676621 Reconcile PBS date roles and diagnose bounded URI screen (#1318)"
+      ]
+    },
+    {
+      "branch": "codex/pbs-uri-context-review-20261024",
+      "head": "acb3b3ebaa27b62c07efe6c691bd0d932b5a188e",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "exact-current": 3,
+        "changed-current": 4
+      },
+      "corroborating_main_changes": [
+        "771a9a8549b84129a9321b573f6ce596364c95e5 Stratify PBS reference context samples (#1314)",
+        "5708e926883825e60701c728bb188dc9303b13bb Balance PBS reference context examples (#1313)",
+        "a198ffff88531f06a34e4f237af6d55dfc74260a Qualify bounded PBS reference URI context (#1307)"
+      ]
+    },
+    {
+      "branch": "codex/pbs-uri-failure-codes-20261025",
+      "head": "8b32b98e62a2614d853ecb702680d76fc8e2249d",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "exact-current": 6,
+        "changed-current": 5
+      },
+      "corroborating_main_changes": [
+        "85efc7f0a60aab526353d86c0cacddda7a676621 Reconcile PBS date roles and diagnose bounded URI screen (#1318)",
+        "4029d4bc9dcd3d472fc12452a8c4a9dbc7135950 Bind PBS URI review cases to structural targets (#1321)",
+        "1c28c9e14e3944255b0ca956106e35fcd9c262e4 Add bounded PBS source-local URI screen (#1317)"
+      ]
+    },
+    {
+      "branch": "codex/pbs-uri-review-binding-20261025",
+      "head": "67495875c4506f16f477e9c2c39e05c8db9e67d8",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "changed-current": 1
+      },
+      "corroborating_main_changes": [
+        "55657ab8ec4195e3acfc18d54711699a34912d9e feat(pbs): review bounded source-local reference behavior (#1332)",
+        "4029d4bc9dcd3d472fc12452a8c4a9dbc7135950 Bind PBS URI review cases to structural targets (#1321)",
+        "85efc7f0a60aab526353d86c0cacddda7a676621 Reconcile PBS date roles and diagnose bounded URI screen (#1318)"
+      ]
+    },
+    {
+      "branch": "codex/pbs-utilisation-rights-merge-receipt-20261020",
+      "head": "021ff2bb9611eac0a563bbe3e1836adb27cf586a",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "b3bd98a21e8e3a99b8423937b563ab19a31e85e1 docs(bronze): refresh post-PR1061 qualification evidence",
+        "6d092b014200d1b3eeb05e7b733e73de1d21d59b docs(bronze): reconcile property isolation merge (#1062)",
+        "0608b82eb66d65c113c45aa2bf11dd1b0b8210ab docs(conductor): reconcile verified merge tree (#906)"
+      ]
+    },
+    {
+      "branch": "codex/pbs-v3-semantic-boundaries",
+      "head": "976191af92fcaf0afeb6928294638923bfc7a456",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "changed-current": 2,
+        "exact-current": 2
+      },
+      "corroborating_main_changes": [
+        "414075510207aadf1c5402e3a641f338c8f3288b test(federation): add synthetic Australian benefits producer (#454)",
+        "5b7af3b66911642bbb5d63e789982e2e55964800 feat(pbs): declare source-faithful semantic boundaries (#460)",
+        "c26c40da3c1fefcc8aa6ef5db4839c1b2583d462 test: strengthen synthetic producer identity contract (#461)"
+      ]
+    },
+    {
+      "branch": "codex/pbs-v3-semantic-boundaries-v2",
+      "head": "c81f9ad7140decf9e02471dcab4e92c666c96394",
+      "disposition": "recovered_scoped_changes",
+      "review_reason": "Temporal/historical page composition recovered using current validated adapters. Other draft changes replaced by merged PR 467.",
+      "source_symbol_comparison": {
+        "exact-current": 46,
+        "changed-current": 27
+      },
+      "corroborating_main_changes": [
+        "30a5c307eeb0f5a777fce7764c7c7ce52eccc52f feat(federation): integrate benefits queries, graph parity and hosted metadata recovery (#463)",
+        "57ced93ca8f164d639fdd7ae984c2f88519fc5d5 feat: add bounded historical change and lineage services (#467)",
+        "d88aaef73faf46622dd2705783ee8e9703c32d2e fix(history): validate pages before serialization (#737)"
+      ]
+    },
+    {
+      "branch": "codex/pbs-v4-source-role-readiness-20261029",
+      "head": "9921590c7243eacea0252563083183a71036a889",
+      "disposition": "no_merge_tree_change",
+      "review_reason": "Merging the frozen tip contributes no tree change against the audited main.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "eb6c1eff3409b8dac73e93b33d26e62a81154f9e Record PBS reproduced-output public location readback (#1374)",
+        "00ad1deaec5aecf442930814fc6dc4045b4cf333 Reconcile reproduced PBS v4 evidence readiness (#1373)"
+      ]
+    },
+    {
+      "branch": "codex/platinum-benefits-filters",
+      "head": "17137a65bc924e313769f81ff854d5eb85d03295",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "changed-current": 16,
+        "exact-current": 19
+      },
+      "corroborating_main_changes": [
+        "30a5c307eeb0f5a777fce7764c7c7ce52eccc52f feat(federation): integrate benefits queries, graph parity and hosted metadata recovery (#463)",
+        "85ad454850dd43814530f4340fa6247776cb4cfc Separate source revision from metadata append parent (#615)",
+        "e28c22b35acf2b99c07f14e7802009e351e0aae6 feat: expose JSON-safe benefits page payload (#475)"
+      ]
+    },
+    {
+      "branch": "codex/platinum-bounded-query-service",
+      "head": "68e9df578ae16be7120fc2b72385d9368cafd4b1",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "changed-current": 8,
+        "exact-current": 4
+      },
+      "corroborating_main_changes": [
+        "e28c22b35acf2b99c07f14e7802009e351e0aae6 feat: expose JSON-safe benefits page payload (#475)",
+        "5ed2f9f86015c5f2dcd8ebb5db8a6f0132e3c188 Project PBS v3 records to canonical funding (#498)",
+        "77232bbb951a44cf1b2c931ae431ff3bb42a4107 fix(platinum): guard benefits semantic dimensions (#1046)"
+      ]
+    },
+    {
+      "branch": "codex/platinum-coverage-envelope",
+      "head": "175afef34aa37c58c75fcfb60080230465e196bc",
+      "disposition": "retain_current_successor",
+      "review_reason": "Current coverage envelope and shared RDF encoder replace draft definitions.",
+      "source_symbol_comparison": {
+        "changed-current": 26,
+        "exact-current": 60,
+        "missing-current": 1
+      },
+      "corroborating_main_changes": [
+        "30a5c307eeb0f5a777fce7764c7c7ce52eccc52f feat(federation): integrate benefits queries, graph parity and hosted metadata recovery (#463)",
+        "85ad454850dd43814530f4340fa6247776cb4cfc Separate source revision from metadata append parent (#615)",
+        "acab38f77ccf6f280d1e9874f303a4483581acc9 Bind federated coverage to admitted sources (#504)"
+      ]
+    },
+    {
+      "branch": "codex/pr454-inventory-fix",
+      "head": "b3ebe1f30a8faf6f261ff839ece89e4f080669b7",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "changed-current": 2
+      },
+      "corroborating_main_changes": [
+        "414075510207aadf1c5402e3a641f338c8f3288b test(federation): add synthetic Australian benefits producer (#454)",
+        "c26c40da3c1fefcc8aa6ef5db4839c1b2583d462 test: strengthen synthetic producer identity contract (#461)",
+        "409fd7e2c036cde96fb6a5f7fde761f756fdea84 Execute governed datahouse interoperability experiments (#218)"
+      ]
+    },
+    {
+      "branch": "codex/pr463-ci-fixes",
+      "head": "233af6b0d033daa41f023d1bae18599e610ba2e6",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "changed-current": 22,
+        "exact-current": 33
+      },
+      "corroborating_main_changes": [
+        "30a5c307eeb0f5a777fce7764c7c7ce52eccc52f feat(federation): integrate benefits queries, graph parity and hosted metadata recovery (#463)",
+        "85ad454850dd43814530f4340fa6247776cb4cfc Separate source revision from metadata append parent (#615)",
+        "e28c22b35acf2b99c07f14e7802009e351e0aae6 feat: expose JSON-safe benefits page payload (#475)"
+      ]
+    },
+    {
+      "branch": "codex/query-performance-investigation",
+      "head": "e786b1de360a0b20023230041cb64f3d36883868",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "changed-current": 15,
+        "exact-current": 22
+      },
+      "corroborating_main_changes": [
+        "30a5c307eeb0f5a777fce7764c7c7ce52eccc52f feat(federation): integrate benefits queries, graph parity and hosted metadata recovery (#463)",
+        "85ad454850dd43814530f4340fa6247776cb4cfc Separate source revision from metadata append parent (#615)",
+        "e28c22b35acf2b99c07f14e7802009e351e0aae6 feat: expose JSON-safe benefits page payload (#475)"
+      ]
+    },
+    {
+      "branch": "codex/reconcile-pbs-api-request-receipt-20260929",
+      "head": "9e26a76b25b6b31be3dce9e77fe28fdad72929fb",
+      "disposition": "duplicate_historical_record",
+      "review_reason": "Merge would insert an already-retained ledger row before its append-only ordering repair.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "fc01d0c5c28cb7ecec9a213d22c3eda25d9dad0d Reconcile PBS API rights request receipt (#603)",
+        "5111cf4e97a96c275d5cf2afa92ecd016738bec8 docs: preflight PBS public API rights (#594)",
+        "e02516038694c93bf74ec2d373e1609cde1a7d55 Preserve PBS evidence ledger append history (#604)"
+      ]
+    },
+    {
+      "branch": "codex/reconcile-platinum-scalar-e2e-20261018",
+      "head": "ffef3bf65c9b7f5075c944443d1ecb1db21ca8e2",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "280f3cacff773716389284f2bf1162565bee446b docs(platinum): reconcile export qualification merge (#1066)",
+        "27e37476edfe5a18db41e7aa762fb2389050e219 docs: record export path guard merge (#1056)",
+        "fa235baaab33786bb378b289488839bd551a8913 docs: record export identity merge evidence (#1051)"
+      ]
+    },
+    {
+      "branch": "codex/remote-query-latency-bound",
+      "head": "afea7d7a8992a06be5dfb1dc338e84d20fe99f14",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "exact-current": 8
+      },
+      "corroborating_main_changes": [
+        "5560f9308bf89e1e01378c312b9e9e891bfb2241 feat: enforce remote query latency ceilings (#1008)",
+        "9a3b943cc9906c51527024fe35888a4e0c2f1761 docs(conductor): disposition frontier experiments (#935)",
+        "7b2be0268a3840026838c42c7f5d60c19251508a feat(frontier): define remote query experiment contracts (#438)"
+      ]
+    },
+    {
+      "branch": "codex/review-ledger-merge-receipt-20261017",
+      "head": "baee421347d0206759a8c494192b9a9638ced4d8",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "8de8c9c34516bc1c6442b8c5c081a76ce079e137 Record CMS rights readback validation (#1210)",
+        "51a57bf09b590e2ed84e9bd8fe61ccf2bc8b1104 Correct MBS Gold candidate confidence status (#1131)",
+        "c68c6d4dbb0600ea464f2d98e716fd7b47fe4326 Record bounded MBS v3 candidate acceptance (#1124)"
+      ]
+    },
+    {
+      "branch": "codex/silver-exact-main-readbacks-20261024",
+      "head": "74e05b96d99491eac5b9e0f0a3876d3cb3d43aff",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "exact-current": 2,
+        "changed-current": 2
+      },
+      "corroborating_main_changes": [
+        "21f7721a8971ca6c9e704924503eebdd75356dce Complete MBS workbook review and integrate PBS reference context (#1297)",
+        "771a9a8549b84129a9321b573f6ce596364c95e5 Stratify PBS reference context samples (#1314)",
+        "5708e926883825e60701c728bb188dc9303b13bb Balance PBS reference context examples (#1313)"
+      ]
+    },
+    {
+      "branch": "codex/source-metadata-append",
+      "head": "30abd0409b24fa2316025664484e4d0075f96bbe",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "exact-current": 4,
+        "changed-current": 2
+      },
+      "corroborating_main_changes": [
+        "85ad454850dd43814530f4340fa6247776cb4cfc Separate source revision from metadata append parent (#615)",
+        "5ed2f9f86015c5f2dcd8ebb5db8a6f0132e3c188 Project PBS v3 records to canonical funding (#498)",
+        "5b7af3b66911642bbb5d63e789982e2e55964800 feat(pbs): declare source-faithful semantic boundaries (#460)"
+      ]
+    },
+    {
+      "branch": "codex/source-metadata-hosted",
+      "head": "c6b02af91115e122aea3cae3f43740da1c0f0f0d",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "changed-current": 19,
+        "exact-current": 21
+      },
+      "corroborating_main_changes": [
+        "85ad454850dd43814530f4340fa6247776cb4cfc Separate source revision from metadata append parent (#615)",
+        "30a5c307eeb0f5a777fce7764c7c7ce52eccc52f feat(federation): integrate benefits queries, graph parity and hosted metadata recovery (#463)",
+        "e28c22b35acf2b99c07f14e7802009e351e0aae6 feat: expose JSON-safe benefits page payload (#475)"
+      ]
+    },
+    {
+      "branch": "codex/source-structure-cli",
+      "head": "3138421ba6e22e50f384aa049a0b74b134546ab6",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {
+        "changed-current": 1
+      },
+      "corroborating_main_changes": [
+        "b377938b78eb8108868fd240bcf68054b6c18b4b Add bounded source structure CLI (#853)",
+        "f1c287a7c7739133db6cec65dcaccc4bf21925e3 Add V2 comparison CLI command (#518)",
+        "e568bf4c1cfc0ae24aab8be885b5e3a8f21a91b6 test: stabilize source structure Atlas identity (#887)"
+      ]
+    },
+    {
+      "branch": "codex/stable-federation-merge-receipt-20261028",
+      "head": "40511426187b8a050dd11328747eb4758d48f8c7",
+      "disposition": "retain_current_successor",
+      "review_reason": "Retain the current implementation and later evidence rather than replacing them with this historical branch. Existing symbols and successor tests cover the supported contract; old planning and checkpoint text remains historical.",
+      "source_symbol_comparison": {},
+      "corroborating_main_changes": [
+        "e31833643372b79efa999d0090a6e762180ea4d9 Close the merged candidate milestone and record its reproducibility check (#1391)",
+        "4f49f7599d70118d36613099a3124200300d88e4 docs(conductor): close Stable v1 NICE receipt reconciliation (#668)",
+        "7fcc6faca88ab58ab0dcdad0d8aa48512e99ea4d Reconcile merged MBS date compatibility receipt (#577)"
+      ]
+    }
+  ],
+  "branch_deletion_performed": false,
+  "native_acceptance_changed": false,
+  "dirty_worktrees": [
+    {
+      "worktree": "/Volumes/PortableSSD/GitHub/global-medicines-atlas",
+      "head": "d17c3636da0805b87bb1ca1fcc8da1582ed22bde",
+      "status_sha256": "7e564dcb491b323200542b99f1dcd687fe58aea204e7d65aab77aa70e79277ee",
+      "disposition": "Six skill wrappers recovered in PR 1392. Retain current append-only Bronze ledger. The stale working ledger adds a historical record whose claimed receipt digest differs from current main.",
+      "files": [
+        {
+          "path": "conductor/tracks/bronze_medallion_completion_20260819/evidence.jsonl",
+          "status": " M",
+          "sha256": "99be42f6a51f3255b8103349a56dafc9f9d55ef6efc3589bd81bd54c2e6418a8"
+        },
+        {
+          "path": ".agents/skills/",
+          "status": "??",
+          "sha256": null
+        }
+      ],
+      "original_files_preserved": true
+    },
+    {
+      "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-email-approval-guard-20261023",
+      "head": "78e857839aad8298060c65eb5ef03a4e3114827a",
+      "status_sha256": "95e77ce681435f2dddc5e5b2181787bbe0f1738c7406f8924a5f06620965a0cb",
+      "disposition": "Per-send approval draft superseded by the absolute outbound communications prohibition.",
+      "files": [
+        {
+          "path": "AGENTS.md",
+          "status": " M",
+          "sha256": "cf8b0631a4faaaef2d2926403b82ddc4e9850572542606fcbb7ff94f81804362"
+        }
+      ],
+      "original_files_preserved": true
+    },
+    {
+      "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-mbs-workbook-cohort-merge-20261023",
+      "head": "e69125193a6ff8a2b81259a3f4d414a92710420d",
+      "status_sha256": "43406a610eacc032d582a029c6b75ec089eeaa66cbe5aa86382a79e15f1b2d6f",
+      "disposition": "Changed workflow and test match main. Historical checkpoint plan/evidence are superseded by the merged source-era qualifications.",
+      "files": [
+        {
+          "path": ".github/workflows/mbs-q1-source-meaning-diagnostics.yml",
+          "status": " M",
+          "sha256": "7f17ba0f8fdec1c88b3ec3dcc50a77bbcaac1b1efa38c683bc31e1ba377a928f"
+        },
+        {
+          "path": "conductor/tracks/australian_benefits_silver_gold_20260829/evidence.jsonl",
+          "status": " M",
+          "sha256": "bd6c9ea3c9b374c9eb0358fb207c022ddb6cc03c85a7b979ef22e1f9485a5eec"
+        },
+        {
+          "path": "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md",
+          "status": " M",
+          "sha256": "105d2c234d3c858ed28470c12b3feeb1f39179ca85af29ccb8ebc40cfa943e90"
+        },
+        {
+          "path": "tests/test_qualify_mbs_historical_workbook_packages.py",
+          "status": " M",
+          "sha256": "8f913dc1b24e6108218313953781979aa9f1e01ae3d7ef514c920bbd5917bd44"
+        }
+      ],
+      "original_files_preserved": true
+    },
+    {
+      "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-field-reconciliation-20261023",
+      "head": "74e05b96d99491eac5b9e0f0a3876d3cb3d43aff",
+      "status_sha256": "c94b3f43af3639c3017c52fc84eaaec0bb0d97bce2d21c33c02cfcaa5d86af5b",
+      "disposition": "MBS Gold receipt recovered and matched to hosted artifact. Header and reference-meaning receipts match main. Keep later encoded reference context implementation and current rights reconciliation; retain old snapshot as history.",
+      "files": [
+        {
+          "path": "conductor/tracks/australian_benefits_silver_gold_20260829/evidence.jsonl",
+          "status": " M",
+          "sha256": "9dce92e13bdf92a51409a2a650299ce26b1863f015362ecafbb9e797257a5230"
+        },
+        {
+          "path": "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md",
+          "status": " M",
+          "sha256": "806715bafea7b40dfa8a92e6293ae6b00b0dc34b318e040282e0c60c07e9b429"
+        },
+        {
+          "path": "scripts/test_goblin.py",
+          "status": " M",
+          "sha256": "a3caaea5c8d4da37ed47db3d55f17d5da2a29d9c9ff0630ae9060109194e6f4b"
+        },
+        {
+          "path": "src/global_medicines_atlas/pbs_hosted_qualification.py",
+          "status": " M",
+          "sha256": "4fdcfe2a1f0de65e5d8b814441dc8bdb327833bff17b486156f0933997675d9a"
+        },
+        {
+          "path": "src/global_medicines_atlas/pbs_reference_meaning.py",
+          "status": " M",
+          "sha256": "f73236f864a6afcbe61ac97f6b7931a3925f69d25de505c30199e8706d785bda"
+        },
+        {
+          "path": "tests/test_m112_rights_release_preflight.py",
+          "status": " M",
+          "sha256": "118413e4774b121a22e99c9de4cef2ec59968b26ea0236e45d8d3eb1ef4ac2d1"
+        },
+        {
+          "path": "tests/test_pbs_native_reference_hosted.py",
+          "status": " M",
+          "sha256": "c71825380ae91ea1fa70d99b56ba47eab122939e7d3cd7f1cf4cae87e4a71ac8"
+        },
+        {
+          "path": "quality/qualifications/australian-m112-rights-release-preflight-20261024-49.json",
+          "status": "??",
+          "sha256": "9b3e3d42a13d824dcc760fc02e2111d67fd57aa9a091ad9f3174f00c24d2d44e"
+        },
+        {
+          "path": "quality/qualifications/australian-mbs-gold-candidate-consumers-20261024-40041612792.json",
+          "status": "??",
+          "sha256": "b549ed9f306aba1c4dbc75082cbdc3d8c7b781a279b4cf34558a204d5a31323e"
+        },
+        {
+          "path": "quality/qualifications/mbs-historical-workbook-header-cohort-20261024-40040624592.json",
+          "status": "??",
+          "sha256": "5a5858e0a458c46452188a4f52ea396bf1f98c9ce3710d747dd1a58588c196f1"
+        },
+        {
+          "path": "quality/qualifications/pbs-native-reference-meaning-review-20261024-40040624594.json",
+          "status": "??",
+          "sha256": "9130f7dcfbc1160d15b7dbbe3236614a1afc2d5327efc0dcd7f8d0197299d7dc"
+        }
+      ],
+      "original_files_preserved": true
+    },
+    {
+      "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-semantic-closeout-20261025",
+      "head": "08850b4740212b2b11f9e9c8863e0fb2d2c53636",
+      "status_sha256": "bf75317c441d961cf5a87ed4dec4e2381ef741aa9ab9880f61ae3531a1a97ba3",
+      "disposition": "Changed URI screen matches a historical main blob. Retain the current successor and its failure classification.",
+      "files": [
+        {
+          "path": "src/global_medicines_atlas/pbs_native_uri_screen.py",
+          "status": " M",
+          "sha256": "741435e715b78077c05b568fa3d256512b0f51a0d9a0b3259d83d7914562d14e"
+        }
+      ],
+      "original_files_preserved": true
+    }
+  ],
+  "current_worktree_census": {
+    "recorded_on": "2026-11-02",
+    "worktrees": [
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/global-medicines-atlas",
+        "state": "dirty",
+        "changed_paths": 2
+      },
+      {
+        "worktree": "/private/tmp/gma-mbs-field-state-reconciliation",
+        "state": "missing",
+        "changed_paths": null
+      },
+      {
+        "worktree": "/private/tmp/gma-mbs-silver-integrated",
+        "state": "missing",
+        "changed_paths": null
+      },
+      {
+        "worktree": "/private/tmp/gma-p7-date-reconciliation",
+        "state": "missing",
+        "changed_paths": null
+      },
+      {
+        "worktree": "/private/tmp/gma-pbs-domain-audit",
+        "state": "missing",
+        "changed_paths": null
+      },
+      {
+        "worktree": "/private/tmp/gma-pbs-root-version-metadata-20261025",
+        "state": "missing",
+        "changed_paths": null
+      },
+      {
+        "worktree": "/Users/doughnut/.codex/worktrees/australian-source-consolidation-closeout/global-medicines-atlas",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Users/doughnut/.codex/worktrees/federated-consumer-qualification/global-medicines-atlas",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Users/doughnut/.codex/worktrees/mbs-field-era-crosswalk-20261025/global-medicines-atlas",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Users/doughnut/.codex/worktrees/no-outbound-messaging/global-medicines-atlas",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Users/doughnut/.codex/worktrees/pbs-uri-main-reconciliation-20261025",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Users/doughnut/.codex/worktrees/stable-federation-receipt-20261028/global-medicines-atlas",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Users/doughnut/.codex/worktrees/stable-v1-federation-gate/global-medicines-atlas",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-apache-license-alignment-20261024",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-email-approval-guard-20261023",
+        "state": "dirty",
+        "changed_paths": 1
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-frontier-preview-disposition-20261023",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-mbs-formula-cache-profile",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-mbs-header-semantic-adjudication-20261024",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-mbs-historical-value-shape-profile-20261025",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-mbs-p7-date-rule-20261025",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-mbs-value-era-integration-20261024",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-mbs-value-era-rules-20261023",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-mbs-workbook-cohort-merge-20261023",
+        "state": "dirty",
+        "changed_paths": 4
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-mbs-workbook-header-aggregate-20261024",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-mbs-workbook-timeout-retry-20261023",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-p7-exact-main-field-state-20261024",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-date-denominator-20261025",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-domain-semantic-adjudication-20261024",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-field-reconciliation-20261023",
+        "state": "dirty",
+        "changed_paths": 11
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-reference-case-adjudication-20261025",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-reference-meaning-20261023",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-reference-meaning-integration-20261024",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-reference-qualification-20261024",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-root-metadata-preflight-93",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-schema-minor-qualified-20261025",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-semantic-closeout-20261025",
+        "state": "dirty",
+        "changed_paths": 1
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-silver-field-state-20261023",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-uri-codecov-coverage-20261025",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-uri-context-review-20261025",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-uri-failure-codes-20261025",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-uri-resolution-20261025",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-pbs-uri-review-binding-20261025",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-phase4-mandatory-output-delivery-20261027",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-relationship-screen-calibration-20261023",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-silver-semantic-adjudication-20261024",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/gma-system-completion-focus-20261025",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/pbs-hosted-publication-20261029",
+        "state": "clean",
+        "changed_paths": 0
+      },
+      {
+        "worktree": "/Volumes/PortableSSD/GitHub/.codex-worktrees/pbs-v4-readiness-integration-20261029",
+        "state": "clean",
+        "changed_paths": 0
+      }
+    ]
+  },
+  "integration_closeout": {
+    "recovery_pr": 1392,
+    "recovery_merge": "c3aec9d4ef3f95700748d6b45ef15e48681bc3eb",
+    "openfda_pr": 1390,
+    "openfda_merge": "811e73d4fe13d202a1f3faa81a4f42da6f65bc81",
+    "publication_authority_pr": 1388,
+    "publication_authority_merge": "fc42041037b4ae4133acc1ef361dbb4543df201f",
+    "publication_run_id": "41395493749",
+    "publication_run_attempt": 1,
+    "publication_revision": "3995deb3e2a82f09472d6a78020fb13bbbc96056",
+    "publication_status": "published_anonymously_verified_not_admitted",
+    "receipt_directory": "quality/qualifications/pbs-reproduced-publication-20261102-41395493749",
+    "additional_append_authorized": false
+  }
+}

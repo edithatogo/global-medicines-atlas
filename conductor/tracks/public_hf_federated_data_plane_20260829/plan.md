@@ -1072,3 +1072,22 @@ append. The Stable v1 Australian federation gate remains blocked.
   while the prior exact rights attestation binds `842f4130…17503` /
   `e122b50a…bb1b2`. The old candidate is not independently reproduced.
   No new rights conclusion, admission or consumer success is asserted.
+
+## Approved exact PBS publication closeout (2026-11-02)
+
+- [x] Publish the separately approved reproduced April 2026 PBS Silver object
+  once from protected main `fc42041037b4ae4133acc1ef361dbb4543df201f`.
+  Hosted run `41395493749`, attempt 1, appended at approved parent
+  `208f0b0f1db7768018b3c50929596d63d16e3392` and retained the prior nine blobs.
+  Resulting public revision: `3995deb3e2a82f09472d6a78020fb13bbbc96056`.
+- [x] Verify the object anonymously in the hosted transaction and through an
+  independent streaming read: 637,012,122 bytes, SHA-256
+  `86d65b147dc95787c5e3f14b13abe2630562f050e2221a1340939dcc7776a88c`.
+- [x] Authenticate and retain the preparation, publication and independent
+  verification receipts in `quality/qualifications/pbs-reproduced-publication-20261102-41395493749/`;
+  reconcile them with the branch/worktree audit in scoped closeout PR #1393.
+
+This closes the exact approved append and digest-verification work. It does
+not perform v4 admission, consumer canaries or independent recovery, and does
+not close the broader incomplete track tasks above. No additional append is
+authorized by this transaction.
