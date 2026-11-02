@@ -1231,6 +1231,9 @@ and Stable v1 release conditions remain unchanged and open.
   `read:project`; no new scope or project acceptance is inferred.
 - [x] Reproduce and fix GraphQL scope-denial classification, retaining failures
   for mixed operational errors. Six regression cases are included in 83 passing checks; Ruff, ty and focused BasedPyright checks pass with zero diagnostics.
-- [~] Integrate the first Renovate patch PR #1394 after repairing its stale
-  monitoring digest, complete protected CI, and close only completed issues
-  #14, #81 and #82. The wider Stable v1 track remains incomplete.
+- [x] Integrate repository hardening and cleanup PR #1395 at `fb67be2c8b97745be8ac1f25c93e07bdc5b66f1f`
+  after 39 passing checks and one optional manual skip; issues #81/#82 closed.
+- [x] Verify the active Renovate app through its current dashboard and first
+  patch PR #1394. Verify the official action pins, repair its monitoring digest
+  and bind #14 to closure at the protected merge. The wider Stable v1 track
+  remains incomplete; no federation, rights or release gate is waived.

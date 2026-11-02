@@ -69,3 +69,8 @@ The dated local coordination assignment is chat
 It owns this maintenance packet, the bounded governance diagnostic fix and
 integration of PR #1394. The introducing PR, native readbacks and retained
 receipts provide the durable audit identity. Prior assignments remain history.
+
+Maintenance PR #1395 merged at `fb67be2c8b97745be8ac1f25c93e07bdc5b66f1f` after 39 passing checks
+and one optional manual skip, closing #81/#82. Dependency PR #1394 carries
+this final receipt with its substantive action update; no receipt-only
+successor PR is required. Its protected merge closes activation issue #14.

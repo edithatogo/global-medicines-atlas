@@ -139,5 +139,17 @@
     "ruff": "passed",
     "basedpyright": "0 errors, 0 warnings",
     "ty": "passed, zero diagnostics"
+  },
+  "maintenance_integration": {
+    "pr": 1395,
+    "checked_head": "768cc32cf0896184462b42c351d27c0ac8694193",
+    "checks_successful": 39,
+    "optional_manual_skipped": 1,
+    "merge_commit": "fb67be2c8b97745be8ac1f25c93e07bdc5b66f1f",
+    "resulting_tree": "19886da1a14f55296c34b6c00ffde57bc535ccfe",
+    "closed_issues": [
+      81,
+      82
+    ]
   }
 }
