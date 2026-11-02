@@ -1,0 +1,119 @@
+{
+  "consumer": {
+    "artifacts": [
+      {
+        "artifact": "global_medicines_atlas-1.0.0rc1.post1.dev1194+gdb1eb4a7a-py3-none-any.whl",
+        "cli": "passed",
+        "consumer_python": "3.15.1",
+        "probe": {
+          "api": "passed",
+          "atlas_page": "passed",
+          "atlas_static_asset": "passed",
+          "configured_service_data_scope": "synthetic_fixture_only",
+          "configured_service_http": "passed",
+          "configured_service_start": "passed",
+          "core_fallback": "passed",
+          "live_deployment_verified": false,
+          "metadata": {
+            "name": "global-medicines-atlas",
+            "requires_python": "<3.16,>=3.15",
+            "summary": "Global comparison of medicine registration, approval, funding, and reimbursement systems",
+            "version": "1.0.0rc1.post1.dev1194+gdb1eb4a7a"
+          },
+          "openapi_paths": 14,
+          "production_data_verified": false,
+          "public_research_export": "passed",
+          "public_research_export_bytes": 5666,
+          "public_research_export_sha256": "875f1afeba797561a6f3a84a5e04a049daca025a8932c56f26a9847c7c63ab41",
+          "public_research_result_sha256": null,
+          "public_research_result_verified": false,
+          "research_export": "passed",
+          "research_export_bytes": 3757,
+          "research_export_sha256": "9e526c5e7799039d9c769c8a0662c0f799d814798e31ef126c28510a039f6f64",
+          "research_result_sha256": "37537619cd0c03264c44ceb3544c737489d87a822189740510501b2812c5e28a",
+          "research_result_verified": true,
+          "v2_comparison": "passed",
+          "v2_evidence": "passed"
+        },
+        "reinstall": "passed",
+        "sha256": "694eb5a59dec4e6316e3a5d27f08a5bf8d4a2f3eb4450a19cd342027d507b576"
+      },
+      {
+        "artifact": "global_medicines_atlas-1.0.0rc1.post1.dev1194+gdb1eb4a7a.tar.gz",
+        "cli": "passed",
+        "consumer_python": "3.15.1",
+        "probe": {
+          "api": "passed",
+          "atlas_page": "passed",
+          "atlas_static_asset": "passed",
+          "configured_service_data_scope": "synthetic_fixture_only",
+          "configured_service_http": "passed",
+          "configured_service_start": "passed",
+          "core_fallback": "passed",
+          "live_deployment_verified": false,
+          "metadata": {
+            "name": "global-medicines-atlas",
+            "requires_python": "<3.16,>=3.15",
+            "summary": "Global comparison of medicine registration, approval, funding, and reimbursement systems",
+            "version": "1.0.0rc1.post1.dev1194+gdb1eb4a7a"
+          },
+          "openapi_paths": 14,
+          "production_data_verified": false,
+          "public_research_export": "passed",
+          "public_research_export_bytes": 5666,
+          "public_research_export_sha256": "875f1afeba797561a6f3a84a5e04a049daca025a8932c56f26a9847c7c63ab41",
+          "public_research_result_sha256": null,
+          "public_research_result_verified": false,
+          "research_export": "passed",
+          "research_export_bytes": 3757,
+          "research_export_sha256": "9e526c5e7799039d9c769c8a0662c0f799d814798e31ef126c28510a039f6f64",
+          "research_result_sha256": "37537619cd0c03264c44ceb3544c737489d87a822189740510501b2812c5e28a",
+          "research_result_verified": true,
+          "v2_comparison": "passed",
+          "v2_evidence": "passed"
+        },
+        "reinstall": "passed",
+        "sha256": "e27eec4181151b920672658ed78d152ceb192df4cd3efb2090d886126fd222d2"
+      }
+    ],
+    "machine": "arm64",
+    "platform": "darwin",
+    "python": "3.15.1",
+    "schema_version": 1,
+    "state": "passed"
+  },
+  "kind": "synthetic_local_and_public_export_installed_qualification",
+  "recorded_at": "2026-11-02T22:09:00.155178+00:00",
+  "schema_version": 1,
+  "scope": {
+    "actual_source_clean_room_verified": false,
+    "core_only_research_verification": true,
+    "federation_qualified": false,
+    "independent_recovery_qualified": false,
+    "isolated_python_import_resolution": true,
+    "public_metadata_form_preserved": true,
+    "published": false,
+    "source_data": "synthetic_fixture_only",
+    "stable_release_qualified": false
+  },
+  "tested_input": {
+    "commit": "db1eb4a7ae37572bb53461a4bdcf06da086a5971",
+    "dirty": "",
+    "python": "Python 3.15.1",
+    "recorded_at": "2026-11-02T22:07:15.734067+00:00",
+    "scope": "both public and local forms in core-only installed wheel/sdist; existing hosted E2E retains browser",
+    "tree": "87c5c36b5edd9f05295b6cc51dc492cd5bd12b30",
+    "uv": "uv 0.13.5 (46776a95d 2026-10-21 aarch64-apple-darwin)"
+  },
+  "validation": {
+    "basedpyright": "changed harness: 0 errors, 0 warnings, 0 notes",
+    "exact_synthetic_e2e": "1 passed; wheel and sdist both verify public metadata and local metadata plus result",
+    "focused_tests": "102 passed; revised 77-test affected subset also passed",
+    "initial_regression": "4 failures before implementation",
+    "local_browser": "existing consumer-mode browser exclusion; full hosted E2E remains required",
+    "review": "Implementing agent; preserved prior installed public check alongside the new local check; no independent reviewer claimed",
+    "ruff": "passed",
+    "ty": "changed harness passed; existing test files retain prior unrelated diagnostics",
+    "unchanged_qualification_tests": "55 passed"
+  }
+}

@@ -1824,10 +1824,15 @@ local-format verifier and synthetic medallion pipeline; add no parallel exporter
 - [x] Accept an explicitly supplied bounded regular result file; reject orphan,
   oversized and symlink inputs before package building. Verify exact bytes in
   each installed environment with isolated Python import resolution.
-- [~] Exercise the existing synthetic pipeline's local metadata and result
+- [x] Exercise the existing synthetic pipeline's local metadata and result
   through built wheel and sdist; retain aggregate hashes without result values.
 - [ ] Review, run focused checks and final-head protected CI, then merge.
 
 Stop after this software increment. The synthetic installed-package check does
 not complete real-source clean-room restoration, independent recovery authority,
 public package availability or the whole #342 issue.
+
+Local evidence: `quality/qualifications/platinum-local-export-installed-20261103.json`
+binds the exact `db1eb4a7` commit/tree and installed artifact identities. Both
+local and public forms pass in each core-only environment. Review preserved
+the original public-form installed checks; no existing gate was relaxed.

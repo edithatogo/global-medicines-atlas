@@ -48,3 +48,7 @@ neither an actual-source clean-room recovery nor independent storage/recovery
 authority, source semantics, public availability or federation acceptance.
 The earlier real-source canary is recorded separately in
 `quality/qualifications/platinum-research-package-merged-canary-20261029.json`.
+
+The [executed synthetic installed receipt](../../quality/qualifications/platinum-local-export-installed-20261103.json)
+binds the tested commit/tree, wheel/sdist identities and both export forms.
+Protected CI must pass on the final PR head before integration.
