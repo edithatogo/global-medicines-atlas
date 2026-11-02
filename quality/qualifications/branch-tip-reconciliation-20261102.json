@@ -909,7 +909,9 @@
         "58fbac80d8c353c05cadbcd609f22997b7cc698d Prepare hosted PBS publication and consumer qualification (#1377)",
         "2005165bcc48d85dbe1565dd766d92243223d3a7 Fix Atlas browser canary cell comparison (#1356)",
         "f1c287a7c7739133db6cec65dcaccc4bf21925e3 Add V2 comparison CLI command (#518)"
-      ]
+      ],
+      "current_local_ref": "9866c0b589b71de25a0c6c22b2b637aa07a9bfcd",
+      "ref_change_reason": "This integrating chat updated the publication branch from main before merging PR 1377. Audited source tip remains retained by its immutable object ID."
     },
     {
       "branch": "codex/pbs-metadata-probe",
