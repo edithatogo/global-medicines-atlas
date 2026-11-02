@@ -1778,7 +1778,56 @@ def _verify_saved_research_export(
         verify_research_export_package(saved_archive).archive_bytes()
         == saved_archive
     )
+    _save_local_research_export(tmp_path, manifest, crate, lineage, revision)
     return saved_archive
+
+
+def _save_local_research_export(
+    tmp_path: Path, manifest: Any, crate: Any, lineage: Any, revision: str
+) -> None:
+    """Save a synthetic local-format package for installed consumer checks."""
+    # Exercise local output references independently of the public form above.
+    local_manifest = manifest.model_copy(update={"generator_commit": "1" * 40})
+    address = f"urn:sha256:{manifest.result_sha256}"
+    local_crate = build_research_crate(
+        identifier=manifest_sha256(local_manifest),
+        name=crate.name,
+        version=crate.version,
+        dataset_url=crate.dataset_url,
+        distributions=(
+            CrateDistribution(
+                identifier="query-result.json",
+                name="Synthetic local query",
+                content_url=address,
+                media_type="application/json",
+                sha256=manifest.result_sha256,
+                reference_kind="content_addressed",
+            ),
+        ),
+    )
+    local_lineage = build_research_lineage_receipt(
+        export_id=manifest_sha256(local_manifest),
+        revision=local_manifest.generator_commit,
+        artifacts=(
+            *(
+                artifact.model_copy(update={"revision": revision})
+                for artifact in lineage.artifacts
+                if artifact.role == "input"
+            ),
+            ResearchLineageArtifact(
+                identifier="query-result.json",
+                role="output",
+                content_address=address,
+                sha256=manifest.result_sha256,
+            ),
+        ),
+    )
+    local_package = build_research_export_package(
+        manifest=local_manifest, crate=local_crate, lineage=local_lineage
+    )
+    (tmp_path / "local-research-export.zip").write_bytes(
+        local_package.archive_bytes()
+    )
 
 
 @dataclass(frozen=True)
@@ -2242,7 +2291,8 @@ def _query_synthetic_platinum(
 
 def _qualify_installed_medallion_export(tmp_path: Path) -> None:
     """Verify the exact pipeline Platinum archive in both installed artifacts."""
-    export_archive = tmp_path / "research-export.zip"
+    export_archive = tmp_path / "local-research-export.zip"
+    result = tmp_path / "query-result.json"
     export_digest = hashlib.sha256(export_archive.read_bytes()).hexdigest()
     receipt_output = os.environ.get("GMA_SYNTHETIC_EXPORT_CONSUMER_RECEIPT")
     receipt_path = (
@@ -2252,12 +2302,15 @@ def _qualify_installed_medallion_export(tmp_path: Path) -> None:
     )
     receipt_path.parent.mkdir(parents=True, exist_ok=True)
     receipt = qualify_clean_consumer.qualify(
-        receipt_path, research_export=export_archive
+        receipt_path, research_export=export_archive, research_result=result
     )
     assert len(receipt["artifacts"]) == 2
     assert all(
         item["probe"]["research_export_sha256"] == export_digest
         and item["probe"]["research_export"] == "passed"
+        and item["probe"]["research_result_verified"] is True
+        and item["probe"]["research_result_sha256"]
+        == hashlib.sha256(result.read_bytes()).hexdigest()
         for item in receipt["artifacts"]
     )
 
