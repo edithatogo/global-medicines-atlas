@@ -6,6 +6,7 @@ from collections.abc import Iterator
 from typing import Any, cast
 
 import pyarrow as pa
+import pyarrow.compute as pc
 
 from .adapters.au_pbs import (
     DCTERMS_NAMESPACE,
@@ -99,19 +100,38 @@ def iter_pbs_domain_batches(
     receipt: SourceReceipt,
     *,
     rows_per_batch: int = 1024,
+    family: str | None = None,
 ) -> Iterator[pa.RecordBatch]:
     """Annotate all native slots with structural families and item lineage.
 
-    No slot is removed or converted. Table destinations describe source structure,
+    With a family selector, yield only rows mapped to that structural target.
+    The default preserves every native slot. Table destinations describe source structure,
     not eligibility, regulatory approval or vocabulary meaning. Classification
     codes retain their native type attributes; this API does not label every code
     ATC. Unrecognised paths, including price fields not covered by the existing
     adapter fixture contract, remain unmapped. Bounded parsing/batching and safe
     B1/B2 metadata are inherited from the native candidate layer.
     """
-    yield from _domain_batches(
+    if family is not None and family not in {
+        "schedules",
+        "items",
+        "presentations",
+        "restrictions",
+        "prices",
+        "amt_references",
+        "classifications",
+        "unmapped",
+    }:
+        raise ValueError("unknown PBS structural family")
+    for batch in _domain_batches(
         iter_pbs_silver_batches(payload, receipt, rows_per_batch=rows_per_batch)
-    )
+    ):
+        if family is None:
+            yield batch
+            continue
+        selected = batch.filter(pc.field("mapping_target") == family)
+        if selected.num_rows:
+            yield selected
 
 
 def pbs_domain_schema(native: pa.Schema) -> pa.Schema:

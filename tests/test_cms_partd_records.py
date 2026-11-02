@@ -262,6 +262,68 @@ def test_spending_data_api_json_fails_closed_on_drift(
 
 
 @pytest.mark.parametrize(
+    ("payload", "limit", "message"),
+    [
+        (b'[{"A":"x","B":"y"},{"A":"z","B":"w"}]', "records", "record limit"),
+        (b'[{"A":"x","B":"y"}]', "columns", "column limit"),
+        (b'[{"A":"xx","B":"y"}]', "value", "value exceeds"),
+        (b'[{"A":"x","A":"y"}]', "none", "duplicate JSON key"),
+    ],
+)
+def test_spending_json_rejects_bounded_or_ambiguous_objects_before_parquet(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    payload: bytes,
+    limit: str,
+    message: str,
+) -> None:
+    source = tmp_path / "data"
+    source.write_bytes(payload)
+    if limit == "records":
+        monkeypatch.setattr(records, "MAX_JSON_RECORDS", 1)
+    elif limit == "columns":
+        monkeypatch.setattr(records, "MAX_SOURCE_COLUMNS", 1)
+    elif limit == "value":
+        monkeypatch.setattr(records, "MAX_SOURCE_VALUE_BYTES", 1)
+    monkeypatch.setattr(
+        records.pq,
+        "write_table",
+        lambda *_args, **_kwargs: pytest.fail(
+            "Parquet write reached before JSON checks"
+        ),
+    )
+    with pytest.raises(ValueError, match=message):
+        project_cms_partd_payload(
+            source,
+            family="spending",
+            identity="9" * 64,
+            output=tmp_path / "out",
+        )
+
+
+def test_spending_json_byte_limit_precedes_decoder(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    source = tmp_path / "data"
+    source.write_bytes(b'[{"A":"x","B":"y"}]')
+    monkeypatch.setattr(records, "MAX_JSON_PAYLOAD_BYTES", 1)
+    monkeypatch.setattr(
+        records.json,
+        "load",
+        lambda *_args, **_kwargs: pytest.fail(
+            "decoder reached before byte limit"
+        ),
+    )
+    with pytest.raises(ValueError, match="byte limit"):
+        project_cms_partd_payload(
+            source,
+            family="spending",
+            identity="8" * 64,
+            output=tmp_path / "out",
+        )
+
+
+@pytest.mark.parametrize(
     ("payload", "message"),
     [
         (b"", "empty"),
