@@ -56,6 +56,11 @@ def test_hosted_catalogue_is_real_schema_without_invented_assertions(
         with TestClient(hosted_service.create_app()) as client:
             assert client.get("/api/v1/readiness").status_code == 200
             metadata = client.get("/deployment.json").json()
+            events = client.get("/approval-events.json")
+            assert events.status_code == 200
+            assert events.json()["application_commit"] == "a" * 40
+            assert events.json()["events"] == []
+            assert "not continuing approval" in events.json()["scope"]
             assert metadata["product_count"] == 1
             assert metadata["production_data_qualified"] is False
             assert metadata["temporal_assertion_count"] == 0
@@ -202,7 +207,7 @@ def test_hosted_source_download_is_anonymous_and_digest_bound(monkeypatch):
 
 
 @pytest.mark.parametrize(
-    "failure", [None, "duplicate", "rights", "bytes", "denominator"]
+    "failure", [None, "duplicate", "rights", "bytes", "denominator", "orange"]
 )
 def test_hosted_source_admission_is_preserved(tmp_path, monkeypatch, failure):
     payload = _hosted_payload()
@@ -253,6 +258,8 @@ def test_hosted_source_admission_is_preserved(tmp_path, monkeypatch, failure):
         "payload_byte_count": len(orange_payload),
         "rights_state": "restricted",
     })
+    if failure == "orange":
+        entries[-1]["admission_state"] = "quarantined"
     monkeypatch.setattr(
         hosted_service.httpx,
         "stream",
@@ -380,3 +387,15 @@ def test_orange_download_rejects_size_or_digest_drift(monkeypatch, content):
     )
     with pytest.raises(ValueError, match="Orange Book payload"):
         hosted_service.download_orange_book(1)
+
+
+@pytest.mark.parametrize("size", [0, hosted_service.MAX_BYTES + 1])
+def test_orange_download_rejects_unbounded_admission_before_network(
+    monkeypatch, size
+):
+    def reject(*_a, **_k):
+        raise AssertionError("network must not be contacted")
+
+    monkeypatch.setattr(hosted_service.httpx, "stream", reject)
+    with pytest.raises(ValueError, match="admission size"):
+        hosted_service.download_orange_book(size)

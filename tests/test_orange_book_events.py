@@ -56,3 +56,48 @@ def test_missing_schema_rejected():
         archive.writestr("products.txt", "Appl_No~Product_No\n1~1\n")
     with pytest.raises(ValueError, match="schema"):
         product_events(stream.getvalue(), set())
+
+
+@pytest.mark.parametrize("row", ["A~1~1\n", "A~1~1~Jan 02, 2001~extra\n"])
+def test_malformed_product_rows_fail_closed(row):
+    with pytest.raises(ValueError, match="malformed"):
+        product_events(payload(row), {"us-drugsfda:ANDA000001:001"})
+
+
+def test_unsupported_or_malformed_native_keys_do_not_join():
+    result = product_events(
+        payload(
+            "B~1~1~Jan 02, 2001\nA~bad~1~Jan 02, 2001\nA~1~bad~Jan 02, 2001\n"
+        ),
+        {"us-drugsfda:ANDA000001:001"},
+    )
+    assert result[0]["qualification"] == "unmatched"
+    assert result[0]["approval_date"] is None
+
+
+def test_ambiguous_and_oversized_members_fail_closed():
+    for names in (("other.txt",), ("products.txt", "Products.txt")):
+        stream = io.BytesIO()
+        with zipfile.ZipFile(stream, "w") as archive:
+            for name in names:
+                archive.writestr(name, "synthetic")
+        with pytest.raises(ValueError, match=r"ambiguous|oversized"):
+            product_events(stream.getvalue(), set())
+    stream = io.BytesIO()
+    with zipfile.ZipFile(
+        stream, "w", compression=zipfile.ZIP_DEFLATED
+    ) as archive:
+        archive.writestr("products.txt", b"x" * (20 * 1024 * 1024 + 1))
+    with pytest.raises(ValueError, match="oversized"):
+        product_events(stream.getvalue(), set())
+
+
+def test_duplicate_required_headers_fail_closed():
+    stream = io.BytesIO()
+    with zipfile.ZipFile(stream, "w") as archive:
+        archive.writestr(
+            "products.txt",
+            "Appl_Type~Appl_No~Product_No~Approval_Date~Approval_Date\n",
+        )
+    with pytest.raises(ValueError, match="schema"):
+        product_events(stream.getvalue(), set())
