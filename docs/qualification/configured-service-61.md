@@ -194,3 +194,33 @@ The [direct manual assessment and source mapping disposition](atlas-manual-asses
 records the follow-up keyboard findings and FDA's actual table keys. Membership
 is supported; submission-to-product temporal applicability remains unresolved.
 Keep full conformance and production-data gates unverified.
+
+## Orange Book approval-event reconciliation — 3 November 2026
+
+Chat `01a19600-56dd-73a2-9ff5-4a2484a54493` owns branch
+`codex/61-orange-book-temporal` in the existing integration checkout.
+The historical admission's restricted rights label is superseded by the
+already maintainer-approved `us-fda-orange-book` entry in
+`source-rights-review-ledger.json`: redistribution, transformation and public
+source use are permitted subject to its exclusions. FDA's current website
+policy and Orange Book field definitions were inspected again. Earlier #61
+notes treating that historical label as a present restriction were incomplete;
+this additive reconciliation preserves those receipts rather than rewriting
+immutable history. See `orange-book-reuse-reconciliation-20261103.json`.
+
+The hosted runtime now binds the existing Orange Book ZIP to its admitted
+revision, byte count and digest, and reads only Products.txt fields. Exact
+application type/number/product keys yield native product approval events at
+`/approval-events.json`. FDA explicitly defines Approval Date as the product's
+approval-letter date. Dates before 1982 expressed only as a bound, invalid
+dates, conflicting dates and unmatched products remain explicit. An event
+never establishes continued approval, withdrawal time, funding or a validity
+interval. The comparison status tables remain empty and unqualified.
+
+Native VoiceOver Utility was reachable through its verified application path;
+its caption panel was already enabled. VoiceOver itself returned a launch/read
+timeout, and computer control explicitly denied access to the Codex host.
+No external browser, scripted accessibility permission, host bypass or synthetic
+speech substitute was used. Screen-reader speech traversal remains unverified;
+keyboard/tree/axe evidence is retained separately. This is the specific current
+screen-reader route limitation, not proof of full accessibility conformance.

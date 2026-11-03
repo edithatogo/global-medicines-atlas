@@ -1,0 +1,23 @@
+{
+  "source_id": "us-fda-orange-book",
+  "observed_on": "2026-11-03",
+  "historical_admission_rights_state": "restricted",
+  "effective_rights_state": "permitted",
+  "superseding_existing_review": "quality/qualifications/source-rights-review-ledger.json#us-fda-orange-book",
+  "reuses_existing_maintainer_approval": true,
+  "basis": [
+    "Existing review permits redistribution, transformation and source-byte publication",
+    "FDA Website Policies confirms public-domain reuse unless otherwise noted",
+    "Orange Book Data Files defines product-specific Approval Date and application/product keys"
+  ],
+  "official_terms": "https://www.fda.gov/about-fda/about-website/website-policies",
+  "official_field_definitions": "https://www.fda.gov/drugs/drug-approvals-and-databases/orange-book-data-files",
+  "dataset": "edithatogo/global-medicines-atlas-fda-open-20260821",
+  "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+  "payload_sha256": "caaa826d4ba72f1abb156c8a38063929d3930d3700e091130474a876513a4da3",
+  "projection_scope": "products.txt application type, application number, product number and native approval date only",
+  "exclusions_preserved": ["third-party material", "FDA marks as branding", "patent and exclusivity interpretations", "unstated clinical or continuing-approval claims"],
+  "temporal_disposition": "exact product approval events supported; pre-1982, invalid, unmatched and conflicting dates remain explicit; continuing validity intervals unqualified",
+  "historical_receipts_rewritten": false,
+  "new_dataset_publication": false
+}

@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import hashlib
+import io
 import json
+import zipfile
 from pathlib import Path
 from typing import TYPE_CHECKING, cast
 
@@ -233,6 +235,32 @@ def test_hosted_source_admission_is_preserved(tmp_path, monkeypatch, failure):
         payload = json.dumps(document).encode()
         entry["payload_byte_count"] = len(payload)
     entries = [entry, entry] if failure == "duplicate" else [entry]
+    archive_stream = io.BytesIO()
+    with zipfile.ZipFile(archive_stream, "w") as archive:
+        archive.writestr(
+            "products.txt",
+            "Appl_Type~Appl_No~Product_No~Approval_Date\nN~000001~001~Jan 02, 2001\n",
+        )
+    orange_payload = archive_stream.getvalue()
+    monkeypatch.setattr(
+        hosted_service, "ORANGE_SHA", hashlib.sha256(orange_payload).hexdigest()
+    )
+    entries.append({
+        "source_id": "us-fda-orange-book",
+        "admission_state": "accepted",
+        "payload_sha256": hosted_service.ORANGE_SHA,
+        "payload_byte_count": len(orange_payload),
+        "rights_state": "restricted",
+    })
+    monkeypatch.setattr(
+        hosted_service.httpx,
+        "get",
+        lambda *_args, **_kwargs: httpx.Response(
+            200,
+            content=orange_payload,
+            request=httpx.Request("GET", hosted_service.ORANGE_URI),
+        ),
+    )
     monkeypatch.setattr(
         hosted_service,
         "verified_download",

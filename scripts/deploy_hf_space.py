@@ -102,7 +102,56 @@ def http_metadata(url: str, expected_commit: str) -> dict[str, Any]:
         or metadata["source_sha256"] != profile.PAYLOAD_SHA
     ):
         raise ValueError("deployed provenance differs")
+    verify_approval_events(url, expected_commit, metadata)
     return metadata
+
+
+def verify_approval_events(
+    url: str, expected_commit: str, metadata: dict[str, Any]
+) -> None:
+    """Verify exact dated events without promoting unknown validity intervals."""
+    orange = cast(
+        "Any", import_module("global_medicines_atlas.orange_book_events")
+    )
+    response = httpx.get(url + "/approval-events.json", timeout=30)
+    response.raise_for_status()
+    event_document = response.json()
+    events = event_document["events"]
+    if (
+        event_document["application_commit"] != expected_commit
+        or len(events) != metadata["product_count"]
+    ):
+        raise ValueError("approval event deployment or denominator differs")
+    if len({e["concept_id"] for e in events}) != len(events):
+        raise ValueError("duplicate product approval event")
+    exact_count = 0
+    for event in events:
+        if (
+            event["source_sha256"] != orange.SHA256
+            or event["source_revision"] != orange.REVISION
+            or event["source_uri"] != orange.URI
+        ):
+            raise ValueError("approval event provenance differs")
+        if (
+            event["continuing_approval_established"] is not False
+            or event["validity_interval"] is not None
+        ):
+            raise ValueError("approval event promoted to continuing status")
+        if event["qualification"] == "exact_product_approval_date":
+            if not re.fullmatch(
+                r"\d{4}-\d{2}-\d{2}", event.get("approval_date") or ""
+            ):
+                raise ValueError("qualified event date unavailable")
+            exact_count += 1
+        elif event["approval_date"] is not None:
+            raise ValueError("unqualified event contains exact date")
+    summary = metadata["approval_event_summary"]
+    if (
+        exact_count == 0
+        or summary["matched_exact_date_count"] != exact_count
+        or summary["effective_rights_state"] != "permitted"
+    ):
+        raise ValueError("approval event qualification differs")
 
 
 def verify(url: str, receipt: dict[str, Any], exact: str) -> None:

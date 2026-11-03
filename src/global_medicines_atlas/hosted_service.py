@@ -24,6 +24,9 @@ if TYPE_CHECKING:
 
 from .columnar import temporal_assertions_to_arrow
 from .coverage import coverage_to_arrow
+from .orange_book_events import SHA256 as ORANGE_SHA
+from .orange_book_events import URI as ORANGE_URI
+from .orange_book_events import product_events
 from .serving import MINIMUM_CURSOR_SECRET_BYTES
 from .serving import create_app as configured_app
 from .terminology import normalize_name
@@ -180,6 +183,36 @@ def prepare_hosted(destination: Path) -> dict[str, Any]:
     receipt = prepare_database(destination, payload)
     if receipt["application_count"] != entry["source_record_count"]:
         raise ValueError("application denominator differs")
+    orange = [e for e in entries if e["source_id"] == "us-fda-orange-book"]
+    if (
+        len(orange) != 1
+        or orange[0].get("admission_state") != "accepted"
+        or orange[0].get("payload_sha256") != ORANGE_SHA
+    ):
+        raise ValueError("Orange Book admission differs")
+    response = httpx.get(ORANGE_URI, follow_redirects=True, timeout=60)
+    response.raise_for_status()
+    archive = response.content
+    if (
+        len(archive) != orange[0]["payload_byte_count"]
+        or hashlib.sha256(archive).hexdigest() != ORANGE_SHA
+    ):
+        raise ValueError("Orange Book payload differs")
+    _, products = catalogue(payload)
+    events = product_events(archive, {p[0] for p in products})
+    receipt["approval_events"] = events
+    receipt["approval_event_summary"] = {
+        "source_id": "us-fda-orange-book",
+        "matched_exact_date_count": sum(
+            e["qualification"] == "exact_product_approval_date" for e in events
+        ),
+        "catalogue_product_denominator": len(events),
+        "historical_rights_state": orange[0]["rights_state"],
+        "effective_rights_state": "permitted",
+        "superseding_review": "quality/qualifications/source-rights-review-ledger.json#us-fda-orange-book",
+        "event_only": True,
+        "continuing_approval_established": False,
+    }
     return receipt
 
 
@@ -199,6 +232,7 @@ def create_app() -> ASGIApp:
         Path(tempfile.mkdtemp(prefix="boot-", dir=root)) / "catalogue.duckdb"
     )
     receipt = prepare_hosted(database)
+    events = receipt.pop("approval_events", [])
     receipt["application_commit"] = commit
     receipt["python_version"] = platform.python_version()
     application = configured_app(
@@ -206,6 +240,13 @@ def create_app() -> ASGIApp:
     )
 
     async def scoped(scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] == "http" and scope["path"] == "/approval-events.json":
+            await JSONResponse({
+                "application_commit": commit,
+                "events": events,
+                "scope": "Product approval dates only; not continuing approval or funding evidence",
+            })(scope, receive, send)
+            return
         if scope["type"] == "http" and scope["path"] == "/deployment.json":
             await JSONResponse(receipt)(scope, receive, send)
             return
@@ -231,7 +272,7 @@ def create_app() -> ASGIApp:
                     return
                 message["body"] = b"".join(chunks).replace(
                     b"</header>",
-                    b'<p role="note">Historical FDA catalogue candidate. Regulatory, funding and temporal evidence remain unqualified. <a href="/deployment.json">Scope and provenance</a></p></header>',
+                    b'<p role="note">Historical FDA catalogue candidate. Regulatory, funding and temporal evidence remain unqualified. <a href="/deployment.json">Scope and provenance</a>. <a href="/approval-events.json">Product approval-date evidence</a> (historical events only, not current status).</p></header>',
                     1,
                 )
             await send(message)
