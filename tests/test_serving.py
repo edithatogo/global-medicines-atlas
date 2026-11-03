@@ -439,7 +439,19 @@ def test_approval_event_database_accounts_for_exact_catalogue(tmp_path):
     assert json.loads(row[3]) == event
 
 
-@pytest.mark.parametrize("case", ["duplicate", "unknown", "count", "identity"])
+@pytest.mark.parametrize(
+    "case",
+    [
+        "duplicate",
+        "unknown",
+        "count",
+        "identity",
+        "unqualified_date",
+        "missing_exact_date",
+        "invalid_bound",
+        "invalid_bound_date",
+    ],
+)
 def test_approval_event_database_rejects_invalid_coverage(tmp_path, case):
     path = tmp_path / "catalogue.duckdb"
     hosted_service.prepare_database(path, _hosted_payload())
@@ -455,7 +467,34 @@ def test_approval_event_database_rejects_invalid_coverage(tmp_path, case):
         event["qualification"] = "unsupported"
     elif case == "count":
         events = []
+    elif case == "unqualified_date":
+        event["approval_date"] = "2001-01-02"
+    elif case == "missing_exact_date":
+        event["qualification"] = "exact_product_approval_date"
+    elif case == "invalid_bound":
+        event["approval_before_date"] = "1982-01-01"
+    elif case == "invalid_bound_date":
+        event["qualification"] = "non_exact_native_date"
+        event["approval_before_date"] = "1983-01-01"
     else:
         event["concept_id"] = "wrong"
     with pytest.raises(ValueError, match="approval-event"):
         hosted_service.materialize_approval_events(path, events)
+
+
+def test_approval_event_database_stores_exclusive_bound(tmp_path):
+    path = tmp_path / "catalogue.duckdb"
+    hosted_service.prepare_database(path, _hosted_payload())
+    event = {
+        "concept_id": "us-drugsfda:NDA000001:001",
+        "qualification": "non_exact_native_date",
+        "approval_date": None,
+        "approval_before_date": "1982-01-01",
+    }
+    counts = hosted_service.materialize_approval_events(path, [event])
+    assert counts["non_exact_native_date"] == 1
+    with duckdb.connect(str(path), read_only=True) as connection:
+        row = connection.execute(
+            "SELECT CAST(approval_before_date_exclusive AS VARCHAR) FROM product_approval_events"
+        ).fetchone()
+    assert row == ("1982-01-01",)

@@ -197,11 +197,27 @@ def materialize_approval_events(
         raise ValueError("unrecognised approval-event qualification")
     if len({event["concept_id"] for event in events}) != len(events):
         raise ValueError("duplicate approval-event concept")
+    if any(
+        (event["qualification"] == "exact_product_approval_date")
+        != (event["approval_date"] is not None)
+        for event in events
+    ):
+        raise ValueError("approval-event exact date differs from qualification")
+    if any(
+        event.get("approval_before_date") is not None
+        and (
+            event["qualification"] != "non_exact_native_date"
+            or event["approval_before_date"] != "1982-01-01"
+        )
+        for event in events
+    ):
+        raise ValueError("approval-event bound differs from qualification")
     rows = [
         (
             event["concept_id"],
             event["qualification"],
             event["approval_date"],
+            event.get("approval_before_date"),
             json.dumps(event, sort_keys=True),
         )
         for event in events
@@ -215,10 +231,10 @@ def materialize_approval_events(
                 "approval-event denominator differs from catalogue"
             )
         connection.execute(
-            "CREATE TABLE product_approval_events (concept_id VARCHAR PRIMARY KEY, qualification VARCHAR NOT NULL, approval_date DATE, evidence_json VARCHAR NOT NULL)"
+            "CREATE TABLE product_approval_events (concept_id VARCHAR PRIMARY KEY, qualification VARCHAR NOT NULL, approval_date DATE, approval_before_date_exclusive DATE, evidence_json VARCHAR NOT NULL)"
         )
         connection.executemany(
-            "INSERT INTO product_approval_events VALUES (?, ?, ?, ?)", rows
+            "INSERT INTO product_approval_events VALUES (?, ?, ?, ?, ?)", rows
         )
         missing = connection.execute(
             "SELECT count(*) FROM medicine_concepts c LEFT JOIN product_approval_events e ON c.concept_id = e.concept_id WHERE e.concept_id IS NULL"
