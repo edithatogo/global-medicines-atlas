@@ -159,3 +159,23 @@ qualified replacement for this runtime. Static HF Spaces cannot run the existing
 Python API. Render Free sleeps after idle periods and remains a candidate, not
 a production-availability claim. A prepared Blueprint does not establish a
 live endpoint or production temporal medicine-data qualification.
+
+## Live audit follow-up — 3 November 2026
+
+Chat `01a19600-56dd-73a2-9ff5-4a2484a54493` owns the follow-up in
+`/Volumes/PortableSSD/GitHub/global-medicines-atlas`, branch
+`codex/61-accessibility-temporal`. Scope is a free hosted accessibility audit
+and assessment of the existing admitted FDA source, without new acquisition.
+The live Render service is `srv-dbkn0h7b9u1s73fsnth0`, free plan, no card on
+file, automatic deploy off. Exact deployed merge is
+`31aba40b1bd2888965cf99e94d7e509ae382c820` and initial HTTP/provenance and
+Chromium verification passed in Actions run `41583895484`.
+
+The new audit uses locked axe-core and captures violations and incomplete
+findings across default, search and empty states at 320/360/1280 pixels.
+Automated results are not full WCAG conformance. Screen-reader task traversal
+and review of applicable manual criteria remain explicit obligations.
+The FDA archive assessment counts native submission date/type/status fields
+on the hosted runner without writing source bytes locally. Application action
+dates must not be propagated as product-level approval validity intervals.
+Source reference: https://open.fda.gov/fields/drugsfda_reference.pdf .

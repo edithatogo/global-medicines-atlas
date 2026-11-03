@@ -4,10 +4,13 @@ from __future__ import annotations
 
 import argparse
 import json
+from collections import Counter
 from pathlib import Path
 
 from deploy_hf_space import http_metadata
 from playwright.sync_api import sync_playwright
+
+from global_medicines_atlas.hosted_service import PAYLOAD_SHA, verified_download
 
 
 def main() -> int:
@@ -18,7 +21,35 @@ def main() -> int:
     args = parser.parse_args()
     url = "https://global-medicines-atlas.onrender.com"
     metadata = http_metadata(url, args.commit)
-    report = {"endpoint": url, "deployment": metadata, "scans": []}
+    source = json.loads(
+        verified_download("data/us-openfda-drugsfda.json", PAYLOAD_SHA)
+    )
+    submissions = [
+        s for app in source["results"] for s in app.get("submissions", [])
+    ]
+    report = {
+        "endpoint": url,
+        "deployment": metadata,
+        "scans": [],
+        "temporal_source_assessment": {
+            "applications": len(source["results"]),
+            "submissions": len(submissions),
+            "dated_submissions": sum(
+                bool(s.get("submission_status_date")) for s in submissions
+            ),
+            "submission_types": dict(
+                Counter(
+                    s.get("submission_type", "missing") for s in submissions
+                )
+            ),
+            "submission_statuses": dict(
+                Counter(
+                    s.get("submission_status", "missing") for s in submissions
+                )
+            ),
+            "boundary": "Application submission action dates do not establish product-level validity intervals or continued approval; do not propagate them to all products.",
+        },
+    }
     with sync_playwright() as api:
         browser = api.chromium.launch()
         try:
