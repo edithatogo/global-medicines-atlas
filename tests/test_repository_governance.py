@@ -16,8 +16,10 @@ import yaml
 from scripts import build_dependency_snapshot as dependency_snapshot
 from scripts import deploy_hf_space
 
+from global_medicines_atlas import hosted_service as hosted
 from global_medicines_atlas import orange_book_events as source
 from global_medicines_atlas.hosted_service import DATASET, PAYLOAD_SHA, REVISION
+from global_medicines_atlas.submission_events import project_submission_events
 
 ROOT = Path(__file__).resolve().parents[1]
 FULL_SHA = re.compile(r"^[0-9a-f]{40}$")
@@ -108,6 +110,9 @@ def test_retired_docker_deployment_never_loads_a_credential(
 def test_hosted_verification_waits_for_the_expected_application(monkeypatch):
     monkeypatch.setattr(
         deploy_hf_space, "verify_approval_events", lambda *_args: None
+    )
+    monkeypatch.setattr(
+        deploy_hf_space, "verify_submission_events", lambda *_args: None
     )
     exact = "c" * 40
     pending = [
@@ -478,3 +483,107 @@ def test_approval_bound_verifier_accepts_exact_source_phrase():
         "native_approval_dates": ["Approved Prior to Jan 1, 1982"],
     }
     deploy_hf_space.verify_approval_bound(event)
+
+
+@pytest.mark.parametrize(
+    "tamper",
+    [
+        None,
+        "source",
+        "product",
+        "date",
+        "native",
+        "path",
+        "duplicate",
+        "pagination",
+        "coverage",
+        "date_count",
+    ],
+)
+def test_submission_event_verifier_checks_pages_scope_and_provenance(
+    monkeypatch, tamper
+):
+    payload = json.dumps({
+        "results": [
+            {
+                "application_number": "NDA000001",
+                "submissions": [
+                    {
+                        "submission_type": "ORIG",
+                        "submission_number": "1",
+                        "submission_status": "AP",
+                        "submission_status_date": "20010102",
+                    },
+                    {
+                        "submission_type": "SUPPL",
+                        "submission_number": "2",
+                        "submission_status": "TA",
+                        "submission_status_date": "20200230",
+                    },
+                    {
+                        "submission_type": "SUPPL",
+                        "submission_number": "3",
+                        "submission_status": None,
+                    },
+                ],
+            },
+            {"application_number": "ANDA000002", "submissions": []},
+        ]
+    }).encode()
+    events, summary = project_submission_events(
+        payload,
+        source_uri=hosted.BASE + "data/us-openfda-drugsfda.json",
+        source_revision=hosted.REVISION,
+        source_sha256=hosted.PAYLOAD_SHA,
+    )
+    metadata = {"application_count": 2, "submission_event_summary": summary}
+    if tamper == "source":
+        events[0]["source_sha256"] = "wrong"
+    elif tamper == "product":
+        events[0]["product_status_inferred"] = True
+    elif tamper == "date":
+        events[0]["submission_status_date"] = "2001-01-03"
+    elif tamper == "native":
+        events[0]["submission_status"] = "TA"
+    elif tamper == "path":
+        events[0]["source_path"] = "/results/1/submissions/0"
+    elif tamper == "duplicate":
+        events[1] = events[0]
+    elif tamper == "coverage":
+        summary["applications_without_submissions"] = 0
+    elif tamper == "date_count":
+        summary["exact_date_count"] = 3
+    monkeypatch.setattr(hosted, "MAX_SUBMISSION_PAGE", 2)
+
+    def get(_url, *, params, timeout):
+        del timeout
+        offset = params["offset"]
+        subset = events[offset : offset + 2]
+        next_offset = (
+            offset + len(subset) if offset + len(subset) < len(events) else None
+        )
+        if tamper == "pagination" and next_offset is not None:
+            next_offset = 99
+        page = {
+            "application_commit": "c" * 40,
+            "offset": offset,
+            "total": len(events),
+            "next_offset": next_offset,
+            "events": subset,
+        }
+        return type(
+            "Response",
+            (),
+            {"raise_for_status": lambda _: None, "json": lambda _: page},
+        )()
+
+    monkeypatch.setattr(deploy_hf_space.httpx, "get", get)
+    if tamper:
+        with pytest.raises(ValueError, match="submission"):
+            deploy_hf_space.verify_submission_events(
+                "http://127.0.0.1:7860", "c" * 40, metadata
+            )
+    else:
+        deploy_hf_space.verify_submission_events(
+            "http://127.0.0.1:7860", "c" * 40, metadata
+        )

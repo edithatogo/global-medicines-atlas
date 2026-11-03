@@ -6,6 +6,8 @@ import argparse
 import json
 import re
 import time
+from contextlib import suppress
+from datetime import date as calendar_date
 from importlib import import_module
 from pathlib import Path
 from typing import Any, cast
@@ -103,6 +105,7 @@ def http_metadata(url: str, expected_commit: str) -> dict[str, Any]:
     ):
         raise ValueError("deployed provenance differs")
     verify_approval_events(url, expected_commit, metadata)
+    verify_submission_events(url, expected_commit, metadata)
     return metadata
 
 
@@ -176,6 +179,128 @@ def verify_approval_events(
         or summary["effective_rights_state"] != "permitted"
     ):
         raise ValueError("approval event qualification differs")
+
+
+def verify_submission_events(
+    url: str, expected_commit: str, metadata: dict[str, Any]
+) -> None:
+    """Verify all bounded application-submission events and their provenance."""
+    summary = metadata["submission_event_summary"]
+    if (
+        summary["application_denominator"] != metadata["application_count"]
+        or summary["submission_count"] <= 0
+    ):
+        raise ValueError("submission source denominator differs")
+    if (
+        summary["applications_with_submissions"]
+        + summary["applications_without_submissions"]
+        != summary["application_denominator"]
+    ):
+        raise ValueError("submission application coverage differs")
+    source = cast("Any", import_module("global_medicines_atlas.hosted_service"))
+    counts = {"exact_date": 0, "missing": 0, "invalid": 0}
+    paths: set[str] = set()
+    applications: set[str] = set()
+    offset = 0
+    while True:
+        response = httpx.get(
+            url + "/submission-events.json",
+            params={"offset": offset, "limit": source.MAX_SUBMISSION_PAGE},
+            timeout=30,
+        )
+        response.raise_for_status()
+        page = response.json()
+        if (
+            page["application_commit"] != expected_commit
+            or page["offset"] != offset
+            or page["total"] != summary["submission_count"]
+        ):
+            raise ValueError("submission page identity differs")
+        records = page["events"]
+        if not records or len(records) > source.MAX_SUBMISSION_PAGE:
+            raise ValueError("submission page size differs")
+        for record in records:
+            verify_submission_record(record, source)
+            if record["source_path"] in paths:
+                raise ValueError("duplicate submission source path")
+            paths.add(record["source_path"])
+            applications.add(record["application_number"])
+            counts[record["date_qualification"]] += 1
+        next_offset = page["next_offset"]
+        offset += len(records)
+        if next_offset is None:
+            break
+        if next_offset != offset or offset >= summary["submission_count"]:
+            raise ValueError("submission pagination differs")
+    if (
+        offset != summary["submission_count"]
+        or len(applications) != summary["applications_with_submissions"]
+    ):
+        raise ValueError("submission event coverage differs")
+    summary_keys = {
+        "exact_date": "exact_date_count",
+        "missing": "missing_date_count",
+        "invalid": "invalid_date_count",
+    }
+    if any(
+        counts[state] != summary[key] for state, key in summary_keys.items()
+    ):
+        raise ValueError("submission date coverage differs")
+
+
+def verify_submission_record(record: dict[str, Any], source: Any) -> None:
+    """Reject altered provenance, date claims, and product-status promotion."""
+    if (
+        record["source_id"] != source.SOURCE
+        or record["source_uri"] != source.BASE + "data/us-openfda-drugsfda.json"
+        or record["source_revision"] != source.REVISION
+        or record["source_sha256"] != source.PAYLOAD_SHA
+    ):
+        raise ValueError("submission provenance differs")
+    if (
+        record["product_status_inferred"] is not False
+        or record["continuing_status_established"] is not False
+    ):
+        raise ValueError("submission promoted to product or continuing status")
+    app_index = record["application_ordinal"]
+    submission_index = record["submission_ordinal"]
+    if (
+        type(app_index) is not int
+        or type(submission_index) is not int
+        or app_index < 0
+        or submission_index < 0
+        or record["source_path"]
+        != f"/results/{app_index}/submissions/{submission_index}"
+    ):
+        raise ValueError("submission source path differs")
+    native = record["native_submission"]
+    for key in ("submission_type", "submission_number", "submission_status"):
+        if record[key] != native.get(key):
+            raise ValueError("submission native field differs")
+    if record["submission_status_date_native"] != native.get(
+        "submission_status_date"
+    ):
+        raise ValueError("submission native date differs")
+    verify_submission_date(record)
+
+
+def verify_submission_date(record: dict[str, Any]) -> None:
+    """Require date qualification to agree with the native field."""
+    raw = record["submission_status_date_native"]
+    if raw is not None and not isinstance(raw, str):
+        raise ValueError("submission native date type differs")
+    parsed = None
+    if isinstance(raw, str) and re.fullmatch(r"\d{8}", raw):
+        with suppress(ValueError):
+            parsed = calendar_date.strptime(raw, "%Y%m%d").isoformat()
+    expected_state = (
+        "exact_date" if parsed else "missing" if not raw else "invalid"
+    )
+    if (
+        record["date_qualification"] != expected_state
+        or record["submission_status_date"] != parsed
+    ):
+        raise ValueError("submission date qualification differs")
 
 
 def verify(url: str, receipt: dict[str, Any], exact: str) -> None:
