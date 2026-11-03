@@ -1,5 +1,18 @@
 # Specification: federated medicines Platinum products
 
+## Accessibility testing excluded — 3 November 2026
+
+The maintainer explicitly removed accessibility testing from project scope.
+Manual and automated accessibility audits, screen-reader/assistive-technology
+qualification, WCAG conformance testing and accessibility-specific acceptance
+are excluded from every current Conductor track and from the roadmap. They
+are not deferred work or a pending completion gate. Do not schedule further
+accessibility testing without new explicit maintainer direction. Historical
+results and unverified assessments remain evidence, not conformance claims.
+Existing working UI features and tests are retained; this scope change does
+not delete regressions, weaken protected CI, or mark unperformed tests passed.
+All other source, temporal-data, rights, production and release gates remain.
+
 ## Objective
 
 Deliver useful Platinum products over governed Gold evidence without requiring
@@ -89,15 +102,17 @@ mutable copies:
 - **AC-04:** Historical comparisons correctly distinguish additions,
   cessations, changes, missing snapshots, source outages, and schema drift and
   never infer a negative current status from absence.
-- **AC-05:** The atlas is WCAG-conscious, keyboard-operable, non-color-only,
-  responsive, and tested with representative assistive/accessibility tooling.
+- **AC-05 (scope withdrawn, 3 November 2026):** Accessibility testing and
+  assistive-technology/WCAG qualification are excluded by maintainer direction;
+  they are not acceptance obligations. Preserve existing Atlas behavior and
+  historical evidence without claiming conformance.
 - **AC-06:** Reimbursement-atlas and donor-successor compatibility canaries use
   the v4 contract and detect revision/schema/semantic drift; no downstream
   consumer requires an unpinned mutable source.
 - **AC-07:** Research/export packages are deterministic, content-addressed,
   cited, publicly available, and reproducible from the exact data-plane
   revisions without committing the data corpus to Git.
-- **AC-08:** Load, concurrency, pagination, security, privacy, accessibility,
+- **AC-08:** Load, concurrency, pagination, security, privacy,
   OpenAPI, CLI, end-to-end, package, full harness where supported, hosted review,
   and evidence gates pass.
 

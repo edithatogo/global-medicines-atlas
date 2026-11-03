@@ -1,5 +1,18 @@
 # Versioned Roadmap to Stable v1
 
+## Accessibility testing excluded — 3 November 2026
+
+The maintainer explicitly removed accessibility testing from project scope.
+Manual and automated accessibility audits, screen-reader/assistive-technology
+qualification, WCAG conformance testing and accessibility-specific acceptance
+are excluded from every current Conductor track and from the roadmap. They
+are not deferred work or a pending completion gate. Do not schedule further
+accessibility testing without new explicit maintainer direction. Historical
+results and unverified assessments remain evidence, not conformance claims.
+Existing working UI features and tests are retained; this scope change does
+not delete regressions, weaken protected CI, or mark unperformed tests passed.
+All other source, temporal-data, rights, production and release gates remain.
+
 Progress is evidence-gated. A version is complete only when its release gates
 have durable receipts; calendar dates are planning signals, not completion
 claims.
@@ -49,7 +62,7 @@ no automatic progression from software completion into these later milestones.
 | v0.3 First-cohort alpha | Repeatable jurisdiction onboarding | NZL, AUS, USA, GBR, CAN, JPN and EU source contracts and receipt-backed ingestors | `global_country_adapters_20260729` |
 | v0.4 Evidence beta | Historical, conflict-aware canonical evidence | Bitemporal assertions, immutable snapshots, conflicts, coverage denominators | `canonical_temporal_evidence_20260729` |
 | v0.5 Matching beta | Reviewable cross-country equivalence candidates | Ingredient/product mappings, confidence, deterministic and semantic retrieval, adjudication | `cross_jurisdiction_matching_20260729` |
-| v0.6 Product beta | Usable comparison service | Read-only API, CLI queries, atlas, accessibility, provenance drill-down | `comparison_api_atlas_20260729` |
+| v0.6 Product beta | Usable comparison service | Read-only API, CLI queries, atlas, provenance drill-down | `comparison_api_atlas_20260729` |
 | v0.7 Reproducible release beta | Governed public research outputs | Parquet, Croissant, data cards, citations, SBOM and attestations, dry-run publication | `governed_publication_20260729` |
 | v0.8 Hardened RC | Secure and observable operations | Source information schema, unified adapter capabilities, source health, complete test inventory, mutation/performance budgets, recovery and compatibility canaries | `operational_hardening_20260729` |
 | v0.9 Stable candidate | Independently reproducible, usable release candidate | Canonical medicine schema v2, comparison-validity semantics, concept discovery/catalog APIs, clean consumer installs, OpenAPI compatibility, documentation and an in-repo/Zenodo protocol | `stable_v1_qualification_20260729`, `academic_protocol_preregistration_20260729` |

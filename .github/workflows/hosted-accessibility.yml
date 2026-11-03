@@ -1,12 +1,5 @@
-name: Hosted accessibility audit
+name: Historical accessibility audit (manual only)
 on:
-  pull_request:
-    paths:
-      - src/global_medicines_atlas/templates/**
-      - src/global_medicines_atlas/hosted_service.py
-      - scripts/audit_hosted_accessibility.py
-      - deployment/accessibility/**
-      - .github/workflows/hosted-accessibility.yml
   workflow_dispatch:
 concurrency:
   group: hosted-accessibility-${{ github.ref }}
