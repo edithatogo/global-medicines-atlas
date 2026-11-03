@@ -10,7 +10,7 @@ platforms = ["linux-64"]
 [dependencies]
 mojo = "==1.0.0b3.dev2026072806"
 python = "3.15.*"
-uv = "==0.13.5"
+uv = "==0.13.6"
 
 [tasks]
 python-sync = "uv sync --python 3.15.1 --group dev --locked"

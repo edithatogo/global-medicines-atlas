@@ -28,7 +28,7 @@ jobs:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
-          version: "0.13.5"
+          version: "0.13.6"
           enable-cache: true
       - run: uv sync --python 3.15.1 --locked
       - name: Run disposable Git conflict and restore experiment
@@ -59,7 +59,7 @@ jobs:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
-          version: "0.13.5"
+          version: "0.13.6"
           enable-cache: true
       - run: uv sync --python 3.15.1 --locked
       - name: Run isolated common workload
@@ -88,7 +88,7 @@ jobs:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
-          version: "0.13.5"
+          version: "0.13.6"
       - name: Run isolated Hudi 1.2.0 common workload
         env:
           PYSPARK_SUBMIT_ARGS: >-
@@ -116,7 +116,7 @@ jobs:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
-          version: "0.13.5"
+          version: "0.13.6"
           enable-cache: true
       - name: Synchronize locked Python 3.15 core environment
         run: uv sync --python 3.15.1 --locked
@@ -155,7 +155,7 @@ jobs:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
-          version: "0.13.5"
+          version: "0.13.6"
           enable-cache: true
       - name: Synchronize locked Python 3.15 core environment
         run: uv sync --python 3.15.1 --locked
@@ -217,7 +217,7 @@ jobs:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
-          version: "0.13.5"
+          version: "0.13.6"
           enable-cache: true
       - name: Synchronize locked optional Iceberg environment
         run: uv sync --python 3.15.1 --locked --extra iceberg
@@ -259,7 +259,7 @@ jobs:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
-          version: "0.13.5"
+          version: "0.13.6"
           enable-cache: true
       - name: Synchronize locked optional Iceberg environment
         run: uv sync --python 3.15.1 --locked --extra iceberg
@@ -312,7 +312,7 @@ jobs:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
-          version: "0.13.5"
+          version: "0.13.6"
           enable-cache: true
       - name: Synchronize Python 3.15 Test-Goblin environment
         run: uv sync --python 3.15.1 --group test-goblin --locked
@@ -373,7 +373,7 @@ jobs:
           --head "$HEAD_SHA" >> "$GITHUB_OUTPUT"
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
-          version: "0.13.5"
+          version: "0.13.6"
           enable-cache: true
       - name: Synchronize Python 3.15 development environment
         if: >-
@@ -500,7 +500,7 @@ jobs:
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         if: steps.scope.outputs.heavy == 'true'
         with:
-          version: "0.13.5"
+          version: "0.13.6"
           enable-cache: true
       - name: Reproduce candidate from detached LF and CRLF-policy worktrees
         if: steps.scope.outputs.heavy == 'true'
@@ -557,7 +557,7 @@ jobs:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
-          version: "0.13.5"
+          version: "0.13.6"
           enable-cache: true
       - name: Synchronize locked Python 3.15 environment
         run: uv sync --python 3.15.1 --locked
@@ -584,7 +584,7 @@ jobs:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
-          version: "0.13.5"
+          version: "0.13.6"
           enable-cache: true
       - name: Synchronize locked Python 3.15 environment
         run: uv sync --python 3.15.1 --locked
@@ -610,7 +610,7 @@ jobs:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
-          version: "0.13.5"
+          version: "0.13.6"
           enable-cache: true
       - name: Synchronize locked Python 3.15 environment
         run: uv sync --python 3.15.1 --locked
