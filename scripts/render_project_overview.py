@@ -203,7 +203,9 @@ def progress_documents(snapshot: dict[str, Any]) -> dict[Path, str]:
         f"| Verified tracked Stable v1 requirements | {verified} | {required} | {verified / required:.1%} |",
     }
     return {
-        ROOT / path: replace_progress((ROOT / path).read_text(), body)
+        ROOT / path: replace_progress(
+            (ROOT / path).read_text(encoding="utf-8"), body
+        )
         for path, body in sections.items()
     }
 
@@ -211,14 +213,18 @@ def progress_documents(snapshot: dict[str, Any]) -> dict[Path, str]:
 def outputs(as_of: date | None = None) -> dict[Path, str]:
     """Bind denominators to ledgers; never turn checklist counts into release approval."""
     as_of = as_of or date.fromisoformat(
-        json.loads((ROOT / "docs/project-status.json").read_text())["as_of"]
+        json.loads(
+            (ROOT / "docs/project-status.json").read_text(encoding="utf-8")
+        )["as_of"]
     )
     tracks = ROOT / "conductor/tracks.md"
     contract = ROOT / "quality/qualifications/stable-v1-contract.json"
     rows = re.findall(
-        r"^- \[([x~ ])\] \*\*Track:", tracks.read_text(), re.MULTILINE
+        r"^- \[([x~ ])\] \*\*Track:",
+        tracks.read_text(encoding="utf-8"),
+        re.MULTILINE,
     )
-    document = json.loads(contract.read_text())
+    document = json.loads(contract.read_text(encoding="utf-8"))
     requirements = document["requirements"]
     states = Counter(row["state"] for row in requirements)
     if not rows or not requirements or set(states) - {"verified", "blocked"}:
@@ -308,11 +314,11 @@ def main() -> None:
     args = parser.parse_args()
     for path, content in outputs(args.as_of).items():
         if args.check:
-            if path.read_text() != content:
+            if path.read_text(encoding="utf-8") != content:
                 raise ValueError(f"project overview is stale: {path.name}")
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(content)
+            path.write_text(content, encoding="utf-8")
 
 
 if __name__ == "__main__":

@@ -211,7 +211,15 @@ def test_required_checks_match_harness_and_exact_hosted_protection() -> None:
         "context",
         "supply-chain",
         "codeql",
+        "dependency-submission",
     }
+    submission = security_jobs["dependency-submission"]
+    assert submission["needs"] == "supply-chain"
+    assert submission["permissions"] == {"contents": "write"}
+    assert cast("str", submission["if"]).strip() == (
+        "github.ref == 'refs/heads/main' && "
+        "(github.event_name == 'push' || github.event_name == 'workflow_dispatch')"
+    )
     assert set(dependency_jobs) == {"dependency-review"}
     assert test_jobs["hudi-comparison"]["if"] == (
         "github.event_name == 'workflow_dispatch'"
@@ -223,7 +231,9 @@ def test_required_checks_match_harness_and_exact_hosted_protection() -> None:
 
     expanded_test_goblin = _test_goblin_check_names(test_jobs)
     expanded_security = {
-        cast("str", job["name"]) for job in security_jobs.values()
+        cast("str", job["name"])
+        for job_id, job in security_jobs.items()
+        if job_id != "dependency-submission"
     }
     assert (
         expanded_test_goblin | expanded_security == MAIN_PUSH_MANDATORY_CHECKS
