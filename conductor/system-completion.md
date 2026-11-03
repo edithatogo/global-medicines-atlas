@@ -169,3 +169,16 @@ mutation or credential creation. Preserve #61 production-data and accessibility
 gates: an historical catalogue without reviewed temporal assertions is a
 candidate and does not close the issue. Stop after protected integration and
 one native execution, recording any exact-target permission/entitlement denial.
+
+## Free-only #61 hosting — 3 November 2026
+
+The maintainer requires free options. Retire the paid-plan Docker Space create
+path after its observed HTTP 402. HF ZeroGPU currently lists Python 3.10/3.12,
+which does not qualify the required 3.15.1 runtime. Prepare one Render Free
+Python service for the existing API/Atlas and retain HF dataset authority.
+Require native owner/workspace and no-payment-method readback before activation;
+no purchase, credits, billing change, paid resources or automatic upgrade.
+Provider sign-in/new consent remain human. Preserve existing qualification,
+source, rights and production-data boundaries; free service sleep/quota limits
+are not a production-availability claim. Stop at protected integration and the
+observed native activation boundary.

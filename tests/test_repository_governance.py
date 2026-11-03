@@ -31,37 +31,6 @@ CONDUCTOR_SKILLS = (
 )
 
 
-def test_space_deployment_requires_exact_hosted_main(monkeypatch):
-    exact = "a" * 40
-    for key, value in {
-        "GITHUB_ACTIONS": "true",
-        "GITHUB_REPOSITORY": "edithatogo/global-medicines-atlas",
-        "GITHUB_REF": "refs/heads/main",
-        "GITHUB_EVENT_NAME": "workflow_dispatch",
-        "GITHUB_SHA": exact,
-    }.items():
-        monkeypatch.setenv(key, value)
-    monkeypatch.setattr(
-        deploy_hf_space.subprocess,
-        "check_output",
-        lambda *_a, **_k: exact + "\n",
-    )
-    deploy_hf_space.require_hosted_main(exact)
-    monkeypatch.setenv("GITHUB_EVENT_NAME", "pull_request")
-    with pytest.raises(ValueError, match=r"hosted main|exact main|candidate"):
-        deploy_hf_space.require_hosted_main(exact)
-    monkeypatch.setenv("GITHUB_EVENT_NAME", "workflow_dispatch")
-    monkeypatch.setenv("GITHUB_ACTIONS", "false")
-    with pytest.raises(ValueError, match=r"hosted main|exact main|candidate"):
-        deploy_hf_space.require_hosted_main(exact)
-    monkeypatch.setenv("GITHUB_ACTIONS", "true")
-    monkeypatch.setattr(
-        deploy_hf_space.subprocess, "check_output", lambda *_a, **_k: "b" * 40
-    )
-    with pytest.raises(ValueError, match=r"hosted main|exact main|candidate"):
-        deploy_hf_space.require_hosted_main(exact)
-
-
 def test_space_candidate_cannot_upload_source_or_private_members(tmp_path):
     for name in [
         "Dockerfile",
@@ -82,15 +51,56 @@ def test_space_workflow_has_no_pr_mutation_or_unpinned_runtime():
     document = yaml.safe_load(
         (ROOT / ".github/workflows/hf-space-service.yml").read_text()
     )
-    deploy = document["jobs"]["deploy"]
-    assert "workflow_dispatch" in deploy["if"]
-    assert "refs/heads/main" in deploy["if"]
-    assert deploy["environment"] == "production"
-    assert deploy["permissions"] == {"contents": "read"}
+    assert "deploy" not in document["jobs"]
+    assert "HF_TOKEN" not in json.dumps(document)
+    verify = document["jobs"]["verify_native"]
+    assert "workflow_dispatch" in verify["if"]
+    assert "refs/heads/main" in verify["if"]
+    assert verify["permissions"] == {"contents": "read"}
     candidate = json.dumps(document["jobs"]["candidate"])
     assert "secrets." not in candidate
     assert "docker restart" in candidate
     assert "3.15.1" in candidate
+
+
+def test_render_blueprint_is_free_single_service_without_a_paid_fallback():
+    document = yaml.safe_load((ROOT / "render.yaml").read_text())
+    assert set(document) == {"services"}
+    assert len(document["services"]) == 1
+    service = document["services"][0]
+    assert service["type"] == "web"
+    assert service["runtime"] == "python"
+    assert service["plan"] == "free"
+    assert service["autoDeployTrigger"] == "off"
+    assert "disk" not in service
+    assert "scaling" not in service
+    environment = {item["key"]: item for item in service["envVars"]}
+    assert environment["PYTHON_VERSION"]["value"] == "3.15.1"
+    assert environment["UV_VERSION"]["value"] == "0.13.6"
+    assert environment["GMA_CURSOR_SECRET"] == {
+        "key": "GMA_CURSOR_SECRET",
+        "generateValue": True,
+    }
+
+
+@pytest.mark.parametrize(
+    "event", ["local", "pull_request", "workflow_dispatch"]
+)
+def test_retired_docker_deployment_never_loads_a_credential(
+    tmp_path, monkeypatch, event
+):
+    monkeypatch.setenv("GITHUB_EVENT_NAME", event)
+
+    def reject(*_args, **_kwargs):
+        raise AssertionError("must not contact the retired provider")
+
+    monkeypatch.setattr(deploy_hf_space, "import_module", reject)
+    receipt = {}
+    deploy_hf_space.deploy(
+        "a" * 40, tmp_path, receipt, tmp_path / "journal.json"
+    )
+    assert receipt["phase"] == "free_only_policy"
+    assert receipt["result"] == "blocked"
 
 
 def test_hosted_verification_waits_for_the_expected_application(monkeypatch):
@@ -119,6 +129,13 @@ def test_hosted_verification_waits_for_the_expected_application(monkeypatch):
     result = deploy_hf_space.http_metadata("http://127.0.0.1:7860", exact)
     assert result["application_commit"] == exact
     assert not pending
+    monkeypatch.setattr(deploy_hf_space, "ready_metadata", lambda _: result)
+    assert (
+        deploy_hf_space.http_metadata(
+            "https://global-medicines-atlas-test.onrender.com", exact
+        )
+        == result
+    )
     with pytest.raises(ValueError, match="unapproved"):
         deploy_hf_space.http_metadata("https://unrelated.invalid", exact)
 
