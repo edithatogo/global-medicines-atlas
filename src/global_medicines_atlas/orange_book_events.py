@@ -59,8 +59,14 @@ def product_events(payload: bytes, concepts: set[str]) -> list[dict[str, Any]]:
         dates = matches.get(identity, set())
         native = next(iter(dates)) if len(dates) == 1 else None
         date = None
+        before = None
         state = "unmatched" if not dates else "conflicting_dates"
         if native is not None:
+            if (
+                " ".join(native.casefold().split())
+                == "approved prior to jan 1, 1982"
+            ):
+                before = "1982-01-01"
             state = "non_exact_native_date"
             try:
                 # FDA defines this field as a date, not a timezone or interval.
@@ -72,6 +78,7 @@ def product_events(payload: bytes, concepts: set[str]) -> list[dict[str, Any]]:
             "concept_id": identity,
             "qualification": state,
             "approval_date": date,
+            "approval_before_date": before,
             "native_approval_dates": sorted(dates),
             "source_id": "us-fda-orange-book",
             "source_uri": URI,

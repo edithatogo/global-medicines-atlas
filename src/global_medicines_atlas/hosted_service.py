@@ -276,6 +276,9 @@ def prepare_hosted(destination: Path) -> dict[str, Any]:
         "matched_exact_date_count": sum(
             e["qualification"] == "exact_product_approval_date" for e in events
         ),
+        "bounded_before_1982_count": sum(
+            e["approval_before_date"] == "1982-01-01" for e in events
+        ),
         "catalogue_product_denominator": len(events),
         "historical_rights_state": orange[0]["rights_state"],
         "effective_rights_state": "permitted",

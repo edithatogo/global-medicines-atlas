@@ -106,6 +106,21 @@ def http_metadata(url: str, expected_commit: str) -> dict[str, Any]:
     return metadata
 
 
+def verify_approval_bound(event: dict[str, Any]) -> None:
+    """Reject a historical bound unsupported by the exact native phrase."""
+    bound = event.get("approval_before_date")
+    if bound is not None:
+        native_dates = event.get("native_approval_dates", [])
+        if (
+            bound != "1982-01-01"
+            or event["qualification"] != "non_exact_native_date"
+            or len(native_dates) != 1
+            or " ".join(native_dates[0].casefold().split())
+            != "approved prior to jan 1, 1982"
+        ):
+            raise ValueError("approval event date bound lacks source evidence")
+
+
 def verify_approval_events(
     url: str, expected_commit: str, metadata: dict[str, Any]
 ) -> None:
@@ -137,6 +152,7 @@ def verify_approval_events(
             or event["validity_interval"] is not None
         ):
             raise ValueError("approval event promoted to continuing status")
+        verify_approval_bound(event)
         if event["qualification"] == "exact_product_approval_date":
             if not re.fullmatch(
                 r"\d{4}-\d{2}-\d{2}", event.get("approval_date") or ""
@@ -155,6 +171,8 @@ def verify_approval_events(
     if (
         exact_count == 0
         or summary["matched_exact_date_count"] != exact_count
+        or summary.get("bounded_before_1982_count", 0)
+        != sum(e.get("approval_before_date") == "1982-01-01" for e in events)
         or summary["effective_rights_state"] != "permitted"
     ):
         raise ValueError("approval event qualification differs")

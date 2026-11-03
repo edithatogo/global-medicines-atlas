@@ -256,3 +256,12 @@ intervals. Until source-supported status intervals and the required production
 comparison coverage are qualified, `production_data_qualified` remains false
 and #61 remains open. This work adds no source acquisition, dataset publication,
 paid resource, inferred absence or release qualification.
+
+For the already deployed bounded snapshot, anonymous product-event readback
+found 148 exact dates, 28 source entries saying approval was prior to
+1 January 1982, and seven unmatched products. The prior-to date is preserved
+as an exclusive source-supported upper bound, not an invented exact date.
+FDA defines the wording in its Orange Book product data description:
+https://www.fda.gov/drugs/drug-approvals-and-databases/orange-book-data-files .
+Neither a historical approval date nor snapshot absence establishes present
+regulatory status or an end date.

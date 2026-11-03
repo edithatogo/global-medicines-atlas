@@ -257,7 +257,9 @@ def test_hosted_source_admission_is_preserved(tmp_path, monkeypatch, failure):
     with zipfile.ZipFile(archive_stream, "w") as archive:
         archive.writestr(
             "products.txt",
-            "Appl_Type~Appl_No~Product_No~Approval_Date\nN~000001~001~Jan 02, 2001\n",
+            "Appl_Type~Appl_No~Product_No~Approval_Date\n"
+            "N~000001~001~Jan 02, 2001\n"
+            "N~000002~001~Approved Prior to Jan 1, 1982\n",
         )
     orange_payload = archive_stream.getvalue()
     monkeypatch.setattr(
@@ -299,11 +301,10 @@ def test_hosted_source_admission_is_preserved(tmp_path, monkeypatch, failure):
         ):
             hosted_service.prepare_hosted(tmp_path / "source.duckdb")
     else:
+        receipt = hosted_service.prepare_hosted(tmp_path / "source.duckdb")
+        assert receipt["application_count"] == 100
         assert (
-            hosted_service.prepare_hosted(tmp_path / "source.duckdb")[
-                "application_count"
-            ]
-            == 100
+            receipt["approval_event_summary"]["bounded_before_1982_count"] == 1
         )
 
 

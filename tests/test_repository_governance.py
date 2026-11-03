@@ -458,3 +458,23 @@ def test_native_http_only_verification_does_not_run_browser(monkeypatch):
     assert receipt["data"] == expected
     assert receipt["verification_scope"] == "http_only"
     assert receipt["issue_61_complete"] is False
+
+
+@pytest.mark.parametrize("bound", ["1981-01-01", "1982-01-02"])
+def test_approval_bound_verifier_rejects_invented_bounds(bound):
+    event = {
+        "approval_before_date": bound,
+        "qualification": "non_exact_native_date",
+        "native_approval_dates": ["Approved Prior to Jan 1, 1982"],
+    }
+    with pytest.raises(ValueError, match="bound lacks source evidence"):
+        deploy_hf_space.verify_approval_bound(event)
+
+
+def test_approval_bound_verifier_accepts_exact_source_phrase():
+    event = {
+        "approval_before_date": "1982-01-01",
+        "qualification": "non_exact_native_date",
+        "native_approval_dates": ["Approved Prior to Jan 1, 1982"],
+    }
+    deploy_hf_space.verify_approval_bound(event)
