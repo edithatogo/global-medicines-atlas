@@ -16,7 +16,9 @@ if (root) {
     if (!expanded) {
       input.removeAttribute('aria-activedescendant');
       activeIndex = -1;
-      options.forEach((option) => option.setAttribute('aria-selected', 'false'));
+      options.forEach((option) => {
+        option.setAttribute('aria-selected', 'false');
+      });
     }
   };
 
