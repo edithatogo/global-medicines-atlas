@@ -3,14 +3,17 @@
 from __future__ import annotations
 
 import configparser
+import hashlib
 import json
 import re
 import shutil
 import subprocess  # ruff: ignore[suspicious-subprocess-import]
 import tomllib
 from argparse import Namespace
+from contextlib import nullcontext
 from pathlib import Path
 
+import httpx
 import pytest
 import yaml
 from scripts import build_dependency_snapshot as dependency_snapshot
@@ -113,6 +116,9 @@ def test_hosted_verification_waits_for_the_expected_application(monkeypatch):
     )
     monkeypatch.setattr(
         deploy_hf_space, "verify_submission_events", lambda *_args: None
+    )
+    monkeypatch.setattr(
+        deploy_hf_space, "verify_reviewed_product_actions", lambda *_args: None
     )
     exact = "c" * 40
     pending = [
@@ -586,4 +592,103 @@ def test_submission_event_verifier_checks_pages_scope_and_provenance(
     else:
         deploy_hf_space.verify_submission_events(
             "http://127.0.0.1:7860", "c" * 40, metadata
+        )
+
+
+@pytest.mark.parametrize(
+    "tamper",
+    [
+        None,
+        "commit",
+        "count",
+        "duplicate",
+        "status",
+        "interval",
+        "digest",
+        "size",
+    ],
+)
+def test_reviewed_action_verifier_checks_provenance_and_pdf_bytes(
+    monkeypatch, tamper
+):
+    data = b"%PDF-1.7 synthetic letter"
+    digest = hashlib.sha256(data).hexdigest()
+    review = {
+        "application_number": "NDA000001",
+        "submission_status": "AP",
+        "submission_status_date": "20200102",
+        "letter_sha256": digest,
+        "letter_url": "https://example.test/letter.pdf",
+        "letter_bytes": len(data),
+        "letter_pages": [1],
+        "withdrawal": {
+            "source_uri": "https://example.test/notice.pdf",
+            "source_sha256": digest,
+            "source_bytes": len(data),
+            "effective_date": "2021-01-01",
+            "continuity_between_actions_verified": False,
+        },
+        "product_strengths": {"001": "10MG"},
+    }
+    monkeypatch.setattr(deploy_hf_space, "REVIEWS", (review,))
+    event = {
+        "concept_id": "us-drugsfda:NDA000001:001",
+        "action_status": "AP",
+        "action_date": "20200102",
+        "letter_sha256": digest,
+        "letter_url": review["letter_url"],
+        "product_strength_native": "10MG",
+        "application_number": "NDA000001",
+        "submission_type": "ORIG",
+        "submission_number": "1",
+        "letter_bytes": len(data),
+        "letter_pages": [1],
+        "withdrawal": dict(review["withdrawal"]),
+        "continuing_status_established": False,
+        "validity_interval": None,
+    }
+    document = {"application_commit": "a" * 40, "events": [event]}
+    metadata = {"reviewed_action_mapping_count": 1}
+    if tamper == "commit":
+        document["application_commit"] = "b" * 40
+    if tamper == "count":
+        metadata["reviewed_action_mapping_count"] = 2
+    if tamper == "duplicate":
+        document["events"] = [event, event]
+    if tamper == "status":
+        event["action_status"] = "TA"
+    if tamper == "interval":
+        event["validity_interval"] = {"start": "2020-01-02"}
+    if tamper == "digest":
+        data = b"%PDF-1.7 synthetic lettex"
+    if tamper == "size":
+        data += b" extra"
+    monkeypatch.setattr(
+        deploy_hf_space.httpx,
+        "get",
+        lambda *_args, **_kwargs: httpx.Response(
+            200,
+            json=document,
+            request=httpx.Request("GET", "https://example.test"),
+        ),
+    )
+    monkeypatch.setattr(
+        deploy_hf_space.httpx,
+        "stream",
+        lambda *_args, **_kwargs: nullcontext(
+            httpx.Response(
+                200,
+                content=data,
+                request=httpx.Request("GET", "https://example.test"),
+            )
+        ),
+    )
+    if tamper:
+        with pytest.raises(ValueError, match=r"reviewed action|FDA letter"):
+            deploy_hf_space.verify_reviewed_product_actions(
+                "https://example.test", "a" * 40, metadata
+            )
+    else:
+        deploy_hf_space.verify_reviewed_product_actions(
+            "https://example.test", "a" * 40, metadata
         )

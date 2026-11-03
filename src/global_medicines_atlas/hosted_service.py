@@ -25,6 +25,7 @@ if TYPE_CHECKING:
 
 from .columnar import temporal_assertions_to_arrow
 from .coverage import coverage_to_arrow
+from .fda_action_evidence import reviewed_action_mappings
 from .orange_book_events import SHA256 as ORANGE_SHA
 from .orange_book_events import URI as ORANGE_URI
 from .orange_book_events import product_events
@@ -381,6 +382,20 @@ def prepare_hosted(destination: Path) -> dict[str, Any]:
         raise ValueError("submission application denominator differs")
     materialize_submission_events(destination, submission_events)
     receipt["submission_event_summary"] = submission_summary
+    reviewed = reviewed_action_mappings(payload)
+    with duckdb.connect(str(destination)) as connection:
+        connection.execute(
+            "CREATE TABLE reviewed_product_actions (concept_id VARCHAR PRIMARY KEY, evidence_json VARCHAR NOT NULL)"
+        )
+        if reviewed:
+            connection.executemany(
+                "INSERT INTO reviewed_product_actions VALUES (?, ?)",
+                [
+                    (item["concept_id"], json.dumps(item, sort_keys=True))
+                    for item in reviewed
+                ],
+            )
+    receipt["reviewed_action_mapping_count"] = len(reviewed)
     receipt["approval_events"] = events
     receipt["approval_event_summary"] = {
         "source_id": "us-fda-orange-book",
@@ -424,6 +439,29 @@ def create_app() -> ASGIApp:
     )
 
     async def scoped(scope: Scope, receive: Receive, send: Send) -> None:
+        if (
+            scope["type"] == "http"
+            and scope["path"] == "/reviewed-product-actions.json"
+        ):
+            if scope["method"] != "GET":
+                await JSONResponse(
+                    {"detail": "Method not allowed"},
+                    status_code=405,
+                    headers={"Allow": "GET"},
+                )(scope, receive, send)
+            else:
+                with duckdb.connect(
+                    str(database), read_only=True
+                ) as connection:
+                    rows = connection.execute(
+                        "SELECT evidence_json FROM reviewed_product_actions ORDER BY concept_id"
+                    ).fetchall()
+                await JSONResponse({
+                    "application_commit": commit,
+                    "scope": "Reviewed historical product actions; no continuing status is asserted.",
+                    "events": [json.loads(row[0]) for row in rows],
+                })(scope, receive, send)
+            return
         if (
             scope["type"] == "http"
             and scope["path"] == "/submission-events.json"

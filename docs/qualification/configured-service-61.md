@@ -279,3 +279,37 @@ provenance. These are application-level historical records; neither product
 approval nor continuing status is inferred. Hosted readback must independently
 confirm the counts against the pinned source. This adds no source acquisition or
 archive publication and does not satisfy the outstanding status-interval gate.
+
+### Product-specific FDA action letters — 3 November 2026
+
+Chat `01a19600-56dd-73a2-9ff5-4a2484a54493` owns checkout
+`/Volumes/PortableSSD/GitHub/global-medicines-atlas`, branch
+`codex/61-fda-action-evidence`. A bounded acquisition of 30 FDA letters is
+recorded in [the content-digest receipt](fda-action-letter-acquisition-20261103.json).
+The exact PDF bytes remain in the local recovery directory named by digest;
+the public FDA URLs and SHA-256 digests are references, not an archive upload.
+Candidate links in that receipt do not establish which products an action
+covers. The approved FDA source-rights ledger applies its stated exclusions.
+
+Three letters have been reviewed against the FDA action date, application,
+product identity, dosage form, route and strength in the pinned catalogue.
+The ANDA 207984 letter supports the 18 December 2020 tentative action for
+three capsule strengths; it expressly does not grant final approval. The BLA
+761385 letter supports the 27 March 2026 approval action for the one identified
+product. The PERIOSTAT letter supports one further product action. These five reviewed action-to-product mappings are exposed as events,
+with source PDF byte lengths and SHA-256 digests. Live qualification rehashes
+the FDA references anonymously. Neither document proves a continuing status
+interval or a withdrawal date, and the remaining acquired letters have not
+been promoted merely by date matching. The production comparison-data gate and
+#61 remain open until source-supported intervals and required coverage exist.
+
+The FDA notice in official Federal Register document 05-9624 identifies the
+withdrawal of NDA 50-744 for PERIOSTAT 20 mg capsules effective 15 June 2005.
+Its [official PDF receipt](fda-withdrawal-05-9624-receipt.json) binds the exact
+bytes by SHA-256. The notice summary also contains an inconsistent NDA number;
+the DATES section and section I identify 50-744 and the corresponding product.
+That inconsistency is retained as evidence. The earlier reviewed action is
+30 September 1998. Both endpoints are source-supported, but an uninterrupted
+status between them is not established by those two documents, so no canonical
+validity interval is inferred. This is a bounded historical example, not proof
+of complete coverage or current status.

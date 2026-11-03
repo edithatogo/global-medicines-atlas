@@ -1,0 +1,485 @@
+{
+  "acquisition_date": "2026-11-03",
+  "anonymous_archive_verification": "not applicable: no external archive publication",
+  "application_commit": "dee500324f6e22d1593cab7014d101339fed7057",
+  "receipt_schema": "gma-fda-action-letter-acquisition-v1",
+  "records": [
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:NDA050744:001",
+          "date": "1998-09-30",
+          "source_path": "/results/95/submissions/0"
+        }
+      ],
+      "bytes": 36152,
+      "sha256": "b37388f078d8ac94727bddc793b9b52436897ae63c061e0d5ba82d723197af48",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/1998/50744ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:ANDA075037:001",
+          "date": "1998-10-30",
+          "source_path": "/results/99/submissions/2"
+        },
+        {
+          "concept_id": "us-drugsfda:ANDA075037:002",
+          "date": "1998-10-30",
+          "source_path": "/results/99/submissions/2"
+        }
+      ],
+      "bytes": 4119,
+      "sha256": "e49ff5624f200bcb47c88828ead787aff2f82d3a481eb50651fda37d8ac28e83",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/1998/75037ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:ANDA074723:001",
+          "date": "1999-03-30",
+          "source_path": "/results/98/submissions/0"
+        }
+      ],
+      "bytes": 4341,
+      "sha256": "11db4b4d59b957d7c456bb58b855104a16c2e8582c349e9ad41059741b296c4e",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/1999/74723ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:NDA021548:001",
+          "date": "2003-10-20",
+          "source_path": "/results/78/submissions/1"
+        }
+      ],
+      "bytes": 194637,
+      "sha256": "ff786c6422289384a08e97836f78770084171cd20fb23ef336986863b50a68ea",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2003/21548ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:NDA021938:001",
+          "date": "2006-01-26",
+          "source_path": "/results/89/submissions/33"
+        },
+        {
+          "concept_id": "us-drugsfda:NDA021938:002",
+          "date": "2006-01-26",
+          "source_path": "/results/89/submissions/33"
+        },
+        {
+          "concept_id": "us-drugsfda:NDA021938:003",
+          "date": "2006-01-26",
+          "source_path": "/results/89/submissions/33"
+        }
+      ],
+      "bytes": 833942,
+      "sha256": "8fa4aede6ae571f1cc635560d31d7fa9b8c8d1c01dff0443b0c0c58e397606ed",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2006/021938s000ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:ANDA077149:001",
+          "date": "2006-03-17",
+          "source_path": "/results/7/submissions/0"
+        }
+      ],
+      "bytes": 56812,
+      "sha256": "319053f7a5ad2b424265e0f477443bb8f0537dfd9d9f871c9227968f65145e07",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2006/077149ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:NDA019734:002",
+          "date": "2008-07-31",
+          "source_path": "/results/40/submissions/22"
+        },
+        {
+          "concept_id": "us-drugsfda:NDA019734:003",
+          "date": "2008-07-31",
+          "source_path": "/results/40/submissions/22"
+        }
+      ],
+      "bytes": 70986,
+      "sha256": "1d8cbb44c940099241f87f2b11016d4b1fc0646dacee2b09f5493c09075ffef2",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2008/019734s013ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:NDA019734:004",
+          "date": "2008-11-07",
+          "source_path": "/results/40/submissions/10"
+        },
+        {
+          "concept_id": "us-drugsfda:NDA019734:005",
+          "date": "2008-11-07",
+          "source_path": "/results/40/submissions/10"
+        }
+      ],
+      "bytes": 58820,
+      "sha256": "b82d951eb232e22743d5af8e0888d7450091f17bd16a805c540060958ac1d270",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2008/019734s014ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:NDA021938:004",
+          "date": "2009-03-31",
+          "source_path": "/results/89/submissions/35"
+        }
+      ],
+      "bytes": 56472,
+      "sha256": "208b2f76f8a902171ae76808e253890ac2e4865714d634368461970000de3d2d",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2009/021938s009ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:ANDA091577:001",
+          "date": "2011-05-02",
+          "source_path": "/results/35/submissions/1"
+        }
+      ],
+      "bytes": 49615,
+      "sha256": "c3676429aab87df5a9483ab8b681550f83a0fdb979ea189120285f5150b07332",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2011/091577s000ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:NDA201803:001",
+          "date": "2012-06-12",
+          "source_path": "/results/38/submissions/2"
+        }
+      ],
+      "bytes": 75735,
+      "sha256": "459fb0fd47196129ed20ee8b62bc0d2baec4904a1ba8f92a2ae3a6900c4f7009",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2012/201803s000ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:ANDA202956:001",
+          "date": "2015-09-17",
+          "source_path": "/results/29/submissions/1"
+        },
+        {
+          "concept_id": "us-drugsfda:ANDA202956:002",
+          "date": "2015-09-17",
+          "source_path": "/results/29/submissions/1"
+        }
+      ],
+      "bytes": 60759,
+      "sha256": "12643d18ee8ae8f930a4c36b0970741231e8b00cb5d5497a399c416f3ccb3ee5",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2015/202956Orig1s000ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:ANDA204079:001",
+          "date": "2015-05-28",
+          "source_path": "/results/42/submissions/2"
+        }
+      ],
+      "bytes": 75451,
+      "sha256": "3cf8418013c60669a381a2f9e69192d4d3209e154431d9b5115bf85176caf981",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2015/204079Orig1s000ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:ANDA205233:001",
+          "date": "2015-12-21",
+          "source_path": "/results/46/submissions/0"
+        }
+      ],
+      "bytes": 37227,
+      "sha256": "c9286ee8f06acdddb65c9d9aa3ae1c6f95c4471142e14a61ea7140d1fc0ea4a8",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2015/205233Orig1s000ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:NDA206843:001",
+          "date": "2015-07-24",
+          "source_path": "/results/50/submissions/0"
+        },
+        {
+          "concept_id": "us-drugsfda:NDA206843:002",
+          "date": "2015-07-24",
+          "source_path": "/results/50/submissions/0"
+        }
+      ],
+      "bytes": 137385,
+      "sha256": "5b373565d7c84d6f1ae75004963b4b497b5e142237f5032a1473725d939e6601",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2015/206843Orig1s000ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:ANDA204475:001",
+          "date": "2016-06-23",
+          "source_path": "/results/43/submissions/3"
+        },
+        {
+          "concept_id": "us-drugsfda:ANDA204475:002",
+          "date": "2016-06-23",
+          "source_path": "/results/43/submissions/3"
+        }
+      ],
+      "bytes": 92499,
+      "sha256": "724b5ef5f0006a9c8d19a9b5ac1ffd4d19adcad0ecf71bf90f9dc851f8152101",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2016/204475Orig1s000ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:NDA208351:001",
+          "date": "2016-03-01",
+          "source_path": "/results/55/submissions/4"
+        }
+      ],
+      "bytes": 131129,
+      "sha256": "8ea66847deff836d7f751f2ac9aa16b33c3ca9468ce995d4a7f770a9ec95d177",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2016/208351Orig1s000ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:ANDA209060:001",
+          "date": "2018-11-27",
+          "source_path": "/results/58/submissions/0"
+        },
+        {
+          "concept_id": "us-drugsfda:ANDA209060:002",
+          "date": "2018-11-27",
+          "source_path": "/results/58/submissions/0"
+        }
+      ],
+      "bytes": 99147,
+      "sha256": "ccd804ca122aad1954f96e9e9e1863e71a9f7b0d8d9cdeaf28d30b734fc1c9b0",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2018/209060Orig1s000ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:ANDA210441:001",
+          "date": "2018-05-01",
+          "source_path": "/results/62/submissions/4"
+        }
+      ],
+      "bytes": 149178,
+      "sha256": "98fa2cc9285e326ae805d61151512c79d76b90313a94ead27d51143dc3772df9",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2018/210441Orig1s000ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:NDA211109:001",
+          "date": "2018-08-27",
+          "source_path": "/results/63/submissions/3"
+        }
+      ],
+      "bytes": 133747,
+      "sha256": "6c0671d0ea948994a15efab420bb5bda5c9c0e0dac6bc2d90f2984c0b85ab888",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2018/211109Orig1s000ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "application_number": "ANDA207984",
+          "date": "2020-12-18",
+          "source_path": "/results/54/submissions/0"
+        }
+      ],
+      "bytes": 309133,
+      "sha256": "11c8e4b8fd578dccec7efa2d5427654701d490c2af31d89c505c6eb0c6ee5eb8",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2020/207984Orig1s000TAltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:NDA211109:002",
+          "date": "2020-06-03",
+          "source_path": "/results/63/submissions/1"
+        }
+      ],
+      "bytes": 112228,
+      "sha256": "8f2b48ac3a1204ffc2d573b39792950b0e7f52a6886a6c468722667ff7f21deb",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2020/211109Orig1s004ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:ANDA211464:001",
+          "date": "2020-06-03",
+          "source_path": "/results/51/submissions/0"
+        }
+      ],
+      "bytes": 314045,
+      "sha256": "a229207470336b1df4b2a7bc459b08e1dfc1a8eefb12c0c51cf0367f6b085719",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2020/211464Orig1s000ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:NDA214018:001",
+          "date": "2021-02-26",
+          "source_path": "/results/72/submissions/1"
+        }
+      ],
+      "bytes": 841295,
+      "sha256": "9704d433d0483d735f7393d045856f14b5785a7329f1f86b9dd9324317d3cc09",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2021/214018Orig1s000ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:ANDA216947:001",
+          "date": "2023-07-13",
+          "source_path": "/results/64/submissions/2"
+        },
+        {
+          "concept_id": "us-drugsfda:ANDA216947:002",
+          "date": "2023-07-13",
+          "source_path": "/results/64/submissions/2"
+        }
+      ],
+      "bytes": 616816,
+      "sha256": "fda78a7b7bd7ea37cd64be0a8c09da69cd3ee23d1ce672e6f2baee76178489ae",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2023/216947Orig1s000ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:ANDA217387:001",
+          "date": "2025-04-29",
+          "source_path": "/results/67/submissions/0"
+        }
+      ],
+      "bytes": 275116,
+      "sha256": "d35ff661764368f2bf6fb7a1c02df7ddf43f19642983a0db1d2fc979e3ed904a",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2024/217387Orig1s000TAltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:NDA218709:001",
+          "date": "2024-04-26",
+          "source_path": "/results/81/submissions/0"
+        }
+      ],
+      "bytes": 271365,
+      "sha256": "0eae70508d0ab6e0ca585794f8f22922367da8d7936cca2d55e45f155d1c899a",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2024/218709Orig1s000ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:NDA215244:001",
+          "date": "2025-09-19",
+          "source_path": "/results/75/submissions/0"
+        }
+      ],
+      "bytes": 965004,
+      "sha256": "e9b36e393bb78dac20f920a7483137143a20957657adafd3cb81d2c99ff078bf",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2025/215244Orig1s000ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "application_number": "BLA761385",
+          "date": "2026-03-27",
+          "source_path": "/results/85/submissions/0"
+        }
+      ],
+      "bytes": 1008225,
+      "sha256": "289fdf6e569aa410598f7f24d6007586baa2e64916cd07260b2efaf1cf8a3629",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2026/761385Orig1s000ltr.pdf"
+    },
+    {
+      "associations": [
+        {
+          "concept_id": "us-drugsfda:NDA021227:001",
+          "date": "2001-01-26",
+          "source_path": "/results/77/submissions/30"
+        },
+        {
+          "concept_id": "us-drugsfda:NDA021227:002",
+          "date": "2001-01-26",
+          "source_path": "/results/77/submissions/30"
+        }
+      ],
+      "bytes": 222631,
+      "sha256": "1632caa0710232304272fe7f668f12aa5bd804237616abd4998bf582776906ce",
+      "state": "acquired",
+      "text_extraction": "ok",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/nda/2001/21227_Cancidas_Approv.pdf"
+    }
+  ],
+  "rights_ledger": "quality/qualifications/source-rights-review-ledger.json#us-drugsfda",
+  "scope": "Public FDA PDF bytes retained locally by SHA-256; source links and hashes are immutable references, not redistributed PDF content. Candidate associations are not reviewed mappings."
+}

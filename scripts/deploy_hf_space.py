@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import time
@@ -14,6 +15,8 @@ from typing import Any, cast
 from urllib.parse import urlencode
 
 import httpx
+
+from global_medicines_atlas.fda_action_evidence import REVIEWS
 
 OWNER_MARKER = "GMA_DEPLOYMENT_OWNER=edithatogo/global-medicines-atlas"
 
@@ -106,7 +109,100 @@ def http_metadata(url: str, expected_commit: str) -> dict[str, Any]:
         raise ValueError("deployed provenance differs")
     verify_approval_events(url, expected_commit, metadata)
     verify_submission_events(url, expected_commit, metadata)
+    verify_reviewed_product_actions(url, expected_commit, metadata)
     return metadata
+
+
+def verify_reviewed_product_actions(
+    url: str, commit: str, metadata: dict[str, Any]
+) -> None:
+    """Read back the reviewed mappings and rehash each public FDA letter."""
+    response = httpx.get(url + "/reviewed-product-actions.json", timeout=30)
+    response.raise_for_status()
+    document = response.json()
+    events = document["events"]
+    expected = {
+        f"us-drugsfda:{review['application_number']}:{number}": (
+            review["submission_status"],
+            review["submission_status_date"],
+            review["letter_sha256"],
+            review["letter_url"],
+            strength,
+            review["application_number"],
+            "ORIG",
+            "1",
+            review["letter_bytes"],
+            review["letter_pages"],
+            review.get("withdrawal"),
+        )
+        for review in REVIEWS
+        for number, strength in review["product_strengths"].items()
+    }
+    if (
+        document["application_commit"] != commit
+        or len(events) != len(expected)
+        or metadata["reviewed_action_mapping_count"] != len(expected)
+    ):
+        raise ValueError("reviewed action coverage differs")
+    observed = {}
+    for event in events:
+        if (
+            event["continuing_status_established"] is not False
+            or event["validity_interval"] is not None
+        ):
+            raise ValueError("reviewed action promoted to a status interval")
+        concept = event["concept_id"]
+        if concept in observed:
+            raise ValueError("duplicate reviewed action")
+        observed[concept] = (
+            event["action_status"],
+            event["action_date"],
+            event["letter_sha256"],
+            event["letter_url"],
+            event["product_strength_native"],
+            event["application_number"],
+            event["submission_type"],
+            event["submission_number"],
+            event["letter_bytes"],
+            event["letter_pages"],
+            event["withdrawal"],
+        )
+    if observed != expected:
+        raise ValueError("reviewed action evidence differs")
+    for review in REVIEWS:
+        sources = [
+            (
+                review["letter_url"],
+                review["letter_bytes"],
+                review["letter_sha256"],
+            )
+        ]
+        if review.get("withdrawal"):
+            withdrawal = review["withdrawal"]
+            sources.append((
+                withdrawal["source_uri"],
+                withdrawal["source_bytes"],
+                withdrawal["source_sha256"],
+            ))
+        for source_url, expected_bytes, expected_digest in sources:
+            verify_evidence_bytes(source_url, expected_bytes, expected_digest)
+
+
+def verify_evidence_bytes(
+    url: str, expected_bytes: int, expected_digest: str
+) -> None:
+    """Bound and hash a referenced public source without retaining its bytes."""
+    with httpx.stream("GET", url, timeout=60, follow_redirects=False) as source:
+        source.raise_for_status()
+        digest = hashlib.sha256()
+        size = 0
+        for chunk in source.iter_bytes():
+            size += len(chunk)
+            if size > expected_bytes:
+                raise ValueError("FDA letter size differs")
+            digest.update(chunk)
+    if size != expected_bytes or digest.hexdigest() != expected_digest:
+        raise ValueError("FDA letter digest differs")
 
 
 def verify_approval_bound(event: dict[str, Any]) -> None:

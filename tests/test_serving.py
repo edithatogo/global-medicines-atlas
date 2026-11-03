@@ -22,6 +22,10 @@ if TYPE_CHECKING:
     from httpx import Client
 
 from global_medicines_atlas import hosted_service
+from global_medicines_atlas.fda_action_evidence import (
+    REVIEWS,
+    reviewed_action_mappings,
+)
 from global_medicines_atlas.serving import create_app
 from global_medicines_atlas.submission_events import project_submission_events
 
@@ -223,6 +227,9 @@ def test_hosted_source_download_is_anonymous_and_digest_bound(monkeypatch):
     "failure", [None, "duplicate", "rights", "bytes", "denominator", "orange"]
 )
 def test_hosted_source_admission_is_preserved(tmp_path, monkeypatch, failure):
+    monkeypatch.setattr(
+        hosted_service, "reviewed_action_mappings", lambda _: []
+    )
     payload = _hosted_payload()
     # The pure bootstrap is exercised with synthetic bytes; actual archive
     # bytes are used only in the dedicated hosted container qualification.
@@ -729,3 +736,123 @@ def test_submission_database_detects_missing_insert(tmp_path, monkeypatch):
         hosted_service.materialize_submission_events(
             tmp_path / "fault.duckdb", events
         )
+
+
+def _reviewed_action_fixture():
+    review = REVIEWS[0]
+    return {
+        "results": [
+            {
+                "application_number": review["application_number"],
+                "products": [
+                    {
+                        "product_number": number,
+                        "brand_name": review["brand_name"],
+                        "dosage_form": review["dosage_form"],
+                        "route": review["route"],
+                        "active_ingredients": [
+                            {"name": review["ingredient"], "strength": strength}
+                        ],
+                    }
+                    for number, strength in review["product_strengths"].items()
+                ],
+                "submissions": [
+                    {
+                        "submission_type": "ORIG",
+                        "submission_number": "1",
+                        "submission_status": review["submission_status"],
+                        "submission_status_date": review[
+                            "submission_status_date"
+                        ],
+                        "application_docs": [
+                            {"type": "Letter", "url": review["letter_url"]}
+                        ],
+                    }
+                ],
+            }
+        ],
+    }
+
+
+def test_reviewed_product_action_mappings_are_exact_and_event_only():
+    result = reviewed_action_mappings(
+        json.dumps(_reviewed_action_fixture()).encode(), REVIEWS[:1]
+    )
+    assert [r["concept_id"] for r in result] == [
+        "us-drugsfda:ANDA207984:001",
+        "us-drugsfda:ANDA207984:002",
+        "us-drugsfda:ANDA207984:003",
+    ]
+    assert all(
+        r["action_status"] == "TA"
+        and r["validity_interval"] is None
+        and not r["continuing_status_established"]
+        for r in result
+    )
+    assert {r["letter_sha256"] for r in result} == {REVIEWS[0]["letter_sha256"]}
+
+
+@pytest.mark.parametrize(
+    "tamper",
+    [
+        "application",
+        "duplicate_application",
+        "submission",
+        "duplicate_submission",
+        "product",
+        "duplicate_product",
+        "characteristics",
+        "letter",
+    ],
+)
+def test_reviewed_actions_reject_changed_or_ambiguous_source(tamper):
+    payload = _reviewed_action_fixture()
+    app = payload["results"][0]
+    if tamper == "application":
+        app["application_number"] = "ANDA000000"
+    elif tamper == "duplicate_application":
+        payload["results"].append(app)
+    elif tamper == "submission":
+        app["submissions"][0]["submission_status"] = "AP"
+    elif tamper == "duplicate_submission":
+        app["submissions"].append(app["submissions"][0])
+    elif tamper == "product":
+        app["products"].pop()
+    elif tamper == "duplicate_product":
+        app["products"].append(app["products"][0])
+    elif tamper == "characteristics":
+        app["products"][0]["active_ingredients"][0]["strength"] = "1 MG"
+    else:
+        app["submissions"][0]["application_docs"][0]["url"] = (
+            "https://example.test/letter"
+        )
+    with pytest.raises(ValueError, match="reviewed"):
+        reviewed_action_mappings(json.dumps(payload).encode(), REVIEWS[:1])
+
+
+def test_reviewed_product_action_endpoint_is_read_only(tmp_path, monkeypatch):
+    actions = reviewed_action_mappings(
+        json.dumps(_reviewed_action_fixture()).encode(), REVIEWS[:1]
+    )
+    monkeypatch.setenv("GMA_HOSTED_CACHE", str(tmp_path))
+    monkeypatch.setenv("GMA_APPLICATION_COMMIT", "a" * 40)
+    monkeypatch.setenv("GMA_CURSOR_SECRET", "synthetic-existing-signing-value")
+
+    def prepare(path):
+        receipt = hosted_service.prepare_database(path, _hosted_payload())
+        with hosted_service.duckdb.connect(str(path)) as connection:
+            connection.execute(
+                "CREATE TABLE reviewed_product_actions (concept_id VARCHAR PRIMARY KEY, evidence_json VARCHAR NOT NULL)"
+            )
+            connection.executemany(
+                "INSERT INTO reviewed_product_actions VALUES (?, ?)",
+                [(x["concept_id"], json.dumps(x)) for x in actions],
+            )
+        return receipt
+
+    monkeypatch.setattr(hosted_service, "prepare_hosted", prepare)
+    with TestClient(hosted_service.create_app()) as client:
+        response = client.get("/reviewed-product-actions.json")
+        assert response.status_code == 200
+        assert response.json()["events"] == actions
+        assert client.post("/reviewed-product-actions.json").status_code == 405
