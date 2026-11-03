@@ -207,12 +207,9 @@ def materialize_approval_events(
         for event in events
     ]
     with duckdb.connect(str(destination)) as connection:
-        catalogue_result = connection.execute(
+        catalogue_count = connection.execute(
             "SELECT count(*) FROM medicine_concepts"
-        ).fetchone()
-        if catalogue_result is None:
-            raise ValueError("catalogue count unavailable")
-        catalogue_count = catalogue_result[0]
+        ).fetchall()[0][0]
         if catalogue_count != len(rows):
             raise ValueError(
                 "approval-event denominator differs from catalogue"
@@ -223,12 +220,9 @@ def materialize_approval_events(
         connection.executemany(
             "INSERT INTO product_approval_events VALUES (?, ?, ?, ?)", rows
         )
-        missing_result = connection.execute(
+        missing = connection.execute(
             "SELECT count(*) FROM medicine_concepts c LEFT JOIN product_approval_events e ON c.concept_id = e.concept_id WHERE e.concept_id IS NULL"
-        ).fetchone()
-        if missing_result is None:
-            raise ValueError("approval-event join count unavailable")
-        missing = missing_result[0]
+        ).fetchall()[0][0]
         if missing:
             raise ValueError("approval-event identities differ from catalogue")
         counts = dict(
