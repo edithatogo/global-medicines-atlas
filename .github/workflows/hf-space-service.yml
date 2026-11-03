@@ -64,7 +64,7 @@ jobs:
           set -euo pipefail
           container=$(docker run --detach --publish 127.0.0.1:7860:7860 --env GMA_CURSOR_SECRET=synthetic-ci-only-signing-value gma-hosted-candidate)
           trap 'docker rm --force "$container" >/dev/null' EXIT
-          for attempt in $(seq 1 30); do
+          for _attempt in $(seq 1 30); do
             if curl --fail --silent http://127.0.0.1:7860/api/v1/readiness >/dev/null; then break; fi
             sleep 5
           done
