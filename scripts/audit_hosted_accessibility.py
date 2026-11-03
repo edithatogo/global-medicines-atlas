@@ -6,6 +6,7 @@ import argparse
 import json
 from collections import Counter
 from pathlib import Path
+from typing import Any
 
 from deploy_hf_space import http_metadata
 from playwright.sync_api import sync_playwright
@@ -28,7 +29,7 @@ def main() -> int:
     submissions = [
         s for app in source["results"] for s in app.get("submissions", [])
     ]
-    report = {
+    report: dict[str, Any] = {
         "endpoint": url,
         "deployment": metadata,
         "scans": [],
