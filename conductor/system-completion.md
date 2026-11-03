@@ -156,3 +156,16 @@ patch. Update existing active pins and generated locks, qualify on Python 3.15.1
 review and integrate after protected CI. Keep unrelated dependency versions,
 historical receipts and all release/federation gates intact. Stop after merge
 and the automatic dependency-submission readback; #491 remains open.
+
+## Hosted #61 implementation — 3 November 2026
+
+The maintainer requested the remaining hosted work in one CLI-driven batch.
+Prepare/build/test on GitHub Actions, with runtime and disposable query caches
+on the exact GMA Docker Space. Reuse only the existing accepted public FDA
+snapshot; no new source or inventory expansion. Apply a main-only, parent-bound
+code transaction using the existing workflow credential, retaining anonymous
+digest and endpoint checks. No purchase, organization transfer, other Space
+mutation or credential creation. Preserve #61 production-data and accessibility
+gates: an historical catalogue without reviewed temporal assertions is a
+candidate and does not close the issue. Stop after protected integration and
+one native execution, recording any exact-target permission/entitlement denial.

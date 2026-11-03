@@ -1,0 +1,133 @@
+name: Hosted API and Atlas candidate
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/hf-space-service.yml"
+      - "deployment/hf-space/**"
+      - "src/global_medicines_atlas/hosted_service.py"
+      - "src/global_medicines_atlas/serving.py"
+      - "scripts/deploy_hf_space.py"
+      - "tests/test_serving.py"
+  workflow_dispatch:
+    inputs:
+      exact_commit:
+        description: Exact reviewed main commit to prepare and deploy
+        required: true
+        type: string
+      deploy:
+        description: Apply the reviewed Space code deployment using existing authority
+        required: true
+        default: false
+        type: boolean
+
+permissions: {}
+concurrency:
+  group: gma-hosted-space-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  SSL_CERT_FILE: ${{ github.workspace }}/.ci/trust/cacert.pem
+  HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
+
+jobs:
+  candidate:
+    name: Build and exercise hosted service candidate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.13.6"
+      - name: Install the governed runtime and build the existing package
+        run: |
+          set -euo pipefail
+          uv sync --python 3.15.1 --locked --group dev
+          uv run --no-sync python -c 'import platform; assert platform.python_version() == "3.15.1"'
+          mkdir -p build/hf-space
+          uv build --python 3.15.1 --out-dir build/space-dist
+          uv export --locked --python 3.15.1 --no-dev --no-default-groups --extra server --no-emit-project --format requirements-txt --output-file build/hf-space/requirements.txt
+          cp deployment/hf-space/Dockerfile deployment/hf-space/README.md build/hf-space/
+          cp LICENSE build/hf-space/
+          cp .ci/trust/cacert.pem build/hf-space/
+          cp build/space-dist/*.whl build/hf-space/
+      - name: Build the real Docker Space image
+        run: docker build --tag gma-hosted-candidate build/hf-space
+      - name: Install the existing Chromium qualification tool
+        run: uv run --no-sync playwright install --with-deps chromium
+      - name: Exercise actual archive bootstrap, restart and browser behavior
+        run: |
+          set -euo pipefail
+          container=$(docker run --detach --publish 127.0.0.1:7860:7860 --env GMA_CURSOR_SECRET=synthetic-ci-only-signing-value gma-hosted-candidate)
+          trap 'docker rm --force "$container" >/dev/null' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:7860/api/v1/readiness >/dev/null; then break; fi
+            sleep 5
+          done
+          curl --fail --silent http://127.0.0.1:7860/api/v1/readiness >/dev/null
+          docker restart "$container" >/dev/null
+          uv run --no-sync python scripts/deploy_hf_space.py --url http://127.0.0.1:7860 --receipt build/hosted-candidate-verification.json
+      - name: Preserve the code-only deployment candidate
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: hf-space-code-candidate
+          path: build/hf-space/
+          if-no-files-found: error
+          retention-days: 7
+      - name: Preserve bounded qualification evidence without source payloads
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: hf-space-candidate-verification
+          path: build/hosted-candidate-verification.json
+          if-no-files-found: ignore
+          retention-days: 30
+
+  deploy:
+    name: Deploy exact reviewed main to Hugging Face Spaces
+    needs: candidate
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.deploy
+    runs-on: ubuntu-24.04
+    environment: production
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.13.6"
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: hf-space-code-candidate
+          path: build/hf-space
+      - name: Apply one parent-bound code transaction and verify anonymously
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          EXACT_COMMIT: ${{ inputs.exact_commit }}
+        run: >-
+          uv run --locked --python 3.15.1 --group dev --with huggingface-hub==1.19.0
+          python scripts/deploy_hf_space.py --exact-commit "$EXACT_COMMIT"
+          --candidate build/hf-space --receipt build/space-deployment.json
+      - name: Verify the actual native endpoint
+        run: |
+          set -euo pipefail
+          uv run --locked --python 3.15.1 --group dev playwright install --with-deps chromium
+          uv run --locked --python 3.15.1 --group dev python scripts/deploy_hf_space.py --url https://edithatogo-global-medicines-atlas.hf.space --receipt build/space-native-verification.json
+      - name: Preserve the native mutation journal and verification
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: hf-space-native-evidence
+          path: |
+            build/space-deployment.json
+            build/space-native-verification.json
+          if-no-files-found: error
+          retention-days: 90

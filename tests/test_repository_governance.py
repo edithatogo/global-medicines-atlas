@@ -13,6 +13,7 @@ from pathlib import Path
 import pytest
 import yaml
 from scripts import build_dependency_snapshot as dependency_snapshot
+from scripts import deploy_hf_space
 
 ROOT = Path(__file__).resolve().parents[1]
 FULL_SHA = re.compile(r"^[0-9a-f]{40}$")
@@ -26,6 +27,68 @@ CONDUCTOR_SKILLS = (
     "conductor-review",
     "conductor-revert",
 )
+
+
+def test_space_deployment_requires_exact_hosted_main(monkeypatch):
+    exact = "a" * 40
+    for key, value in {
+        "GITHUB_ACTIONS": "true",
+        "GITHUB_REPOSITORY": "edithatogo/global-medicines-atlas",
+        "GITHUB_REF": "refs/heads/main",
+        "GITHUB_EVENT_NAME": "workflow_dispatch",
+        "GITHUB_SHA": exact,
+    }.items():
+        monkeypatch.setenv(key, value)
+    monkeypatch.setattr(
+        deploy_hf_space.subprocess,
+        "check_output",
+        lambda *_a, **_k: exact + "\n",
+    )
+    deploy_hf_space.require_hosted_main(exact)
+    monkeypatch.setenv("GITHUB_EVENT_NAME", "pull_request")
+    with pytest.raises(ValueError, match=r"hosted main|exact main|candidate"):
+        deploy_hf_space.require_hosted_main(exact)
+    monkeypatch.setenv("GITHUB_EVENT_NAME", "workflow_dispatch")
+    monkeypatch.setenv("GITHUB_ACTIONS", "false")
+    with pytest.raises(ValueError, match=r"hosted main|exact main|candidate"):
+        deploy_hf_space.require_hosted_main(exact)
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setattr(
+        deploy_hf_space.subprocess, "check_output", lambda *_a, **_k: "b" * 40
+    )
+    with pytest.raises(ValueError, match=r"hosted main|exact main|candidate"):
+        deploy_hf_space.require_hosted_main(exact)
+
+
+def test_space_candidate_cannot_upload_source_or_private_members(tmp_path):
+    for name in [
+        "Dockerfile",
+        "LICENSE",
+        "cacert.pem",
+        "requirements.txt",
+        "global_medicines_atlas-1.whl",
+    ]:
+        (tmp_path / name).write_bytes(b"synthetic-code")
+    (tmp_path / "README.md").write_text(deploy_hf_space.OWNER_MARKER)
+    assert len(deploy_hf_space.candidate_files(tmp_path)) == 6
+    (tmp_path / "source.duckdb").write_bytes(b"forbidden")
+    with pytest.raises(ValueError, match=r"hosted main|exact main|candidate"):
+        deploy_hf_space.candidate_files(tmp_path)
+
+
+def test_space_workflow_has_no_pr_mutation_or_unpinned_runtime():
+    document = yaml.safe_load(
+        (ROOT / ".github/workflows/hf-space-service.yml").read_text()
+    )
+    deploy = document["jobs"]["deploy"]
+    assert "workflow_dispatch" in deploy["if"]
+    assert "refs/heads/main" in deploy["if"]
+    assert deploy["environment"] == "production"
+    assert deploy["permissions"] == {"contents": "read"}
+    candidate = json.dumps(document["jobs"]["candidate"])
+    assert "secrets." not in candidate
+    assert "docker restart" in candidate
+    assert "3.15.1" in candidate
 
 
 def test_single_canonical_renovate_configuration() -> None:

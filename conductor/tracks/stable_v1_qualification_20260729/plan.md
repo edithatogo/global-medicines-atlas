@@ -1305,7 +1305,35 @@ Python migration, publication, deployment or federation work.
 
 - [x] Qualify uv 0.13.6 with Python 3.15.1; update all active tool pins and locks
   while retaining unrelated package versions and immutable historical evidence.
-- [ ] Review focused governance, lock/export, context and monitoring checks;
-  integrate one protected PR and verify main's dependency submission.
+- [x] Review focused governance, lock/export, context and monitoring checks;
+  integrate one protected PR and verify main's dependency submission. PR #1402
+  checked head `e72acf31` passed all 29 required checks and merged as `7f9c3609`.
+  Run `41570133519` submitted snapshot `117533362`; native graph confirms
+  uv 0.13.6 across 138 packages, zero open/dismissed alerts.
 
 Stop after protected integration and native readback; #491 remains open.
+
+## Hosted #61 implementation — 3 November 2026
+
+Owner: chat `01a19600-56dd-73a2-9ff5-4a2484a54493`, actual checkout
+`/Volumes/PortableSSD/GitHub/global-medicines-atlas`, branch
+`codex/61-hosted-space`, base `7f9c3609`. Previous ownership remains history.
+The maintainer explicitly requested one CLI-driven hosted implementation, with
+minimal focused verification. Native scope is only the new Space
+`edithatogo/global-medicines-atlas`, through Actions and the existing HF_TOKEN.
+No other Space, organization, account plan, credential or dataset is mutated.
+
+- [~] Build the existing wheel/Docker service and disposable query projection
+  on hosted runners, using the already-admitted pinned public FDA archive.
+  Reuse canonical Arrow schemas and the existing ASGI/API/Atlas. Missing reviewed
+  effective dates prevent temporal assertions; retain catalogue-only scope.
+- [ ] Review and run the affected tests in CI, plus one actual hosted container
+  restart/HTTP/Chromium check; retain every protected CI lane.
+- [ ] Integrate, then dispatch exact-main parent-bound Space code deployment.
+  Verify public code digests and the actual endpoint if native creation permits.
+  Record exact permission/entitlement failure without retries or plan changes.
+
+Do not close #61 from catalogue-only or synthetic evidence, bounded browser
+checks or a successful build. Keep production temporal evidence and complete
+external accessibility acceptance explicit. Stop after this batch; no broader
+federation, data publication, paid compute or release is authorized.
