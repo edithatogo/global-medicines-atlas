@@ -701,7 +701,13 @@ def test_hosted_verifier_receipt_reports_only_safe_http_failure(
     request = httpx.Request(
         "GET", "https://www.accessdata.fda.gov/private?token=secret"
     )
-    response = httpx.Response(403, request=request)
+    response = httpx.Response(
+        302,
+        request=request,
+        headers={
+            "location": "https://www.accessdata.fda.gov/challenge?token=secret"
+        },
+    )
 
     def fail(*_args):
         raise httpx.HTTPStatusError(
@@ -715,5 +721,8 @@ def test_hosted_verifier_receipt_reports_only_safe_http_failure(
     assert deploy_hf_space.main() == 1
     data = json.loads(receipt.read_text())
     assert data["http_host"] == "www.accessdata.fda.gov"
-    assert data["http_status"] == 403
+    assert data["http_status"] == 302
+    assert data["redirect_same_host"] is True
+    assert data["redirect_same_path"] is False
+    assert data["redirect_challenge_indicator"] is True
     assert "secret" not in receipt.read_text()

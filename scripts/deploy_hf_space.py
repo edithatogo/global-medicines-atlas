@@ -511,6 +511,23 @@ def main() -> int:
                 }
                 else "other"
             )
+            location = error.response.headers.get("location")
+            if location:
+                redirect = error.request.url.join(location)
+                receipt["redirect_same_host"] = redirect.host == host
+                receipt["redirect_same_path"] = (
+                    redirect.path == error.request.url.path
+                )
+                receipt["redirect_challenge_indicator"] = any(
+                    term in str(redirect).lower()
+                    for term in (
+                        "challenge",
+                        "captcha",
+                        "incapsula",
+                        "accessdenied",
+                        "access-denied",
+                    )
+                )
     finally:
         save_receipt(args.receipt, receipt)
     print(json.dumps({"result": receipt["result"], "phase": receipt["phase"]}))
