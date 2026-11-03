@@ -8,17 +8,21 @@ on:
       - deployment/accessibility/**
       - .github/workflows/hosted-accessibility.yml
   workflow_dispatch:
+concurrency:
+  group: hosted-accessibility-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
   audit:
+    name: Hosted WCAG automated audit
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           persist-credentials: false
-      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
           version: '0.13.6'
       - name: Install locked audit tools
@@ -34,14 +38,14 @@ jobs:
           GMA_APPLICATION_COMMIT: ${{ github.sha }}
           GMA_CURSOR_SECRET: synthetic-ci-only-audit-key-with-sufficient-length
         run: |
-          if [ "${{ github.event_name }}" = pull_request ]; then
+          if [ "$GITHUB_EVENT_NAME" = pull_request ]; then
             uv run --no-sync uvicorn global_medicines_atlas.hosted_service:create_app --factory --host 127.0.0.1 --port 7860 > /tmp/audit-service.log 2>&1 &
             trap 'kill $!' EXIT
             uv run --no-sync python scripts/audit_hosted_accessibility.py --url http://127.0.0.1:7860 --commit "$GITHUB_SHA" --axe deployment/accessibility/node_modules/axe-core/axe.min.js --receipt build/hosted-accessibility.json
           else
             uv run --no-sync python scripts/audit_hosted_accessibility.py --commit "$GITHUB_SHA" --axe deployment/accessibility/node_modules/axe-core/axe.min.js --receipt build/hosted-accessibility.json
           fi
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: always()
         with:
           name: hosted-accessibility

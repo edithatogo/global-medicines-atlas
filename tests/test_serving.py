@@ -150,12 +150,12 @@ def test_hosted_scope_disclosure_handles_split_body_chunks(
         })
         await send({
             "type": "http.response.body",
-            "body": b"<html><bo",
+            "body": b"<html><body><hea",
             "more_body": True,
         })
         await send({
             "type": "http.response.body",
-            "body": b"dy>chunked</body></html>",
+            "body": b"der>chunked</header></body></html>",
         })
 
     monkeypatch.setattr(
@@ -165,7 +165,8 @@ def test_hosted_scope_disclosure_handles_split_body_chunks(
     try:
         response = client.get("/")
         assert "Historical FDA catalogue candidate" in response.text
-        assert "chunked</body>" in response.text
+        assert "chunked</header></body>" in response.text
+        assert '<header><p role="note">' in response.text
     finally:
         client.close()
 
