@@ -10,6 +10,7 @@ from contextlib import nullcontext
 from pathlib import Path
 from typing import TYPE_CHECKING, cast
 
+import duckdb
 import httpx
 import pytest
 from fastapi.testclient import TestClient
@@ -49,7 +50,18 @@ def test_hosted_catalogue_is_real_schema_without_invented_assertions(
     )
 
     def prepare(path):
-        return hosted_service.prepare_database(path, _hosted_payload())
+        receipt = hosted_service.prepare_database(path, _hosted_payload())
+        hosted_service.materialize_approval_events(
+            path,
+            [
+                {
+                    "concept_id": "us-drugsfda:NDA000001:001",
+                    "qualification": "unmatched",
+                    "approval_date": None,
+                }
+            ],
+        )
+        return receipt
 
     monkeypatch.setattr(hosted_service, "prepare_hosted", prepare)
     for _ in range(2):
@@ -59,7 +71,7 @@ def test_hosted_catalogue_is_real_schema_without_invented_assertions(
             events = client.get("/approval-events.json")
             assert events.status_code == 200
             assert events.json()["application_commit"] == "a" * 40
-            assert events.json()["events"] == []
+            assert events.json()["events"][0]["qualification"] == "unmatched"
             assert "not continuing approval" in events.json()["scope"]
             assert metadata["product_count"] == 1
             assert metadata["production_data_qualified"] is False
@@ -245,7 +257,9 @@ def test_hosted_source_admission_is_preserved(tmp_path, monkeypatch, failure):
     with zipfile.ZipFile(archive_stream, "w") as archive:
         archive.writestr(
             "products.txt",
-            "Appl_Type~Appl_No~Product_No~Approval_Date\nN~000001~001~Jan 02, 2001\n",
+            "Appl_Type~Appl_No~Product_No~Approval_Date\n"
+            "N~000001~001~Jan 02, 2001\n"
+            "N~000002~001~Approved Prior to Jan 1, 1982\n",
         )
     orange_payload = archive_stream.getvalue()
     monkeypatch.setattr(
@@ -287,11 +301,10 @@ def test_hosted_source_admission_is_preserved(tmp_path, monkeypatch, failure):
         ):
             hosted_service.prepare_hosted(tmp_path / "source.duckdb")
     else:
+        receipt = hosted_service.prepare_hosted(tmp_path / "source.duckdb")
+        assert receipt["application_count"] == 100
         assert (
-            hosted_service.prepare_hosted(tmp_path / "source.duckdb")[
-                "application_count"
-            ]
-            == 100
+            receipt["approval_event_summary"]["bounded_before_1982_count"] == 1
         )
 
 
@@ -399,3 +412,89 @@ def test_orange_download_rejects_unbounded_admission_before_network(
     monkeypatch.setattr(hosted_service.httpx, "stream", reject)
     with pytest.raises(ValueError, match="admission size"):
         hosted_service.download_orange_book(size)
+
+
+def test_approval_event_database_accounts_for_exact_catalogue(tmp_path):
+    path = tmp_path / "catalogue.duckdb"
+    hosted_service.prepare_database(path, _hosted_payload())
+    event = {
+        "concept_id": "us-drugsfda:NDA000001:001",
+        "qualification": "exact_product_approval_date",
+        "approval_date": "2001-01-02",
+        "source_id": "us-fda-orange-book",
+    }
+    counts = hosted_service.materialize_approval_events(path, [event])
+    assert counts["exact_product_approval_date"] == 1
+    assert sum(counts.values()) == 1
+    with duckdb.connect(str(path), read_only=True) as connection:
+        row = connection.execute(
+            "SELECT concept_id, qualification, CAST(approval_date AS VARCHAR), evidence_json FROM product_approval_events"
+        ).fetchone()
+    assert row is not None
+    assert row[:3] == (
+        event["concept_id"],
+        event["qualification"],
+        event["approval_date"],
+    )
+    assert json.loads(row[3]) == event
+
+
+@pytest.mark.parametrize(
+    "case",
+    [
+        "duplicate",
+        "unknown",
+        "count",
+        "identity",
+        "unqualified_date",
+        "missing_exact_date",
+        "invalid_bound",
+        "invalid_bound_date",
+    ],
+)
+def test_approval_event_database_rejects_invalid_coverage(tmp_path, case):
+    path = tmp_path / "catalogue.duckdb"
+    hosted_service.prepare_database(path, _hosted_payload())
+    event = {
+        "concept_id": "us-drugsfda:NDA000001:001",
+        "qualification": "unmatched",
+        "approval_date": None,
+    }
+    events = [event]
+    if case == "duplicate":
+        events = [event, event]
+    elif case == "unknown":
+        event["qualification"] = "unsupported"
+    elif case == "count":
+        events = []
+    elif case == "unqualified_date":
+        event["approval_date"] = "2001-01-02"
+    elif case == "missing_exact_date":
+        event["qualification"] = "exact_product_approval_date"
+    elif case == "invalid_bound":
+        event["approval_before_date"] = "1982-01-01"
+    elif case == "invalid_bound_date":
+        event["qualification"] = "non_exact_native_date"
+        event["approval_before_date"] = "1983-01-01"
+    else:
+        event["concept_id"] = "wrong"
+    with pytest.raises(ValueError, match="approval-event"):
+        hosted_service.materialize_approval_events(path, events)
+
+
+def test_approval_event_database_stores_exclusive_bound(tmp_path):
+    path = tmp_path / "catalogue.duckdb"
+    hosted_service.prepare_database(path, _hosted_payload())
+    event = {
+        "concept_id": "us-drugsfda:NDA000001:001",
+        "qualification": "non_exact_native_date",
+        "approval_date": None,
+        "approval_before_date": "1982-01-01",
+    }
+    counts = hosted_service.materialize_approval_events(path, [event])
+    assert counts["non_exact_native_date"] == 1
+    with duckdb.connect(str(path), read_only=True) as connection:
+        row = connection.execute(
+            "SELECT CAST(approval_before_date_exclusive AS VARCHAR) FROM product_approval_events"
+        ).fetchone()
+    assert row == ("1982-01-01",)

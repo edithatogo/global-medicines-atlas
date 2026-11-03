@@ -30,6 +30,10 @@ def test_product_keys_dates_and_uncertainty():
         concepts,
     )
     assert result[0]["approval_date"] == "2001-01-02"
+    assert result[1]["approval_before_date"] == "1982-01-01"
+    assert all(
+        row["approval_before_date"] is None for row in (result[0], *result[2:])
+    )
     assert [x["qualification"] for x in result] == [
         "exact_product_approval_date",
         "non_exact_native_date",

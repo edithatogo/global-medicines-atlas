@@ -106,6 +106,21 @@ def http_metadata(url: str, expected_commit: str) -> dict[str, Any]:
     return metadata
 
 
+def verify_approval_bound(event: dict[str, Any]) -> None:
+    """Reject a historical bound unsupported by the exact native phrase."""
+    bound = event.get("approval_before_date")
+    if bound is not None:
+        native_dates = event.get("native_approval_dates", [])
+        if (
+            bound != "1982-01-01"
+            or event["qualification"] != "non_exact_native_date"
+            or len(native_dates) != 1
+            or " ".join(native_dates[0].casefold().split())
+            != "approved prior to jan 1, 1982"
+        ):
+            raise ValueError("approval event date bound lacks source evidence")
+
+
 def verify_approval_events(
     url: str, expected_commit: str, metadata: dict[str, Any]
 ) -> None:
@@ -137,6 +152,7 @@ def verify_approval_events(
             or event["validity_interval"] is not None
         ):
             raise ValueError("approval event promoted to continuing status")
+        verify_approval_bound(event)
         if event["qualification"] == "exact_product_approval_date":
             if not re.fullmatch(
                 r"\d{4}-\d{2}-\d{2}", event.get("approval_date") or ""
@@ -145,10 +161,18 @@ def verify_approval_events(
             exact_count += 1
         elif event["approval_date"] is not None:
             raise ValueError("unqualified event contains exact date")
+    coverage = metadata["approval_event_coverage"]
+    for state, observed in coverage.items():
+        if observed != sum(e["qualification"] == state for e in events):
+            raise ValueError("approval event coverage differs from database")
+    if sum(coverage.values()) != len(events):
+        raise ValueError("approval event coverage denominator differs")
     summary = metadata["approval_event_summary"]
     if (
         exact_count == 0
         or summary["matched_exact_date_count"] != exact_count
+        or summary.get("bounded_before_1982_count", 0)
+        != sum(e.get("approval_before_date") == "1982-01-01" for e in events)
         or summary["effective_rights_state"] != "permitted"
     ):
         raise ValueError("approval event qualification differs")
@@ -217,9 +241,17 @@ def save_receipt(path: Path, receipt: dict[str, Any]) -> None:
 
 def execute(args: argparse.Namespace, receipt: dict[str, Any]) -> None:
     """Select read-only verification or the guarded native deployment."""
-    if args.url:
+    if args.url and getattr(args, "http_only", False):
+        receipt["phase"] = "http_and_provenance"
+        receipt["data"] = http_metadata(args.url, args.exact_commit or "")
+        receipt["verification_scope"] = "http_only"
+        receipt["result"] = "bounded_hosted_candidate_verified"
+        receipt["issue_61_complete"] = False
+    elif args.url:
         verify(args.url, receipt, args.exact_commit or "")
     else:
+        if getattr(args, "http_only", False):
+            raise ValueError("HTTP-only verification requires an endpoint")
         if not args.exact_commit or args.candidate is None:
             raise ValueError("exact commit and candidate are required")
         deploy(args.exact_commit, args.candidate, receipt, args.receipt)
@@ -230,6 +262,7 @@ def main() -> int:
     parser.add_argument("--exact-commit")
     parser.add_argument("--candidate", type=Path)
     parser.add_argument("--url")
+    parser.add_argument("--http-only", action="store_true")
     parser.add_argument("--receipt", type=Path, required=True)
     args = parser.parse_args()
     receipt: dict[str, Any] = {

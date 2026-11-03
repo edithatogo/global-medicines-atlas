@@ -183,6 +183,72 @@ def prepare_database(destination: Path, payload: bytes) -> dict[str, Any]:
     }
 
 
+def materialize_approval_events(
+    destination: Path, events: list[dict[str, Any]]
+) -> dict[str, int]:
+    """Persist source-native events and account for every catalogue product."""
+    qualifications = {
+        "exact_product_approval_date",
+        "non_exact_native_date",
+        "conflicting_dates",
+        "unmatched",
+    }
+    if any(event["qualification"] not in qualifications for event in events):
+        raise ValueError("unrecognised approval-event qualification")
+    if len({event["concept_id"] for event in events}) != len(events):
+        raise ValueError("duplicate approval-event concept")
+    if any(
+        (event["qualification"] == "exact_product_approval_date")
+        != (event["approval_date"] is not None)
+        for event in events
+    ):
+        raise ValueError("approval-event exact date differs from qualification")
+    if any(
+        event.get("approval_before_date") is not None
+        and (
+            event["qualification"] != "non_exact_native_date"
+            or event["approval_before_date"] != "1982-01-01"
+        )
+        for event in events
+    ):
+        raise ValueError("approval-event bound differs from qualification")
+    rows = [
+        (
+            event["concept_id"],
+            event["qualification"],
+            event["approval_date"],
+            event.get("approval_before_date"),
+            json.dumps(event, sort_keys=True),
+        )
+        for event in events
+    ]
+    with duckdb.connect(str(destination)) as connection:
+        catalogue_count = connection.execute(
+            "SELECT count(*) FROM medicine_concepts"
+        ).fetchall()[0][0]
+        if catalogue_count != len(rows):
+            raise ValueError(
+                "approval-event denominator differs from catalogue"
+            )
+        connection.execute(
+            "CREATE TABLE product_approval_events (concept_id VARCHAR PRIMARY KEY, qualification VARCHAR NOT NULL, approval_date DATE, approval_before_date_exclusive DATE, evidence_json VARCHAR NOT NULL)"
+        )
+        connection.executemany(
+            "INSERT INTO product_approval_events VALUES (?, ?, ?, ?, ?)", rows
+        )
+        missing = connection.execute(
+            "SELECT count(*) FROM medicine_concepts c LEFT JOIN product_approval_events e ON c.concept_id = e.concept_id WHERE e.concept_id IS NULL"
+        ).fetchall()[0][0]
+        if missing:
+            raise ValueError("approval-event identities differ from catalogue")
+        counts = dict(
+            connection.execute(
+                "SELECT qualification, count(*) FROM product_approval_events GROUP BY qualification"
+            ).fetchall()
+        )
+    return {state: counts.get(state, 0) for state in sorted(qualifications)}
+
+
 def prepare_hosted(destination: Path) -> dict[str, Any]:
     """Check the original admission before downloading the permitted payload."""
     entries = json.loads(
@@ -217,11 +283,17 @@ def prepare_hosted(destination: Path) -> dict[str, Any]:
     archive = download_orange_book(orange[0]["payload_byte_count"])
     _, products = catalogue(payload)
     events = product_events(archive, {p[0] for p in products})
+    receipt["approval_event_coverage"] = materialize_approval_events(
+        destination, events
+    )
     receipt["approval_events"] = events
     receipt["approval_event_summary"] = {
         "source_id": "us-fda-orange-book",
         "matched_exact_date_count": sum(
             e["qualification"] == "exact_product_approval_date" for e in events
+        ),
+        "bounded_before_1982_count": sum(
+            e["approval_before_date"] == "1982-01-01" for e in events
         ),
         "catalogue_product_denominator": len(events),
         "historical_rights_state": orange[0]["rights_state"],
@@ -249,7 +321,7 @@ def create_app() -> ASGIApp:
         Path(tempfile.mkdtemp(prefix="boot-", dir=root)) / "catalogue.duckdb"
     )
     receipt = prepare_hosted(database)
-    events = receipt.pop("approval_events", [])
+    receipt.pop("approval_events", None)
     receipt["application_commit"] = commit
     receipt["python_version"] = platform.python_version()
     application = configured_app(
@@ -258,6 +330,11 @@ def create_app() -> ASGIApp:
 
     async def scoped(scope: Scope, receive: Receive, send: Send) -> None:
         if scope["type"] == "http" and scope["path"] == "/approval-events.json":
+            with duckdb.connect(str(database), read_only=True) as connection:
+                records = connection.execute(
+                    "SELECT evidence_json FROM product_approval_events ORDER BY concept_id"
+                ).fetchall()
+            events = [json.loads(record[0]) for record in records]
             await JSONResponse({
                 "application_commit": commit,
                 "events": events,
