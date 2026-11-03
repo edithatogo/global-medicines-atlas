@@ -16,6 +16,31 @@ from playwright.sync_api import sync_playwright
 from global_medicines_atlas.hosted_service import PAYLOAD_SHA, verified_download
 
 
+def verify_keyboard(page: Any, url: str, concept_id: str) -> None:
+    """Reproduce the directly observed keyboard assessment regressions."""
+    page.goto(url + "/", wait_until="networkidle")
+    page.keyboard.press("Tab")
+    if page.locator(":focus").get_attribute("class") != "skip-link":
+        raise ValueError("Skip link is not the first keyboard stop")
+    page.keyboard.press("Enter")
+    if page.locator(":focus").get_attribute("id") != "atlas-results":
+        raise ValueError("Skip link failed to focus main")
+    page.goto(
+        url + "/?" + urlencode({"concept_search": concept_id}),
+        wait_until="networkidle",
+    )
+    search = page.get_by_role("combobox")
+    search.focus()
+    search.press("ArrowDown")
+    if not search.get_attribute("aria-activedescendant"):
+        raise ValueError("Keyboard suggestion activation failed")
+    search.press("Enter")
+    if search.get_attribute("aria-activedescendant") is not None:
+        raise ValueError("Collapsed combobox retains hidden active descendant")
+    if page.locator("input[name=concept_id]").input_value() != concept_id:
+        raise ValueError("Keyboard selection did not bind canonical identity")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--commit", required=True)
@@ -111,36 +136,7 @@ def main() -> int:
                         "query": query,
                         **result,
                     })
-            page.goto(url + "/", wait_until="networkidle")
-            page.keyboard.press("Tab")
-            if page.locator(":focus").get_attribute("class") != "skip-link":
-                raise ValueError("Skip link is not the first keyboard stop")
-            page.keyboard.press("Enter")
-            if page.locator(":focus").get_attribute("id") != "atlas-results":
-                raise ValueError("Skip link failed to focus main")
-            page.goto(
-                url
-                + "/?"
-                + urlencode({"concept_search": metadata["canary_concept_id"]}),
-                wait_until="networkidle",
-            )
-            search = page.get_by_role("combobox")
-            search.focus()
-            search.press("ArrowDown")
-            if not search.get_attribute("aria-activedescendant"):
-                raise ValueError("Keyboard suggestion activation failed")
-            search.press("Enter")
-            if search.get_attribute("aria-activedescendant") is not None:
-                raise ValueError(
-                    "Collapsed combobox retains hidden active descendant"
-                )
-            if (
-                page.locator("input[name=concept_id]").input_value()
-                != metadata["canary_concept_id"]
-            ):
-                raise ValueError(
-                    "Keyboard selection did not bind canonical identity"
-                )
+            verify_keyboard(page, url, metadata["canary_concept_id"])
             report["keyboard_regressions"] = "passed"
         finally:
             browser.close()
