@@ -1,0 +1,35 @@
+name: Hosted accessibility audit
+on:
+  pull_request:
+    paths:
+      - scripts/audit_hosted_accessibility.py
+      - deployment/accessibility/**
+      - .github/workflows/hosted-accessibility.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
+        with:
+          version: '0.13.6'
+      - name: Install locked audit tools
+        env:
+          SSL_CERT_FILE: ${{ github.workspace }}/.ci/trust/cacert.pem
+        run: |
+          uv sync --python 3.15.1 --locked --group dev
+          uv run --no-sync playwright install --with-deps chromium
+          npm ci --ignore-scripts --prefix deployment/accessibility
+      - name: Audit existing native deployment
+        run: uv run --no-sync python scripts/audit_hosted_accessibility.py --commit 31aba40b1bd2888965cf99e94d7e509ae382c820 --axe deployment/accessibility/node_modules/axe-core/axe.min.js --receipt build/hosted-accessibility.json
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+        if: always()
+        with:
+          name: hosted-accessibility
+          path: build/hosted-accessibility.json
