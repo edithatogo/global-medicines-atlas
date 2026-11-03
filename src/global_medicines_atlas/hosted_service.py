@@ -230,8 +230,8 @@ def create_app() -> ASGIApp:
                 if message.get("more_body", False):
                     return
                 message["body"] = b"".join(chunks).replace(
-                    b"<body>",
-                    b'<body><p role="note">Historical FDA catalogue candidate. Regulatory, funding and temporal evidence remain unqualified. <a href="/deployment.json">Scope and provenance</a></p>',
+                    b"<header>",
+                    b'<header><p role="note">Historical FDA catalogue candidate. Regulatory, funding and temporal evidence remain unqualified. <a href="/deployment.json">Scope and provenance</a></p>',
                     1,
                 )
             await send(message)

@@ -2,6 +2,8 @@ name: Hosted accessibility audit
 on:
   pull_request:
     paths:
+      - src/global_medicines_atlas/templates/**
+      - src/global_medicines_atlas/hosted_service.py
       - scripts/audit_hosted_accessibility.py
       - deployment/accessibility/**
       - .github/workflows/hosted-accessibility.yml
@@ -26,8 +28,19 @@ jobs:
           uv sync --python 3.15.1 --locked --group dev
           uv run --no-sync playwright install --with-deps chromium
           npm ci --ignore-scripts --prefix deployment/accessibility
-      - name: Audit existing native deployment
-        run: uv run --no-sync python scripts/audit_hosted_accessibility.py --commit 31aba40b1bd2888965cf99e94d7e509ae382c820 --axe deployment/accessibility/node_modules/axe-core/axe.min.js --receipt build/hosted-accessibility.json
+      - name: Audit candidate or native deployment
+        env:
+          SSL_CERT_FILE: ${{ github.workspace }}/.ci/trust/cacert.pem
+          GMA_APPLICATION_COMMIT: ${{ github.sha }}
+          GMA_CURSOR_SECRET: synthetic-ci-only-audit-key-with-sufficient-length
+        run: |
+          if [ "${{ github.event_name }}" = pull_request ]; then
+            uv run --no-sync uvicorn global_medicines_atlas.hosted_service:create_app --factory --host 127.0.0.1 --port 7860 > /tmp/audit-service.log 2>&1 &
+            trap 'kill $!' EXIT
+            uv run --no-sync python scripts/audit_hosted_accessibility.py --url http://127.0.0.1:7860 --commit "$GITHUB_SHA" --axe deployment/accessibility/node_modules/axe-core/axe.min.js --receipt build/hosted-accessibility.json
+          else
+            uv run --no-sync python scripts/audit_hosted_accessibility.py --commit "$GITHUB_SHA" --axe deployment/accessibility/node_modules/axe-core/axe.min.js --receipt build/hosted-accessibility.json
+          fi
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
         if: always()
         with:

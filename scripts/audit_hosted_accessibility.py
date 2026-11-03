@@ -16,10 +16,11 @@ from global_medicines_atlas.hosted_service import PAYLOAD_SHA, verified_download
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--commit", required=True)
+    parser.add_argument("--url", default="https://global-medicines-atlas.onrender.com")
     parser.add_argument("--axe", type=Path, required=True)
     parser.add_argument("--receipt", type=Path, required=True)
     args = parser.parse_args()
-    url = "https://global-medicines-atlas.onrender.com"
+    url = args.url
     metadata = http_metadata(url, args.commit)
     source = json.loads(
         verified_download("data/us-openfda-drugsfda.json", PAYLOAD_SHA)
