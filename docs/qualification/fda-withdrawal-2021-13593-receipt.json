@@ -1,0 +1,19 @@
+{
+  "byte_count": 203751,
+  "continuity_between_approval_and_withdrawal_verified": false,
+  "correction": {
+    "corrected_application": "ANDA065152",
+    "document_number": "2021-21371",
+    "source_bytes": 173522,
+    "source_sha256": "c1873e56ca3289f4371e3a7ac74fec839d34a7f05afeedadacca95044b9d80ff",
+    "source_uri": "https://www.govinfo.gov/content/pkg/FR-2021-10-01/pdf/2021-21371.pdf"
+  },
+  "document_number": "2021-13593",
+  "effective_date": "2021-07-26",
+  "effective_date_evidence": "Explicit date in the official notice; API effective_on field was null.",
+  "product": "us-drugsfda:ANDA074723:001",
+  "publication_date": "2021-06-25",
+  "retrieval_date": "2026-11-03",
+  "sha256": "49c1165d9fabfa22d0983aa7bfc6f80a02d23b409c94ad4a2e9de9e77bab52a6",
+  "source_uri": "https://www.govinfo.gov/content/pkg/FR-2021-06-25/pdf/2021-13593.pdf"
+}
