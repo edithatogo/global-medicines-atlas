@@ -125,3 +125,16 @@ This closes implementation gaps only where observable hosted receipts pass.
 #61 remains open until a qualified production query dataset and the complete
 deployed accessibility criteria pass. Bounded browser checks do not claim a
 full WCAG audit; a Docker candidate is not a running public endpoint.
+
+Review fixes bind the installed application commit into the image and wait for
+that exact identity at the live endpoint; an old healthy deployment cannot pass
+for a new build. The hosted catalogue uses the existing Atlas US jurisdiction
+convention, and default-page discovery is exercised. Factory configuration is
+passed directly rather than written into process-global environment variables;
+the scope banner survives split streaming body chunks.
+
+The existing Hub SDK 1.19.0 has a CLI Typer ceiling incompatible with the app's
+locked Typer 0.27.3. Its native deployment process therefore uses a separate
+Python 3.15.1 environment, installed wheel-only from the generated, fully hashed
+`sdk-requirements.txt`. The app's pyproject/uv/PEP751 lock bytes are unchanged.
+The container does not include this SDK environment or the account credential.

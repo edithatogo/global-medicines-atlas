@@ -55,8 +55,15 @@ jobs:
           cp LICENSE build/hf-space/
           cp .ci/trust/cacert.pem build/hf-space/
           cp build/space-dist/*.whl build/hf-space/
+          printf '\nENV GMA_APPLICATION_COMMIT=%s\n' "$GITHUB_SHA" >> build/hf-space/Dockerfile
       - name: Build the real Docker Space image
         run: docker build --tag gma-hosted-candidate build/hf-space
+      - name: Qualify the isolated deployment SDK without credentials
+        run: |
+          set -euo pipefail
+          uv venv --python 3.15.1 .space-deployment
+          uv pip sync --python .space-deployment/bin/python --require-hashes --no-build -r deployment/hf-space/sdk-requirements.txt
+          .space-deployment/bin/python -c 'import platform, huggingface_hub; assert platform.python_version() == "3.15.1"; assert huggingface_hub.__version__ == "1.19.0"'
       - name: Install the existing Chromium qualification tool
         run: uv run --no-sync playwright install --with-deps chromium
       - name: Exercise actual archive bootstrap, restart and browser behavior
@@ -70,7 +77,7 @@ jobs:
           done
           curl --fail --silent http://127.0.0.1:7860/api/v1/readiness >/dev/null
           docker restart "$container" >/dev/null
-          uv run --no-sync python scripts/deploy_hf_space.py --url http://127.0.0.1:7860 --receipt build/hosted-candidate-verification.json
+          uv run --no-sync python scripts/deploy_hf_space.py --url http://127.0.0.1:7860 --exact-commit "$GITHUB_SHA" --receipt build/hosted-candidate-verification.json
       - name: Preserve the code-only deployment candidate
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
@@ -107,20 +114,27 @@ jobs:
         with:
           name: hf-space-code-candidate
           path: build/hf-space
+      - name: Prepare the isolated hash-locked deployment SDK
+        run: |
+          set -euo pipefail
+          uv venv --python 3.15.1 .space-deployment
+          uv pip sync --python .space-deployment/bin/python --require-hashes --no-build -r deployment/hf-space/sdk-requirements.txt
+          .space-deployment/bin/python -c 'import platform, huggingface_hub; assert platform.python_version() == "3.15.1"; assert huggingface_hub.__version__ == "1.19.0"'
       - name: Apply one parent-bound code transaction and verify anonymously
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           GH_TOKEN: ${{ github.token }}
           EXACT_COMMIT: ${{ inputs.exact_commit }}
         run: >-
-          uv run --locked --python 3.15.1 --group dev --with huggingface-hub==1.19.0
-          python scripts/deploy_hf_space.py --exact-commit "$EXACT_COMMIT"
+          .space-deployment/bin/python scripts/deploy_hf_space.py --exact-commit "$EXACT_COMMIT"
           --candidate build/hf-space --receipt build/space-deployment.json
       - name: Verify the actual native endpoint
+        env:
+          EXACT_COMMIT: ${{ inputs.exact_commit }}
         run: |
           set -euo pipefail
           uv run --locked --python 3.15.1 --group dev playwright install --with-deps chromium
-          uv run --locked --python 3.15.1 --group dev python scripts/deploy_hf_space.py --url https://edithatogo-global-medicines-atlas.hf.space --receipt build/space-native-verification.json
+          uv run --locked --python 3.15.1 --group dev python scripts/deploy_hf_space.py --url https://edithatogo-global-medicines-atlas.hf.space --exact-commit "$EXACT_COMMIT" --receipt build/space-native-verification.json
       - name: Preserve the native mutation journal and verification
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0

@@ -9,6 +9,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import tempfile
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
@@ -125,22 +126,24 @@ def prepare_database(destination: Path, payload: bytes) -> dict[str, Any]:
             [(identity, number) for identity, _, number in products],
         )
         connection.executemany(
-            "INSERT INTO medicine_concept_jurisdictions VALUES (?, 'USA')",
+            "INSERT INTO medicine_concept_jurisdictions VALUES (?, 'US')",
             [(identity,) for identity, _, _ in products],
         )
         connection.execute(
-            "INSERT INTO medicine_sources VALUES (?, 'USA', 'US Food and Drug Administration', 'Drugs@FDA', NULL)",
+            "INSERT INTO medicine_sources VALUES (?, 'US', 'US Food and Drug Administration', 'Drugs@FDA', NULL)",
             [SOURCE],
         )
     return {
         "dataset": DATASET,
         "revision": REVISION,
         "source_id": SOURCE,
+        "jurisdiction": "US",
         "source_uri": BASE + "data/us-openfda-drugsfda.json",
         "source_sha256": hashlib.sha256(payload).hexdigest(),
         "archive_scope": "bounded 2026-08-21 historical snapshot",
         "application_count": applications,
         "product_count": len(products),
+        "canary_concept_id": products[0][0],
         "global_population_denominator": None,
         "coverage_complete": False,
         "synthetic_data": False,
@@ -186,20 +189,26 @@ def create_app() -> ASGIApp:
     )
     if not secret or len(secret.encode()) < MINIMUM_CURSOR_SECRET_BYTES:
         raise ValueError("platform signing secret unavailable")
+    commit = os.environ.get("GMA_APPLICATION_COMMIT", "")
+    if not re.fullmatch(r"[0-9a-f]{40}", commit):
+        raise ValueError("exact application commit unavailable")
     root = Path(os.environ.get("GMA_HOSTED_CACHE", tempfile.gettempdir()))
     root.mkdir(parents=True, exist_ok=True)
     database = (
         Path(tempfile.mkdtemp(prefix="boot-", dir=root)) / "catalogue.duckdb"
     )
     receipt = prepare_hosted(database)
-    os.environ["GMA_DATABASE_PATH"] = str(database.resolve())
-    os.environ["GMA_CURSOR_SECRET"] = secret
-    application = configured_app()
+    receipt["application_commit"] = commit
+    application = configured_app(
+        database_path=str(database.resolve()), cursor_secret=secret
+    )
 
     async def scoped(scope: Scope, receive: Receive, send: Send) -> None:
         if scope["type"] == "http" and scope["path"] == "/deployment.json":
             await JSONResponse(receipt)(scope, receive, send)
             return
+
+        chunks: list[bytes] = []
 
         async def banner(message: Message) -> None:
             if (
@@ -215,7 +224,10 @@ def create_app() -> ASGIApp:
                 scope.get("path") == "/"
                 and message["type"] == "http.response.body"
             ):
-                message["body"] = message.get("body", b"").replace(
+                chunks.append(message.get("body", b""))
+                if message.get("more_body", False):
+                    return
+                message["body"] = b"".join(chunks).replace(
                     b"<body>",
                     b'<body><p role="note">Historical FDA catalogue candidate. Regulatory, funding and temporal evidence remain unqualified. <a href="/deployment.json">Scope and provenance</a></p>',
                     1,

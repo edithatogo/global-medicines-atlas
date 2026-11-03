@@ -38,6 +38,8 @@ def test_hosted_catalogue_is_real_schema_without_invented_assertions(
     tmp_path, monkeypatch
 ):
     monkeypatch.setenv("GMA_HOSTED_CACHE", str(tmp_path))
+    monkeypatch.setenv("GMA_APPLICATION_COMMIT", "a" * 40)
+    monkeypatch.setenv("GMA_DATABASE_PATH", "existing-owner-binding")
     monkeypatch.delenv("GMA_CURSOR_SECRET", raising=False)
     monkeypatch.setenv(
         "SPACE_SIGNING_SECRET", "synthetic-platform-signing-value"
@@ -55,10 +57,17 @@ def test_hosted_catalogue_is_real_schema_without_invented_assertions(
             assert metadata["production_data_qualified"] is False
             assert metadata["temporal_assertion_count"] == 0
             assert client.get("/api/v1/concepts?q=Synthetic").status_code == 200
-            page = client.get("/")
+            page = client.get("/?concept_search=Synthetic")
+            assert 'data-concept-id="us-drugsfda:NDA000001:001"' in page.text
+            assert metadata["application_commit"] == "a" * 40
             assert "Historical FDA catalogue candidate" in page.text
             assert "content-length" not in page.headers
     assert len(list(tmp_path.glob("boot-*/catalogue.duckdb"))) == 2
+    assert (
+        hosted_service.os.environ["GMA_DATABASE_PATH"]
+        == "existing-owner-binding"
+    )
+    assert "GMA_CURSOR_SECRET" not in hosted_service.os.environ
 
 
 @pytest.mark.parametrize(
@@ -115,6 +124,49 @@ def test_hosted_boot_requires_existing_platform_secret(monkeypatch):
     monkeypatch.delenv("SPACE_SIGNING_SECRET", raising=False)
     with pytest.raises(ValueError, match="signing secret"):
         hosted_service.create_app()
+
+
+def test_hosted_commit_identity_is_mandatory(monkeypatch):
+    monkeypatch.setenv("GMA_CURSOR_SECRET", "synthetic-existing-signing-value")
+    monkeypatch.delenv("GMA_APPLICATION_COMMIT", raising=False)
+    with pytest.raises(ValueError, match="application commit"):
+        hosted_service.create_app()
+
+
+def test_hosted_scope_disclosure_handles_split_body_chunks(
+    tmp_path, monkeypatch
+):
+    monkeypatch.setenv("GMA_HOSTED_CACHE", str(tmp_path))
+    monkeypatch.setenv("GMA_APPLICATION_COMMIT", "b" * 40)
+    monkeypatch.setenv("GMA_CURSOR_SECRET", "synthetic-existing-signing-value")
+    monkeypatch.setattr(hosted_service, "prepare_hosted", lambda _: {})
+
+    async def streamed(_scope, _receive, send):
+        await send({
+            "type": "http.response.start",
+            "status": 200,
+            "headers": [],
+        })
+        await send({
+            "type": "http.response.body",
+            "body": b"<html><bo",
+            "more_body": True,
+        })
+        await send({
+            "type": "http.response.body",
+            "body": b"dy>chunked</body></html>",
+        })
+
+    monkeypatch.setattr(
+        hosted_service, "configured_app", lambda **_kwargs: streamed
+    )
+    client = TestClient(hosted_service.create_app())
+    try:
+        response = client.get("/")
+        assert "Historical FDA catalogue candidate" in response.text
+        assert "chunked</body>" in response.text
+    finally:
+        client.close()
 
 
 def test_hosted_source_download_is_anonymous_and_digest_bound(monkeypatch):

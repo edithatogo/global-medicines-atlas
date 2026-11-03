@@ -15,6 +15,8 @@ import yaml
 from scripts import build_dependency_snapshot as dependency_snapshot
 from scripts import deploy_hf_space
 
+from global_medicines_atlas.hosted_service import DATASET, PAYLOAD_SHA, REVISION
+
 ROOT = Path(__file__).resolve().parents[1]
 FULL_SHA = re.compile(r"^[0-9a-f]{40}$")
 CONDUCTOR_PLUGIN = ".agents/plugins/conductor"
@@ -89,6 +91,35 @@ def test_space_workflow_has_no_pr_mutation_or_unpinned_runtime():
     assert "secrets." not in candidate
     assert "docker restart" in candidate
     assert "3.15.1" in candidate
+
+
+def test_hosted_verification_waits_for_the_expected_application(monkeypatch):
+    exact = "c" * 40
+    pending = [
+        {"application_commit": "old"},
+        {
+            "application_commit": exact,
+            "dataset": DATASET,
+            "revision": REVISION,
+            "source_sha256": PAYLOAD_SHA,
+        },
+    ]
+    monkeypatch.setattr(
+        deploy_hf_space, "ready_metadata", lambda _: pending.pop(0)
+    )
+    monkeypatch.setattr(deploy_hf_space.time, "sleep", lambda _: None)
+    monkeypatch.setattr(
+        deploy_hf_space.httpx,
+        "get",
+        lambda *_a, **_k: type(
+            "Response", (), {"raise_for_status": lambda _: None}
+        )(),
+    )
+    result = deploy_hf_space.http_metadata("http://127.0.0.1:7860", exact)
+    assert result["application_commit"] == exact
+    assert not pending
+    with pytest.raises(ValueError, match="unapproved"):
+        deploy_hf_space.http_metadata("https://unrelated.invalid", exact)
 
 
 def test_single_canonical_renovate_configuration() -> None:

@@ -13,11 +13,9 @@ import time
 from importlib import import_module
 from pathlib import Path
 from typing import Any, cast
+from urllib.parse import urlencode
 
 import httpx
-from playwright.sync_api import sync_playwright
-
-from global_medicines_atlas.hosted_service import DATASET, PAYLOAD_SHA, REVISION
 
 SPACE = "edithatogo/global-medicines-atlas"
 REPOSITORY = "edithatogo/global-medicines-atlas"
@@ -78,7 +76,9 @@ def candidate_files(root: Path) -> list[Path]:
     return files
 
 
-def deploy(exact: str, root: Path, receipt: dict[str, Any]) -> None:
+def deploy(
+    exact: str, root: Path, receipt: dict[str, Any], journal: Path
+) -> None:
     """Use the existing workflow token once per native mutation, without retries."""
     sdk = cast("Any", import_module("huggingface_hub"))
     errors = cast("Any", import_module("huggingface_hub.errors"))
@@ -97,6 +97,7 @@ def deploy(exact: str, root: Path, receipt: dict[str, Any]) -> None:
         info = api.repo_info(SPACE, repo_type="space")
     except not_found:
         receipt["phase"] = "create_space"
+        save_receipt(journal, receipt)
         try:
             api.create_repo(
                 repo_id=SPACE,
@@ -107,9 +108,18 @@ def deploy(exact: str, root: Path, receipt: dict[str, Any]) -> None:
             )
         except http_error as error:
             receipt["result"] = "blocked"
-            receipt["http_status"] = cast("Any", error).response.status_code
+            response = cast("Any", error).response
+            receipt["http_status"] = response.status_code
+            try:
+                message = str(response.json().get("error", ""))
+            except ValueError, TypeError:
+                message = ""
             receipt["blocker"] = (
-                "exact-target Space creation denied; account entitlement or workflow-token create permission required"
+                "native API requires a paid account plan for Docker Space creation"
+                if re.search(
+                    r"\bpro\b|paid plan|subscription", message, re.IGNORECASE
+                )
+                else "native API denied exact-target Space creation with the existing workflow credential"
             )
             return
         receipt["space_created"] = True
@@ -133,6 +143,7 @@ def deploy(exact: str, root: Path, receipt: dict[str, Any]) -> None:
     receipt["phase"] = "commit_code"
     # Recheck main at the native mutation boundary; do not retry a POST.
     require_hosted_main(exact)
+    save_receipt(journal, receipt)
     commit = api.create_commit(
         repo_id=SPACE,
         repo_type="space",
@@ -144,13 +155,23 @@ def deploy(exact: str, root: Path, receipt: dict[str, Any]) -> None:
         ],
     )
     receipt["space_revision"] = commit.oid
+    save_receipt(journal, receipt)
     receipt["phase"] = "anonymous_digest_verification"
+    receipt["verified_files"] = verify_files(sdk, files, commit.oid)
+    receipt["endpoint"] = "https://edithatogo-global-medicines-atlas.hf.space"
+    receipt["result"] = "code_deployed_and_anonymously_verified"
+
+
+def verify_files(
+    sdk: Any, files: list[Path], revision: str
+) -> list[dict[str, str]]:
+    """Anonymously bind each deployed file to its code-candidate digest."""
     verified: list[dict[str, str]] = []
     for path in files:
         expected = hashlib.sha256(path.read_bytes()).hexdigest()
         response = httpx.get(
             sdk.hf_hub_url(
-                SPACE, path.name, repo_type="space", revision=commit.oid
+                SPACE, path.name, repo_type="space", revision=revision
             ),
             timeout=60,
             follow_redirects=True,
@@ -160,29 +181,39 @@ def deploy(exact: str, root: Path, receipt: dict[str, Any]) -> None:
         if digest != expected:
             raise ValueError("anonymous deployed code digest differs")
         verified.append({"path": path.name, "sha256": digest})
-    receipt["verified_files"] = verified
-    receipt["endpoint"] = "https://edithatogo-global-medicines-atlas.hf.space"
-    receipt["result"] = "code_deployed_and_anonymously_verified"
+    return verified
 
 
-def http_metadata(url: str) -> dict[str, Any]:
+def ready_metadata(url: str) -> dict[str, Any]:
+    """Read liveness-qualified revision metadata without account credentials."""
+    response = httpx.get(url + "/api/v1/readiness", timeout=20)
+    response.raise_for_status()
+    response = httpx.get(url + "/deployment.json", timeout=30)
+    response.raise_for_status()
+    return cast("dict[str, Any]", response.json())
+
+
+def http_metadata(url: str, expected_commit: str) -> dict[str, Any]:
     """Check the exact allowed endpoint and bound its source provenance."""
     if url not in {
         "http://127.0.0.1:7860",
         "https://edithatogo-global-medicines-atlas.hf.space",
     }:
         raise ValueError("unapproved service endpoint")
+    if not re.fullmatch(r"[0-9a-f]{40}", expected_commit):
+        raise ValueError("expected application commit is required")
     deadline = time.monotonic() + 600
     while True:
         try:
-            response = httpx.get(url + "/api/v1/readiness", timeout=20)
-            response.raise_for_status()
-            break
+            metadata = ready_metadata(url)
+            if metadata.get("application_commit") == expected_commit:
+                break
         except httpx.HTTPError:
-            if time.monotonic() >= deadline:
-                raise ValueError(
-                    "service readiness deadline exceeded"
-                ) from None
+            pass
+        if time.monotonic() >= deadline:
+            raise ValueError(
+                "desired runtime revision readiness deadline exceeded"
+            )
         time.sleep(10)
     for path in [
         "/api/v1/health",
@@ -192,30 +223,38 @@ def http_metadata(url: str) -> dict[str, Any]:
     ]:
         response = httpx.get(url + path, timeout=30)
         response.raise_for_status()
-    response = httpx.get(url + "/deployment.json", timeout=30)
-    response.raise_for_status()
-    metadata = cast("dict[str, Any]", response.json())
+    profile = cast(
+        "Any", import_module("global_medicines_atlas.hosted_service")
+    )
     if (
-        metadata["dataset"] != DATASET
-        or metadata["revision"] != REVISION
-        or metadata["source_sha256"] != PAYLOAD_SHA
+        metadata["dataset"] != profile.DATASET
+        or metadata["revision"] != profile.REVISION
+        or metadata["source_sha256"] != profile.PAYLOAD_SHA
     ):
         raise ValueError("deployed provenance differs")
     return metadata
 
 
-def verify(url: str, receipt: dict[str, Any]) -> None:
+def verify(url: str, receipt: dict[str, Any], exact: str) -> None:
     """Collect bounded live HTTP and Chromium evidence, never claim full WCAG."""
     receipt["phase"] = "http_and_provenance"
-    receipt["data"] = http_metadata(url)
+    receipt["data"] = http_metadata(url, exact)
     receipt["phase"] = "chromium"
-    with sync_playwright() as browser_api:
+    playwright = cast("Any", import_module("playwright.sync_api"))
+    with playwright.sync_playwright() as browser_api:
         browser = browser_api.chromium.launch()
         try:
             page = browser.new_page()
             for width in [360, 1280]:
                 page.set_viewport_size({"width": width, "height": 800})
-                page.goto(url, wait_until="networkidle")
+                page.goto(
+                    url
+                    + "?"
+                    + urlencode({
+                        "concept_search": receipt["data"]["canary_concept_id"]
+                    }),
+                    wait_until="networkidle",
+                )
                 if (
                     page.get_by_role("heading", level=1).count() != 1
                     or page.get_by_role("main").count() != 1
@@ -230,6 +269,10 @@ def verify(url: str, receipt: dict[str, Any]) -> None:
                     "document.documentElement.scrollWidth <= innerWidth"
                 ):
                     raise ValueError("horizontal page overflow")
+                if page.locator("[data-concept-id]").count() == 0:
+                    raise ValueError(
+                        "default Atlas search omitted the source catalogue"
+                    )
                 page.keyboard.press("Tab")
                 if not page.evaluate(
                     "['A','INPUT','BUTTON','SELECT'].includes(document.activeElement.tagName)"
@@ -247,14 +290,20 @@ def verify(url: str, receipt: dict[str, Any]) -> None:
     receipt["issue_61_complete"] = False
 
 
+def save_receipt(path: Path, receipt: dict[str, Any]) -> None:
+    """Persist phase and exact native identity before and after a mutation."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
+
+
 def execute(args: argparse.Namespace, receipt: dict[str, Any]) -> None:
     """Select read-only verification or the guarded native deployment."""
     if args.url:
-        verify(args.url, receipt)
+        verify(args.url, receipt, args.exact_commit or "")
     else:
         if not args.exact_commit or args.candidate is None:
             raise ValueError("exact commit and candidate are required")
-        deploy(args.exact_commit, args.candidate, receipt)
+        deploy(args.exact_commit, args.candidate, receipt, args.receipt)
 
 
 def main() -> int:
@@ -276,10 +325,7 @@ def main() -> int:
         # Preserve phase and type, never credentials, raw responses or source values.
         receipt["error_type"] = type(error).__name__
     finally:
-        args.receipt.parent.mkdir(parents=True, exist_ok=True)
-        args.receipt.write_text(
-            json.dumps(receipt, indent=2) + "\n", encoding="utf-8"
-        )
+        save_receipt(args.receipt, receipt)
     print(json.dumps({"result": receipt["result"], "phase": receipt["phase"]}))
     return (
         0
