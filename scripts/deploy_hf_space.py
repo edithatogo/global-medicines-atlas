@@ -217,6 +217,17 @@ def verify_source_receipts(reviews: Any, root: Path | None = None) -> None:
                 }.items()
             ):
                 raise ValueError("withdrawal acquisition receipt differs")
+            correction = withdrawal.get("correction")
+            if correction:
+                if receipt.get("correction") != correction:
+                    raise ValueError("withdrawal correction receipt differs")
+                if (
+                    correction["corrected_application"]
+                    == review["application_number"]
+                ):
+                    raise ValueError(
+                        "withdrawal was corrected for this application"
+                    )
 
 
 def verify_approval_bound(event: dict[str, Any]) -> None:

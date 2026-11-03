@@ -351,3 +351,10 @@ content-digest references are included in the action events.
 These are additional historical action anchors, not continuing status
 intervals. A source-qualified end and intervening status history remain
 necessary; unknown coverage remains unknown and #61 stays open.
+
+The FDA's official 25 June 2021 notice records withdrawal of ANDA 074723,
+covering the reviewed 50 mg diclofenac product, effective 26 July 2021.
+The [notice receipt](fda-withdrawal-2021-13593-receipt.json) binds its PDF and
+the official correction by SHA-256. The correction removed ANDA 065152 from
+the withdrawal list; it did not remove ANDA 074723. Neither notice establishes
+uninterrupted status between the 1999 approval and the 2021 withdrawal.

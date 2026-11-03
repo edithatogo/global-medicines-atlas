@@ -115,6 +115,21 @@ REVIEWS: tuple[dict[str, Any], ...] = (
         "dosage_form": "TABLET, DELAYED RELEASE",
         "route": "ORAL",
         "ingredient": "DICLOFENAC SODIUM",
+        "withdrawal": {
+            "effective_date": "2021-07-26",
+            "source_uri": "https://www.govinfo.gov/content/pkg/FR-2021-06-25/pdf/2021-13593.pdf",
+            "source_sha256": "49c1165d9fabfa22d0983aa7bfc6f80a02d23b409c94ad4a2e9de9e77bab52a6",
+            "source_bytes": 203751,
+            "document_number": "2021-13593",
+            "continuity_between_actions_verified": False,
+            "correction": {
+                "document_number": "2021-21371",
+                "source_uri": "https://www.govinfo.gov/content/pkg/FR-2021-10-01/pdf/2021-21371.pdf",
+                "source_sha256": "c1873e56ca3289f4371e3a7ac74fec839d34a7f05afeedadacca95044b9d80ff",
+                "source_bytes": 173522,
+                "corrected_application": "ANDA065152",
+            },
+        },
     },
     {
         "application_number": "NDA021938",

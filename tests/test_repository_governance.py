@@ -741,3 +741,36 @@ def test_hosted_verifier_receipt_reports_only_safe_http_failure(
     assert data["redirect_same_path"] is False
     assert data["redirect_challenge_indicator"] is True
     assert "secret" not in receipt.read_text()
+
+
+@pytest.mark.parametrize(
+    "tamper", [None, "changed_receipt", "same_application"]
+)
+def test_withdrawal_correction_must_be_retained_and_not_reverse_product(
+    tmp_path, tamper
+):
+    from global_medicines_atlas.fda_action_evidence import REVIEWS  # ruff: ignore[import-outside-top-level]
+
+    original = next(
+        x for x in REVIEWS if x["application_number"] == "ANDA074723"
+    )
+    review = json.loads(json.dumps(original))
+    source = ROOT / "docs/qualification"
+    shutil.copy(
+        source / "fda-action-letter-acquisition-20261103.json", tmp_path
+    )
+    receipt_path = tmp_path / "fda-withdrawal-2021-13593-receipt.json"
+    receipt = json.loads((source / receipt_path.name).read_text())
+    if tamper == "changed_receipt":
+        receipt["correction"]["source_sha256"] = "0" * 64
+    if tamper == "same_application":
+        review["withdrawal"]["correction"]["corrected_application"] = (
+            "ANDA074723"
+        )
+        receipt["correction"]["corrected_application"] = "ANDA074723"
+    receipt_path.write_text(json.dumps(receipt))
+    if tamper:
+        with pytest.raises(ValueError, match="withdrawal"):
+            deploy_hf_space.verify_source_receipts((review,), tmp_path)
+    else:
+        deploy_hf_space.verify_source_receipts((review,), tmp_path)
