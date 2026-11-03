@@ -332,3 +332,22 @@ directory. The hosted verifier independently checks the running service's
 exact commit, product mappings and withdrawal references against the
 Git-tracked acquisition receipts. It does not claim a hosted PDF rehash. The
 locally retained PDFs remain in place; no new dataset archive was published.
+
+### Additional reviewed product-action anchors — 3 November 2026
+
+Chat `01a19600-56dd-73a2-9ff5-4a2484a54493` owns checkout
+`/Volumes/PortableSSD/GitHub/global-medicines-atlas`, branch
+`codex/61-reviewed-action-starts`. Five already-acquired FDA letters were
+reviewed against the pinned product identities, strengths, routes, action
+statuses and dates, and their retained bytes were rehashed against the
+existing acquisition receipts. They add ten product-specific original
+approval events: two isosorbide mononitrate strengths (ANDA 075037), one
+diclofenac sodium strength (ANDA 074723), three SUTENT strengths (NDA 021938),
+two zolmitriptan strengths (ANDA 202956), and two ertugliflozin strengths
+(ANDA 216947). The later 37.5 mg SUTENT product is not assigned the original
+approval. Source PDFs stay in the existing local recovery directory; their
+content-digest references are included in the action events.
+
+These are additional historical action anchors, not continuing status
+intervals. A source-qualified end and intervening status history remain
+necessary; unknown coverage remains unknown and #61 stays open.

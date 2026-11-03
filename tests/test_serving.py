@@ -738,8 +738,8 @@ def test_submission_database_detects_missing_insert(tmp_path, monkeypatch):
         )
 
 
-def _reviewed_action_fixture():
-    review = REVIEWS[0]
+def _reviewed_action_fixture(review=None):
+    review = review or REVIEWS[0]
     return {
         "results": [
             {
@@ -790,6 +790,24 @@ def test_reviewed_product_action_mappings_are_exact_and_event_only():
         for r in result
     )
     assert {r["letter_sha256"] for r in result} == {REVIEWS[0]["letter_sha256"]}
+
+
+def test_reviewed_original_action_does_not_include_later_strength():
+    review = next(x for x in REVIEWS if x["application_number"] == "NDA021938")
+    payload = _reviewed_action_fixture(review)
+    later = dict(payload["results"][0]["products"][0])
+    later["product_number"] = "004"
+    later["active_ingredients"] = [
+        {"name": "SUNITINIB MALATE", "strength": "EQ 37.5MG BASE"}
+    ]
+    payload["results"][0]["products"].append(later)
+    actions = reviewed_action_mappings(json.dumps(payload).encode(), (review,))
+    assert {event["concept_id"] for event in actions} == {
+        "us-drugsfda:NDA021938:001",
+        "us-drugsfda:NDA021938:002",
+        "us-drugsfda:NDA021938:003",
+    }
+    assert all(event["validity_interval"] is None for event in actions)
 
 
 @pytest.mark.parametrize(
