@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 from collections import Counter
+from http import HTTPStatus
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlencode
@@ -72,7 +73,7 @@ def main() -> int:
                     response = page.goto(
                         url + "/" + query, wait_until="networkidle"
                     )
-                    if response is None or response.status != 200:
+                    if response is None or response.status != HTTPStatus.OK:
                         raise ValueError("Atlas navigation failed")
                     if (
                         page.get_by_role("main").count() != 1
