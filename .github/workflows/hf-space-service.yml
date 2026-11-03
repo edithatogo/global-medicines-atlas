@@ -96,7 +96,7 @@ jobs:
 
   verify_native:
     name: Verify the selected free native endpoint
-    if: github.event_name == 'workflow_dispatch' && inputs.endpoint != ''
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.endpoint != ''
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:

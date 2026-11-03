@@ -42,3 +42,8 @@ production temporal evidence remains unqualified.
 
 References: https://render.com/docs/free and
 https://render.com/docs/python-version.
+
+The public endpoint verifier is dispatch-only from protected main. It reads
+public HTTP/Chromium surfaces without a provider credential and never changes
+the service, so it has no deployment environment or approval gate. The retired
+paid deployment command deliberately returns a nonzero policy rejection.

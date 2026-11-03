@@ -4,10 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import re
-import shutil
-import subprocess  # ruff: ignore[suspicious-subprocess-import] -- fixed argv, no shell; exact checkout guard
 import time
 from importlib import import_module
 from pathlib import Path
@@ -16,38 +13,7 @@ from urllib.parse import urlencode
 
 import httpx
 
-SPACE = "edithatogo/global-medicines-atlas"
-REPOSITORY = "edithatogo/global-medicines-atlas"
 OWNER_MARKER = "GMA_DEPLOYMENT_OWNER=edithatogo/global-medicines-atlas"
-
-
-def require_hosted_main(exact: str) -> None:
-    """Refuse local uploads and any unrelated, stale or unreviewed revision."""
-    expected = {
-        "GITHUB_ACTIONS": "true",
-        "GITHUB_REPOSITORY": REPOSITORY,
-        "GITHUB_REF": "refs/heads/main",
-        "GITHUB_EVENT_NAME": "workflow_dispatch",
-        "GITHUB_SHA": exact,
-    }
-    if not re.fullmatch(r"[0-9a-f]{40}", exact) or any(
-        os.environ.get(k) != v for k, v in expected.items()
-    ):
-        raise ValueError("deployment requires the exact approved hosted main")
-    git = shutil.which("git")
-    gh = shutil.which("gh")
-    if git is None or gh is None:
-        raise ValueError("qualified Git and GitHub CLIs are required")
-    checkout = subprocess.check_output(  # ruff: ignore[subprocess-without-shell-equals-true] -- fixed argv, qualified executable, no shell
-        [git, "rev-parse", "HEAD"], text=True, shell=False
-    ).strip()
-    current = subprocess.check_output(  # ruff: ignore[subprocess-without-shell-equals-true] -- fixed argv, qualified executable, no shell
-        [gh, "api", f"repos/{REPOSITORY}/commits/main", "--jq", ".sha"],
-        text=True,
-        shell=False,
-    ).strip()
-    if checkout != exact or current != exact:
-        raise ValueError("checkout is not current exact main")
 
 
 def candidate_files(root: Path) -> list[Path]:
@@ -231,15 +197,8 @@ def main() -> int:
     finally:
         save_receipt(args.receipt, receipt)
     print(json.dumps({"result": receipt["result"], "phase": receipt["phase"]}))
-    return (
-        0
-        if receipt["result"]
-        in {
-            "code_deployed_and_anonymously_verified",
-            "bounded_hosted_candidate_verified",
-        }
-        else 1
-    )
+    # A retired deployment command remains a nonzero policy rejection.
+    return 0 if receipt["result"] == "bounded_hosted_candidate_verified" else 1
 
 
 if __name__ == "__main__":

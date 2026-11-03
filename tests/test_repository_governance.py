@@ -31,37 +31,6 @@ CONDUCTOR_SKILLS = (
 )
 
 
-def test_space_deployment_requires_exact_hosted_main(monkeypatch):
-    exact = "a" * 40
-    for key, value in {
-        "GITHUB_ACTIONS": "true",
-        "GITHUB_REPOSITORY": "edithatogo/global-medicines-atlas",
-        "GITHUB_REF": "refs/heads/main",
-        "GITHUB_EVENT_NAME": "workflow_dispatch",
-        "GITHUB_SHA": exact,
-    }.items():
-        monkeypatch.setenv(key, value)
-    monkeypatch.setattr(
-        deploy_hf_space.subprocess,
-        "check_output",
-        lambda *_a, **_k: exact + "\n",
-    )
-    deploy_hf_space.require_hosted_main(exact)
-    monkeypatch.setenv("GITHUB_EVENT_NAME", "pull_request")
-    with pytest.raises(ValueError, match=r"hosted main|exact main|candidate"):
-        deploy_hf_space.require_hosted_main(exact)
-    monkeypatch.setenv("GITHUB_EVENT_NAME", "workflow_dispatch")
-    monkeypatch.setenv("GITHUB_ACTIONS", "false")
-    with pytest.raises(ValueError, match=r"hosted main|exact main|candidate"):
-        deploy_hf_space.require_hosted_main(exact)
-    monkeypatch.setenv("GITHUB_ACTIONS", "true")
-    monkeypatch.setattr(
-        deploy_hf_space.subprocess, "check_output", lambda *_a, **_k: "b" * 40
-    )
-    with pytest.raises(ValueError, match=r"hosted main|exact main|candidate"):
-        deploy_hf_space.require_hosted_main(exact)
-
-
 def test_space_candidate_cannot_upload_source_or_private_members(tmp_path):
     for name in [
         "Dockerfile",
@@ -86,6 +55,7 @@ def test_space_workflow_has_no_pr_mutation_or_unpinned_runtime():
     assert "HF_TOKEN" not in json.dumps(document)
     verify = document["jobs"]["verify_native"]
     assert "workflow_dispatch" in verify["if"]
+    assert "refs/heads/main" in verify["if"]
     assert verify["permissions"] == {"contents": "read"}
     candidate = json.dumps(document["jobs"]["candidate"])
     assert "secrets." not in candidate
@@ -113,9 +83,14 @@ def test_render_blueprint_is_free_single_service_without_a_paid_fallback():
     }
 
 
+@pytest.mark.parametrize(
+    "event", ["local", "pull_request", "workflow_dispatch"]
+)
 def test_retired_docker_deployment_never_loads_a_credential(
-    tmp_path, monkeypatch
+    tmp_path, monkeypatch, event
 ):
+    monkeypatch.setenv("GITHUB_EVENT_NAME", event)
+
     def reject(*_args, **_kwargs):
         raise AssertionError("must not contact the retired provider")
 
