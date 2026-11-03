@@ -179,3 +179,13 @@ The FDA archive assessment counts native submission date/type/status fields
 on the hosted runner without writing source bytes locally. Application action
 dates must not be propagated as product-level approval validity intervals.
 Source reference: https://open.fda.gov/fields/drugsfda_reference.pdf .
+
+Hosted source assessment in Actions run `41585112103` confirmed 633 dated
+submission actions across the admitted 100 applications: 544 SUPPL, 89 ORIG;
+630 AP and three TA. Thus dates are present; the blocker is not missing dates.
+The catalogue projects 183 products, while these action dates belong to
+application submissions. There is no reviewed product-action mapping or
+validity-end/continued-approval evidence in this projection. Treating every
+AP action as approval of every associated product would invent evidence; TA
+must remain distinct. Existing sources require that bounded mapping and
+qualification before the production temporal gate can pass.
