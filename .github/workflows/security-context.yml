@@ -76,7 +76,9 @@ jobs:
           enable-cache: true
       - run: uv sync --python 3.15.1 --group dev --locked
       - name: Validate governed context
-        run: uv run python scripts/validate_context.py
+        run: |
+          uv run python scripts/validate_context.py
+          uv run python scripts/render_project_overview.py --check
       - name: Install and run actionlint
         env:
           ACTIONLINT_ARCHIVE_SHA256: 8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8
@@ -125,6 +127,55 @@ jobs:
           path: build/sbom.cdx.json
           if-no-files-found: error
           retention-days: 30
+
+  dependency-submission:
+    name: Submit complete locked dependency graph
+    needs: supply-chain
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write # Dependency submission API requires this permission; trusted main only.
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.13.5"
+      - name: Build complete snapshot for this exact main commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_SHA" = "$(gh api repos/edithatogo/global-medicines-atlas/commits/main --jq .sha)"
+          uv venv --python 3.15.1 .venv
+          test "$(.venv/bin/python -c 'import platform; print(platform.python_version())')" = "3.15.1"
+          .venv/bin/python scripts/build_dependency_snapshot.py \
+            --trusted-main --checkout-sha "$(git rev-parse HEAD)" \
+            --sha "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID" \
+            --scanned "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --output build/dependency-snapshot.json
+      - name: Submit once to the native dependency graph
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_SHA" = "$(gh api repos/edithatogo/global-medicines-atlas/commits/main --jq .sha)"
+          gh api --method POST repos/edithatogo/global-medicines-atlas/dependency-graph/snapshots \
+            --input build/dependency-snapshot.json > build/dependency-submission.json
+      - name: Retain snapshot and native submission response
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: locked-dependency-submission
+          path: |
+            build/dependency-snapshot.json
+            build/dependency-submission.json
+          if-no-files-found: error
+          retention-days: 90
 
   codeql:
     name: CodeQL

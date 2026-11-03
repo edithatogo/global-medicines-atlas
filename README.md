@@ -50,16 +50,15 @@ See the [current architecture and progress](docs/project-overview.md).
 
 ## Roadmap and completion
 
-![Roadmap: 14 of 20 Conductor tracks closed, 84 of 92 tracked Stable v1 requirements verified. The percentages are unweighted ledger counts; release remains blocked.](docs/assets/roadmap.svg)
+<!-- gma-progress:start -->
+![Roadmap ledger completion](docs/assets/roadmap.svg)
 
-**70% of delivery tracks are closed (14/20); 91.3% of tracked Stable v1
-requirements are verified (84/92).** These are separate, unweighted denominators
-from the [track registry](conductor/tracks.md) and
-[qualification contract](quality/qualifications/stable-v1-contract.json),
-measured on 3 November 2026. They measure neither worldwide source coverage nor
-remaining effort. Six tracks and eight requirements remain open; a single
-mandatory gate can block release. The [versioned roadmap](conductor/roadmap.md)
-and [measured snapshot](docs/project-status.json) retain the detail.
+**14/20 delivery tracks closed (70%); 84/92 tracked Stable v1 requirements verified (91.3%).** Measured on 3 November 2026. 6 tracks and 8 requirements remain open.
+
+These are separate, unweighted ledger counts, not worldwide source coverage, effort or release readiness. A single mandatory gate can block release.
+
+See the [track registry](conductor/tracks.md), [qualification contract](quality/qualifications/stable-v1-contract.json), [roadmap](conductor/roadmap.md) and [snapshot](docs/project-status.json).
+<!-- gma-progress:end -->
 
 ## Public data and reproducibility
 

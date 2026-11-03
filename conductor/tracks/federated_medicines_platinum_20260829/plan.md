@@ -1826,7 +1826,9 @@ local-format verifier and synthetic medallion pipeline; add no parallel exporter
   each installed environment with isolated Python import resolution.
 - [x] Exercise the existing synthetic pipeline's local metadata and result
   through built wheel and sdist; retain aggregate hashes without result values.
-- [ ] Review, run focused checks and final-head protected CI, then merge.
+- [x] Review, run focused checks and final-head protected CI, then merge.
+  PR #1399 merged on checked head `effe82c37ebad82ac7fb5f01ab9937c6d3c76631`
+  as `771ebf96be6c733d37b8172b1d974c96892f0f3e`, after all 29 required checks passed.
 
 Stop after this software increment. The synthetic installed-package check does
 not complete real-source clean-room restoration, independent recovery authority,

@@ -1253,8 +1253,38 @@ medallion and roadmap visualisations, completion proportions, badges and citatio
 - [x] Prepare a hosted-main CAS update restricted to the existing catalogue
   README and two SVGs. Bind exact bytes/parent, retain non-target Git identities
   and require anonymous digest readback; no source data is published or fetched.
-- [~] Review, protected CI, integrate, publish the approved page metadata and
+- [x] Review, protected CI, integrate, publish the approved page metadata and
   verify both rendered pages. Stop at this bounded presentation update.
 
 The page request grants no release, rights change, source acquisition, new
 public service or broader federation acceptance.
+
+PR #1400 checked head `674f2fd4a9803aa25586b7a080840700281fc260` passed
+all 29 required checks and merged as `06265f0578e662241e2559c76d78f252802b8caa`.
+Hosted run `41559473198` verified three metadata files at public Hub revision
+`b7e5efac7625f9a7ba392fe10fa3f34134b0fd08`, preserving 61 other Git objects.
+These closeouts do not complete the original federation or Stable v1 gates.
+
+## Security and workflow tranche — 3 November 2026
+
+Owner: chat `01a19600-56dd-73a2-9ff5-4a2484a54493`, actual checkout
+`/Volumes/PortableSSD/GitHub/global-medicines-atlas`, branch
+`codex/security-workflow-tranche`, base `06265f05`. Prior assignments remain
+history. Native write scope is this repository's dependency graph only; no Hub
+publication, deployment, new credential or source acquisition.
+
+Existing gaps: GitHub's graph reports older versions than the lock, progress
+prose is repeated manually, and completed integrations retain pending markers.
+The maintainer explicitly approved this finite implementation plan.
+
+- [x] Prepare a complete lock snapshot; submission remains the post-merge step.
+  Submit only from audited, exact main
+  through the existing security workflow. No dependency versions change.
+- [x] Generate dated figures and bounded progress text together; check drift
+  without writes. Preserve the immutable approved Hub packet separately.
+- [x] Reconcile only #1399/#1400 closeouts from native merge/publication readback.
+- [ ] Review, run affected checks, complete protected CI, integrate once and
+  verify one main submission plus native graph/alert readback.
+
+Stop after this batch. #491 remains a standing dashboard; all broader parent
+issues and original qualification gates remain open.

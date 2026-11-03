@@ -8,15 +8,17 @@ GitHub programme issue: [#44](https://github.com/edithatogo/global-medicines-atl
 Its native subissues are the Conductor delivery tracks; each track parent owns
 its phase subissues.
 
+<!-- gma-progress:start -->
 ## Measured progress — 3 November 2026
 
-![Unweighted ledger completion; mandatory release gates remain open.](../docs/assets/roadmap.svg)
+![Roadmap ledger completion](../docs/assets/roadmap.svg)
 
-The registry closes **14 of 20 tracks (70%)**. The Stable v1 contract verifies
-**84 of 92 tracked requirements (91.3%)**, retaining eight blocked requirements.
-These denominators describe different ledgers, not source coverage, effort or
-release approval. [Measurement and reproduction](../docs/project-overview.md)
-and the [bound snapshot](../docs/project-status.json) provide the inputs.
+**14/20 delivery tracks closed (70%); 84/92 tracked Stable v1 requirements verified (91.3%).** Measured on 3 November 2026. 6 tracks and 8 requirements remain open.
+
+These are separate, unweighted ledger counts, not worldwide source coverage, effort or release readiness. A single mandatory gate can block release.
+
+[Measurement and reproduction](../docs/project-overview.md) and the [bound snapshot](../docs/project-status.json) identify the inputs.
+<!-- gma-progress:end -->
 
 ## Current delivery scope — 29 October 2026
 

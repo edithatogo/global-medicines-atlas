@@ -2,10 +2,15 @@
 
 from __future__ import annotations
 
+import json
 import re
+import shutil
+import sys
+from datetime import date
 from pathlib import Path
 
 import pytest
+from scripts import render_project_overview as overview
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCAL_LINK = re.compile(r"\[[^\]]+\]\((?!https?://|#)([^)]+)\)")
@@ -95,3 +100,105 @@ def test_support_routes_public_data_and_private_security_reports() -> None:
     assert "security.md" in support
     assert "do not put credentials" in support
     assert "no service sla" in support
+
+
+@pytest.fixture
+def overview_root(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    for relative in (
+        "conductor/tracks.md",
+        "quality/qualifications/stable-v1-contract.json",
+        "docs/project-status.json",
+        "README.md",
+        "conductor/roadmap.md",
+        "docs/publication/huggingface-catalogue-card.md",
+        "docs/project-overview.md",
+    ):
+        target = tmp_path / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(ROOT / relative, target)
+    monkeypatch.setattr(overview, "ROOT", tmp_path)
+    return tmp_path
+
+
+def test_overview_derives_all_progress_sections_and_preserves_prose(
+    overview_root: Path,
+) -> None:
+    (overview_root / "conductor/tracks.md").write_text(
+        "- [x] **Track: First**\n- [~] **Track: Second**\n"
+    )
+    generated = overview.outputs(date(2026, 12, 4))
+    snapshot = json.loads(generated[overview_root / "docs/project-status.json"])
+    assert snapshot["tracks"] == {"closed": 1, "total": 2}
+    assert snapshot["as_of"] == "2026-12-04"
+    for relative in (
+        "README.md",
+        "conductor/roadmap.md",
+        "docs/publication/huggingface-catalogue-card.md",
+    ):
+        path = overview_root / relative
+        before = path.read_text()
+        after = generated[path]
+        assert after.split(overview.START)[0] == before.split(overview.START)[0]
+        assert after.split(overview.END)[1] == before.split(overview.END)[1]
+        assert "1/2 delivery tracks closed (50%)" in after
+        assert "4 December 2026" in after
+    assert "50.0%" in generated[overview_root / "docs/assets/roadmap.svg"]
+    assert (
+        json.loads(
+            overview.outputs()[overview_root / "docs/project-status.json"]
+        )["as_of"]
+        == json.loads(
+            (overview_root / "docs/project-status.json").read_bytes()
+        )["as_of"]
+    )
+
+
+def test_overview_check_detects_drift_without_writing(
+    overview_root: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    for path, content in overview.outputs().items():
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(content)
+    readme = overview_root / "README.md"
+    readme.write_text(readme.read_text().replace("14/20", "13/20"))
+    before = {
+        path: path.read_bytes()
+        for path in overview_root.rglob("*")
+        if path.is_file()
+    }
+    monkeypatch.setattr(sys, "argv", ["render_project_overview.py", "--check"])
+    with pytest.raises(ValueError, match=r"stale: README\.md"):
+        overview.main()
+    assert before == {path: path.read_bytes() for path in before}
+
+
+@pytest.mark.parametrize(
+    "document",
+    [
+        "missing",
+        overview.START + overview.START + overview.END,
+        overview.END + overview.START,
+    ],
+)
+def test_overview_rejects_ambiguous_progress_sections(document: str) -> None:
+    with pytest.raises(ValueError, match="marker"):
+        overview.replace_progress(document, "new")
+
+
+def test_overview_cli_refreshes_an_explicit_date(
+    overview_root: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        sys, "argv", ["render_project_overview.py", "--as-of", "2026-12-04"]
+    )
+    overview.main()
+    assert (
+        json.loads((overview_root / "docs/project-status.json").read_bytes())[
+            "as_of"
+        ]
+        == "2026-12-04"
+    )
+    monkeypatch.setattr(sys, "argv", ["render_project_overview.py", "--check"])
+    overview.main()
