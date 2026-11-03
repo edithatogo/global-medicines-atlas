@@ -429,6 +429,7 @@ def test_approval_event_database_accounts_for_exact_catalogue(tmp_path):
         row = connection.execute(
             "SELECT concept_id, qualification, CAST(approval_date AS VARCHAR), evidence_json FROM product_approval_events"
         ).fetchone()
+    assert row is not None
     assert row[:3] == (
         event["concept_id"],
         event["qualification"],
