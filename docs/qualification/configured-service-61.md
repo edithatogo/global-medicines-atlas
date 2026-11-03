@@ -297,8 +297,8 @@ The ANDA 207984 letter supports the 18 December 2020 tentative action for
 three capsule strengths; it expressly does not grant final approval. The BLA
 761385 letter supports the 27 March 2026 approval action for the one identified
 product. The PERIOSTAT letter supports one further product action. Two DAKLINZA strengths are also reviewed. These seven action-to-product mappings are exposed as events,
-with source PDF byte lengths and SHA-256 digests. Live qualification rehashes
-the FDA references anonymously. Neither document proves a continuing status
+with source PDF byte lengths and SHA-256 digests. Hosted qualification reconciles the deployed records against the committed
+source-digest receipts; it does not re-download the FDA PDFs. Neither document proves a continuing status
 interval or a withdrawal date, and the remaining acquired letters have not
 been promoted merely by date matching. The production comparison-data gate and
 #61 remain open until source-supported intervals and required coverage exist.
@@ -320,3 +320,15 @@ identifies DAKLINZA strengths including both reviewed products; the later 90 mg
 product is not assigned the earlier original approval event. The Federal
 Register API did not populate its effective date, so the date was checked in
 the official PDF. Intervening status continuity remains unverified.
+
+#### FDA runner access and verification scope
+
+GitHub-hosted verification run 41623701184 received an FDA HTTP 302 to
+`/apology_objects/abuse-detection-apology.html`. No redirect or access control
+was bypassed. The six PDFs underlying the four reviewed letters and two
+withdrawal notices were acquired anonymously from the official sources and
+rehashed against their byte counts and SHA-256 digests in the local recovery
+directory. The hosted verifier independently checks the running service's
+exact commit, product mappings and withdrawal references against the
+Git-tracked acquisition receipts. It does not claim a hosted PDF rehash. The
+locally retained PDFs remain in place; no new dataset archive was published.

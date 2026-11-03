@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import re
 import time
@@ -116,7 +115,7 @@ def http_metadata(url: str, expected_commit: str) -> dict[str, Any]:
 def verify_reviewed_product_actions(
     url: str, commit: str, metadata: dict[str, Any]
 ) -> None:
-    """Read back the reviewed mappings and rehash each public FDA letter."""
+    """Reconcile deployed mappings with the immutable acquisition receipts."""
     response = httpx.get(url + "/reviewed-product-actions.json", timeout=30)
     response.raise_for_status()
     document = response.json()
@@ -169,40 +168,55 @@ def verify_reviewed_product_actions(
         )
     if observed != expected:
         raise ValueError("reviewed action evidence differs")
-    for review in REVIEWS:
-        sources = [
-            (
-                review["letter_url"],
-                review["letter_bytes"],
-                review["letter_sha256"],
-            )
+    verify_source_receipts(REVIEWS)
+
+
+def verify_source_receipts(reviews: Any, root: Path | None = None) -> None:
+    """Check source references against committed, locally byte-verified receipts."""
+    directory = (
+        root or Path(__file__).resolve().parents[1] / "docs/qualification"
+    )
+    ledger = json.loads(
+        (directory / "fda-action-letter-acquisition-20261103.json").read_text()
+    )
+    records = ledger["records"]
+    for review in reviews:
+        matches = [
+            record
+            for record in records
+            if record.get("url") == review["letter_url"]
         ]
-        if review.get("withdrawal"):
-            withdrawal = review["withdrawal"]
-            sources.append((
-                withdrawal["source_uri"],
-                withdrawal["source_bytes"],
-                withdrawal["source_sha256"],
-            ))
-        for source_url, expected_bytes, expected_digest in sources:
-            verify_evidence_bytes(source_url, expected_bytes, expected_digest)
-
-
-def verify_evidence_bytes(
-    url: str, expected_bytes: int, expected_digest: str
-) -> None:
-    """Bound and hash a referenced public source without retaining its bytes."""
-    with httpx.stream("GET", url, timeout=60, follow_redirects=False) as source:
-        source.raise_for_status()
-        digest = hashlib.sha256()
-        size = 0
-        for chunk in source.iter_bytes():
-            size += len(chunk)
-            if size > expected_bytes:
-                raise ValueError("FDA letter size differs")
-            digest.update(chunk)
-    if size != expected_bytes or digest.hexdigest() != expected_digest:
-        raise ValueError("FDA letter digest differs")
+        if len(matches) != 1 or any(
+            matches[0].get(key) != value
+            for key, value in {
+                "state": "acquired",
+                "sha256": review["letter_sha256"],
+                "bytes": review["letter_bytes"],
+            }.items()
+        ):
+            raise ValueError("FDA letter acquisition receipt differs")
+        withdrawal = review.get("withdrawal")
+        if withdrawal:
+            number = withdrawal["document_number"]
+            if not re.fullmatch(r"(?:[0-9]{2}|[0-9]{4})-[0-9]{4,6}", number):
+                raise ValueError("withdrawal document identity differs")
+            receipt = json.loads(
+                (
+                    directory / f"fda-withdrawal-{number}-receipt.json"
+                ).read_text()
+            )
+            if any(
+                receipt.get(key) != value
+                for key, value in {
+                    "document_number": number,
+                    "source_uri": withdrawal["source_uri"],
+                    "sha256": withdrawal["source_sha256"],
+                    "byte_count": withdrawal["source_bytes"],
+                    "effective_date": withdrawal["effective_date"],
+                    "continuity_between_approval_and_withdrawal_verified": False,
+                }.items()
+            ):
+                raise ValueError("withdrawal acquisition receipt differs")
 
 
 def verify_approval_bound(event: dict[str, Any]) -> None:

@@ -10,7 +10,6 @@ import shutil
 import subprocess  # ruff: ignore[suspicious-subprocess-import]
 import tomllib
 from argparse import Namespace
-from contextlib import nullcontext
 from pathlib import Path
 
 import httpx
@@ -608,8 +607,8 @@ def test_submission_event_verifier_checks_pages_scope_and_provenance(
         "size",
     ],
 )
-def test_reviewed_action_verifier_checks_provenance_and_pdf_bytes(
-    monkeypatch, tamper
+def test_reviewed_action_verifier_checks_provenance_and_receipts(
+    monkeypatch, tmp_path, tamper
 ):
     data = b"%PDF-1.7 synthetic letter"
     digest = hashlib.sha256(data).hexdigest()
@@ -627,6 +626,7 @@ def test_reviewed_action_verifier_checks_provenance_and_pdf_bytes(
             "source_bytes": len(data),
             "effective_date": "2021-01-01",
             "continuity_between_actions_verified": False,
+            "document_number": "05-9624",
         },
         "product_strengths": {"001": "10MG"},
     }
@@ -659,10 +659,36 @@ def test_reviewed_action_verifier_checks_provenance_and_pdf_bytes(
         event["action_status"] = "TA"
     if tamper == "interval":
         event["validity_interval"] = {"start": "2020-01-02"}
+    letter = {
+        "url": review["letter_url"],
+        "state": "acquired",
+        "sha256": digest,
+        "bytes": len(data),
+    }
     if tamper == "digest":
-        data = b"%PDF-1.7 synthetic lettex"
+        letter["sha256"] = "0" * 64
     if tamper == "size":
-        data += b" extra"
+        letter["bytes"] += 1
+    (tmp_path / "fda-action-letter-acquisition-20261103.json").write_text(
+        json.dumps({"records": [letter]})
+    )
+    notice = {
+        "document_number": "05-9624",
+        "source_uri": review["withdrawal"]["source_uri"],
+        "sha256": digest,
+        "byte_count": len(data),
+        "effective_date": "2021-01-01",
+        "continuity_between_approval_and_withdrawal_verified": False,
+    }
+    (tmp_path / "fda-withdrawal-05-9624-receipt.json").write_text(
+        json.dumps(notice)
+    )
+    real_receipt_check = deploy_hf_space.verify_source_receipts
+    monkeypatch.setattr(
+        deploy_hf_space,
+        "verify_source_receipts",
+        lambda reviews: real_receipt_check(reviews, tmp_path),
+    )
     monkeypatch.setattr(
         deploy_hf_space.httpx,
         "get",
@@ -670,17 +696,6 @@ def test_reviewed_action_verifier_checks_provenance_and_pdf_bytes(
             200,
             json=document,
             request=httpx.Request("GET", "https://example.test"),
-        ),
-    )
-    monkeypatch.setattr(
-        deploy_hf_space.httpx,
-        "stream",
-        lambda *_args, **_kwargs: nullcontext(
-            httpx.Response(
-                200,
-                content=data,
-                request=httpx.Request("GET", "https://example.test"),
-            )
         ),
     )
     if tamper:
