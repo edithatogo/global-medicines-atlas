@@ -6,6 +6,7 @@ import hashlib
 import io
 import json
 import zipfile
+from contextlib import nullcontext
 from pathlib import Path
 from typing import TYPE_CHECKING, cast
 
@@ -254,11 +255,13 @@ def test_hosted_source_admission_is_preserved(tmp_path, monkeypatch, failure):
     })
     monkeypatch.setattr(
         hosted_service.httpx,
-        "get",
-        lambda *_args, **_kwargs: httpx.Response(
-            200,
-            content=orange_payload,
-            request=httpx.Request("GET", hosted_service.ORANGE_URI),
+        "stream",
+        lambda *_args, **_kwargs: nullcontext(
+            httpx.Response(
+                200,
+                content=orange_payload,
+                request=httpx.Request("GET", hosted_service.ORANGE_URI),
+            )
         ),
     )
     monkeypatch.setattr(
@@ -360,3 +363,20 @@ def test_api_dispatch_respects_asgi_root_path(
         assert client.get("/atlas/").status_code == 200
         assert client.get("/atlas").status_code == 200
         assert client.get("/api/v1/health").status_code == 200
+
+
+@pytest.mark.parametrize("content", [b"oversized", b"x"])
+def test_orange_download_rejects_size_or_digest_drift(monkeypatch, content):
+    monkeypatch.setattr(
+        hosted_service.httpx,
+        "stream",
+        lambda *_a, **_k: nullcontext(
+            httpx.Response(
+                200,
+                content=content,
+                request=httpx.Request("GET", hosted_service.ORANGE_URI),
+            )
+        ),
+    )
+    with pytest.raises(ValueError, match="Orange Book payload"):
+        hosted_service.download_orange_book(1)

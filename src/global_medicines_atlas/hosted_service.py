@@ -57,6 +57,30 @@ def verified_download(member: str, expected: str) -> bytes:
     return data
 
 
+def download_orange_book(expected_bytes: int) -> bytes:
+    """Bound the response while streaming, then verify its immutable digest."""
+    if not 0 < expected_bytes <= MAX_BYTES:
+        raise ValueError("Orange Book admission size exceeds bound")
+    chunks: list[bytes] = []
+    count = 0
+    with httpx.stream(
+        "GET", ORANGE_URI, follow_redirects=True, timeout=60
+    ) as response:
+        response.raise_for_status()
+        for chunk in response.iter_bytes():
+            count += len(chunk)
+            if count > expected_bytes:
+                raise ValueError("Orange Book payload exceeds admitted size")
+            chunks.append(chunk)
+    archive = b"".join(chunks)
+    if (
+        count != expected_bytes
+        or hashlib.sha256(archive).hexdigest() != ORANGE_SHA
+    ):
+        raise ValueError("Orange Book payload differs")
+    return archive
+
+
 def catalogue(payload: bytes) -> tuple[int, list[tuple[str, str, str]]]:
     """Preserve explicit application/product identities and names only."""
     document = json.loads(payload)
@@ -190,14 +214,7 @@ def prepare_hosted(destination: Path) -> dict[str, Any]:
         or orange[0].get("payload_sha256") != ORANGE_SHA
     ):
         raise ValueError("Orange Book admission differs")
-    response = httpx.get(ORANGE_URI, follow_redirects=True, timeout=60)
-    response.raise_for_status()
-    archive = response.content
-    if (
-        len(archive) != orange[0]["payload_byte_count"]
-        or hashlib.sha256(archive).hexdigest() != ORANGE_SHA
-    ):
-        raise ValueError("Orange Book payload differs")
+    archive = download_orange_book(orange[0]["payload_byte_count"])
     _, products = catalogue(payload)
     events = product_events(archive, {p[0] for p in products})
     receipt["approval_events"] = events
