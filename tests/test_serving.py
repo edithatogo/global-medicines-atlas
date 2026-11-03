@@ -874,3 +874,17 @@ def test_reviewed_product_action_endpoint_is_read_only(tmp_path, monkeypatch):
         assert response.status_code == 200
         assert response.json()["events"] == actions
         assert client.post("/reviewed-product-actions.json").status_code == 405
+
+
+def test_periostat_withdrawal_keeps_both_dates_unresolved():
+    review = next(x for x in REVIEWS if x["application_number"] == "NDA050744")
+    payload = _reviewed_action_fixture(review)
+    actions = reviewed_action_mappings(json.dumps(payload).encode(), (review,))
+    withdrawal = actions[0]["withdrawal"]
+    assert withdrawal["qualification"] == "conflicting_dates"
+    assert withdrawal["effective_date"] is None
+    assert [x["effective_date"] for x in withdrawal["candidates"]] == [
+        "2004-06-04",
+        "2005-06-15",
+    ]
+    assert actions[0]["validity_interval"] is None
