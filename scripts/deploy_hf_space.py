@@ -1,9 +1,8 @@
-"""One hosted-only, parent-bound code deployment; never upload source data."""
+"""Verify free hosted candidates; retain a fail-closed retired deployment CLI."""
 
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import os
 import re
@@ -77,111 +76,15 @@ def candidate_files(root: Path) -> list[Path]:
 
 
 def deploy(
-    exact: str, root: Path, receipt: dict[str, Any], journal: Path
+    _exact: str, _root: Path, receipt: dict[str, Any], journal: Path
 ) -> None:
-    """Use the existing workflow token once per native mutation, without retries."""
-    sdk = cast("Any", import_module("huggingface_hub"))
-    errors = cast("Any", import_module("huggingface_hub.errors"))
-    not_found = cast("type[Exception]", errors.RepositoryNotFoundError)
-    http_error = cast("type[Exception]", errors.HfHubHTTPError)
-
-    require_hosted_main(exact)
-    files = candidate_files(root)
-    api = sdk.HfApi(token=os.environ["HF_TOKEN"])
-    identity = api.whoami()
-    if identity.get("name") != "edithatogo":
-        raise ValueError("unexpected native account")
-    receipt["account_pro"] = identity.get("isPro")
-    receipt["phase"] = "resolve_target"
-    try:
-        info = api.repo_info(SPACE, repo_type="space")
-    except not_found:
-        receipt["phase"] = "create_space"
-        save_receipt(journal, receipt)
-        try:
-            api.create_repo(
-                repo_id=SPACE,
-                repo_type="space",
-                space_sdk="docker",
-                private=False,
-                exist_ok=False,
-            )
-        except http_error as error:
-            receipt["result"] = "blocked"
-            response = cast("Any", error).response
-            receipt["http_status"] = response.status_code
-            try:
-                message = str(response.json().get("error", ""))
-            except ValueError, TypeError:
-                message = ""
-            receipt["blocker"] = (
-                "native API requires a paid account plan for Docker Space creation"
-                if re.search(
-                    r"\bpro\b|paid plan|subscription", message, re.IGNORECASE
-                )
-                else "native API denied exact-target Space creation with the existing workflow credential"
-            )
-            return
-        receipt["space_created"] = True
-        info = api.repo_info(SPACE, repo_type="space")
-    else:
-        if info.private or getattr(info, "sdk", None) != "docker":
-            raise ValueError(
-                "existing target has incompatible visibility or SDK"
-            )
-        response = httpx.get(
-            sdk.hf_hub_url(
-                SPACE, "README.md", repo_type="space", revision=info.sha
-            ),
-            timeout=30,
-            follow_redirects=True,
-        )
-        response.raise_for_status()
-        if OWNER_MARKER not in response.text:
-            raise ValueError("existing Space has another native owner")
-    receipt["parent"] = info.sha
-    receipt["phase"] = "commit_code"
-    # Recheck main at the native mutation boundary; do not retry a POST.
-    require_hosted_main(exact)
-    save_receipt(journal, receipt)
-    commit = api.create_commit(
-        repo_id=SPACE,
-        repo_type="space",
-        parent_commit=info.sha,
-        commit_message=f"Deploy reviewed GMA candidate {exact}",
-        operations=[
-            sdk.CommitOperationAdd(path_in_repo=p.name, path_or_fileobj=p)
-            for p in files
-        ],
+    """Reject the retired paid-plan path before loading credentials or a SDK."""
+    receipt["phase"] = "free_only_policy"
+    receipt["result"] = "blocked"
+    receipt["blocker"] = (
+        "New Docker Spaces require a paid plan; use the free Render Blueprint"
     )
-    receipt["space_revision"] = commit.oid
     save_receipt(journal, receipt)
-    receipt["phase"] = "anonymous_digest_verification"
-    receipt["verified_files"] = verify_files(sdk, files, commit.oid)
-    receipt["endpoint"] = "https://edithatogo-global-medicines-atlas.hf.space"
-    receipt["result"] = "code_deployed_and_anonymously_verified"
-
-
-def verify_files(
-    sdk: Any, files: list[Path], revision: str
-) -> list[dict[str, str]]:
-    """Anonymously bind each deployed file to its code-candidate digest."""
-    verified: list[dict[str, str]] = []
-    for path in files:
-        expected = hashlib.sha256(path.read_bytes()).hexdigest()
-        response = httpx.get(
-            sdk.hf_hub_url(
-                SPACE, path.name, repo_type="space", revision=revision
-            ),
-            timeout=60,
-            follow_redirects=True,
-        )
-        response.raise_for_status()
-        digest = hashlib.sha256(response.content).hexdigest()
-        if digest != expected:
-            raise ValueError("anonymous deployed code digest differs")
-        verified.append({"path": path.name, "sha256": digest})
-    return verified
 
 
 def ready_metadata(url: str) -> dict[str, Any]:
@@ -195,10 +98,9 @@ def ready_metadata(url: str) -> dict[str, Any]:
 
 def http_metadata(url: str, expected_commit: str) -> dict[str, Any]:
     """Check the exact allowed endpoint and bound its source provenance."""
-    if url not in {
-        "http://127.0.0.1:7860",
-        "https://edithatogo-global-medicines-atlas.hf.space",
-    }:
+    if url != "http://127.0.0.1:7860" and not re.fullmatch(
+        r"https://global-medicines-atlas(?:-[a-z0-9]+)?\.onrender\.com", url
+    ):
         raise ValueError("unapproved service endpoint")
     if not re.fullmatch(r"[0-9a-f]{40}", expected_commit):
         raise ValueError("expected application commit is required")
@@ -316,7 +218,7 @@ def main() -> int:
     parser.add_argument("--receipt", type=Path, required=True)
     args = parser.parse_args()
     receipt: dict[str, Any] = {
-        "space": SPACE,
+        "endpoint": args.url,
         "source_commit": args.exact_commit,
         "result": "failed",
         "phase": "initialization",

@@ -1,0 +1,20 @@
+# Free-only hosted candidate. Activate only in a workspace with no payment
+# method and no paid resources; quota exhaustion must suspend, not bill.
+services:
+  - type: web
+    name: global-medicines-atlas
+    runtime: python
+    plan: free
+    repo: https://github.com/edithatogo/global-medicines-atlas
+    branch: main
+    autoDeployTrigger: "off"
+    buildCommand: bash deployment/render/build.sh
+    startCommand: bash deployment/render/start.sh
+    healthCheckPath: /api/v1/readiness
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.15.1"
+      - key: UV_VERSION
+        value: "0.13.6"
+      - key: GMA_CURSOR_SECRET
+        generateValue: true

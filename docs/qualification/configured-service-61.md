@@ -138,3 +138,24 @@ locked Typer 0.27.3. Its native deployment process therefore uses a separate
 Python 3.15.1 environment, installed from the generated, fully hashed
 `sdk-requirements.txt`. The app's pyproject/uv/PEP751 lock bytes are unchanged.
 The container does not include this SDK environment or the account credential.
+
+## Current selection: free-only hosting — 3 November 2026
+
+The maintainer requires free options. The native Docker Space request in run
+`41576482688` returned HTTP 402 requiring a paid account plan. That publisher is
+now retired before credential loading; the current workflow has no HF token or
+Space-create job. The previous results above are retained as history.
+
+The root Render Blueprint selects exactly one Free Python service for both
+API and Atlas. See [the activation contract](../../deployment/render/README.md).
+It preserves Python 3.15.1, uv 0.13.6, the existing application lock, archive and
+rebuildable cache. Render supplies source identity and a private generated
+cursor key. Native authentication and a verified no-payment-method workspace
+are required before activation, so quota exhaustion cannot silently bill.
+No credentials, account plan or billing state are changed by this PR.
+
+HF's free ZeroGPU route currently lists only Python 3.10.13/3.12.12; it is not a
+qualified replacement for this runtime. Static HF Spaces cannot run the existing
+Python API. Render Free sleeps after idle periods and remains a candidate, not
+a production-availability claim. A prepared Blueprint does not establish a
+live endpoint or production temporal medicine-data qualification.

@@ -1337,3 +1337,32 @@ Do not close #61 from catalogue-only or synthetic evidence, bounded browser
 checks or a successful build. Keep production temporal evidence and complete
 external accessibility acceptance explicit. Stop after this batch; no broader
 federation, data publication, paid compute or release is authorized.
+
+## Free-only #61 hosting — 3 November 2026
+
+Owner: chat `01a19600-56dd-73a2-9ff5-4a2484a54493`, actual checkout
+`/Volumes/PortableSSD/GitHub/global-medicines-atlas`, branch
+`codex/61-free-hosting`, base `7146dbca`. Previous ownership remains history.
+The maintainer requires free options. No plan purchase, credit, paid compute or
+billing change is authorized. HF data remains the immutable archive authority.
+
+The preceding implementation passed 29 protected checks at head `ff1bebfe` and
+merged as `7146dbca`. Hosted exact-main run `41576482688` verified Python 3.15.1,
+100 applications/183 products, Docker restart and bounded browser/HTTP checks.
+Native Docker Space creation stopped at HTTP 402 requiring a paid account plan.
+No code was deployed to Spaces. #61 is open; the negative closing phrase in the
+PR body was removed and GitHub's automatic issue closure reversed.
+
+- [~] Prepare one Render Free Python service Blueprint using the existing
+  package/runtime/cache, with redeployment off and no paid resources. Retire the
+  paid Docker Space publisher; preserve its history and qualification receipts.
+- [ ] Run affected governance and required protected CI. Reuse unchanged real
+  source/installed-service evidence; add no full local profile.
+- [ ] Activate only after an authenticated native Render owner/workspace and
+  no-payment-method state are observed. New provider sign-in/consent remain
+  human; no account credentials or billing state are changed automatically.
+  Verify the selected native URL and exact source identity through hosted CI.
+
+Do not replace Python 3.15.1 with ZeroGPU's older supported runtimes. Free tier
+sleep/quota limits remain explicit. Production temporal data and original #61
+acceptance stay incomplete; no broader federation or Stable release.

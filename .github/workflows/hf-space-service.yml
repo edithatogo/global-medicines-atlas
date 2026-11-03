@@ -1,10 +1,12 @@
-name: Hosted API and Atlas candidate
+name: Free hosted API and Atlas candidate
 
 on:
   pull_request:
     paths:
       - ".github/workflows/hf-space-service.yml"
       - "deployment/hf-space/**"
+      - "deployment/render/**"
+      - "render.yaml"
       - "src/global_medicines_atlas/hosted_service.py"
       - "src/global_medicines_atlas/serving.py"
       - "scripts/deploy_hf_space.py"
@@ -15,14 +17,14 @@ on:
   workflow_dispatch:
     inputs:
       exact_commit:
-        description: Exact reviewed main commit to prepare and deploy
+        description: Exact reviewed commit for candidate or endpoint verification
         required: true
         type: string
-      deploy:
-        description: Apply the reviewed Space code deployment using existing authority
-        required: true
-        default: false
-        type: boolean
+      endpoint:
+        description: Optional verified Render free-service URL for read-only checks
+        required: false
+        default: ""
+        type: string
 
 permissions: {}
 concurrency:
@@ -34,6 +36,7 @@ env:
 
 jobs:
   candidate:
+    if: github.event_name == 'pull_request' || inputs.endpoint == ''
     name: Build and exercise hosted service candidate
     runs-on: ubuntu-24.04
     timeout-minutes: 25
@@ -61,12 +64,6 @@ jobs:
           printf '\nENV GMA_APPLICATION_COMMIT=%s\n' "$GITHUB_SHA" >> build/hf-space/Dockerfile
       - name: Build the real Docker Space image
         run: docker build --tag gma-hosted-candidate build/hf-space
-      - name: Qualify the isolated deployment SDK without credentials
-        run: |
-          set -euo pipefail
-          uv venv --python 3.15.1 .space-deployment
-          uv pip sync --python .space-deployment/bin/python --require-hashes deployment/hf-space/sdk-requirements.txt
-          .space-deployment/bin/python -c 'import platform, huggingface_hub; assert platform.python_version() == "3.15.1"; assert huggingface_hub.__version__ == "1.19.0"'
       - name: Install the existing Chromium qualification tool
         run: uv run --no-sync playwright install --with-deps chromium
       - name: Exercise actual archive bootstrap, restart and browser behavior
@@ -97,13 +94,11 @@ jobs:
           if-no-files-found: ignore
           retention-days: 30
 
-  deploy:
-    name: Deploy exact reviewed main to Hugging Face Spaces
-    needs: candidate
-    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.deploy
+  verify_native:
+    name: Verify the selected free native endpoint
+    if: github.event_name == 'workflow_dispatch' && inputs.endpoint != ''
     runs-on: ubuntu-24.04
-    environment: production
-    timeout-minutes: 20
+    timeout-minutes: 15
     permissions:
       contents: read
     steps:
@@ -113,38 +108,20 @@ jobs:
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
           version: "0.13.6"
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
-        with:
-          name: hf-space-code-candidate
-          path: build/hf-space
-      - name: Prepare the isolated hash-locked deployment SDK
-        run: |
-          set -euo pipefail
-          uv venv --python 3.15.1 .space-deployment
-          uv pip sync --python .space-deployment/bin/python --require-hashes deployment/hf-space/sdk-requirements.txt
-          .space-deployment/bin/python -c 'import platform, huggingface_hub; assert platform.python_version() == "3.15.1"; assert huggingface_hub.__version__ == "1.19.0"'
-      - name: Apply one parent-bound code transaction and verify anonymously
-        env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
-          GH_TOKEN: ${{ github.token }}
-          EXACT_COMMIT: ${{ inputs.exact_commit }}
-        run: >-
-          .space-deployment/bin/python scripts/deploy_hf_space.py --exact-commit "$EXACT_COMMIT"
-          --candidate build/hf-space --receipt build/space-deployment.json
-      - name: Verify the actual native endpoint
+      - name: Verify the actual endpoint without a provider credential
         env:
           EXACT_COMMIT: ${{ inputs.exact_commit }}
+          ENDPOINT: ${{ inputs.endpoint }}
         run: |
           set -euo pipefail
-          uv run --locked --python 3.15.1 --group dev playwright install --with-deps chromium
-          uv run --locked --python 3.15.1 --group dev python scripts/deploy_hf_space.py --url https://edithatogo-global-medicines-atlas.hf.space --exact-commit "$EXACT_COMMIT" --receipt build/space-native-verification.json
-      - name: Preserve the native mutation journal and verification
+          uv sync --python 3.15.1 --locked --group dev
+          uv run --no-sync playwright install --with-deps chromium
+          uv run --no-sync python scripts/deploy_hf_space.py --url "$ENDPOINT" --exact-commit "$EXACT_COMMIT" --receipt build/free-native-verification.json
+      - name: Preserve native verification
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
-          name: hf-space-native-evidence
-          path: |
-            build/space-deployment.json
-            build/space-native-verification.json
+          name: free-native-verification
+          path: build/free-native-verification.json
           if-no-files-found: error
-          retention-days: 90
+          retention-days: 30
