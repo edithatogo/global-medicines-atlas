@@ -145,6 +145,12 @@ def verify_approval_events(
             exact_count += 1
         elif event["approval_date"] is not None:
             raise ValueError("unqualified event contains exact date")
+    coverage = metadata["approval_event_coverage"]
+    for state, observed in coverage.items():
+        if observed != sum(e["qualification"] == state for e in events):
+            raise ValueError("approval event coverage differs from database")
+    if sum(coverage.values()) != len(events):
+        raise ValueError("approval event coverage denominator differs")
     summary = metadata["approval_event_summary"]
     if (
         exact_count == 0

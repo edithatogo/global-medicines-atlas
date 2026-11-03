@@ -400,6 +400,7 @@ def test_approval_event_verifier_preserves_qualification(monkeypatch, tamper):
     }
     metadata = {
         "product_count": 1,
+        "approval_event_coverage": {"exact_product_approval_date": 1},
         "approval_event_summary": {
             "matched_exact_date_count": 1,
             "effective_rights_state": "permitted",

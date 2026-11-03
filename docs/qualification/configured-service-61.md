@@ -237,3 +237,22 @@ No external browser, scripted accessibility permission, host bypass or synthetic
 speech substitute was used. Screen-reader speech traversal remains unverified;
 keyboard/tree/axe evidence is retained separately. This is the specific current
 screen-reader route limitation, not proof of full accessibility conformance.
+
+## Production query follow-up — 3 November 2026
+
+The maintainer requested qualification of the production query database using
+existing sources, with free deployment and accessibility testing excluded.
+This follow-up materializes each pinned Orange Book approval-event disposition
+inside the same read-only query database as the 183-product FDA catalogue.
+The bootstrap rejects duplicate, missing, extra or unrecognised identities;
+the endpoint reads the resulting rows from DuckDB. A per-disposition count
+accounts for the full catalogue and is checked against the served events,
+source revisions, digests and rights evidence. The qualification is limited to
+source-native approval events, including explicit unmatched, conflicting and
+non-exact dates. It does not infer continued regulatory approval or funding.
+
+The canonical status-comparison tables still contain no qualified temporal
+intervals. Until source-supported status intervals and the required production
+comparison coverage are qualified, `production_data_qualified` remains false
+and #61 remains open. This work adds no source acquisition, dataset publication,
+paid resource, inferred absence or release qualification.
