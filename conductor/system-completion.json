@@ -39,8 +39,8 @@
       "track": "federated_medicines_platinum_20260829",
       "release_gate": "stable-v1-australian-health-federation",
       "capability": "API, CLI, Atlas and exports consume the same qualified revisions",
-      "current_failure": "The #61 configured installed service and clean-artifact startup passed in PR #1398. The local research-export verifier requires a result sidecar, but the clean-consumer harness cannot accept one; this blocks installed local-format verification for #342.",
-      "next_action": "On 2026-11-03 the maintainer requested the simplest remaining unblocked task. Add bounded local result-sidecar input to the existing clean-consumer harness and exercise the exact synthetic pipeline export in installed wheel/sdist environments. Preserve public-form verification, real-source clean-room and external federation/deployment gates; no new sources or publication.",
+      "current_failure": "The bounded software, configured service and installed local/public export checks are integrated (#1398/#1399). Public presentation contains stale unpublished-data claims and lacks a medallion/quantified roadmap view; live deployment and federation gates remain open.",
+      "next_action": "The maintainer selected a public-page follow-up on 2026-11-03: reconcile README and catalogue card, render ledger-bound diagrams, preserve all acceptance gates, and publish only the exact three catalogue metadata files through hosted main. Stop after native readback.",
       "completion_evidence": "For the current software milestone: locked Python 3.15.1 setup, representative product tests, clean wheel/sdist consumer receipt, supported contributor commands, and protected integration. Later live federation acceptance continues to require its original exact per-output receipts.",
       "stop_condition": "Stop when the bounded software checklist in system-completion.md passes. Do not start deferred federation work or claim Stable v1 release readiness.",
       "validation": "Use existing focused context and product tests and one clean-consumer package check; reuse unchanged hosted coverage/security evidence and retain all required PR checks."

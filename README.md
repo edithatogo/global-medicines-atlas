@@ -3,6 +3,8 @@
 [![Test-Goblin](https://github.com/edithatogo/global-medicines-atlas/actions/workflows/test-goblin.yml/badge.svg?branch=main)](https://github.com/edithatogo/global-medicines-atlas/actions/workflows/test-goblin.yml)
 [![Security and Context](https://github.com/edithatogo/global-medicines-atlas/actions/workflows/security-context.yml/badge.svg?branch=main)](https://github.com/edithatogo/global-medicines-atlas/actions/workflows/security-context.yml)
 [![Codecov](https://codecov.io/gh/edithatogo/global-medicines-atlas/branch/main/graph/badge.svg)](https://app.codecov.io/gh/edithatogo/global-medicines-atlas)
+[![Public data](https://img.shields.io/badge/Hugging_Face-public_archives-FFD21E?logo=huggingface)](https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21734811.svg)](https://doi.org/10.5281/zenodo.21734811)
 [![Python 3.15](https://img.shields.io/badge/Python-3.15-3776AB?logo=python&logoColor=white)](https://www.python.org/downloads/)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-D22128.svg)](LICENSE)
 
@@ -14,20 +16,68 @@ The project keeps those dimensions independent. A terminology match, product
 listing, price, or formulary entry is never treated as regulatory approval
 without source-specific evidence.
 
-> **Maturity:** the software and representative fixtures are qualified; live
-> global source coverage, public datasets, a hosted service, and a stable final
-> release are not yet claimed.
+> **Status · 3 November 2026:** hardened research software candidate with
+> public, revision-pinned source archives. Live global coverage, a production
+> service and Stable v1 acceptance remain open. The published `v1.0.0rc1` is a
+> historical prerelease, not approval of the current candidate or data estate.
+
+[Use the software](#use-the-atlas) ·
+[Browse public data](https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue) ·
+[Roadmap](#roadmap-and-completion) · [Cite](#citation) ·
+[Security](SECURITY.md) · [Support](SUPPORT.md)
 
 ## Capability status
 
 | Capability | Current evidence |
 |---|---|
-| Python 3.15.1 package, CLI, API and server-rendered Atlas | Software-qualified |
-| NZULM/NZMT, Drugs@FDA, PBS, EMA and initial global adapters | Representative fixtures |
-| Property, metamorphic, contract, deterministic simulation and mutation testing | Blocking CI |
-| Live regulatory and funding coverage | External qualification required |
-| Public dataset, hosted API and hosted Atlas | Not yet published |
-| Release candidate | Qualified; signing and publication staged separately |
+| Python 3.15.1 package, CLI, API and Atlas | Bounded software candidate integrated; wheel/sdist consumers verified |
+| Public source archives | Available on Hugging Face; exact editions, rights and exclusions apply |
+| MBS/PBS typed and linked evidence | Selected MBS cohort qualified; broader semantics and derived delivery incomplete |
+| Testing and hardening | Protected CI, mutation/performance tests, CodeQL, dependency audit, SBOM and coverage gates |
+| Production API/Atlas and current global coverage | External qualification required; no hosted service claimed |
+| Stable v1 | Blocked by remaining federation and release acceptance |
+
+## Medallion architecture
+
+![Four medallion layers. Bronze contains B0 source index, B1 acquisition metadata and B2 immutable raw evidence; Silver preserves typed data, Gold reviewed links, and Platinum products.](docs/assets/medallion.svg)
+
+Bronze is one medallion layer with three internal strata. **B0** indexes sources;
+**B1** retains append-only acquisition/provenance records; **B2** retains immutable
+native bytes or a lawful reference. Source-faithful Parquet and catalogues are
+rebuildable projections. Silver preserves source meanings and explicit unknowns;
+Gold qualifies relationships; Platinum presents provenance-aware products.
+See the [current architecture and progress](docs/project-overview.md).
+
+## Roadmap and completion
+
+![Roadmap: 14 of 20 Conductor tracks closed, 84 of 92 tracked Stable v1 requirements verified. The percentages are unweighted ledger counts; release remains blocked.](docs/assets/roadmap.svg)
+
+**70% of delivery tracks are closed (14/20); 91.3% of tracked Stable v1
+requirements are verified (84/92).** These are separate, unweighted denominators
+from the [track registry](conductor/tracks.md) and
+[qualification contract](quality/qualifications/stable-v1-contract.json),
+measured on 3 November 2026. They measure neither worldwide source coverage nor
+remaining effort. Six tracks and eight requirements remain open; a single
+mandatory gate can block release. The [versioned roadmap](conductor/roadmap.md)
+and [measured snapshot](docs/project-status.json) retain the detail.
+
+## Public data and reproducibility
+
+GitHub hosts code, contracts and receipts; Hugging Face hosts approved public
+archives and projections. Start with the
+[source catalogue](https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue).
+Selected linked archives include:
+
+| Archive | Scope |
+|---|---|
+| [Australian MBS](https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive) | Service benefits, source editions and selected qualified Silver tables |
+| [Australian PBS](https://huggingface.co/datasets/edithatogo/australian-pbs-source-archive) | Funding/formulary source archive and published projections |
+| [Historical NZULM 2023](https://huggingface.co/datasets/edithatogo/nzulm-2023-source-archive) | 102 permitted historical members; licence exclusions retained |
+
+Pin a full revision and verify the object digest before use. Publication and
+byte verification do not establish semantic qualification, v4 admission,
+complete historical coverage or clinical suitability. Each dataset card and
+source receipt defines its rights and limits.
 
 ## Current scope
 
@@ -99,27 +149,12 @@ Start with the [task-oriented user guide](docs/user-guide.md) to:
 - reproduce the repository locally or rehearse recovery; and
 - report support, security, or medicine-data integrity issues.
 
-The repository currently provides source-checkout and built-artifact workflows,
-not a published package, hosted API, or hosted Atlas service. Commands requiring
+The repository provides source-checkout and built-artifact workflows and an
+archived prerelease. No package-index distribution, hosted API or hosted Atlas
+service is claimed. The [configured service guide](docs/qualification/configured-service-61.md)
+documents the installed ASGI factory and its production-data requirements. Commands requiring
 a canonical DuckDB database do not silently substitute the repository's
 representative test fixtures for production medicine data.
-
-## Architecture
-
-```mermaid
-flowchart LR
-    A["Regulators and funders"] --> B["Source-specific adapters"]
-    B --> C["Receipts and provenance"]
-    C --> D["Canonical bitemporal evidence"]
-    D --> E["DuckDB and Parquet"]
-    D --> F["Optional semantic candidates"]
-    E --> G["CLI, read-only API and Atlas"]
-    F --> G
-    G --> H["Validity, uncertainty and coverage"]
-```
-
-Regulatory approval, public funding, formulary status, terminology similarity,
-and comparison validity remain separate throughout this flow.
 
 ## Interpreting a comparison
 
@@ -142,12 +177,24 @@ therapeutic equivalence from an RxNorm or lexical match.
 
 ## Data boundaries
 
-The repository does not publish the local NZULM release, restricted
-terminologies, credentials, or derived private research outputs. Source
+Only approved source material is public. The historical NZULM archive excludes
+the confirmed licensed maps/guides and mixed ZIP; restricted terminology,
+credentials and private evidence remain private. Source
 catalog entries describe access surfaces; they do not claim complete ingestion
 or global coverage. Read the [software and source-data rights](docs/data-sources/SOURCE_RIGHTS.md)
 and [stable-v1 qualification limitations](docs/qualification/stable-v1-contract.md)
 before reusing code, source material, or derived outputs.
+
+## Citation
+
+Cite the software with the exact release or commit used.
+The [archived software prerelease](https://github.com/edithatogo/global-medicines-atlas/releases/tag/v1.0.0rc1)
+has DOI [10.5281/zenodo.21734811](https://doi.org/10.5281/zenodo.21734811).
+GitHub's **Cite this repository** uses [CITATION.cff](CITATION.cff). For data,
+also cite the upstream source, source edition, Hugging Face repository, full
+revision, object path and SHA-256; the software DOI does not identify every
+subsequent dataset snapshot. The [Apache-2.0 licence](LICENSE) covers
+project-owned code; [source-specific data rights](DATA_LICENSE.md) remain separate.
 
 ## Project navigation
 

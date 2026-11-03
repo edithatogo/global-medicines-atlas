@@ -1,0 +1,59 @@
+name: Publish project homepage metadata
+
+on:
+  workflow_dispatch:
+    inputs:
+      exact_commit:
+        description: Exact reviewed main commit for the three-file page update
+        required: true
+        type: string
+
+permissions: {}
+concurrency:
+  group: global-medicines-atlas-project-pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Update and verify catalogue homepage
+    runs-on: ubuntu-24.04
+    environment: production
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    env:
+      HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
+      SSL_CERT_FILE: ${{ github.workspace }}/.ci/trust/cacert.pem
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.13.5"
+      - name: Verify the exact main checkout and diagram inputs
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/main
+          test "$GITHUB_SHA" = "$REQUESTED_COMMIT"
+          test "$(git rev-parse HEAD)" = "$REQUESTED_COMMIT"
+          test "$GITHUB_SHA" = "$(gh api repos/edithatogo/global-medicines-atlas/commits/main --jq .sha)"
+          uv run --locked --python 3.15.1 python scripts/render_project_overview.py --check
+      - name: Publish only the approved card and diagrams
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: >-
+          uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0
+          python -m scripts.publish_project_pages --publish
+          --exact-commit "$GITHUB_SHA" --receipt build/project-pages.json
+      - name: Preserve intent, outcome and anonymous verification
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: project-pages-publication
+          path: build/project-pages.json
+          if-no-files-found: error
+          retention-days: 90

@@ -128,3 +128,13 @@ Stop after protected integration and retain actual-source independent clean-room
 restoration, public availability, all other federation and #61 deployment gates.
 No source acquisition, publication, dependency upgrade or release is authorized
 by this follow-up.
+
+## Public presentation follow-up — 3 November 2026
+
+The maintainer requested updated GitHub and Hugging Face pages with medallion
+and roadmap visuals, completion proportions, badges, reciprocal links and
+citation. Complete this finite documentation and catalogue-metadata update
+through a protected PR and hosted-only exact-parent transaction. It does not
+resume federation, acquire sources, change source rights or authorize a release
+or live service. Track the measurements and limitations in
+[the project overview](../docs/project-overview.md).
