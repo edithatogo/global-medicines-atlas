@@ -15,6 +15,8 @@ from urllib.parse import urlencode
 
 import httpx
 
+from global_medicines_atlas.fda_action_evidence import REVIEWS
+
 OWNER_MARKER = "GMA_DEPLOYMENT_OWNER=edithatogo/global-medicines-atlas"
 
 
@@ -106,7 +108,115 @@ def http_metadata(url: str, expected_commit: str) -> dict[str, Any]:
         raise ValueError("deployed provenance differs")
     verify_approval_events(url, expected_commit, metadata)
     verify_submission_events(url, expected_commit, metadata)
+    verify_reviewed_product_actions(url, expected_commit, metadata)
     return metadata
+
+
+def verify_reviewed_product_actions(
+    url: str, commit: str, metadata: dict[str, Any]
+) -> None:
+    """Reconcile deployed mappings with the immutable acquisition receipts."""
+    response = httpx.get(url + "/reviewed-product-actions.json", timeout=30)
+    response.raise_for_status()
+    document = response.json()
+    events = document["events"]
+    expected = {
+        f"us-drugsfda:{review['application_number']}:{number}": (
+            review["submission_status"],
+            review["submission_status_date"],
+            review["letter_sha256"],
+            review["letter_url"],
+            strength,
+            review["application_number"],
+            "ORIG",
+            "1",
+            review["letter_bytes"],
+            review["letter_pages"],
+            review.get("withdrawal"),
+        )
+        for review in REVIEWS
+        for number, strength in review["product_strengths"].items()
+    }
+    if (
+        document["application_commit"] != commit
+        or len(events) != len(expected)
+        or metadata["reviewed_action_mapping_count"] != len(expected)
+    ):
+        raise ValueError("reviewed action coverage differs")
+    observed = {}
+    for event in events:
+        if (
+            event["continuing_status_established"] is not False
+            or event["validity_interval"] is not None
+        ):
+            raise ValueError("reviewed action promoted to a status interval")
+        concept = event["concept_id"]
+        if concept in observed:
+            raise ValueError("duplicate reviewed action")
+        observed[concept] = (
+            event["action_status"],
+            event["action_date"],
+            event["letter_sha256"],
+            event["letter_url"],
+            event["product_strength_native"],
+            event["application_number"],
+            event["submission_type"],
+            event["submission_number"],
+            event["letter_bytes"],
+            event["letter_pages"],
+            event["withdrawal"],
+        )
+    if observed != expected:
+        raise ValueError("reviewed action evidence differs")
+    verify_source_receipts(REVIEWS)
+
+
+def verify_source_receipts(reviews: Any, root: Path | None = None) -> None:
+    """Check source references against committed, locally byte-verified receipts."""
+    directory = (
+        root or Path(__file__).resolve().parents[1] / "docs/qualification"
+    )
+    ledger = json.loads(
+        (directory / "fda-action-letter-acquisition-20261103.json").read_text()
+    )
+    records = ledger["records"]
+    for review in reviews:
+        matches = [
+            record
+            for record in records
+            if record.get("url") == review["letter_url"]
+        ]
+        if len(matches) != 1 or any(
+            matches[0].get(key) != value
+            for key, value in {
+                "state": "acquired",
+                "sha256": review["letter_sha256"],
+                "bytes": review["letter_bytes"],
+            }.items()
+        ):
+            raise ValueError("FDA letter acquisition receipt differs")
+        withdrawal = review.get("withdrawal")
+        if withdrawal:
+            number = withdrawal["document_number"]
+            if not re.fullmatch(r"(?:[0-9]{2}|[0-9]{4})-[0-9]{4,6}", number):
+                raise ValueError("withdrawal document identity differs")
+            receipt = json.loads(
+                (
+                    directory / f"fda-withdrawal-{number}-receipt.json"
+                ).read_text()
+            )
+            if any(
+                receipt.get(key) != value
+                for key, value in {
+                    "document_number": number,
+                    "source_uri": withdrawal["source_uri"],
+                    "sha256": withdrawal["source_sha256"],
+                    "byte_count": withdrawal["source_bytes"],
+                    "effective_date": withdrawal["effective_date"],
+                    "continuity_between_approval_and_withdrawal_verified": False,
+                }.items()
+            ):
+                raise ValueError("withdrawal acquisition receipt differs")
 
 
 def verify_approval_bound(event: dict[str, Any]) -> None:
@@ -401,6 +511,40 @@ def main() -> int:
     except Exception as error:
         # Preserve phase and type, never credentials, raw responses or source values.
         receipt["error_type"] = type(error).__name__
+        if isinstance(error, httpx.HTTPStatusError):
+            receipt["http_status"] = error.response.status_code
+            host = error.request.url.host
+            receipt["http_host"] = (
+                host
+                if host
+                in {
+                    "127.0.0.1",
+                    "www.accessdata.fda.gov",
+                    "www.govinfo.gov",
+                    "global-medicines-atlas.onrender.com",
+                }
+                else "other"
+            )
+            location = error.response.headers.get("location")
+            if location:
+                redirect = error.request.url.join(location)
+                receipt["redirect_same_host"] = redirect.host == host
+                receipt["redirect_same_path"] = (
+                    redirect.path == error.request.url.path
+                )
+                receipt["redirect_abuse_apology"] = redirect.path == (
+                    "/apology_objects/abuse-detection-apology.html"
+                )
+                receipt["redirect_challenge_indicator"] = any(
+                    term in str(redirect).lower()
+                    for term in (
+                        "challenge",
+                        "captcha",
+                        "incapsula",
+                        "accessdenied",
+                        "access-denied",
+                    )
+                )
     finally:
         save_receipt(args.receipt, receipt)
     print(json.dumps({"result": receipt["result"], "phase": receipt["phase"]}))

@@ -1,0 +1,13 @@
+{
+  "acquired_at_date": "2026-11-03",
+  "byte_count": 147989,
+  "continuity_between_approval_and_withdrawal_verified": false,
+  "document_number": "05-9624",
+  "effective_date": "2005-06-15",
+  "notice_summary_identifier_conflict": "The summary says NDA 50-774, while the effective-date section and section I identify NDA 50-744; the product and section I support NDA 50-744. The conflict is retained for review.",
+  "official_document": "70 FR 25832\u201325833",
+  "product": "us-drugsfda:NDA050744:001",
+  "publication_date": "2005-05-16",
+  "sha256": "427592fd2c5c65bf69a28cb55af43451aa40117ae43a791630b0a590b86aa568",
+  "source_uri": "https://www.govinfo.gov/content/pkg/FR-2005-05-16/pdf/05-9624.pdf"
+}
