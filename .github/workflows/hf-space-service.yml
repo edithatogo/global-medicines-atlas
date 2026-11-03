@@ -115,8 +115,7 @@ jobs:
         run: |
           set -euo pipefail
           uv sync --python 3.15.1 --locked --group dev
-          uv run --no-sync playwright install --with-deps chromium
-          uv run --no-sync python scripts/deploy_hf_space.py --url "$ENDPOINT" --exact-commit "$EXACT_COMMIT" --receipt build/free-native-verification.json
+          uv run --no-sync python scripts/deploy_hf_space.py --http-only --url "$ENDPOINT" --exact-commit "$EXACT_COMMIT" --receipt build/free-native-verification.json
       - name: Preserve native verification
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0

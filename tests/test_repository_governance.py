@@ -8,6 +8,7 @@ import re
 import shutil
 import subprocess  # ruff: ignore[suspicious-subprocess-import]
 import tomllib
+from argparse import Namespace
 from pathlib import Path
 
 import pytest
@@ -433,3 +434,27 @@ def test_approval_event_verifier_preserves_qualification(monkeypatch, tamper):
         deploy_hf_space.verify_approval_events(
             "http://127.0.0.1:7860", "c" * 40, metadata
         )
+
+
+def test_native_http_only_verification_does_not_run_browser(monkeypatch):
+    expected = {"application_commit": "c" * 40}
+    monkeypatch.setattr(
+        deploy_hf_space, "http_metadata", lambda _url, _commit: expected
+    )
+
+    def reject(*_args):
+        raise AssertionError("browser verification is excluded")
+
+    monkeypatch.setattr(deploy_hf_space, "verify", reject)
+    receipt = {}
+    deploy_hf_space.execute(
+        Namespace(
+            url="https://global-medicines-atlas.onrender.com",
+            exact_commit="c" * 40,
+            http_only=True,
+        ),
+        receipt,
+    )
+    assert receipt["data"] == expected
+    assert receipt["verification_scope"] == "http_only"
+    assert receipt["issue_61_complete"] is False
