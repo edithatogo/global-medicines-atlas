@@ -3,7 +3,10 @@
 from __future__ import annotations
 
 import hashlib
+import io
 import json
+import zipfile
+from contextlib import nullcontext
 from pathlib import Path
 from typing import TYPE_CHECKING, cast
 
@@ -53,6 +56,11 @@ def test_hosted_catalogue_is_real_schema_without_invented_assertions(
         with TestClient(hosted_service.create_app()) as client:
             assert client.get("/api/v1/readiness").status_code == 200
             metadata = client.get("/deployment.json").json()
+            events = client.get("/approval-events.json")
+            assert events.status_code == 200
+            assert events.json()["application_commit"] == "a" * 40
+            assert events.json()["events"] == []
+            assert "not continuing approval" in events.json()["scope"]
             assert metadata["product_count"] == 1
             assert metadata["production_data_qualified"] is False
             assert metadata["temporal_assertion_count"] == 0
@@ -199,7 +207,7 @@ def test_hosted_source_download_is_anonymous_and_digest_bound(monkeypatch):
 
 
 @pytest.mark.parametrize(
-    "failure", [None, "duplicate", "rights", "bytes", "denominator"]
+    "failure", [None, "duplicate", "rights", "bytes", "denominator", "orange"]
 )
 def test_hosted_source_admission_is_preserved(tmp_path, monkeypatch, failure):
     payload = _hosted_payload()
@@ -233,6 +241,36 @@ def test_hosted_source_admission_is_preserved(tmp_path, monkeypatch, failure):
         payload = json.dumps(document).encode()
         entry["payload_byte_count"] = len(payload)
     entries = [entry, entry] if failure == "duplicate" else [entry]
+    archive_stream = io.BytesIO()
+    with zipfile.ZipFile(archive_stream, "w") as archive:
+        archive.writestr(
+            "products.txt",
+            "Appl_Type~Appl_No~Product_No~Approval_Date\nN~000001~001~Jan 02, 2001\n",
+        )
+    orange_payload = archive_stream.getvalue()
+    monkeypatch.setattr(
+        hosted_service, "ORANGE_SHA", hashlib.sha256(orange_payload).hexdigest()
+    )
+    entries.append({
+        "source_id": "us-fda-orange-book",
+        "admission_state": "accepted",
+        "payload_sha256": hosted_service.ORANGE_SHA,
+        "payload_byte_count": len(orange_payload),
+        "rights_state": "restricted",
+    })
+    if failure == "orange":
+        entries[-1]["admission_state"] = "quarantined"
+    monkeypatch.setattr(
+        hosted_service.httpx,
+        "stream",
+        lambda *_args, **_kwargs: nullcontext(
+            httpx.Response(
+                200,
+                content=orange_payload,
+                request=httpx.Request("GET", hosted_service.ORANGE_URI),
+            )
+        ),
+    )
     monkeypatch.setattr(
         hosted_service,
         "verified_download",
@@ -332,3 +370,32 @@ def test_api_dispatch_respects_asgi_root_path(
         assert client.get("/atlas/").status_code == 200
         assert client.get("/atlas").status_code == 200
         assert client.get("/api/v1/health").status_code == 200
+
+
+@pytest.mark.parametrize("content", [b"oversized", b"x"])
+def test_orange_download_rejects_size_or_digest_drift(monkeypatch, content):
+    monkeypatch.setattr(
+        hosted_service.httpx,
+        "stream",
+        lambda *_a, **_k: nullcontext(
+            httpx.Response(
+                200,
+                content=content,
+                request=httpx.Request("GET", hosted_service.ORANGE_URI),
+            )
+        ),
+    )
+    with pytest.raises(ValueError, match="Orange Book payload"):
+        hosted_service.download_orange_book(1)
+
+
+@pytest.mark.parametrize("size", [0, hosted_service.MAX_BYTES + 1])
+def test_orange_download_rejects_unbounded_admission_before_network(
+    monkeypatch, size
+):
+    def reject(*_a, **_k):
+        raise AssertionError("network must not be contacted")
+
+    monkeypatch.setattr(hosted_service.httpx, "stream", reject)
+    with pytest.raises(ValueError, match="admission size"):
+        hosted_service.download_orange_book(size)

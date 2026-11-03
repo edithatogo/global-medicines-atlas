@@ -15,6 +15,7 @@ import yaml
 from scripts import build_dependency_snapshot as dependency_snapshot
 from scripts import deploy_hf_space
 
+from global_medicines_atlas import orange_book_events as source
 from global_medicines_atlas.hosted_service import DATASET, PAYLOAD_SHA, REVISION
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -104,6 +105,9 @@ def test_retired_docker_deployment_never_loads_a_credential(
 
 
 def test_hosted_verification_waits_for_the_expected_application(monkeypatch):
+    monkeypatch.setattr(
+        deploy_hf_space, "verify_approval_events", lambda *_args: None
+    )
     exact = "c" * 40
     pending = [
         {"application_commit": "old"},
@@ -378,3 +382,53 @@ def test_dependency_submission_workflow_keeps_write_scope_off_prs() -> None:
     assert "github.event_name == 'push'" in job["if"]
     assert "github.event_name == 'workflow_dispatch'" in job["if"]
     assert "pull_request" not in job["if"]
+
+
+@pytest.mark.parametrize(
+    "tamper", [None, "digest", "continuing", "date", "count"]
+)
+def test_approval_event_verifier_preserves_qualification(monkeypatch, tamper):
+    event = {
+        "concept_id": "us-drugsfda:NDA000001:001",
+        "source_sha256": source.SHA256,
+        "source_revision": source.REVISION,
+        "source_uri": source.URI,
+        "continuing_approval_established": False,
+        "validity_interval": None,
+        "qualification": "exact_product_approval_date",
+        "approval_date": "2001-01-02",
+    }
+    metadata = {
+        "product_count": 1,
+        "approval_event_summary": {
+            "matched_exact_date_count": 1,
+            "effective_rights_state": "permitted",
+        },
+    }
+    if tamper == "digest":
+        event["source_sha256"] = "wrong"
+    if tamper == "continuing":
+        event["continuing_approval_established"] = True
+    if tamper == "date":
+        event["approval_date"] = None
+    if tamper == "count":
+        metadata["product_count"] = 2
+    document = {"application_commit": "c" * 40, "events": [event]}
+    monkeypatch.setattr(
+        deploy_hf_space.httpx,
+        "get",
+        lambda *_a, **_k: type(
+            "Response",
+            (),
+            {"raise_for_status": lambda _: None, "json": lambda _: document},
+        )(),
+    )
+    if tamper:
+        with pytest.raises(ValueError, match=r"approval|event"):
+            deploy_hf_space.verify_approval_events(
+                "http://127.0.0.1:7860", "c" * 40, metadata
+            )
+    else:
+        deploy_hf_space.verify_approval_events(
+            "http://127.0.0.1:7860", "c" * 40, metadata
+        )
