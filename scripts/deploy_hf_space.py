@@ -518,6 +518,9 @@ def main() -> int:
                 receipt["redirect_same_path"] = (
                     redirect.path == error.request.url.path
                 )
+                receipt["redirect_abuse_apology"] = redirect.path == (
+                    "/apology_objects/abuse-detection-apology.html"
+                )
                 receipt["redirect_challenge_indicator"] = any(
                     term in str(redirect).lower()
                     for term in (
