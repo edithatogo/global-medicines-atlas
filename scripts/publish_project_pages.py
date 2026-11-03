@@ -26,10 +26,11 @@ from global_medicines_atlas.publication_transport import (
 ROOT = Path(__file__).resolve().parents[1]
 DATASET = "edithatogo/global-medicines-atlas-catalogue"
 APPROVAL = ROOT / "docs/publication/project-pages-approval.json"
+# Preserve the already-approved packet when the editable overview is refreshed.
 FILES = {
-    "README.md": "docs/publication/huggingface-catalogue-card.md",
-    "assets/medallion.svg": "docs/assets/medallion.svg",
-    "assets/roadmap.svg": "docs/assets/roadmap.svg",
+    "README.md": "docs/publication/project-pages-approved-20261103/README.md",
+    "assets/medallion.svg": "docs/publication/project-pages-approved-20261103/assets/medallion.svg",
+    "assets/roadmap.svg": "docs/publication/project-pages-approved-20261103/assets/roadmap.svg",
 }
 
 

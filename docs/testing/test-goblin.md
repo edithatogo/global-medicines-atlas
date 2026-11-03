@@ -308,3 +308,22 @@ compatible.
 
 The initial governed NZ FHIR adapter suite is the first operational slice.
 Additional source adapters enter the profile as their contracts are migrated.
+
+## Native dependency graph
+
+The existing security workflow retains its installed-environment audit and
+CycloneDX SBOM. After that job passes on exact `main`, a separate job submits
+**every registry package in uv.lock**, including optional/development groups and
+platform-specific entries, to GitHub's dependency submission API. Only that job
+has `contents: write`; PRs cannot submit. The builder rejects unsupported sources,
+duplicate identities and ambiguous dependency references rather than dropping
+packages. Runtime-capable optional paths are classified as runtime; remaining
+reachable development paths are development. Unclassified locked entries remain
+present without a fabricated scope. No source payload or private URL is submitted.
+
+The stable detector/correlator updates the same `uv.lock` manifest over time.
+The snapshot binds its code commit, complete lock digest and scan time; both
+snapshot and native API acknowledgement are retained as workflow artifacts.
+An accepted submission is not proof of alert resolution: verify the resulting
+dependency graph and alert state after indexing. Never dismiss an alert merely
+because the lock appears fixed. The dependency dashboard #491 remains open.

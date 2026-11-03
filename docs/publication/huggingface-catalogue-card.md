@@ -47,17 +47,17 @@ current global coverage or production acceptance. Related approved archives:
 and [historical NZULM 2023](https://huggingface.co/datasets/edithatogo/nzulm-2023-source-archive).
 Their own editions, receipts, source terms and licence exclusions govern use.
 
+<!-- gma-progress:start -->
 ## Roadmap snapshot — 3 November 2026
 
-![Roadmap: 14 of 20 tracks closed, 84 of 92 tracked requirements verified; unweighted counts are not release readiness.](https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue/resolve/main/assets/roadmap.svg)
+![Roadmap ledger completion](https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue/resolve/main/assets/roadmap.svg)
 
-**14/20 delivery tracks closed (70%); 84/92 tracked Stable v1 requirements
-verified (91.3%).** These separate, unweighted denominators measure ledger
-completion, not effort or source coverage. Eight requirements remain blocked;
-Stable v1 is not approved by this percentage. Live federation, independent
-recovery and production service qualification retain their existing gates.
-The [measurement and bound snapshot](https://github.com/edithatogo/global-medicines-atlas/blob/main/docs/project-overview.md)
-explain exactly what is counted.
+**14/20 delivery tracks closed (70%); 84/92 tracked Stable v1 requirements verified (91.3%).** Measured on 3 November 2026. 6 tracks and 8 requirements remain open.
+
+These are separate, unweighted ledger counts, not worldwide source coverage, effort or release readiness. A single mandatory gate can block release.
+
+[Measurement and bound snapshot](https://github.com/edithatogo/global-medicines-atlas/blob/main/docs/project-overview.md). Federation, independent recovery and production service qualification retain their gates.
+<!-- gma-progress:end -->
 
 ## Citation and reuse
 

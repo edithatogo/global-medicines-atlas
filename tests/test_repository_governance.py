@@ -7,9 +7,12 @@ import json
 import re
 import shutil
 import subprocess  # ruff: ignore[suspicious-subprocess-import]
+import tomllib
 from pathlib import Path
 
 import pytest
+import yaml
+from scripts import build_dependency_snapshot as dependency_snapshot
 
 ROOT = Path(__file__).resolve().parents[1]
 FULL_SHA = re.compile(r"^[0-9a-f]{40}$")
@@ -170,3 +173,96 @@ def test_cursor_skills_delegate_to_pinned_conductor_plugin() -> None:
         assert f"name: {name}" in text
         assert relative in text
         assert "git submodule update --init --recursive" in text
+
+
+def test_dependency_snapshot_covers_the_entire_lock_deterministically() -> None:
+    raw = (ROOT / "uv.lock").read_bytes()
+    locked = tomllib.loads(raw.decode())
+    snapshot = dependency_snapshot.build_snapshot(
+        raw, "a" * 40, "123", "2026-11-03T00:00:00Z"
+    )
+    assert snapshot == dependency_snapshot.build_snapshot(
+        raw, "a" * 40, "123", "2026-11-03T00:00:00Z"
+    )
+    resolved = snapshot["manifests"]["uv.lock"]["resolved"]
+    registry = [p for p in locked["package"] if "registry" in p["source"]]
+    assert set(resolved) == {
+        dependency_snapshot.package_url(p) for p in registry
+    }
+    assert "pkg:pypi/filelock@4.2.4" in resolved
+    assert "pkg:pypi/msgpack@1.2.3" in resolved
+    for name in ("lancedb", "pyiceberg", "pip-audit", "colorama"):
+        assert any(key.startswith(f"pkg:pypi/{name}@") for key in resolved)
+    assert all(
+        set(row["dependencies"]) <= set(resolved) for row in resolved.values()
+    )
+    assert snapshot["job"]["correlator"] == "gma-uv-lock-main"
+
+
+def test_dependency_snapshot_rejects_ambiguous_and_unsupported_identities() -> (
+    None
+):
+    root = {
+        "name": "project",
+        "source": {"editable": "."},
+        "dependencies": [{"name": "example"}],
+    }
+    first = {
+        "name": "example",
+        "version": "1.0",
+        "source": {"registry": "https://pypi.org/simple"},
+    }
+    second = {**first, "version": "2.0"}
+    document = {"package": [root, first, second]}
+    with pytest.raises(ValueError, match="ambiguous"):
+        dependency_snapshot.resolved_inventory(document)
+    root["dependencies"] = [{"name": "example", "version": "1.0"}]
+    assert len(dependency_snapshot.resolved_inventory(document)) == 2
+    with pytest.raises(ValueError, match="duplicate"):
+        dependency_snapshot.resolved_inventory({
+            "package": [root, first, first]
+        })
+    with pytest.raises(ValueError, match="unsupported"):
+        dependency_snapshot.resolved_inventory({
+            "package": [
+                root,
+                {**first, "source": {"git": "https://example.invalid/private"}},
+            ]
+        })
+
+
+@pytest.mark.parametrize(
+    "change",
+    [
+        {"GITHUB_ACTIONS": "false"},
+        {"GITHUB_EVENT_NAME": "pull_request"},
+        {"GITHUB_REF": "refs/heads/feature"},
+        {"GITHUB_SHA": "b" * 40},
+        {"GITHUB_REPOSITORY": "example/other"},
+    ],
+)
+def test_dependency_submission_requires_exact_trusted_main(change) -> None:
+    env = {
+        "GITHUB_ACTIONS": "true",
+        "GITHUB_EVENT_NAME": "push",
+        "GITHUB_REF": "refs/heads/main",
+        "GITHUB_SHA": "a" * 40,
+        "GITHUB_REPOSITORY": "edithatogo/global-medicines-atlas",
+    }
+    dependency_snapshot.require_trusted_main(env, "a" * 40)
+    with pytest.raises(ValueError, match="exact trusted main"):
+        dependency_snapshot.require_trusted_main({**env, **change}, "a" * 40)
+
+
+def test_dependency_submission_workflow_keeps_write_scope_off_prs() -> None:
+    document = yaml.safe_load(
+        (ROOT / ".github/workflows/security-context.yml").read_text()
+    )
+    assert document["permissions"] == {"contents": "read"}
+    job = document["jobs"]["dependency-submission"]
+    assert job["needs"] == "supply-chain"
+    assert job["permissions"] == {"contents": "write"}
+    assert "github.ref == 'refs/heads/main'" in job["if"]
+    assert "github.event_name == 'push'" in job["if"]
+    assert "github.event_name == 'workflow_dispatch'" in job["if"]
+    assert "pull_request" not in job["if"]

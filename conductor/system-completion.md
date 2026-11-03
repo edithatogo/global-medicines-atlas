@@ -138,3 +138,13 @@ through a protected PR and hosted-only exact-parent transaction. It does not
 resume federation, acquire sources, change source rights or authorize a release
 or live service. Track the measurements and limitations in
 [the project overview](../docs/project-overview.md).
+
+## Security and workflow tranche — 3 November 2026
+
+The maintainer approved one bounded batch: complete native dependency-graph
+submission, ledger-driven progress sections and closeout of merged #1399/#1400.
+Use one scoped PR and the existing protected checks. Submit a full lock snapshot
+only from audited exact main and verify the native result; do not dismiss alerts
+or upgrade fixed packages to improve the count. Progress regeneration supplies
+no Hub publication approval. Stop after integration/readback; deployment, new
+data and broader federation remain deferred.

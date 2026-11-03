@@ -1,6 +1,6 @@
 # Project architecture and measured roadmap
 
-Snapshot: **3 November 2026**. GitHub owns the software, contracts and evidence;
+The [dated snapshot](project-status.json) records the measurement date. GitHub owns the software, contracts and evidence;
 [Hugging Face](https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue)
 hosts the approved public archives. Their pages link to the same diagrams.
 
@@ -26,10 +26,12 @@ Approval, funding, formulary and terminology assertions stay independent.
 
 ![Two separate ledger measures and the remaining delivery gates.](assets/roadmap.svg)
 
-| Measure | Complete | Denominator | Proportion | Source |
-|---|---:|---:|---:|---|
-| Closed delivery tracks | 14 | 20 | 70% | [Conductor registry](../conductor/tracks.md) |
-| Verified tracked Stable v1 requirements | 84 | 92 | 91.3% | [Qualification contract](../quality/qualifications/stable-v1-contract.json) |
+<!-- gma-progress:start -->
+| Measure | Complete | Denominator | Proportion |
+|---|---:|---:|---:|
+| Closed delivery tracks | 14 | 20 | 70% |
+| Verified tracked Stable v1 requirements | 84 | 92 | 91.3% |
+<!-- gma-progress:end -->
 
 These are **unweighted counts**, not estimates of effort, source-population
 coverage or release readiness. An in-progress track receives no partial credit.
@@ -47,8 +49,11 @@ uv run --python 3.15.1 python scripts/render_project_overview.py
 uv run --python 3.15.1 python scripts/render_project_overview.py --check
 ```
 
-When refreshing the measurement date, update `AS_OF` in the renderer and review
-the accompanying prose counts. No historical acceptance receipt is rewritten.
+Use `--as-of YYYY-MM-DD` to refresh the measurement date. Without it, the
+renderer reuses the stored snapshot date, so checks stay reproducible. Counts,
+figures and the bounded progress sections are generated together. No historical
+acceptance receipt is rewritten. The already-approved Hub packet is frozen
+separately; refreshing the editable card never grants new publication approval.
 
 ## Homepage maturity
 

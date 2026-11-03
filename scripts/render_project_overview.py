@@ -7,11 +7,14 @@ import hashlib
 import json
 import re
 from collections import Counter
+from datetime import date
 from pathlib import Path
+from typing import Any, cast
 from xml.sax.saxutils import escape
 
 ROOT = Path(__file__).resolve().parents[1]
-AS_OF = "2026-11-03"
+START = "<!-- gma-progress:start -->"
+END = "<!-- gma-progress:end -->"
 
 
 def text(x: int, y: int, value: str, size: int = 16) -> str:
@@ -148,14 +151,75 @@ def medallion() -> str:
     )
 
 
-def outputs() -> dict[Path, str]:
+def replace_progress(document: str, body: str) -> str:
+    """Replace exactly one bounded section, preserving all surrounding prose."""
+    if document.count(START) != 1 or document.count(END) != 1:
+        raise ValueError("progress section needs exactly one marker pair")
+    start = document.index(START) + len(START)
+    end = document.index(END)
+    if end < start:
+        raise ValueError("progress markers are reversed")
+    return document[:start] + "\n" + body.strip() + "\n" + document[end:]
+
+
+def progress_documents(snapshot: dict[str, Any]) -> dict[Path, str]:
+    """Keep the same scope-qualified progress statement on all four surfaces."""
+    # The snapshot is produced locally by outputs, never accepted from a service.
+    tracks = cast("dict[str, int]", snapshot["tracks"])
+    requirements = cast("dict[str, int]", snapshot["requirements"])
+    closed, total = tracks["closed"], tracks["total"]
+    verified, required = requirements["verified"], requirements["total"]
+    measured = date.fromisoformat(str(snapshot["as_of"]))
+    stamp = f"{measured.day} {measured.strftime('%B %Y')}"
+    summary = (
+        f"**{closed}/{total} delivery tracks closed ({closed / total:.0%}); "
+        f"{verified}/{required} tracked Stable v1 requirements verified "
+        f"({verified / required:.1%}).** Measured on {stamp}. "
+        f"{total - closed} tracks and {required - verified} requirements remain open.\n\n"
+        "These are separate, unweighted ledger counts, not worldwide source "
+        "coverage, effort or release readiness. A single mandatory gate can block release."
+    )
+    sections = {
+        "README.md": "![Roadmap ledger completion](docs/assets/roadmap.svg)\n\n"
+        + summary
+        + "\n\nSee the [track registry](conductor/tracks.md), "
+        "[qualification contract](quality/qualifications/stable-v1-contract.json), "
+        "[roadmap](conductor/roadmap.md) and [snapshot](docs/project-status.json).",
+        "conductor/roadmap.md": f"## Measured progress — {stamp}\n\n"
+        "![Roadmap ledger completion](../docs/assets/roadmap.svg)\n\n"
+        + summary
+        + "\n\n[Measurement and reproduction](../docs/project-overview.md) "
+        "and the [bound snapshot](../docs/project-status.json) identify the inputs.",
+        "docs/publication/huggingface-catalogue-card.md": f"## Roadmap snapshot — {stamp}\n\n"
+        "![Roadmap ledger completion](https://huggingface.co/datasets/edithatogo/"
+        "global-medicines-atlas-catalogue/resolve/main/assets/roadmap.svg)\n\n"
+        + summary
+        + "\n\n[Measurement and bound snapshot](https://github.com/edithatogo/"
+        "global-medicines-atlas/blob/main/docs/project-overview.md). "
+        "Federation, independent recovery and production service qualification retain their gates.",
+        "docs/project-overview.md": "| Measure | Complete | Denominator | Proportion |\n"
+        "|---|---:|---:|---:|\n"
+        f"| Closed delivery tracks | {closed} | {total} | {closed / total:.0%} |\n"
+        f"| Verified tracked Stable v1 requirements | {verified} | {required} | {verified / required:.1%} |",
+    }
+    return {
+        ROOT / path: replace_progress((ROOT / path).read_text(), body)
+        for path, body in sections.items()
+    }
+
+
+def outputs(as_of: date | None = None) -> dict[Path, str]:
     """Bind denominators to ledgers; never turn checklist counts into release approval."""
+    as_of = as_of or date.fromisoformat(
+        json.loads((ROOT / "docs/project-status.json").read_text())["as_of"]
+    )
     tracks = ROOT / "conductor/tracks.md"
     contract = ROOT / "quality/qualifications/stable-v1-contract.json"
     rows = re.findall(
         r"^- \[([x~ ])\] \*\*Track:", tracks.read_text(), re.MULTILINE
     )
-    requirements = json.loads(contract.read_text())["requirements"]
+    document = json.loads(contract.read_text())
+    requirements = document["requirements"]
     states = Counter(row["state"] for row in requirements)
     if not rows or not requirements or set(states) - {"verified", "blocked"}:
         raise ValueError(
@@ -173,7 +237,7 @@ def outputs() -> dict[Path, str]:
     body += text(
         26,
         73,
-        f"Snapshot {AS_OF} · unweighted counts from the existing Conductor and Stable v1 ledgers",
+        f"Snapshot {as_of.isoformat()} · unweighted counts from the existing Conductor and Stable v1 ledgers",
     )
     for y, (label, done, total) in zip((125, 265), counts, strict=True):
         body += text(26, y, label, 21)
@@ -189,7 +253,11 @@ def outputs() -> dict[Path, str]:
         (26, "Software candidate", "Delivered"),
         (294, "Live federation", "Partial · gate open"),
         (562, "Independent recovery", "Authority gap"),
-        (830, "Stable v1 release", "Blocked"),
+        (
+            830,
+            "Stable v1 release",
+            str(document["qualification_state"]).capitalize(),
+        ),
     ):
         body += box(x, 390, 244, 82, "#e7edf6")
         body += text(x + 12, 421, title, 17) + text(x + 12, 450, status, 16)
@@ -206,7 +274,7 @@ def outputs() -> dict[Path, str]:
         16,
     )
     snapshot = {
-        "as_of": AS_OF,
+        "as_of": as_of.isoformat(),
         "measurement": "unweighted_ledger_counts_not_release_readiness",
         "tracks": {"closed": counts[0][1], "total": counts[0][2]},
         "requirements": {"verified": counts[1][1], "total": counts[1][2]},
@@ -214,9 +282,10 @@ def outputs() -> dict[Path, str]:
             str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
             for p in (tracks, contract)
         },
-        "stable_release_state": "blocked",
+        "stable_release_state": document["qualification_state"],
     }
     return {
+        **progress_documents(snapshot),
         ROOT / "docs/assets/medallion.svg": medallion(),
         ROOT / "docs/assets/roadmap.svg": svg(
             "GMA roadmap progress",
@@ -235,8 +304,9 @@ def main() -> None:
     """Refresh diagrams or check the committed snapshot without changing files."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true")
+    parser.add_argument("--as-of", type=date.fromisoformat)
     args = parser.parse_args()
-    for path, content in outputs().items():
+    for path, content in outputs(args.as_of).items():
         if args.check:
             if path.read_text() != content:
                 raise ValueError(f"project overview is stale: {path.name}")
