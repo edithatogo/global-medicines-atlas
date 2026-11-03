@@ -62,7 +62,7 @@ jobs:
         run: |
           set -euo pipefail
           uv venv --python 3.15.1 .space-deployment
-          uv pip sync --python .space-deployment/bin/python --require-hashes --no-build deployment/hf-space/sdk-requirements.txt
+          uv pip sync --python .space-deployment/bin/python --require-hashes deployment/hf-space/sdk-requirements.txt
           .space-deployment/bin/python -c 'import platform, huggingface_hub; assert platform.python_version() == "3.15.1"; assert huggingface_hub.__version__ == "1.19.0"'
       - name: Install the existing Chromium qualification tool
         run: uv run --no-sync playwright install --with-deps chromium
@@ -118,7 +118,7 @@ jobs:
         run: |
           set -euo pipefail
           uv venv --python 3.15.1 .space-deployment
-          uv pip sync --python .space-deployment/bin/python --require-hashes --no-build deployment/hf-space/sdk-requirements.txt
+          uv pip sync --python .space-deployment/bin/python --require-hashes deployment/hf-space/sdk-requirements.txt
           .space-deployment/bin/python -c 'import platform, huggingface_hub; assert platform.python_version() == "3.15.1"; assert huggingface_hub.__version__ == "1.19.0"'
       - name: Apply one parent-bound code transaction and verify anonymously
         env:

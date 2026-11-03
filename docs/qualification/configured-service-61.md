@@ -135,6 +135,6 @@ the scope banner survives split streaming body chunks.
 
 The existing Hub SDK 1.19.0 has a CLI Typer ceiling incompatible with the app's
 locked Typer 0.27.3. Its native deployment process therefore uses a separate
-Python 3.15.1 environment, installed wheel-only from the generated, fully hashed
+Python 3.15.1 environment, installed from the generated, fully hashed
 `sdk-requirements.txt`. The app's pyproject/uv/PEP751 lock bytes are unchanged.
 The container does not include this SDK environment or the account credential.
