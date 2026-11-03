@@ -291,12 +291,12 @@ the public FDA URLs and SHA-256 digests are references, not an archive upload.
 Candidate links in that receipt do not establish which products an action
 covers. The approved FDA source-rights ledger applies its stated exclusions.
 
-Three letters have been reviewed against the FDA action date, application,
+Four letters have been reviewed against the FDA action date, application,
 product identity, dosage form, route and strength in the pinned catalogue.
 The ANDA 207984 letter supports the 18 December 2020 tentative action for
 three capsule strengths; it expressly does not grant final approval. The BLA
 761385 letter supports the 27 March 2026 approval action for the one identified
-product. The PERIOSTAT letter supports one further product action. These five reviewed action-to-product mappings are exposed as events,
+product. The PERIOSTAT letter supports one further product action. Two DAKLINZA strengths are also reviewed. These seven action-to-product mappings are exposed as events,
 with source PDF byte lengths and SHA-256 digests. Live qualification rehashes
 the FDA references anonymously. Neither document proves a continuing status
 interval or a withdrawal date, and the remaining acquired letters have not
@@ -313,3 +313,10 @@ That inconsistency is retained as evidence. The earlier reviewed action is
 status between them is not established by those two documents, so no canonical
 validity interval is inferred. This is a bounded historical example, not proof
 of complete coverage or current status.
+
+A second [official withdrawal notice receipt](fda-withdrawal-2021-23729-receipt.json)
+records withdrawal of NDA 206843 effective 1 December 2021. Its notice
+identifies DAKLINZA strengths including both reviewed products; the later 90 mg
+product is not assigned the earlier original approval event. The Federal
+Register API did not populate its effective date, so the date was checked in
+the official PDF. Intervening status continuity remains unverified.

@@ -1,0 +1,16 @@
+{
+  "acquired_at_date": "2026-11-03",
+  "byte_count": 210140,
+  "continuity_between_approval_and_withdrawal_verified": false,
+  "document_number": "2021-23729",
+  "effective_date": "2021-12-01",
+  "effective_date_evidence": "Explicit effective date in official notice PDF; API effective_on field was null.",
+  "products": [
+    "us-drugsfda:NDA206843:001",
+    "us-drugsfda:NDA206843:002",
+    "us-drugsfda:NDA206843:003"
+  ],
+  "publication_date": "2021-11-01",
+  "sha256": "ee008a1db9c79d6866e42a55434c5b0f9cc2b355d2b56c1d2995c2cc5f27f9b0",
+  "source_uri": "https://www.govinfo.gov/content/pkg/FR-2021-11-01/pdf/2021-23729.pdf"
+}

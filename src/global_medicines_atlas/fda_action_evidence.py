@@ -66,6 +66,28 @@ REVIEWS: tuple[dict[str, Any], ...] = (
             "continuity_between_actions_verified": False,
         },
     },
+    {
+        "application_number": "NDA206843",
+        "submission_status": "AP",
+        "submission_status_date": "20150724",
+        "letter_url": "https://www.accessdata.fda.gov/drugsatfda_docs/appletter/2015/206843Orig1s000ltr.pdf",
+        "letter_sha256": "5b373565d7c84d6f1ae75004963b4b497b5e142237f5032a1473725d939e6601",
+        "letter_bytes": 137385,
+        "letter_pages": [1, 8],
+        "product_strengths": {"001": "EQ 30MG BASE", "002": "EQ 60MG BASE"},
+        "brand_name": "DAKLINZA",
+        "dosage_form": "TABLET",
+        "route": "ORAL",
+        "ingredient": "DACLATASVIR DIHYDROCHLORIDE",
+        "withdrawal": {
+            "effective_date": "2021-12-01",
+            "source_uri": "https://www.govinfo.gov/content/pkg/FR-2021-11-01/pdf/2021-23729.pdf",
+            "source_sha256": "ee008a1db9c79d6866e42a55434c5b0f9cc2b355d2b56c1d2995c2cc5f27f9b0",
+            "source_bytes": 210140,
+            "document_number": "2021-23729",
+            "continuity_between_actions_verified": False,
+        },
+    },
 )
 
 
