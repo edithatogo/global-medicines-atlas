@@ -196,38 +196,57 @@ def verify_source_receipts(reviews: Any, root: Path | None = None) -> None:
         ):
             raise ValueError("FDA letter acquisition receipt differs")
         withdrawal = review.get("withdrawal")
-        if withdrawal:
-            number = withdrawal["document_number"]
-            if not re.fullmatch(r"(?:[0-9]{2}|[0-9]{4})-[0-9]{4,6}", number):
-                raise ValueError("withdrawal document identity differs")
-            receipt = json.loads(
-                (
-                    directory / f"fda-withdrawal-{number}-receipt.json"
-                ).read_text()
-            )
-            if any(
-                receipt.get(key) != value
-                for key, value in {
-                    "document_number": number,
-                    "source_uri": withdrawal["source_uri"],
-                    "sha256": withdrawal["source_sha256"],
-                    "byte_count": withdrawal["source_bytes"],
-                    "effective_date": withdrawal["effective_date"],
-                    "continuity_between_approval_and_withdrawal_verified": False,
-                }.items()
+        if not withdrawal:
+            continue
+        candidates = withdrawal.get("candidates")
+        if candidates is not None:
+            minimum_conflicting_dates = 2
+            if (
+                withdrawal.get("qualification") != "conflicting_dates"
+                or withdrawal.get("effective_date") is not None
+                or withdrawal.get("continuity_between_actions_verified")
+                is not False
+                or len(candidates) < minimum_conflicting_dates
+                or len({item["effective_date"] for item in candidates})
+                < minimum_conflicting_dates
             ):
-                raise ValueError("withdrawal acquisition receipt differs")
-            correction = withdrawal.get("correction")
-            if correction:
-                if receipt.get("correction") != correction:
-                    raise ValueError("withdrawal correction receipt differs")
-                if (
-                    correction["corrected_application"]
-                    == review["application_number"]
-                ):
-                    raise ValueError(
-                        "withdrawal was corrected for this application"
-                    )
+                raise ValueError("withdrawal conflict is not preserved")
+        else:
+            candidates = [withdrawal]
+        for candidate in candidates:
+            verify_withdrawal_receipt(
+                directory, review["application_number"], candidate
+            )
+
+
+def verify_withdrawal_receipt(
+    directory: Path, application: str, withdrawal: dict[str, Any]
+) -> None:
+    """Check each withdrawal notice and any published correction."""
+    number = withdrawal["document_number"]
+    if not re.fullmatch(r"(?:[0-9]{2}|[0-9]{4})-[0-9]{4,6}", number):
+        raise ValueError("withdrawal document identity differs")
+    receipt = json.loads(
+        (directory / f"fda-withdrawal-{number}-receipt.json").read_text()
+    )
+    if any(
+        receipt.get(key) != value
+        for key, value in {
+            "document_number": number,
+            "source_uri": withdrawal["source_uri"],
+            "sha256": withdrawal["source_sha256"],
+            "byte_count": withdrawal["source_bytes"],
+            "effective_date": withdrawal["effective_date"],
+            "continuity_between_approval_and_withdrawal_verified": False,
+        }.items()
+    ):
+        raise ValueError("withdrawal acquisition receipt differs")
+    correction = withdrawal.get("correction")
+    if correction:
+        if receipt.get("correction") != correction:
+            raise ValueError("withdrawal correction receipt differs")
+        if correction["corrected_application"] == application:
+            raise ValueError("withdrawal was corrected for this application")
 
 
 def verify_approval_bound(event: dict[str, Any]) -> None:

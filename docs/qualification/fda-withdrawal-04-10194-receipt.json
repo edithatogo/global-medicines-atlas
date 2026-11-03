@@ -1,0 +1,18 @@
+{
+  "byte_count": 128246,
+  "continuity_between_approval_and_withdrawal_verified": false,
+  "correction": {
+    "corrected_application": "ANDA088584",
+    "document_number": "04-17110",
+    "source_bytes": 142559,
+    "source_sha256": "15a893ca578852d3eb62a0c07dddaf41bc605d2486a0dbe8a89dce4943eccea5",
+    "source_uri": "https://www.govinfo.gov/content/pkg/FR-2004-07-28/pdf/04-17110.pdf"
+  },
+  "correction_scope": "FDA correction removes an unrelated ANDA 88-584 and preserves June 4, 2004; its final table reference says NDA, while its summary identifies ANDA.",
+  "document_number": "04-10194",
+  "effective_date": "2004-06-04",
+  "product": "us-drugsfda:NDA050744:001",
+  "publication_date": "2004-05-05",
+  "sha256": "cc60ce8b168eac3c2e1cfaf03f395a5e33dd3a258e346095f8d2040d9a05687f",
+  "source_uri": "https://www.govinfo.gov/content/pkg/FR-2004-05-05/pdf/04-10194.pdf"
+}

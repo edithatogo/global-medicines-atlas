@@ -58,12 +58,32 @@ REVIEWS: tuple[dict[str, Any], ...] = (
         "route": "ORAL",
         "ingredient": "DOXYCYCLINE HYCLATE",
         "withdrawal": {
-            "effective_date": "2005-06-15",
-            "source_uri": "https://www.govinfo.gov/content/pkg/FR-2005-05-16/pdf/05-9624.pdf",
-            "source_sha256": "427592fd2c5c65bf69a28cb55af43451aa40117ae43a791630b0a590b86aa568",
-            "source_bytes": 147989,
-            "document_number": "05-9624",
+            "qualification": "conflicting_dates",
+            "effective_date": None,
             "continuity_between_actions_verified": False,
+            "candidates": [
+                {
+                    "effective_date": "2004-06-04",
+                    "source_uri": "https://www.govinfo.gov/content/pkg/FR-2004-05-05/pdf/04-10194.pdf",
+                    "source_sha256": "cc60ce8b168eac3c2e1cfaf03f395a5e33dd3a258e346095f8d2040d9a05687f",
+                    "source_bytes": 128246,
+                    "document_number": "04-10194",
+                    "correction": {
+                        "document_number": "04-17110",
+                        "source_uri": "https://www.govinfo.gov/content/pkg/FR-2004-07-28/pdf/04-17110.pdf",
+                        "source_sha256": "15a893ca578852d3eb62a0c07dddaf41bc605d2486a0dbe8a89dce4943eccea5",
+                        "source_bytes": 142559,
+                        "corrected_application": "ANDA088584",
+                    },
+                },
+                {
+                    "effective_date": "2005-06-15",
+                    "source_uri": "https://www.govinfo.gov/content/pkg/FR-2005-05-16/pdf/05-9624.pdf",
+                    "source_sha256": "427592fd2c5c65bf69a28cb55af43451aa40117ae43a791630b0a590b86aa568",
+                    "source_bytes": 147989,
+                    "document_number": "05-9624",
+                },
+            ],
         },
     },
     {

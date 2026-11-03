@@ -1,0 +1,320 @@
+{
+  "additional_searches": [
+    {
+      "documents": [
+        "2015-01859",
+        "05-9624",
+        "04-10194"
+      ],
+      "response_sha256": "139983716cd421a85dad3407e5c2472f33aa546f49869e59937f85728d9b9d8f",
+      "result_count": 3,
+      "term": "\"PERIOSTAT\""
+    },
+    {
+      "documents": [
+        "04-17110",
+        "04-10194"
+      ],
+      "response_sha256": "8c418bac9888877dfba8755c804119ca8c4484ad0291a0f50735097f2a631d1f",
+      "result_count": 2,
+      "term": "\"04-10194\""
+    },
+    {
+      "documents": [
+        "04-17110",
+        "04-10194"
+      ],
+      "response_sha256": "6eab489f133f9cb2481d70393909a1c656f7a68c9977e3117998616ba8cda99a",
+      "result_count": 2,
+      "term": "\"2004N-0159\""
+    }
+  ],
+  "history_completeness": "unverified",
+  "negative_search_results_establish_no_suspension": false,
+  "retrieved_at": "2026-11-03T11:51:56.403131+00:00",
+  "scope": "FDA-agency public Federal Register indexed full text searches by two literal application number formats; search results are not complete FDA adjudicative histories and no absence implies no suspension or restoration.",
+  "searches": [
+    {
+      "application": "ANDA207984",
+      "captures": [
+        {
+          "bytes": 97,
+          "count": 0,
+          "page": 1,
+          "sha256": "c201d27ca9327685de24cb1e86853f316e10dc8174490e8e3528b37fab741658",
+          "url": "https://www.federalregister.gov/api/v1/documents.json?conditions%5Bterm%5D=%22207984%22&conditions%5Bagencies%5D%5B%5D=food-and-drug-administration&per_page=100&page=1&fields%5B%5D=title&fields%5B%5D=html_url&fields%5B%5D=raw_text_url&fields%5B%5D=pdf_url&fields%5B%5D=effective_on&fields%5B%5D=publication_date&fields%5B%5D=document_number&fields%5B%5D=type"
+        }
+      ],
+      "documents": [],
+      "result_count": 0,
+      "term": "\"207984\""
+    },
+    {
+      "application": "ANDA207984",
+      "captures": [
+        {
+          "bytes": 98,
+          "count": 0,
+          "page": 1,
+          "sha256": "87df956915f739a3840a5ac801e1943e3c7ac9688b1c108cca79cbd7248e8daa",
+          "url": "https://www.federalregister.gov/api/v1/documents.json?conditions%5Bterm%5D=%22207-984%22&conditions%5Bagencies%5D%5B%5D=food-and-drug-administration&per_page=100&page=1&fields%5B%5D=title&fields%5B%5D=html_url&fields%5B%5D=raw_text_url&fields%5B%5D=pdf_url&fields%5B%5D=effective_on&fields%5B%5D=publication_date&fields%5B%5D=document_number&fields%5B%5D=type"
+        }
+      ],
+      "documents": [],
+      "result_count": 0,
+      "term": "\"207-984\""
+    },
+    {
+      "application": "BLA761385",
+      "captures": [
+        {
+          "bytes": 97,
+          "count": 0,
+          "page": 1,
+          "sha256": "21638b0fac11d5d64f51eb93c8f839b9b6f856131d6335a82e2b4b149aa96042",
+          "url": "https://www.federalregister.gov/api/v1/documents.json?conditions%5Bterm%5D=%22761385%22&conditions%5Bagencies%5D%5B%5D=food-and-drug-administration&per_page=100&page=1&fields%5B%5D=title&fields%5B%5D=html_url&fields%5B%5D=raw_text_url&fields%5B%5D=pdf_url&fields%5B%5D=effective_on&fields%5B%5D=publication_date&fields%5B%5D=document_number&fields%5B%5D=type"
+        }
+      ],
+      "documents": [],
+      "result_count": 0,
+      "term": "\"761385\""
+    },
+    {
+      "application": "BLA761385",
+      "captures": [
+        {
+          "bytes": 98,
+          "count": 0,
+          "page": 1,
+          "sha256": "5bedc041e5d411fba3443e748566f3c90155993f087cf5095b1a140bcb3bd096",
+          "url": "https://www.federalregister.gov/api/v1/documents.json?conditions%5Bterm%5D=%22761-385%22&conditions%5Bagencies%5D%5B%5D=food-and-drug-administration&per_page=100&page=1&fields%5B%5D=title&fields%5B%5D=html_url&fields%5B%5D=raw_text_url&fields%5B%5D=pdf_url&fields%5B%5D=effective_on&fields%5B%5D=publication_date&fields%5B%5D=document_number&fields%5B%5D=type"
+        }
+      ],
+      "documents": [],
+      "result_count": 0,
+      "term": "\"761-385\""
+    },
+    {
+      "application": "NDA050744",
+      "captures": [
+        {
+          "bytes": 97,
+          "count": 0,
+          "page": 1,
+          "sha256": "4482244a3db6bb2c0ffe5528e9910ec986dc392cfd0abfc98e06f65ab85a7e33",
+          "url": "https://www.federalregister.gov/api/v1/documents.json?conditions%5Bterm%5D=%22050744%22&conditions%5Bagencies%5D%5B%5D=food-and-drug-administration&per_page=100&page=1&fields%5B%5D=title&fields%5B%5D=html_url&fields%5B%5D=raw_text_url&fields%5B%5D=pdf_url&fields%5B%5D=effective_on&fields%5B%5D=publication_date&fields%5B%5D=document_number&fields%5B%5D=type"
+        }
+      ],
+      "documents": [],
+      "result_count": 0,
+      "term": "\"050744\""
+    },
+    {
+      "application": "NDA050744",
+      "captures": [
+        {
+          "bytes": 1377,
+          "count": 2,
+          "page": 1,
+          "sha256": "6e0f8b8fb3cf08d837e7a58e93b6a716c94e597ebef43ba5926459aa912e377d",
+          "url": "https://www.federalregister.gov/api/v1/documents.json?conditions%5Bterm%5D=%2250-744%22&conditions%5Bagencies%5D%5B%5D=food-and-drug-administration&per_page=100&page=1&fields%5B%5D=title&fields%5B%5D=html_url&fields%5B%5D=raw_text_url&fields%5B%5D=pdf_url&fields%5B%5D=effective_on&fields%5B%5D=publication_date&fields%5B%5D=document_number&fields%5B%5D=type"
+        }
+      ],
+      "documents": [
+        "04-10194",
+        "05-9624"
+      ],
+      "result_count": 2,
+      "term": "\"50-744\""
+    },
+    {
+      "application": "NDA206843",
+      "captures": [
+        {
+          "bytes": 1188,
+          "count": 2,
+          "page": 1,
+          "sha256": "a7571c2869e30a2ba3b70c12aafbd6e2177e995d5f84c1e730c85fc61ee271ab",
+          "url": "https://www.federalregister.gov/api/v1/documents.json?conditions%5Bterm%5D=%22206843%22&conditions%5Bagencies%5D%5B%5D=food-and-drug-administration&per_page=100&page=1&fields%5B%5D=title&fields%5B%5D=html_url&fields%5B%5D=raw_text_url&fields%5B%5D=pdf_url&fields%5B%5D=effective_on&fields%5B%5D=publication_date&fields%5B%5D=document_number&fields%5B%5D=type"
+        }
+      ],
+      "documents": [
+        "2018-00675",
+        "2021-23729"
+      ],
+      "result_count": 2,
+      "term": "\"206843\""
+    },
+    {
+      "application": "NDA206843",
+      "captures": [
+        {
+          "bytes": 98,
+          "count": 0,
+          "page": 1,
+          "sha256": "4180f7081e6f1c3074085bae9eb8adf74c7b506b204f3b5daa8346b782ef8a60",
+          "url": "https://www.federalregister.gov/api/v1/documents.json?conditions%5Bterm%5D=%22206-843%22&conditions%5Bagencies%5D%5B%5D=food-and-drug-administration&per_page=100&page=1&fields%5B%5D=title&fields%5B%5D=html_url&fields%5B%5D=raw_text_url&fields%5B%5D=pdf_url&fields%5B%5D=effective_on&fields%5B%5D=publication_date&fields%5B%5D=document_number&fields%5B%5D=type"
+        }
+      ],
+      "documents": [],
+      "result_count": 0,
+      "term": "\"206-843\""
+    },
+    {
+      "application": "ANDA075037",
+      "captures": [
+        {
+          "bytes": 97,
+          "count": 0,
+          "page": 1,
+          "sha256": "cd325895f48c5ec611a300e68abe74aee9dd84444f2d426c7a55740c7d10a6f5",
+          "url": "https://www.federalregister.gov/api/v1/documents.json?conditions%5Bterm%5D=%22075037%22&conditions%5Bagencies%5D%5B%5D=food-and-drug-administration&per_page=100&page=1&fields%5B%5D=title&fields%5B%5D=html_url&fields%5B%5D=raw_text_url&fields%5B%5D=pdf_url&fields%5B%5D=effective_on&fields%5B%5D=publication_date&fields%5B%5D=document_number&fields%5B%5D=type"
+        }
+      ],
+      "documents": [],
+      "result_count": 0,
+      "term": "\"075037\""
+    },
+    {
+      "application": "ANDA075037",
+      "captures": [
+        {
+          "bytes": 97,
+          "count": 0,
+          "page": 1,
+          "sha256": "16319716863568b769c5ce49566f6f4a489c7e7c3803348d9afb9a444a018582",
+          "url": "https://www.federalregister.gov/api/v1/documents.json?conditions%5Bterm%5D=%2275-037%22&conditions%5Bagencies%5D%5B%5D=food-and-drug-administration&per_page=100&page=1&fields%5B%5D=title&fields%5B%5D=html_url&fields%5B%5D=raw_text_url&fields%5B%5D=pdf_url&fields%5B%5D=effective_on&fields%5B%5D=publication_date&fields%5B%5D=document_number&fields%5B%5D=type"
+        }
+      ],
+      "documents": [],
+      "result_count": 0,
+      "term": "\"75-037\""
+    },
+    {
+      "application": "ANDA074723",
+      "captures": [
+        {
+          "bytes": 684,
+          "count": 1,
+          "page": 1,
+          "sha256": "c8b1ec1adcd4649006ebea2fb53b28c18a90efe848a67ac157d09045976f93d5",
+          "url": "https://www.federalregister.gov/api/v1/documents.json?conditions%5Bterm%5D=%22074723%22&conditions%5Bagencies%5D%5B%5D=food-and-drug-administration&per_page=100&page=1&fields%5B%5D=title&fields%5B%5D=html_url&fields%5B%5D=raw_text_url&fields%5B%5D=pdf_url&fields%5B%5D=effective_on&fields%5B%5D=publication_date&fields%5B%5D=document_number&fields%5B%5D=type"
+        }
+      ],
+      "documents": [
+        "2021-13593"
+      ],
+      "result_count": 1,
+      "term": "\"074723\""
+    },
+    {
+      "application": "ANDA074723",
+      "captures": [
+        {
+          "bytes": 97,
+          "count": 0,
+          "page": 1,
+          "sha256": "2bff7254d9a29bf9b959f1c24101ed486c61b6f35eec5f8f4231fe22e301c3f6",
+          "url": "https://www.federalregister.gov/api/v1/documents.json?conditions%5Bterm%5D=%2274-723%22&conditions%5Bagencies%5D%5B%5D=food-and-drug-administration&per_page=100&page=1&fields%5B%5D=title&fields%5B%5D=html_url&fields%5B%5D=raw_text_url&fields%5B%5D=pdf_url&fields%5B%5D=effective_on&fields%5B%5D=publication_date&fields%5B%5D=document_number&fields%5B%5D=type"
+        }
+      ],
+      "documents": [],
+      "result_count": 0,
+      "term": "\"74-723\""
+    },
+    {
+      "application": "NDA021938",
+      "captures": [
+        {
+          "bytes": 1174,
+          "count": 2,
+          "page": 1,
+          "sha256": "6c680fcd8f95a92ed6596dfdcc1d233ad9c151200b12b63199544b15aba380bf",
+          "url": "https://www.federalregister.gov/api/v1/documents.json?conditions%5Bterm%5D=%22021938%22&conditions%5Bagencies%5D%5B%5D=food-and-drug-administration&per_page=100&page=1&fields%5B%5D=title&fields%5B%5D=html_url&fields%5B%5D=raw_text_url&fields%5B%5D=pdf_url&fields%5B%5D=effective_on&fields%5B%5D=publication_date&fields%5B%5D=document_number&fields%5B%5D=type"
+        }
+      ],
+      "documents": [
+        "2011-4614",
+        "2017-16518"
+      ],
+      "result_count": 2,
+      "term": "\"021938\""
+    },
+    {
+      "application": "NDA021938",
+      "captures": [
+        {
+          "bytes": 97,
+          "count": 0,
+          "page": 1,
+          "sha256": "13f8cdd800b704278dda83a58aaee6e6ad41df464a08a7edeaa305248063a8c6",
+          "url": "https://www.federalregister.gov/api/v1/documents.json?conditions%5Bterm%5D=%2221-938%22&conditions%5Bagencies%5D%5B%5D=food-and-drug-administration&per_page=100&page=1&fields%5B%5D=title&fields%5B%5D=html_url&fields%5B%5D=raw_text_url&fields%5B%5D=pdf_url&fields%5B%5D=effective_on&fields%5B%5D=publication_date&fields%5B%5D=document_number&fields%5B%5D=type"
+        }
+      ],
+      "documents": [],
+      "result_count": 0,
+      "term": "\"21-938\""
+    },
+    {
+      "application": "ANDA202956",
+      "captures": [
+        {
+          "bytes": 97,
+          "count": 0,
+          "page": 1,
+          "sha256": "7236eb45ddba79d56b6b328e78a992cf679757217a0467e0dfda2400fbd0866f",
+          "url": "https://www.federalregister.gov/api/v1/documents.json?conditions%5Bterm%5D=%22202956%22&conditions%5Bagencies%5D%5B%5D=food-and-drug-administration&per_page=100&page=1&fields%5B%5D=title&fields%5B%5D=html_url&fields%5B%5D=raw_text_url&fields%5B%5D=pdf_url&fields%5B%5D=effective_on&fields%5B%5D=publication_date&fields%5B%5D=document_number&fields%5B%5D=type"
+        }
+      ],
+      "documents": [],
+      "result_count": 0,
+      "term": "\"202956\""
+    },
+    {
+      "application": "ANDA202956",
+      "captures": [
+        {
+          "bytes": 98,
+          "count": 0,
+          "page": 1,
+          "sha256": "e6bb272f94de7159c54551c36e4bcfd3abb5c72371c40265d7cf611bb5d13d62",
+          "url": "https://www.federalregister.gov/api/v1/documents.json?conditions%5Bterm%5D=%22202-956%22&conditions%5Bagencies%5D%5B%5D=food-and-drug-administration&per_page=100&page=1&fields%5B%5D=title&fields%5B%5D=html_url&fields%5B%5D=raw_text_url&fields%5B%5D=pdf_url&fields%5B%5D=effective_on&fields%5B%5D=publication_date&fields%5B%5D=document_number&fields%5B%5D=type"
+        }
+      ],
+      "documents": [],
+      "result_count": 0,
+      "term": "\"202-956\""
+    },
+    {
+      "application": "ANDA216947",
+      "captures": [
+        {
+          "bytes": 97,
+          "count": 0,
+          "page": 1,
+          "sha256": "497e6e28398cd1f161b33cf72b9cb390ecc261d625a7a5cc775bca6c9bd30bdf",
+          "url": "https://www.federalregister.gov/api/v1/documents.json?conditions%5Bterm%5D=%22216947%22&conditions%5Bagencies%5D%5B%5D=food-and-drug-administration&per_page=100&page=1&fields%5B%5D=title&fields%5B%5D=html_url&fields%5B%5D=raw_text_url&fields%5B%5D=pdf_url&fields%5B%5D=effective_on&fields%5B%5D=publication_date&fields%5B%5D=document_number&fields%5B%5D=type"
+        }
+      ],
+      "documents": [],
+      "result_count": 0,
+      "term": "\"216947\""
+    },
+    {
+      "application": "ANDA216947",
+      "captures": [
+        {
+          "bytes": 98,
+          "count": 0,
+          "page": 1,
+          "sha256": "ed0ff6a903306956f80c6d87a3144b793422043d7cd02539e4779f67b0b52e27",
+          "url": "https://www.federalregister.gov/api/v1/documents.json?conditions%5Bterm%5D=%22216-947%22&conditions%5Bagencies%5D%5B%5D=food-and-drug-administration&per_page=100&page=1&fields%5B%5D=title&fields%5B%5D=html_url&fields%5B%5D=raw_text_url&fields%5B%5D=pdf_url&fields%5B%5D=effective_on&fields%5B%5D=publication_date&fields%5B%5D=document_number&fields%5B%5D=type"
+        }
+      ],
+      "documents": [],
+      "result_count": 0,
+      "term": "\"216-947\""
+    }
+  ],
+  "source": "https://www.federalregister.gov/api/v1/documents.json"
+}

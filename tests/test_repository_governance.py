@@ -774,3 +774,49 @@ def test_withdrawal_correction_must_be_retained_and_not_reverse_product(
             deploy_hf_space.verify_source_receipts((review,), tmp_path)
     else:
         deploy_hf_space.verify_source_receipts((review,), tmp_path)
+
+
+@pytest.mark.parametrize(
+    "tamper",
+    [
+        None,
+        "selected_date",
+        "single_candidate",
+        "same_date",
+        "qualification",
+        "wrong_digest",
+    ],
+)
+def test_conflicting_withdrawals_remain_unresolved_and_receipted(
+    tmp_path, tamper
+):
+    from global_medicines_atlas.fda_action_evidence import REVIEWS  # ruff: ignore[import-outside-top-level]
+
+    source = ROOT / "docs/qualification"
+    for name in (
+        "fda-action-letter-acquisition-20261103.json",
+        "fda-withdrawal-04-10194-receipt.json",
+        "fda-withdrawal-05-9624-receipt.json",
+    ):
+        shutil.copy(source / name, tmp_path)
+    review = json.loads(
+        json.dumps(
+            next(x for x in REVIEWS if x["application_number"] == "NDA050744")
+        )
+    )
+    withdrawal = review["withdrawal"]
+    if tamper == "selected_date":
+        withdrawal["effective_date"] = "2005-06-15"
+    if tamper == "single_candidate":
+        withdrawal["candidates"].pop()
+    if tamper == "same_date":
+        withdrawal["candidates"][0]["effective_date"] = "2005-06-15"
+    if tamper == "qualification":
+        withdrawal["qualification"] = "confirmed"
+    if tamper == "wrong_digest":
+        withdrawal["candidates"][0]["source_sha256"] = "0" * 64
+    if tamper:
+        with pytest.raises(ValueError, match="withdrawal"):
+            deploy_hf_space.verify_source_receipts((review,), tmp_path)
+    else:
+        deploy_hf_space.verify_source_receipts((review,), tmp_path)

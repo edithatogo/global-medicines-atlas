@@ -303,6 +303,10 @@ interval or a withdrawal date, and the remaining acquired letters have not
 been promoted merely by date matching. The production comparison-data gate and
 #61 remain open until source-supported intervals and required coverage exist.
 
+**Superseded single-date interpretation:** a later history search identified
+a second official withdrawal notice with a different effective date. Both
+notices are retained below and the service must leave the date unresolved.
+
 The FDA notice in official Federal Register document 05-9624 identifies the
 withdrawal of NDA 50-744 for PERIOSTAT 20 mg capsules effective 15 June 2005.
 Its [official PDF receipt](fda-withdrawal-05-9624-receipt.json) binds the exact
@@ -358,3 +362,25 @@ The [notice receipt](fda-withdrawal-2021-13593-receipt.json) binds its PDF and
 the official correction by SHA-256. The correction removed ANDA 065152 from
 the withdrawal list; it did not remove ANDA 074723. Neither notice establishes
 uninterrupted status between the 1999 approval and the 2021 withdrawal.
+
+### FDA status-history reconciliation — 3 November 2026
+
+Chat `01a19600-56dd-73a2-9ff5-4a2484a54493` owns checkout
+`/Volumes/PortableSSD/GitHub/global-medicines-atlas`, branch
+`codex/61-fda-status-history`. The [bounded search receipt](fda-status-history-search-20261103.json)
+records FDA-agency Federal Register indexed searches for the nine reviewed
+applications using two number formats. No returned result established a
+suspension or restoration, but neither the index coverage nor the spelling
+variants have been proven complete; zero matches do not establish absence.
+
+The search identified official notice 04-10194, which names NDA 50-744 and
+sets withdrawal effective 4 June 2004. Its [receipt](fda-withdrawal-04-10194-receipt.json)
+binds the official PDF and the later 04-17110 correction by content digest.
+That correction removes a different application, ANDA 88-584, and preserves
+the notice's effective date. Notice 05-9624, already retained above, also
+names NDA 50-744 and sets withdrawal effective 15 June 2005. No source was
+found resolving the two dates. The previously exposed single 2005 date was
+incomplete: the corrected service returns both source-bound candidates,
+`effective_date: null`, and `qualification: conflicting_dates`. It does not
+select an end date or infer intervening approval. The search receipts and
+official PDFs remain retained locally; no archive was published.
