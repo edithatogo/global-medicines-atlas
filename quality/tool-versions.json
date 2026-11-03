@@ -10,7 +10,7 @@
     "python": "3.15.1",
     "python_free_threaded": "3.15.1t",
     "runner": "ubuntu-24.04",
-    "uv": "0.13.5"
+    "uv": "0.13.6"
   },
   "checksums": {
     "gitleaks_asset": "gitleaks_8.30.1_linux_x64.tar.gz",

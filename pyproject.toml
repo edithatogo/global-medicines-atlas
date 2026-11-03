@@ -109,7 +109,7 @@ package = true
 default-groups = ["test-goblin"]
 # Temporary edgetest compatibility override: its uv ceiling predates the CA fix.
 # Keep the three dependency environments qualified before removing this bound.
-override-dependencies = ["uv==0.13.5"]
+override-dependencies = ["uv==0.13.6"]
 
 [tool.uv.dependency-groups]
 test = { requires-python = ">=3.15,<3.16" }

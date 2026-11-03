@@ -39,8 +39,8 @@
       "track": "federated_medicines_platinum_20260829",
       "release_gate": "stable-v1-australian-health-federation",
       "capability": "API, CLI, Atlas and exports consume the same qualified revisions",
-      "current_failure": "Public pages and installed consumers are integrated (#1399/#1400). Native dependency graph versions lag the lock; progress prose needs manual editing and completed task markers require reconciliation.",
-      "next_action": "Implement the explicitly approved 2026-11-03 security/workflow tranche: exact-main full-lock dependency submission, dated ledger-driven progress sections, and #1399/#1400 closeout. Preserve all existing qualification and separate Hub publication gates; stop after one post-merge native readback.",
+      "current_failure": "Bounded software, public pages and security/workflow tranche are integrated (#1399/#1400/#1401). Standing dashboard #491 lists the selected uv 0.13.6 patch; active pins still require this maintenance update.",
+      "next_action": "Complete the explicitly approved 2026-11-03 #491 uv 0.13.6 patch: align active pins and generated locks, preserve unrelated versions, review, protected integration and automatic native graph readback. Stop without reopening deferred federation or publication.",
       "completion_evidence": "For the current software milestone: locked Python 3.15.1 setup, representative product tests, clean wheel/sdist consumer receipt, supported contributor commands, and protected integration. Later live federation acceptance continues to require its original exact per-output receipts.",
       "stop_condition": "Stop when the bounded software checklist in system-completion.md passes. Do not start deferred federation work or claim Stable v1 release readiness.",
       "validation": "Use existing focused context and product tests and one clean-consumer package check; reuse unchanged hosted coverage/security evidence and retain all required PR checks."

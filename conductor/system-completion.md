@@ -148,3 +148,11 @@ only from audited exact main and verify the native result; do not dismiss alerts
 or upgrade fixed packages to improve the count. Progress regeneration supplies
 no Hub publication approval. Stop after integration/readback; deployment, new
 data and broader federation remain deferred.
+
+## Authorized #491 patch maintenance — 3 November 2026
+
+After #1401 completed, the maintainer selected the narrow uv 0.13.6 maintenance
+patch. Update existing active pins and generated locks, qualify on Python 3.15.1,
+review and integrate after protected CI. Keep unrelated dependency versions,
+historical receipts and all release/federation gates intact. Stop after merge
+and the automatic dependency-submission readback; #491 remains open.

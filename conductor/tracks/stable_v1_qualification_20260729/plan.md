@@ -1283,8 +1283,29 @@ The maintainer explicitly approved this finite implementation plan.
 - [x] Generate dated figures and bounded progress text together; check drift
   without writes. Preserve the immutable approved Hub packet separately.
 - [x] Reconcile only #1399/#1400 closeouts from native merge/publication readback.
-- [ ] Review, run affected checks, complete protected CI, integrate once and
-  verify one main submission plus native graph/alert readback.
+- [x] Review, run affected checks, complete protected CI, integrate once and
+  verify one main submission plus native graph/alert readback. PR #1401 checked
+  head `20fb528d` passed all 29 required checks and merged as `cb75d641`.
+  Main run `41566097914` submitted 138 packages (snapshot `117525779`); native
+  graph reports filelock 4.2.4/msgpack 1.2.3, all 13 targeted alerts fixed,
+  zero open or dismissed alerts. No Hub publication or dependency upgrades.
 
 Stop after this batch. #491 remains a standing dashboard; all broader parent
 issues and original qualification gates remain open.
+
+## #491 uv patch maintenance — 3 November 2026
+
+Owner: chat `01a19600-56dd-73a2-9ff5-4a2484a54493`, actual checkout
+`/Volumes/PortableSSD/GitHub/global-medicines-atlas`, branch
+`codex/491-uv-patch`, base `cb75d641`. Prior ownership remains history.
+The maintainer selected the narrow uv 0.13.6 patch from standing dashboard #491.
+Scope is existing active uv pins, their generated locks, focused verification
+and the previous tranche's observed closeout. No other dependency upgrade,
+Python migration, publication, deployment or federation work.
+
+- [x] Qualify uv 0.13.6 with Python 3.15.1; update all active tool pins and locks
+  while retaining unrelated package versions and immutable historical evidence.
+- [ ] Review focused governance, lock/export, context and monitoring checks;
+  integrate one protected PR and verify main's dependency submission.
+
+Stop after protected integration and native readback; #491 remains open.

@@ -557,7 +557,7 @@ def test_tool_versions_match_governed_workflow_literals() -> None:
     versions = HARNESS.validate_tool_versions()
 
     assert versions["python"] == "3.15.1"
-    assert versions["uv"] == "0.13.5"
+    assert versions["uv"] == "0.13.6"
     assert versions["pixi"] == "0.82.1"
     assert versions["gitleaks"] == "8.30.1"
     assert versions["mojo"] == "1.0.0b3.dev2026072806"
