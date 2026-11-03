@@ -1,12 +1,5 @@
-name: Hosted accessibility audit
+name: Historical accessibility audit (manual only)
 on:
-  pull_request:
-    paths:
-      - src/global_medicines_atlas/templates/**
-      - src/global_medicines_atlas/hosted_service.py
-      - scripts/audit_hosted_accessibility.py
-      - deployment/accessibility/**
-      - .github/workflows/hosted-accessibility.yml
   workflow_dispatch:
 concurrency:
   group: hosted-accessibility-${{ github.ref }}
@@ -35,16 +28,8 @@ jobs:
       - name: Audit candidate or native deployment
         env:
           SSL_CERT_FILE: ${{ github.workspace }}/.ci/trust/cacert.pem
-          GMA_APPLICATION_COMMIT: ${{ github.sha }}
-          GMA_CURSOR_SECRET: synthetic-ci-only-audit-key-with-sufficient-length
         run: |
-          if [ "$GITHUB_EVENT_NAME" = pull_request ]; then
-            uv run --no-sync uvicorn global_medicines_atlas.hosted_service:create_app --factory --host 127.0.0.1 --port 7860 > /tmp/audit-service.log 2>&1 &
-            trap 'kill $!' EXIT
-            uv run --no-sync python scripts/audit_hosted_accessibility.py --url http://127.0.0.1:7860 --commit "$GITHUB_SHA" --axe deployment/accessibility/node_modules/axe-core/axe.min.js --receipt build/hosted-accessibility.json
-          else
-            uv run --no-sync python scripts/audit_hosted_accessibility.py --commit "$GITHUB_SHA" --axe deployment/accessibility/node_modules/axe-core/axe.min.js --receipt build/hosted-accessibility.json
-          fi
+          uv run --no-sync python scripts/audit_hosted_accessibility.py --commit "$GITHUB_SHA" --axe deployment/accessibility/node_modules/axe-core/axe.min.js --receipt build/hosted-accessibility.json
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: always()
         with:
