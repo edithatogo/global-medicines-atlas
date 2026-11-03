@@ -189,3 +189,8 @@ validity-end/continued-approval evidence in this projection. Treating every
 AP action as approval of every associated product would invent evidence; TA
 must remain distinct. Existing sources require that bounded mapping and
 qualification before the production temporal gate can pass.
+
+The [direct manual assessment and source mapping disposition](atlas-manual-assessment-61.md)
+records the follow-up keyboard findings and FDA's actual table keys. Membership
+is supported; submission-to-product temporal applicability remains unresolved.
+Keep full conformance and production-data gates unverified.

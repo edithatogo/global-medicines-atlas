@@ -165,8 +165,8 @@ def test_hosted_scope_disclosure_handles_split_body_chunks(
     try:
         response = client.get("/")
         assert "Historical FDA catalogue candidate" in response.text
-        assert "chunked</header></body>" in response.text
-        assert '<header><p role="note">' in response.text
+        assert "</p></header></body>" in response.text
+        assert '<header>chunked<p role="note">' in response.text
     finally:
         client.close()
 

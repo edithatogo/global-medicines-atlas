@@ -556,6 +556,7 @@ def _exercise_keyboard_evidence_flow(
     assert search.get_attribute("aria-activedescendant") == "concept-option-1"
     assert page.get_by_role("option").get_attribute("aria-selected") == "true"
     search.press("Enter")
+    assert search.get_attribute("aria-activedescendant") is None
     assert page.locator("input[name=concept_id]").input_value() == "rx:fixture"
     assert search.input_value() == "Example medicine"
     assert search.get_attribute("aria-expanded") == "false"
