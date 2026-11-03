@@ -15,16 +15,26 @@ from .query_service import QueryServiceError, ReadOnlyQueryService
 MINIMUM_CURSOR_SECRET_BYTES = 16
 
 
-def create_app() -> ASGIApp:
+def create_app(
+    *, database_path: str | None = None, cursor_secret: str | None = None
+) -> ASGIApp:
     """Serve an explicitly configured existing database without creating data.
 
     Configuration and schema failures stop startup. This factory provides no
     source rights, deployment approval, live-data or accessibility qualification.
     """
-    database = os.environ.get("GMA_DATABASE_PATH", "")
+    database = (
+        database_path
+        if database_path is not None
+        else os.environ.get("GMA_DATABASE_PATH", "")
+    )
     if not database:
         raise ValueError("GMA_DATABASE_PATH is required")
-    secret = os.environ.get("GMA_CURSOR_SECRET", "")
+    secret = (
+        cursor_secret
+        if cursor_secret is not None
+        else os.environ.get("GMA_CURSOR_SECRET", "")
+    )
     if not secret.strip() or len(secret.encode()) < MINIMUM_CURSOR_SECRET_BYTES:
         raise ValueError(
             "GMA_CURSOR_SECRET requires at least 16 nonblank bytes"

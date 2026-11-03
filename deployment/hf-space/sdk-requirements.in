@@ -1,0 +1,3 @@
+# Isolated native deployment SDK. Its CLI Typer ceiling differs from the app;
+# keep this declared environment separate rather than changing the app lock.
+huggingface-hub==1.19.0

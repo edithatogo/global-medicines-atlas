@@ -39,8 +39,8 @@
       "track": "federated_medicines_platinum_20260829",
       "release_gate": "stable-v1-australian-health-federation",
       "capability": "API, CLI, Atlas and exports consume the same qualified revisions",
-      "current_failure": "Bounded software, public pages and security/workflow tranche are integrated (#1399/#1400/#1401). Standing dashboard #491 lists the selected uv 0.13.6 patch; active pins still require this maintenance update.",
-      "next_action": "Complete the explicitly approved 2026-11-03 #491 uv 0.13.6 patch: align active pins and generated locks, preserve unrelated versions, review, protected integration and automatic native graph readback. Stop without reopening deferred federation or publication.",
+      "current_failure": "Bounded software, project pages and security/maintenance batches are integrated through #1402. #61 lacks a hosted service, qualified production temporal database and deployed accessibility evidence.",
+      "next_action": "Implement the explicitly approved hosted #61 batch: Actions-built Docker candidate and pinned already-admitted FDA catalogue projection, exact-main parent-bound GMA Space code deployment, then anonymous digest and bounded endpoint readback. Preserve missing temporal meanings, production and accessibility gates; record exact-target native denial without paid plan changes.",
       "completion_evidence": "For the current software milestone: locked Python 3.15.1 setup, representative product tests, clean wheel/sdist consumer receipt, supported contributor commands, and protected integration. Later live federation acceptance continues to require its original exact per-output receipts.",
       "stop_condition": "Stop when the bounded software checklist in system-completion.md passes. Do not start deferred federation work or claim Stable v1 release readiness.",
       "validation": "Use existing focused context and product tests and one clean-consumer package check; reuse unchanged hosted coverage/security evidence and retain all required PR checks."

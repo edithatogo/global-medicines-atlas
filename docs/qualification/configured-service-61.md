@@ -93,3 +93,48 @@ regressions, existing consumer harness, scoped scheduling and qualification
 records. Prior ownership remains history. No other writer or native operation
 is moved. Reuse unchanged product/consumer receipts; run focused checks and the
 clean-artifact harness, then merge only after protected CI passes.
+
+## Hosted implementation — 3 November 2026
+
+The selected target is the Docker Space `edithatogo/global-medicines-atlas`.
+The new `hf-space-service.yml` workflow builds the existing package, exports
+only locked runtime/server dependencies and builds the container on Actions.
+Its disposable container checks startup, restart, HTTP, keyboard, landmarks and
+360/1280-pixel layouts. No source payload, database, secret or local environment
+is included in the code-only candidate artifact.
+
+At startup the installed `hosted_service` anonymously verifies the exact B1
+admission digest and the permitted FDA payload at revision
+`9476e7894ed60a603ec9542d7f438d12c5eca726`. The original admitted denominator is
+100 applications. The cache preserves explicit application/product identities
+and names, with no invented temporal assertions or effective dates. The scope
+banner and `/deployment.json` expose that this is an historical catalogue
+candidate, not qualified production regulatory/funding evidence. The immutable
+archive and original terms remain authoritative. No new source is acquired.
+
+Space deployment is dispatch-only from exact current main in the existing
+production environment. It uses only the existing HF_TOKEN, verifies the native
+account and target ownership, creates only this exact Space, and uploads six
+code/package/licence/trust files against the observed parent. Creation and commit
+POSTs are never retried. Native denial is recorded in the mutation journal.
+No subscription or hardware upgrade occurs. Public file digests are checked
+anonymously before live endpoint verification. The service uses the existing
+platform-provided SPACE_SIGNING_SECRET; no account token enters the container.
+
+This closes implementation gaps only where observable hosted receipts pass.
+#61 remains open until a qualified production query dataset and the complete
+deployed accessibility criteria pass. Bounded browser checks do not claim a
+full WCAG audit; a Docker candidate is not a running public endpoint.
+
+Review fixes bind the installed application commit into the image and wait for
+that exact identity at the live endpoint; an old healthy deployment cannot pass
+for a new build. The hosted catalogue uses the existing Atlas US jurisdiction
+convention, and default-page discovery is exercised. Factory configuration is
+passed directly rather than written into process-global environment variables;
+the scope banner survives split streaming body chunks.
+
+The existing Hub SDK 1.19.0 has a CLI Typer ceiling incompatible with the app's
+locked Typer 0.27.3. Its native deployment process therefore uses a separate
+Python 3.15.1 environment, installed from the generated, fully hashed
+`sdk-requirements.txt`. The app's pyproject/uv/PEP751 lock bytes are unchanged.
+The container does not include this SDK environment or the account credential.
