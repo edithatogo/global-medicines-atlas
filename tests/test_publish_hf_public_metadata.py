@@ -13,6 +13,8 @@ from typing import Any, cast
 
 import pytest
 from scripts import publish_hf_public_metadata as publisher
+from scripts import publish_project_pages
+from scripts import publish_project_pages as pages
 from scripts import qualify_hf_public_registry_gap as audit
 
 
@@ -549,3 +551,102 @@ def test_non_main_or_unapproved_actions_run_fails_closed() -> None:
     base["GMA_MAINTAINER_PUBLICATION_APPROVED"] = "no"
     with pytest.raises(ValueError, match="approval"):
         publisher.validate_actions_context(base)
+
+
+def test_project_pages_refuse_local_upload(tmp_path, monkeypatch) -> None:
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    with pytest.raises(ValueError, match="Actions dispatch"):
+        publish_project_pages.publish("a" * 40, tmp_path / "receipt.json", None)
+
+
+@pytest.mark.parametrize("changed", ["bytes", "scope"])
+def test_project_pages_bind_only_reviewed_metadata(
+    tmp_path, monkeypatch, changed
+) -> None:
+    approval = json.loads(publish_project_pages.APPROVAL.read_bytes())
+    if changed == "bytes":
+        approval["files"]["README.md"]["sha256"] = "0" * 64
+    else:
+        approval["files"]["data/source.xml"] = {}
+    path = tmp_path / "approval.json"
+    path.write_text(json.dumps(approval))
+    monkeypatch.setattr(publish_project_pages, "APPROVAL", path)
+    with pytest.raises(ValueError, match=r"scope differs|bytes differ"):
+        publish_project_pages.approved_files()
+
+
+@pytest.mark.parametrize(
+    "outcome", ["success", "other_object_changed", "bad_digest"]
+)
+def test_project_pages_cas_scope_and_anonymous_readback(
+    tmp_path, monkeypatch, outcome
+) -> None:
+    for name, value in {
+        "GITHUB_ACTIONS": "true",
+        "GITHUB_REPOSITORY": "edithatogo/global-medicines-atlas",
+        "GITHUB_REF": "refs/heads/main",
+        "GITHUB_EVENT_NAME": "workflow_dispatch",
+        "GITHUB_SHA": "a" * 40,
+        "GITHUB_RUN_ID": "123",
+        "HF_TOKEN": "synthetic-test-only",
+    }.items():
+        monkeypatch.setenv(name, value)
+    parent, bindings = pages.approved_files()
+    commits = []
+
+    class Api:
+        def dataset_info(
+            self, _dataset, *, revision=None, files_metadata=False
+        ):
+            del files_metadata
+            source_blob = "retained"
+            if revision == "b" * 40 and outcome == "other_object_changed":
+                source_blob = "changed"
+            siblings = [
+                SimpleNamespace(rfilename="source.xml", blob_id=source_blob),
+                SimpleNamespace(rfilename="README.md", blob_id="old-card"),
+            ]
+            if revision == "b" * 40:
+                siblings.extend(
+                    SimpleNamespace(rfilename=key, blob_id="new")
+                    for key in pages.FILES
+                    if key != "README.md"
+                )
+            return SimpleNamespace(
+                sha=parent, private=False, gated=False, siblings=siblings
+            )
+
+        def create_commit(self, **kwargs):
+            commits.append(kwargs)
+            return SimpleNamespace(oid="b" * 40)
+
+    class Verifier:
+        def verify_artifact(self, *, target, revision, artifact):
+            assert target.repository == pages.DATASET
+            assert revision == "b" * 40
+            return SimpleNamespace(
+                sha256="0" * 64 if outcome == "bad_digest" else artifact.sha256,
+                size=artifact.size,
+            )
+
+    monkeypatch.setattr(pages, "HuggingFaceAnonymousArtifactVerifier", Verifier)
+    sdk = SimpleNamespace(
+        HfApi=lambda **_kwargs: Api(),
+        CommitOperationAdd=lambda **kwargs: kwargs,
+    )
+    receipt = tmp_path / "receipt.json"
+    if outcome == "success":
+        pages.publish("a" * 40, receipt, sdk)
+        result = json.loads(receipt.read_bytes())
+        assert result["state"] == "anonymously_verified"
+        assert result["unchanged_other_git_objects"] == 1
+        assert result["files"] == [b.model_dump(mode="json") for b in bindings]
+    else:
+        with pytest.raises(ValueError, match=r"outside|anonymous"):
+            pages.publish("a" * 40, receipt, sdk)
+        assert json.loads(receipt.read_bytes())["state"] == "uploaded"
+    assert len(commits) == 1
+    assert commits[0]["parent_commit"] == parent
+    assert {op["path_in_repo"] for op in commits[0]["operations"]} == set(
+        pages.FILES
+    )

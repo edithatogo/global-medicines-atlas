@@ -8,6 +8,16 @@ GitHub programme issue: [#44](https://github.com/edithatogo/global-medicines-atl
 Its native subissues are the Conductor delivery tracks; each track parent owns
 its phase subissues.
 
+## Measured progress — 3 November 2026
+
+![Unweighted ledger completion; mandatory release gates remain open.](../docs/assets/roadmap.svg)
+
+The registry closes **14 of 20 tracks (70%)**. The Stable v1 contract verifies
+**84 of 92 tracked requirements (91.3%)**, retaining eight blocked requirements.
+These denominators describe different ledgers, not source coverage, effort or
+release approval. [Measurement and reproduction](../docs/project-overview.md)
+and the [bound snapshot](../docs/project-status.json) provide the inputs.
+
 ## Current delivery scope — 29 October 2026
 
 The maintainer selected **bounded software completion; federation later**.

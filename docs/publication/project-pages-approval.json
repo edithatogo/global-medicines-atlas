@@ -1,0 +1,24 @@
+{
+  "authorization": "Direct maintainer request on 3 November 2026 to update the GitHub and Hugging Face pages with medallion and roadmap visualisations, badges, reciprocal navigation and citation. No source payload publication, rights changes or release.",
+  "dataset": "edithatogo/global-medicines-atlas-catalogue",
+  "files": {
+    "README.md": {
+      "relative_path": "README.md",
+      "sha256": "af817addef0182c65eb814bb9e346419856ef759ae35edfb521d71a493a6d3af",
+      "size": 7547
+    },
+    "assets/medallion.svg": {
+      "relative_path": "assets/medallion.svg",
+      "sha256": "486e46e136c398ff23c39a9736874ca2c619d3989a7d925fff451d1b7e2fd205",
+      "size": 3980
+    },
+    "assets/roadmap.svg": {
+      "relative_path": "assets/roadmap.svg",
+      "sha256": "c2ebd42ab218c74c3ac8646f15172eccc1714eb1251a6bcc27ef373626e8699b",
+      "size": 2317
+    }
+  },
+  "metadata_update_approved": true,
+  "parent_revision": "89c95653c498d7ad2835d8fcd6f9fd804e2a4d18",
+  "prior_readme_sha256": "02825cc9f6dd66acf7346711dede1cde366a0ce5ba5b21462f57ff151c0c1736"
+}

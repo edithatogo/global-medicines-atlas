@@ -1237,3 +1237,24 @@ and Stable v1 release conditions remain unchanged and open.
   patch PR #1394. Verify the official action pins, repair its monitoring digest
   and bind #14 to closure at the protected merge. The wider Stable v1 track
   remains incomplete; no federation, rights or release gate is waived.
+
+## Public project pages — 3 November 2026
+
+Owner: chat `01a19600-56dd-73a2-9ff5-4a2484a54493`, checkout
+`/Volumes/PortableSSD/GitHub/global-medicines-atlas`, branch
+`codex/project-homepages`, base `771ebf96`. Prior assignments remain history.
+The maintainer explicitly requested GitHub/Hugging Face page updates with
+medallion and roadmap visualisations, completion proportions, badges and citation.
+
+- [x] Verify live README, public Hub card/revision, archived RC and DOI.
+- [x] Correct stale publication claims; add reciprocal navigation, citation
+  and accessible diagrams with explicit unweighted denominators (14/20 tracks,
+  84/92 tracked requirements). Preserve all original acceptance gates.
+- [x] Prepare a hosted-main CAS update restricted to the existing catalogue
+  README and two SVGs. Bind exact bytes/parent, retain non-target Git identities
+  and require anonymous digest readback; no source data is published or fetched.
+- [~] Review, protected CI, integrate, publish the approved page metadata and
+  verify both rendered pages. Stop at this bounded presentation update.
+
+The page request grants no release, rights change, source acquisition, new
+public service or broader federation acceptance.
