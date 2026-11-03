@@ -497,6 +497,20 @@ def main() -> int:
     except Exception as error:
         # Preserve phase and type, never credentials, raw responses or source values.
         receipt["error_type"] = type(error).__name__
+        if isinstance(error, httpx.HTTPStatusError):
+            receipt["http_status"] = error.response.status_code
+            host = error.request.url.host
+            receipt["http_host"] = (
+                host
+                if host
+                in {
+                    "127.0.0.1",
+                    "www.accessdata.fda.gov",
+                    "www.govinfo.gov",
+                    "global-medicines-atlas.onrender.com",
+                }
+                else "other"
+            )
     finally:
         save_receipt(args.receipt, receipt)
     print(json.dumps({"result": receipt["result"], "phase": receipt["phase"]}))

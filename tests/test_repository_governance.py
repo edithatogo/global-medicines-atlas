@@ -692,3 +692,28 @@ def test_reviewed_action_verifier_checks_provenance_and_pdf_bytes(
         deploy_hf_space.verify_reviewed_product_actions(
             "https://example.test", "a" * 40, metadata
         )
+
+
+def test_hosted_verifier_receipt_reports_only_safe_http_failure(
+    tmp_path, monkeypatch
+):
+    receipt = tmp_path / "receipt.json"
+    request = httpx.Request(
+        "GET", "https://www.accessdata.fda.gov/private?token=secret"
+    )
+    response = httpx.Response(403, request=request)
+
+    def fail(*_args):
+        raise httpx.HTTPStatusError(
+            "redacted", request=request, response=response
+        )
+
+    monkeypatch.setattr(deploy_hf_space, "execute", fail)
+    monkeypatch.setattr(
+        "sys.argv", ["deploy_hf_space.py", "--receipt", str(receipt)]
+    )
+    assert deploy_hf_space.main() == 1
+    data = json.loads(receipt.read_text())
+    assert data["http_host"] == "www.accessdata.fda.gov"
+    assert data["http_status"] == 403
+    assert "secret" not in receipt.read_text()
