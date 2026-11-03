@@ -13,6 +13,11 @@ if (root) {
   const setExpanded = (expanded) => {
     input.setAttribute('aria-expanded', String(expanded));
     listbox.hidden = !expanded;
+    if (!expanded) {
+      input.removeAttribute('aria-activedescendant');
+      activeIndex = -1;
+      options.forEach((option) => option.setAttribute('aria-selected', 'false'));
+    }
   };
 
   /** @param {number} index */
