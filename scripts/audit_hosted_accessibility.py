@@ -7,6 +7,7 @@ import json
 from collections import Counter
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlencode
 
 from deploy_hf_space import http_metadata
 from playwright.sync_api import sync_playwright
@@ -62,10 +63,41 @@ def main() -> int:
                 page.set_viewport_size({"width": width, "height": 800})
                 for query in (
                     "",
-                    "?concept_search=ANDA040104",
+                    "?"
+                    + urlencode({
+                        "concept_search": metadata["canary_concept_id"]
+                    }),
                     "?concept_search=no-such-medicine",
                 ):
-                    page.goto(url + "/" + query, wait_until="networkidle")
+                    response = page.goto(
+                        url + "/" + query, wait_until="networkidle"
+                    )
+                    if response is None or response.status != 200:
+                        raise ValueError("Atlas navigation failed")
+                    if (
+                        page.get_by_role("main").count() != 1
+                        or page.locator("#search-error-heading").count()
+                    ):
+                        raise ValueError("Atlas search unavailable")
+                    if (
+                        query
+                        and "no-such-medicine" not in query
+                        and page.locator(
+                            "[role=option][data-concept-id]"
+                        ).count()
+                        == 0
+                    ):
+                        raise ValueError("Canary search returned no candidates")
+                    if (
+                        "no-such-medicine" in query
+                        and page.get_by_text(
+                            "No medicine candidates matched.", exact=False
+                        ).count()
+                        != 1
+                    ):
+                        raise ValueError(
+                            "Expected empty search state unavailable"
+                        )
                     page.add_script_tag(path=str(args.axe))
                     result = page.evaluate("""async () => {
                         const r = await axe.run(document, {runOnly: {type: 'tag',
