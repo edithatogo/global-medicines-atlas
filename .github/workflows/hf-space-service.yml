@@ -9,6 +9,9 @@ on:
       - "src/global_medicines_atlas/serving.py"
       - "scripts/deploy_hf_space.py"
       - "tests/test_serving.py"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".ci/trust/cacert.pem"
   workflow_dispatch:
     inputs:
       exact_commit:

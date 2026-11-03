@@ -226,6 +226,8 @@ def http_metadata(url: str, expected_commit: str) -> dict[str, Any]:
     profile = cast(
         "Any", import_module("global_medicines_atlas.hosted_service")
     )
+    if metadata.get("python_version") != "3.15.1":
+        raise ValueError("deployed Python runtime differs from 3.15.1")
     if (
         metadata["dataset"] != profile.DATASET
         or metadata["revision"] != profile.REVISION

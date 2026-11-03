@@ -9,6 +9,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import platform
 import re
 import tempfile
 from pathlib import Path
@@ -199,6 +200,7 @@ def create_app() -> ASGIApp:
     )
     receipt = prepare_hosted(database)
     receipt["application_commit"] = commit
+    receipt["python_version"] = platform.python_version()
     application = configured_app(
         database_path=str(database.resolve()), cursor_secret=secret
     )

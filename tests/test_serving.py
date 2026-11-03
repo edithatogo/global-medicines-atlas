@@ -60,6 +60,7 @@ def test_hosted_catalogue_is_real_schema_without_invented_assertions(
             page = client.get("/?concept_search=Synthetic")
             assert 'data-concept-id="us-drugsfda:NDA000001:001"' in page.text
             assert metadata["application_commit"] == "a" * 40
+            assert metadata["python_version"] == "3.15.1"
             assert "Historical FDA catalogue candidate" in page.text
             assert "content-length" not in page.headers
     assert len(list(tmp_path.glob("boot-*/catalogue.duckdb"))) == 2

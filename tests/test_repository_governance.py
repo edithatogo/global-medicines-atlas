@@ -99,6 +99,7 @@ def test_hosted_verification_waits_for_the_expected_application(monkeypatch):
         {"application_commit": "old"},
         {
             "application_commit": exact,
+            "python_version": "3.15.1",
             "dataset": DATASET,
             "revision": REVISION,
             "source_sha256": PAYLOAD_SHA,
