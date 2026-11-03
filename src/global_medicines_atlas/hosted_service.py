@@ -1,6 +1,6 @@
 """Rebuild a bounded, historical FDA discovery cache on a hosted runner.
 
-The source lacks reviewed effective dates. No temporal regulatory, funding or
+The source contains application action dates, not reviewed product validity intervals. No temporal regulatory, funding or
 formulary assertions are invented to populate the existing comparison service.
 """
 
@@ -151,7 +151,7 @@ def prepare_database(destination: Path, payload: bytes) -> dict[str, Any]:
         "production_data_qualified": False,
         "temporal_assertion_count": 0,
         "blockers": [
-            "Reviewed source-effective dates and temporal assertions are unavailable for this catalogue-only projection"
+            "Product-level validity intervals and application-to-product action mappings remain unqualified; native submission action dates must not be treated as continuing approval"
         ],
     }
 
@@ -230,8 +230,8 @@ def create_app() -> ASGIApp:
                 if message.get("more_body", False):
                     return
                 message["body"] = b"".join(chunks).replace(
-                    b"<body>",
-                    b'<body><p role="note">Historical FDA catalogue candidate. Regulatory, funding and temporal evidence remain unqualified. <a href="/deployment.json">Scope and provenance</a></p>',
+                    b"<header>",
+                    b'<header><p role="note">Historical FDA catalogue candidate. Regulatory, funding and temporal evidence remain unqualified. <a href="/deployment.json">Scope and provenance</a></p>',
                     1,
                 )
             await send(message)
