@@ -265,3 +265,17 @@ FDA defines the wording in its Orange Book product data description:
 https://www.fda.gov/drugs/drug-approvals-and-databases/orange-book-data-files .
 Neither a historical approval date nor snapshot absence establishes present
 regulatory status or an end date.
+
+### Application-submission source events
+
+Follow-up ownership: chat `01a19600-56dd-73a2-9ff5-4a2484a54493`,
+checkout `/Volumes/PortableSSD/GitHub/global-medicines-atlas`, branch
+`codex/61-application-events`. The next operation is protected integration and
+free-service verification. The same pinned FDA payload contains 100 source
+applications and, in the existing audit, 633 dated submission records. The
+query database now preserves each native submission and its exact source path,
+including missing or invalid dates, with bounded pagination and source digest
+provenance. These are application-level historical records; neither product
+approval nor continuing status is inferred. Hosted readback must independently
+confirm the counts against the pinned source. This adds no source acquisition or
+archive publication and does not satisfy the outstanding status-interval gate.

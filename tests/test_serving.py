@@ -23,6 +23,7 @@ if TYPE_CHECKING:
 
 from global_medicines_atlas import hosted_service
 from global_medicines_atlas.serving import create_app
+from global_medicines_atlas.submission_events import project_submission_events
 
 
 def _hosted_payload() -> bytes:
@@ -498,3 +499,233 @@ def test_approval_event_database_stores_exclusive_bound(tmp_path):
             "SELECT CAST(approval_before_date_exclusive AS VARCHAR) FROM product_approval_events"
         ).fetchone()
     assert row == ("1982-01-01",)
+
+
+def _submission_fixture_payload():
+    return json.dumps({
+        "results": [
+            {
+                "application_number": "NDA000001",
+                "products": [
+                    {"product_number": "001", "brand_name": "Synthetic"}
+                ],
+                "submissions": [
+                    {
+                        "submission_type": "ORIG",
+                        "submission_number": "1",
+                        "submission_status": "AP",
+                        "submission_status_date": "20010102",
+                        "review_priority": "STANDARD",
+                    },
+                    {
+                        "submission_type": "SUPPL",
+                        "submission_number": "2",
+                        "submission_status": "TA",
+                        "submission_status_date": "20200230",
+                    },
+                    {
+                        "submission_type": "SUPPL",
+                        "submission_number": "3",
+                        "submission_status": None,
+                    },
+                ],
+            },
+            {
+                "application_number": "ANDA000002",
+                "products": [{"product_number": "001", "brand_name": "Other"}],
+                "submissions": [],
+            },
+        ]
+    }).encode()
+
+
+def test_submission_projection_preserves_native_events_and_uncertainty():
+    events, coverage = project_submission_events(
+        _submission_fixture_payload(),
+        source_uri="https://example.test/source",
+        source_revision="revision",
+        source_sha256="a" * 64,
+    )
+    assert coverage == {
+        "application_denominator": 2,
+        "applications_with_submissions": 1,
+        "applications_without_submissions": 1,
+        "submission_count": 3,
+        "exact_date_count": 1,
+        "missing_date_count": 1,
+        "invalid_date_count": 1,
+    }
+    assert [event["date_qualification"] for event in events] == [
+        "exact_date",
+        "invalid",
+        "missing",
+    ]
+    assert events[0]["submission_status_date"] == "2001-01-02"
+    assert events[0]["native_submission"]["review_priority"] == "STANDARD"
+    assert events[1]["submission_status"] == "TA"
+    assert all(
+        not event["product_status_inferred"]
+        and not event["continuing_status_established"]
+        for event in events
+    )
+    assert len({event["source_path"] for event in events}) == 3
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        [],
+        {"results": []},
+        {"results": ["not-an-object"]},
+        {"results": [{"application_number": ""}]},
+        {
+            "results": [
+                {"application_number": "NDA000001", "submissions": "invalid"}
+            ]
+        },
+        {
+            "results": [
+                {"application_number": "NDA000001", "submissions": ["invalid"]}
+            ]
+        },
+        {
+            "results": [
+                {
+                    "application_number": "NDA000001",
+                    "submissions": [{"submission_status_date": 123}],
+                }
+            ]
+        },
+        {
+            "results": [
+                {"application_number": "NDA000001"},
+                {"application_number": "NDA000001"},
+            ]
+        },
+    ],
+)
+def test_submission_projection_rejects_ambiguous_source(payload):
+    with pytest.raises(
+        (TypeError, ValueError), match=r"application|submission"
+    ):
+        project_submission_events(
+            json.dumps(payload).encode(),
+            source_uri="https://example.test/source",
+            source_revision="revision",
+            source_sha256="a" * 64,
+        )
+
+
+def test_submission_database_paginates_and_rejects_unsafe_queries(
+    tmp_path, monkeypatch
+):
+    payload = _submission_fixture_payload()
+    events, _ = project_submission_events(
+        payload,
+        source_uri="https://example.test/source",
+        source_revision="revision",
+        source_sha256="a" * 64,
+    )
+    monkeypatch.setenv("GMA_HOSTED_CACHE", str(tmp_path))
+    monkeypatch.setenv("GMA_APPLICATION_COMMIT", "b" * 40)
+    monkeypatch.setenv("GMA_CURSOR_SECRET", "synthetic-existing-signing-value")
+
+    def prepare(path):
+        receipt = hosted_service.prepare_database(path, payload)
+        hosted_service.materialize_submission_events(path, events)
+        return receipt
+
+    monkeypatch.setattr(hosted_service, "prepare_hosted", prepare)
+    with TestClient(hosted_service.create_app()) as client:
+        assert client.post("/submission-events.json").status_code == 405
+        first = client.get(
+            "/submission-events.json", params={"limit": 2}
+        ).json()
+        assert first["total"] == 3
+        assert first["next_offset"] == 2
+        assert [x["submission_status"] for x in first["events"]] == ["AP", "TA"]
+        second = client.get(
+            "/submission-events.json", params={"offset": 2, "limit": 2}
+        ).json()
+        assert second["next_offset"] is None
+        assert len(second["events"]) == 1
+        assert second["events"][0]["submission_ordinal"] == 2
+        assert (
+            client.get(
+                "/submission-events.json",
+                params={"application_number": "ANDA000002"},
+            ).json()["total"]
+            == 0
+        )
+        assert (
+            client.get(
+                "/submission-events.json",
+                params={"application_number": "NDA000001"},
+            ).json()["total"]
+            == 3
+        )
+        for query in (
+            "limit=0",
+            "limit=101",
+            "offset=-1",
+            "offset=100001",
+            "offset=nope",
+            "application_number=bad",
+            "limit=1&limit=2",
+            "unexpected=1",
+            "x=" + "a" * 513,
+        ):
+            assert (
+                client.get("/submission-events.json?" + query).status_code
+                == 400
+            )
+
+
+def test_submission_database_rejects_duplicate_source_paths(tmp_path):
+    events, _ = project_submission_events(
+        _submission_fixture_payload(),
+        source_uri="https://example.test/source",
+        source_revision="revision",
+        source_sha256="a" * 64,
+    )
+    with pytest.raises(ValueError, match="duplicate submission"):
+        hosted_service.materialize_submission_events(
+            tmp_path / "events.duckdb", [events[0], events[0]]
+        )
+
+
+def test_submission_database_detects_missing_insert(tmp_path, monkeypatch):
+    events, _ = project_submission_events(
+        _submission_fixture_payload(),
+        source_uri="https://example.test/source",
+        source_revision="revision",
+        source_sha256="a" * 64,
+    )
+    real_connect = hosted_service.duckdb.connect
+
+    class FaultyConnection:
+        def __init__(self, path):
+            self.connection = real_connect(path)
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            self.connection.close()
+
+        def execute(self, sql, *args):
+            if sql.startswith("SELECT count(*)"):
+                self.connection.execute(
+                    "DELETE FROM application_submission_events WHERE source_path = ?",
+                    [events[0]["source_path"]],
+                )
+            return self.connection.execute(sql, *args)
+
+        def executemany(self, sql, rows):
+            return self.connection.executemany(sql, rows)
+
+    monkeypatch.setattr(hosted_service.duckdb, "connect", FaultyConnection)
+    with pytest.raises(ValueError, match="database count differs"):
+        hosted_service.materialize_submission_events(
+            tmp_path / "fault.duckdb", events
+        )

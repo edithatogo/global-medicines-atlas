@@ -8,6 +8,7 @@ on:
       - "deployment/render/**"
       - "render.yaml"
       - "src/global_medicines_atlas/hosted_service.py"
+      - "src/global_medicines_atlas/submission_events.py"
       - "src/global_medicines_atlas/serving.py"
       - "scripts/deploy_hf_space.py"
       - "tests/test_serving.py"

@@ -14,6 +14,7 @@ import re
 import tempfile
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
+from urllib.parse import parse_qs
 
 import duckdb
 import httpx
@@ -29,6 +30,7 @@ from .orange_book_events import URI as ORANGE_URI
 from .orange_book_events import product_events
 from .serving import MINIMUM_CURSOR_SECRET_BYTES
 from .serving import create_app as configured_app
+from .submission_events import project_submission_events
 from .terminology import normalize_name
 
 REVISION = "9476e7894ed60a603ec9542d7f438d12c5eca726"
@@ -40,6 +42,9 @@ ADMISSION_SHA = (
 )
 SOURCE = "us-openfda-drugsfda"
 MAX_BYTES = 2 * 1024 * 1024
+MAX_SUBMISSION_OFFSET = 100_000
+MAX_SUBMISSION_PAGE = 100
+MAX_SUBMISSION_QUERY_BYTES = 512
 
 
 def verified_download(member: str, expected: str) -> bytes:
@@ -249,6 +254,83 @@ def materialize_approval_events(
     return {state: counts.get(state, 0) for state in sorted(qualifications)}
 
 
+def materialize_submission_events(
+    destination: Path, events: list[dict[str, Any]]
+) -> None:
+    """Persist source-native application events without creating status intervals."""
+    rows = [
+        (
+            event["source_path"],
+            event["application_number"],
+            event["application_ordinal"],
+            event["submission_ordinal"],
+            event["submission_status_date"],
+            json.dumps(event, sort_keys=True),
+        )
+        for event in events
+    ]
+    if len({row[0] for row in rows}) != len(rows):
+        raise ValueError("duplicate submission event source path")
+    with duckdb.connect(str(destination)) as connection:
+        connection.execute(
+            "CREATE TABLE application_submission_events (source_path VARCHAR PRIMARY KEY, application_number VARCHAR NOT NULL, application_ordinal INTEGER NOT NULL, submission_ordinal INTEGER NOT NULL, status_date DATE, evidence_json VARCHAR NOT NULL)"
+        )
+        if rows:
+            connection.executemany(
+                "INSERT INTO application_submission_events VALUES (?, ?, ?, ?, ?, ?)",
+                rows,
+            )
+        count = connection.execute(
+            "SELECT count(*) FROM application_submission_events"
+        ).fetchall()[0][0]
+        if count != len(events):
+            raise ValueError("submission event database count differs")
+
+
+def submission_page(database: Path, query: bytes) -> dict[str, Any]:
+    """Read a bounded page of application-level source events."""
+    if len(query) > MAX_SUBMISSION_QUERY_BYTES:
+        raise ValueError("submission query too long")
+    params = parse_qs(
+        query.decode("ascii"), keep_blank_values=True, max_num_fields=3
+    )
+    if set(params) - {"offset", "limit", "application_number"} or any(
+        len(v) != 1 for v in params.values()
+    ):
+        raise ValueError("invalid query parameters")
+    offset = int(params.get("offset", ["0"])[0])
+    limit = int(params.get("limit", ["50"])[0])
+    application = params.get("application_number", [""])[0]
+    if (
+        not 0 <= offset <= MAX_SUBMISSION_OFFSET
+        or not 1 <= limit <= MAX_SUBMISSION_PAGE
+        or (
+            application
+            and not re.fullmatch(r"(?:NDA|ANDA|BLA)\d{6}", application)
+        )
+    ):
+        raise ValueError("invalid bounded submission query")
+    with duckdb.connect(str(database), read_only=True) as connection:
+        count = connection.execute(
+            "SELECT count(*) FROM application_submission_events WHERE (? = '' OR application_number = ?)",
+            [application, application],
+        ).fetchall()[0][0]
+        records = connection.execute(
+            "SELECT evidence_json FROM application_submission_events WHERE (? = '' OR application_number = ?) ORDER BY application_ordinal, submission_ordinal LIMIT ? OFFSET ?",
+            [application, application, limit, offset],
+        ).fetchall()
+    return {
+        "scope": "Historical application-submission source records; not product approval or continuing regulatory status.",
+        "offset": offset,
+        "limit": limit,
+        "total": count,
+        "next_offset": offset + len(records)
+        if offset + len(records) < count
+        else None,
+        "events": [json.loads(record[0]) for record in records],
+    }
+
+
 def prepare_hosted(destination: Path) -> dict[str, Any]:
     """Check the original admission before downloading the permitted payload."""
     entries = json.loads(
@@ -286,6 +368,19 @@ def prepare_hosted(destination: Path) -> dict[str, Any]:
     receipt["approval_event_coverage"] = materialize_approval_events(
         destination, events
     )
+    submission_events, submission_summary = project_submission_events(
+        payload,
+        source_uri=BASE + "data/us-openfda-drugsfda.json",
+        source_revision=REVISION,
+        source_sha256=PAYLOAD_SHA,
+    )
+    if (
+        submission_summary["application_denominator"]
+        != receipt["application_count"]
+    ):
+        raise ValueError("submission application denominator differs")
+    materialize_submission_events(destination, submission_events)
+    receipt["submission_event_summary"] = submission_summary
     receipt["approval_events"] = events
     receipt["approval_event_summary"] = {
         "source_id": "us-fda-orange-book",
@@ -329,6 +424,30 @@ def create_app() -> ASGIApp:
     )
 
     async def scoped(scope: Scope, receive: Receive, send: Send) -> None:
+        if (
+            scope["type"] == "http"
+            and scope["path"] == "/submission-events.json"
+        ):
+            if scope["method"] != "GET":
+                await JSONResponse(
+                    {"detail": "Method not allowed"},
+                    status_code=405,
+                    headers={"Allow": "GET"},
+                )(scope, receive, send)
+                return
+            try:
+                result = submission_page(
+                    database, scope.get("query_string", b"")
+                )
+            except ValueError:
+                await JSONResponse(
+                    {"detail": "Invalid bounded submission query"},
+                    status_code=400,
+                )(scope, receive, send)
+                return
+            result["application_commit"] = commit
+            await JSONResponse(result)(scope, receive, send)
+            return
         if scope["type"] == "http" and scope["path"] == "/approval-events.json":
             with duckdb.connect(str(database), read_only=True) as connection:
                 records = connection.execute(
@@ -366,7 +485,7 @@ def create_app() -> ASGIApp:
                     return
                 message["body"] = b"".join(chunks).replace(
                     b"</header>",
-                    b'<p role="note">Historical FDA catalogue candidate. Regulatory, funding and temporal evidence remain unqualified. <a href="/deployment.json">Scope and provenance</a>. <a href="/approval-events.json">Product approval-date evidence</a> (historical events only, not current status).</p></header>',
+                    b'<p role="note">Historical FDA catalogue candidate. Regulatory, funding and temporal evidence remain unqualified. <a href="/deployment.json">Scope and provenance</a>. <a href="/approval-events.json">Product approval-date evidence</a> (historical events only, not current status). <a href="/submission-events.json">Application-submission source events</a>.</p></header>',
                     1,
                 )
             await send(message)
