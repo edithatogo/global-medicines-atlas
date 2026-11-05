@@ -62,3 +62,8 @@ recorded separately after execution, without a receipt-only successor PR.
 
 Validation: 93 focused tests passed on observed Python 3.15.1; Ruff and context
 validation passed. No local full profile required for this bounded adapter.
+
+First hosted invocation at `40036ee1` failed before tests because the new test
+file was absent from the explicit Test-Goblin inventory. Register it alongside
+existing harvesting tests; validate the inventory locally and retain the failed
+run separately. Final-head required CI remains mandatory.
