@@ -96,3 +96,35 @@ changed. Test cache remains worktree-local. `tests/test_australian_harvesting.py
 76 passed; one expected duplicate-ZIP-member fixture warning. Focused lint passed;
 format initially identified one new line wrapping issue, subsequently corrected.
 No broad profile was run for this bounded discovery change.
+
+## Additional maintainer links — 5 November 2026
+
+The repeated Item and Medicare Statistics links resolve to the same respective
+catalogues. A fresh CKAN search filtered to `organization:servicesaustralia`
+returns five PBS matches: the three legacy reports, Medicare Statistics and DHS
+Annual Reports. The three legacy reports are already in the 42-file candidate
+inventory; none of this establishes that their payloads have been archived.
+
+[Additional catalogue metadata](../../quality/qualifications/australian-utilisation-additional-catalogues-20261105.json)
+records the exact resource identities and URLs from the three additional named
+catalogues, without acquiring payloads:
+
+- Medicare Statistics: 227 resources, including 100 with PBS in their names.
+  Listed PBS resources range from July–December 2015 ATC data to September 2026
+  item data. These 100 resources are outside the 42-file inventory. Existing
+  M-106 documentation assessed an August 2026 MBS resource as metadata only;
+  that is not acquisition evidence for this catalogue's PBS resources.
+- Medicare Benefits Schedule Statistics: one legacy Health.gov landing-page
+  reference, not one acquired statistical data file. MBS source-family work
+  exists separately and does not establish complete capture of this link.
+- DHS Annual Reports: 28 resources, including report PDF/ZIPs and section ZIPs.
+  Relevant health activity context; no exact catalogue acquisition evidence was
+  located in this bounded repository check. Keep separate from item utilisation.
+
+The AIHW search opened in the internal browser but rendered no result entries
+in the observed search-results region. Its full result set remains unverified;
+no blanket claim of inclusion is made. Open derived tables need individual
+identity/rights checks; restricted claims/linkage collections remain excluded.
+The unfiltered data.gov.au search is discovery, not a fixed dataset or proof
+that every result is relevant or included. Additional acquisition/publication
+scope remains pending; the prior 20-file publication question is unanswered.
