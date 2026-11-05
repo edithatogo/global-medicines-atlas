@@ -196,3 +196,13 @@ Final-head Codecov patch coverage reported 82.35% against 90.01%, despite all
 page-failure behavior and the raw profile's payload/expansion limits; no gate or
 limit was weakened. Reuse the unchanged successful behavioral checks locally;
 protected CI runs on the updated head.
+
+### Protected review corrections
+
+After patch coverage reached 100%, merge was held by two unresolved automated
+review threads. Tightened annual-link matching to the known publisher forms
+`expenditure-prescriptions`, `expenditure-and-prescriptions` and corresponding
+`pb-`/`pbs-` forms. Added a negative control for unrelated expenditure links.
+Bounded HTTP reads now reject oversized declared Content-Length before reading
+and reject a received-length mismatch before staging. Tests simulate truncated
+and oversized responses. No standalone review reply or other message was sent.

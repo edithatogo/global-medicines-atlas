@@ -123,9 +123,20 @@ def fetch_payload(url: str) -> tuple[bytes, str]:
     )
     request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})  # ruff: ignore[suspicious-url-open-usage]
     with opener.open(request, timeout=90) as response:
+        length_header = response.headers.get("Content-Length")
+        expected_length = (
+            int(length_header) if length_header is not None else None
+        )
+        if (
+            expected_length is not None
+            and not 0 <= expected_length <= MAX_RAW_BYTES
+        ):
+            raise ValueError("Advertised payload size exceeds raw bound")
         content = response.read(MAX_RAW_BYTES + 1)
         if len(content) > MAX_RAW_BYTES:
             raise ValueError("Raw payload exceeds 256 MiB bound")
+        if expected_length is not None and len(content) != expected_length:
+            raise ValueError("Truncated response: Content-Length mismatch")
         if "text/html" in response.headers.get("Content-Type", "").lower():
             raise ValueError("HTML response is not an aggregate data file")
         return content, str(response.url)

@@ -11,6 +11,7 @@ import zipfile
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Never
+from unittest.mock import MagicMock
 
 import pytest
 from scripts import (
@@ -2192,8 +2193,48 @@ def test_raw_workbook_profile_rejects_excessive_declared_expansion(
 
 def test_pbs_annual_backfill_deduplicates_shared_resource_url() -> None:
     resources = discover_pbs_expenditure_resources(
-        '<a href="expenditure-2006">old</a><a href="expenditure-2007">new</a>',
+        '<a href="expenditure-and-prescriptions-2006">old</a><a href="expenditure-and-prescriptions-2007">new</a>',
         lambda _url: '<a href="/files/shared.xls">shared</a>',
         include_documents=True,
     )
     assert len(resources) == 1
+
+
+def test_pbs_annual_index_excludes_unrelated_expenditure_links() -> None:
+    seen: list[str] = []
+    result = discover_pbs_expenditure_resources(
+        '<a href="expenditure-monthly">unrelated</a><a href="expenditure-data">other</a>',
+        lambda url: seen.append(url) or "",
+        include_documents=True,
+    )
+    assert seen == []
+    assert result == []
+
+
+@pytest.mark.parametrize(
+    ("length", "data", "match"),
+    [
+        ("3", b"ab", "Truncated response"),
+        (str(256 * 1024 * 1024 + 1), b"", "Advertised payload"),
+    ],
+)
+def test_pbs_fetch_rejects_truncation_and_excessive_advertised_size(
+    monkeypatch: pytest.MonkeyPatch,
+    length: str,
+    data: bytes,
+    match: str,
+) -> None:
+    response = MagicMock()
+    response.headers = {"Content-Length": length}
+    response.read.return_value = data
+    opener = MagicMock()
+    opener.open.return_value.__enter__.return_value = response
+    monkeypatch.setattr(
+        harvest_australian_pbs_utilisation.urllib.request,
+        "build_opener",
+        lambda _handler: opener,
+    )
+    with pytest.raises(ValueError, match=match):
+        harvest_australian_pbs_utilisation.fetch_payload(
+            "https://data.gov.au/x.csv"
+        )
