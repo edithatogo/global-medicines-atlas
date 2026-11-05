@@ -18,9 +18,7 @@
   "allowed_domains": [
     "www.pbs.gov.au",
     "pbs.gov.au",
-    "data.gov.au",
-    "www.aihw.gov.au",
-    "aihw.gov.au"
+    "data.gov.au"
   ],
   "categories": [
     "date_of_supply_monthly_prescriptions",
