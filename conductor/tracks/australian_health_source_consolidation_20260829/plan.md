@@ -1486,3 +1486,14 @@ frozen denominator or acceptance gates.
   digest verification; report actual ZIP member years and any failed objects.
 - [x] Check AIHW relevant report families; retain empty dynamic-download-list
   limitation and restricted-claims exclusion explicitly.
+
+### Custodial public PBS query exports
+
+- [x] Compare four historical aggregate exports with archived processing tables:
+  3,920 equal cells; 850 explicit zeros without sparse archive rows; no unmatched
+  or differing nonzero cells. Keep study-derived and participant files private.
+- [x] Prepare digest-allowlisted Actions transport without source bytes in Git.
+- [ ] Protected integration, one exact-main append, anonymous digest readback
+  and restoration of the workflow's previous disabled state.
+
+Ownership and scope: [comparison](../../../docs/qualification/pbs-public-export-comparison-20261105.md).

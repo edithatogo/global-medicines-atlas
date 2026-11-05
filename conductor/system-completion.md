@@ -212,3 +212,12 @@ archive and requested completion of this backfill. This supersedes the pending
 additional-cohort gate above for these sources; retain rights metadata, scoped
 archive-only validation, protected integration and hosted anonymous digest checks.
 No general federation, restricted-claims acquisition or release is implied.
+
+## Custodial public PBS exports — 5 November 2026
+
+The maintainer explicitly requested remaining OneDrive checks, comparison with
+archived public tables and publication of missing public evidence. Scope is four
+exact digest-approved Services Australia aggregate query exports, preserving
+explicit-zero/query-layout evidence. No participant artifacts or general source
+expansion are authorized. Use the existing Actions-only append and verification
+path; stop after readback. See the scoped comparison report.
