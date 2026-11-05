@@ -12,6 +12,11 @@ on:
         required: false
         default: false
         type: boolean
+      public_export_bundle:
+        description: Bounded compressed bytes matching the four committed public export digests
+        required: false
+        default: ""
+        type: string
   schedule:
     - cron: "15 15 15 * *" # Monthly check following Services Australia DOS updates.
 
@@ -57,11 +62,17 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           GH_TOKEN: ${{ github.token }}
           BACKFILL_ALL: ${{ inputs.backfill_all == true && '1' || '0' }}
+          PUBLIC_EXPORT_BUNDLE: ${{ inputs.public_export_bundle || '' }}
         run: |
           set -euo pipefail
-          uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 python scripts/harvest_australian_pbs_utilisation.py \
-            --publish-hosted \
-            --receipt-output build/pbs-utilisation-harvest-receipt.json
+          if test -n "$PUBLIC_EXPORT_BUNDLE"; then
+            uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 \
+              python -m scripts.publish_pbs_public_exports
+          else
+            uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 python scripts/harvest_australian_pbs_utilisation.py \
+              --publish-hosted \
+              --receipt-output build/pbs-utilisation-harvest-receipt.json
+          fi
           : # Outbound comments prohibited; retain workflow artifacts instead.
 
       - name: Retain verification artifact 17 without outbound messages

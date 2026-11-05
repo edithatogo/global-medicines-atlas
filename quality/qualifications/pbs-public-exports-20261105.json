@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "dataset": "edithatogo/australian-pbs-utilisation-archive",
+  "approval": "Maintainer requested publication of missing public PBS exports on 5 November 2026. Participant data excluded.",
+  "source_url": "https://data.gov.au/data/dataset/pharmaceutical-benefits-scheme-pbs-item-report",
+  "provenance": "Historical Services Australia SAS aggregate reports supplied by maintainer. Original query endpoints and export instants unavailable. Custodian transport is not publisher reacquisition.",
+  "files": {
+    "PBS_Data_2034873169.9.xls": {
+      "sha256": "e9af0c6be6e21306d3d0c8d40aaddfb98d0c8442af2bfb52b6416b59da7d50d0",
+      "bytes": 162700
+    },
+    "PBS_Data_2034873190.5.xls": {
+      "sha256": "01d735ac3439322d096a8f7b0ee4a2b683bee7a73149e5c49df77fa6d0fe4cd7",
+      "bytes": 67507
+    },
+    "PBS_Data_2031500299.3.xls": {
+      "sha256": "6655ae81fa4558d34ba09be833f7dbb994b6ffa556dab3423f6543164e85be24",
+      "bytes": 82561
+    },
+    "PBS_Data_2031500184.5.xls": {
+      "sha256": "9a39f6dc8fc1b1034ec6a69ff1ed99948fea6e0eae4a2a2ecd32f72130bbb9aa",
+      "bytes": 156446
+    }
+  }
+}
