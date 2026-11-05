@@ -286,3 +286,179 @@ def test_anonymous_verification_failure_never_writes_passed_receipt(
     assert not (
         tmp_path / "build/mbs-utilisation-harvest-receipt.json"
     ).exists()
+
+
+def annotation_fixture(tmp_path):
+    payload = b'{"comparison":"synthetic public metadata"}\n'
+    local = tmp_path / "annotation.json"
+    local.write_bytes(payload)
+    return {
+        "local_path": str(local),
+        "path": "metadata/reconciliation/approved.json",
+        "sha256": hashlib.sha256(payload).hexdigest(),
+        "bytes": len(payload),
+        "parent_revision": "reviewed-parent",
+    }
+
+
+def test_annotation_append_preserves_every_prior_object_and_exact_parent(
+    monkeypatch, tmp_path
+):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(subject, "require_hosted", lambda: None)
+    monkeypatch.setenv("HF_TOKEN", "synthetic-test-token")
+    expected = annotation_fixture(tmp_path)
+    old = {
+        "path": "raw/original.zip",
+        "bytes": 3,
+        "sha256": "original",
+        "kind": "raw_payload",
+    }
+    original = {
+        "files": [old],
+        "file_count": 1,
+        "retained_metadata": "unchanged",
+    }
+    calls = []
+
+    def commit(**kwargs):
+        calls.append(kwargs)
+        return SimpleNamespace(oid="new-revision")
+
+    sdk = SimpleNamespace(
+        HfApi=lambda **_kwargs: SimpleNamespace(create_commit=commit),
+        CommitOperationAdd=lambda **kwargs: kwargs,
+    )
+    revision, full, verification, present = subject.append_annotation(
+        sdk, "reviewed-parent", original, expected
+    )
+    assert (revision, present) == ("new-revision", False)
+    assert full["retained_metadata"] == "unchanged"
+    assert old in full["files"]
+    assert original["file_count"] == 1
+    assert full["file_count"] == 2
+    assert len(verification["files"]) == 1
+    assert calls[0]["parent_commit"] == "reviewed-parent"
+    assert {x["path_in_repo"] for x in calls[0]["operations"]} == {
+        expected["path"],
+        "manifest.json",
+    }
+    revision, same, _, present = subject.append_annotation(
+        None, "new-revision", full, expected
+    )
+    assert present
+    assert same == full
+    assert revision == "new-revision"
+
+
+def test_annotation_substitution_and_unreviewed_parent_rejected(
+    monkeypatch, tmp_path
+):
+    monkeypatch.setattr(subject, "require_hosted", lambda: None)
+    expected = annotation_fixture(tmp_path)
+    with pytest.raises(RuntimeError, match="annotation parent"):
+        subject.append_annotation(None, "other-parent", {"files": []}, expected)
+    expected["sha256"] = "0" * 64
+    with pytest.raises(ValueError, match="reviewed public comparison"):
+        subject.append_annotation(
+            None, "reviewed-parent", {"files": []}, expected
+        )
+
+
+def test_annotation_cannot_be_uploaded_locally(monkeypatch):
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    with pytest.raises(PermissionError, match="Actions main"):
+        subject.append_annotation(None, "", {}, {})
+
+
+def test_annotation_scope_duplicate_manifest_and_immutable_collision_rejected(
+    monkeypatch, tmp_path
+):
+    monkeypatch.setattr(subject, "require_hosted", lambda: None)
+    expected = annotation_fixture(tmp_path)
+    old = {"path": "raw/original.zip", "sha256": "prior"}
+    with pytest.raises(RuntimeError, match="duplicate prior manifest"):
+        subject.append_annotation(
+            None, "reviewed-parent", {"files": [old, old]}, expected
+        )
+    with pytest.raises(
+        RuntimeError, match="immutable annotation path collision"
+    ):
+        subject.append_annotation(
+            None,
+            "reviewed-parent",
+            {"files": [{"path": expected["path"], "sha256": "different"}]},
+            expected,
+        )
+    expected["path"] = "raw/unreviewed.json"
+    with pytest.raises(ValueError, match="comparison metadata scope"):
+        subject.append_annotation(
+            None, "reviewed-parent", {"files": []}, expected
+        )
+
+
+@pytest.mark.parametrize("tamper_manifest", [False, True])
+def test_annotation_main_anonymously_checks_manifest_before_passed_receipt(
+    monkeypatch, tmp_path, tamper_manifest
+):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(subject, "require_hosted", lambda: None)
+    expected = annotation_fixture(tmp_path)
+    payload = (tmp_path / "annotation.json").read_bytes()
+    addition = {
+        "path": expected["path"],
+        "bytes": len(payload),
+        "sha256": expected["sha256"],
+    }
+    old = {"path": "raw/original", "sha256": "old", "bytes": 3}
+    original = {"files": [old], "file_count": 1}
+    full = {"files": [old, addition], "file_count": 2}
+    contract = tmp_path / "contract.json"
+    contract.write_text(
+        json.dumps({
+            "dataset": subject.DATASET,
+            "annotations": {"age-band-reconciliation": expected},
+        })
+    )
+    manifest_file = tmp_path / "restored-manifest.json"
+    manifest_file.write_text(
+        json.dumps({"files": []} if tamper_manifest else full)
+    )
+    calls = []
+
+    def download(**kwargs):
+        calls.append(kwargs)
+        return str(
+            manifest_file
+            if kwargs["filename"] == "manifest.json"
+            else tmp_path / "annotation.json"
+        )
+
+    sdk = SimpleNamespace(hf_hub_download=download)
+    monkeypatch.setattr(subject, "CONTRACT", contract)
+    monkeypatch.setattr(subject.importlib, "import_module", lambda _name: sdk)
+    monkeypatch.setattr(
+        subject, "snapshot", lambda *_args: ("reviewed-parent", original)
+    )
+    monkeypatch.setattr(
+        subject,
+        "append_annotation",
+        lambda *_args: ("new-revision", full, {"files": [addition]}, False),
+    )
+    monkeypatch.setenv("MBS_PUBLIC_BATCH", "age-band-reconciliation")
+    monkeypatch.setenv("GITHUB_SHA", "reviewed-code")
+    receipt_file = tmp_path / "build/mbs-utilisation-harvest-receipt.json"
+    if tamper_manifest:
+        with pytest.raises(RuntimeError, match="anonymous manifest readback"):
+            subject.main()
+        assert not receipt_file.exists()
+    else:
+        subject.main()
+        receipt = json.loads(receipt_file.read_text())
+        assert receipt["verified_file_count"] == 1
+        assert receipt["prior_manifest_objects_preserved"] == 1
+        assert receipt["anonymous_manifest_readback"] == "passed"
+    assert all(
+        call["token"] is False and call["revision"] == "new-revision"
+        for call in calls
+    )

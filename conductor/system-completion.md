@@ -233,3 +233,12 @@ preservation. Participant/linkage, study-derived, login/error and metadata-only
 responses remain excluded. Stop after protected integration, hosted append,
 full anonymous restore, and restoration of the disabled workflow state. General
 federation and every existing acceptance gate remain unchanged.
+
+### Requested original-report age-band follow-up
+
+On 6 November 2026 the maintainer requested resolution of the three MBS age-band
+comparison cells and an HF update if needed. This permits the scoped public
+comparison annotation in the existing MBS archive, preserving native labels,
+source bytes, semantic uncertainty and participant privacy. Reuse the verified
+30-object archive receipt and verify only the new metadata object plus manifest
+preservation. All broader federation and release gates remain unchanged.

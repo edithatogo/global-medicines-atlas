@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       public_batch:
-        description: Reviewed public pack, stage segment, or verify-all
+        description: Reviewed pack, comparison annotation, stage segment, or verify-all
         required: false
         type: string
       public_bundle:
