@@ -111,3 +111,11 @@ existing publication/workflow selectors passed. Required protected CI precedes m
 archive verification remain pending until their observable hosted receipts exist.
 The workflow's prior state is `disabled_manually`; restore it after completion.
 Temporary source bytes are retained until hosted verification permits cleanup.
+
+PR #1416 review: retained the existing MBS harvester path (tracked file verified)
+and the bytes-returning stage reader (the core explicitly accepts bytes or a
+bytes/URL pair; the whole frozen pack staged successfully). Those two automated
+findings were false positives; their review-thread metadata was resolved without
+standalone comments. Initial policy CI correctly required an explanatory comment
+for the new Actions read permission; added the artifact-only purpose without
+changing or suppressing the gate. Final-head protected checks remain required.
