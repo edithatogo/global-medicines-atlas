@@ -195,3 +195,20 @@ Provider sign-in/new consent remain human. Preserve existing qualification,
 source, rights and production-data boundaries; free service sleep/quota limits
 are not a production-availability claim. Stop at protected integration and the
 observed native activation boundary.
+
+## Requested PBS historical backfill — 5 November 2026
+
+The maintainer requested assessment of DataPlace PBS results and the longest
+available file history. Resume bounded discovery and backfill preparation for
+these utilisation families. The exact candidate cohort and gaps are in
+[the backfill proposal](../docs/qualification/pbs-historical-backfill-20261105.md).
+This exception does not resume broader federation, alter its frozen denominator,
+resolve source rights or authorize additional external dataset publication.
+Retain the explicit additional-cohort publication gate and workbook-size blocker.
+
+The maintainer subsequently explicitly approved publication of the additional
+legacy PBS files and relevant Medicare Statistics data into the existing HF
+archive and requested completion of this backfill. This supersedes the pending
+additional-cohort gate above for these sources; retain rights metadata, scoped
+archive-only validation, protected integration and hosted anonymous digest checks.
+No general federation, restricted-claims acquisition or release is implied.

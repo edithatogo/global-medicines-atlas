@@ -11,9 +11,13 @@ import zipfile
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Never
+from unittest.mock import MagicMock
 
 import pytest
-from scripts import harvest_australian_mbs_schedule
+from scripts import (
+    harvest_australian_mbs_schedule,
+    harvest_australian_pbs_utilisation,
+)
 from scripts.harvest_australian_mbs_utilisation import (
     discover_selected_resources,
     stage_resources,
@@ -192,6 +196,39 @@ def test_discover_pbs_expenditure_resources() -> None:
         resources[0].archive_path
         == "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX"
     )
+
+
+def test_pbs_backfill_reaches_older_expenditure_pages(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    pages = [
+        "expenditure-prescriptions-report-2025",
+        "pbs-expenditure-prescriptions-2024",
+        "pb-expenditure-and-prescriptions-report-2019",
+        "expenditure-and-prescriptions-30-06-2006",
+    ]
+    index = "".join(f'<a href="{page}">report</a>' for page in pages)
+
+    def fetch(url: str) -> str:
+        if url.endswith("pbs-expenditure-and-prescriptions"):
+            return index
+        if url.endswith("dos-and-dop"):
+            return ""
+        return f'<a href="{url.rsplit("/", 1)[-1]}.xlsx">table</a>'
+
+    monkeypatch.setattr(
+        harvest_australian_pbs_utilisation, "fetch_url_text", fetch
+    )
+    rolling = harvest_australian_pbs_utilisation.discover_selected_resources()
+    backfill = harvest_australian_pbs_utilisation.discover_selected_resources(
+        backfill_all=True
+    )
+    assert len(rolling) == 2
+    assert {
+        resource.period_label
+        for resource in backfill
+        if resource.source_id == "au-pbs-expenditure"
+    } == set(pages)
 
 
 def test_discover_mbs_schedule_resources() -> None:
@@ -1990,3 +2027,214 @@ def test_mbs_utilisation_stage_resources_inter_request_delay(
     assert len(stages) == 2
     assert manifest["coverage_status"] == "complete"
     assert sleep_calls == [0.05]
+
+
+def test_raw_workbook_profile_keeps_parser_limits_and_metadata_checks(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    payload = _minimal_xlsx_payload()
+    monkeypatch.setattr(australian_harvesting, "MAX_XLSX_PAYLOAD_BYTES", 1)
+    monkeypatch.setattr(australian_harvesting, "MAX_XLSX_UNCOMPRESSED_BYTES", 1)
+    with pytest.raises(ValueError, match="byte limit"):
+        australian_harvesting.validate_xlsx_payload("file.xlsx", payload)
+    australian_harvesting.validate_xlsx_payload(
+        "file.xlsx", payload, raw_archive=True
+    )
+    monkeypatch.setattr(australian_harvesting, "MAX_XLSX_METADATA_BYTES", 1)
+    with pytest.raises(ValueError, match="metadata member"):
+        australian_harvesting.validate_xlsx_payload(
+            "file.xlsx", payload, raw_archive=True
+        )
+
+
+def test_pbs_payload_rejects_unapproved_initial_host() -> None:
+    with pytest.raises(ValueError, match="authorized host"):
+        harvest_australian_pbs_utilisation.fetch_payload(
+            "https://example.com/x.csv"
+        )
+
+
+def test_pbs_staging_preserves_versions_and_reports_failure(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    resource = DiscoveredHarvestResource(
+        source_id="au-pbs-dos-utilisation",
+        category="item_drug_mapping",
+        url="https://www.pbs.gov.au/x.csv",
+        filename="x.csv",
+        archive_path="raw/pbs/x.csv",
+    )
+    monkeypatch.setattr(
+        harvest_australian_pbs_utilisation,
+        "fetch_payload",
+        lambda url: (b"first", url),
+    )
+    first, _ = harvest_australian_pbs_utilisation.stage_resources(
+        [resource], tmp_path
+    )
+    monkeypatch.setattr(
+        harvest_australian_pbs_utilisation,
+        "fetch_payload",
+        lambda url: (b"second", url),
+    )
+    second, _ = harvest_australian_pbs_utilisation.stage_resources(
+        [resource], tmp_path
+    )
+    assert first[0].staged_payload_path != second[0].staged_payload_path
+    assert first[0].staged_payload_path.read_bytes() == b"first"
+
+    def fail(_url: str) -> tuple[bytes, str]:
+        raise OSError("unavailable")
+
+    monkeypatch.setattr(
+        harvest_australian_pbs_utilisation, "fetch_payload", fail
+    )
+    with pytest.raises(ValueError, match="empty"):
+        harvest_australian_pbs_utilisation.stage_resources([resource], tmp_path)
+    coverage = json.loads(
+        (tmp_path / "coverage.json").read_text(encoding="utf-8")
+    )
+    assert coverage["coverage_status"] == "partial"
+    assert coverage["failed_resources"][0]["filename"] == "x.csv"
+
+
+def test_pbs_document_backfill_includes_index_and_same_name_years() -> None:
+    index = (
+        '<a href="/files/expenditure-2002-03.pdf">old</a>'
+        '<a href="expenditure-and-prescriptions-2006">2006</a>'
+        '<a href="expenditure-and-prescriptions-2007">2007</a>'
+    )
+    resources = discover_pbs_expenditure_resources(
+        index,
+        lambda url: (
+            f'<a href="/files/{url.rsplit(chr(47), 1)[-1]}/tables.xls">tables</a>'
+        ),
+        include_documents=True,
+    )
+    assert len(resources) == 3
+    assert len({r.archive_path for r in resources}) == 3
+
+
+def test_pbs_zip_inventory_retains_historical_member_names() -> None:
+    payload = io.BytesIO()
+    with zipfile.ZipFile(payload, "w") as archive:
+        archive.writestr("pbs-item-1992.csv", "year,count\n1992,1\n")
+    result = harvest_australian_pbs_utilisation.inspect_raw_zip(
+        payload.getvalue(), "https://data.gov.au/history.zip"
+    )
+    assert result["members"][0]["path"] == "pbs-item-1992.csv"
+    assert "1992,1" not in json.dumps(result)
+
+
+def test_pbs_authorized_cohort_is_bounded_to_legacy_and_pbs_statistics() -> (
+    None
+):
+    path = (
+        ROOT
+        / "quality/qualifications/australian-pbs-backfill-authorized-resources-20261105.json"
+    )
+    resources = json.loads(path.read_text(encoding="utf-8"))["resources"]
+    assert len(resources) == 120
+    assert (
+        sum(r["source_id"] == "au-medicare-pbs-statistics" for r in resources)
+        == 100
+    )
+    assert len({r["archive_path"] for r in resources}) == 120
+    assert all(
+        "PBS" in r["period_label"]
+        for r in resources
+        if r["source_id"] == "au-medicare-pbs-statistics"
+    )
+
+
+def test_full_pbs_backfill_fails_on_unreadable_annual_page() -> None:
+    def unavailable(_url: str) -> str:
+        raise OSError("annual page unavailable")
+
+    with pytest.raises(OSError, match="annual page unavailable"):
+        discover_pbs_expenditure_resources(
+            '<a href="expenditure-and-prescriptions-2006">annual</a>',
+            unavailable,
+            include_documents=True,
+        )
+
+
+def test_raw_workbook_profile_rejects_oversized_payload_without_allocation() -> (
+    None
+):
+    class OversizedBytes(bytes):
+        def __len__(self) -> int:
+            return 256 * 1024 * 1024 + 1
+
+    with pytest.raises(ValueError, match="byte limit"):
+        australian_harvesting.validate_xlsx_payload(
+            "large.xlsx",
+            OversizedBytes(),
+            raw_archive=True,
+        )
+
+
+def test_raw_workbook_profile_rejects_excessive_declared_expansion(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    archive = zipfile.ZipFile(io.BytesIO(_minimal_xlsx_payload()))
+    archive.infolist()[0].file_size = 4 * 1024**3 + 1
+    monkeypatch.setattr(
+        australian_harvesting, "_open_xlsx_payload", lambda _data: archive
+    )
+    with pytest.raises(ValueError, match="uncompressed size limit"):
+        australian_harvesting.validate_xlsx_payload(
+            "expansion.xlsx",
+            _minimal_xlsx_payload(),
+            raw_archive=True,
+        )
+
+
+def test_pbs_annual_backfill_deduplicates_shared_resource_url() -> None:
+    resources = discover_pbs_expenditure_resources(
+        '<a href="expenditure-and-prescriptions-2006">old</a><a href="expenditure-and-prescriptions-2007">new</a>',
+        lambda _url: '<a href="/files/shared.xls">shared</a>',
+        include_documents=True,
+    )
+    assert len(resources) == 1
+
+
+def test_pbs_annual_index_excludes_unrelated_expenditure_links() -> None:
+    seen: list[str] = []
+    result = discover_pbs_expenditure_resources(
+        '<a href="expenditure-monthly">unrelated</a><a href="expenditure-data">other</a>',
+        lambda url: seen.append(url) or "",
+        include_documents=True,
+    )
+    assert seen == []
+    assert result == []
+
+
+@pytest.mark.parametrize(
+    ("length", "data", "match"),
+    [
+        ("3", b"ab", "Truncated response"),
+        (str(256 * 1024 * 1024 + 1), b"", "Advertised payload"),
+    ],
+)
+def test_pbs_fetch_rejects_truncation_and_excessive_advertised_size(
+    monkeypatch: pytest.MonkeyPatch,
+    length: str,
+    data: bytes,
+    match: str,
+) -> None:
+    response = MagicMock()
+    response.headers = {"Content-Length": length}
+    response.read.return_value = data
+    opener = MagicMock()
+    opener.open.return_value.__enter__.return_value = response
+    monkeypatch.setattr(
+        harvest_australian_pbs_utilisation.urllib.request,
+        "build_opener",
+        lambda _handler: opener,
+    )
+    with pytest.raises(ValueError, match=match):
+        harvest_australian_pbs_utilisation.fetch_payload(
+            "https://data.gov.au/x.csv"
+        )

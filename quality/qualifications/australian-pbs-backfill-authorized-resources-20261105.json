@@ -1,0 +1,966 @@
+{
+  "authorized_at": "2026-11-05",
+  "dataset": "edithatogo/australian-pbs-utilisation-archive",
+  "resources": [
+    {
+      "source_id": "au-pbs-legacy-item",
+      "category": "legacy_pbs_item",
+      "url": "https://data.gov.au/data/dataset/14b536d4-eb6a-485d-bf87-2e6e77ddbac1/resource/c985c370-4cb1-4d08-bd21-6cd6795b135d/download/pbs-item-2016hr-july.xlsx",
+      "filename": "pbs-item-2016hr-july.xlsx",
+      "archive_path": "raw/pbs/utilisation/legacy/item/c985c370-4cb1-4d08-bd21-6cd6795b135d/pbs-item-2016hr-july.xlsx",
+      "period_label": "Excel PBS Item Report 2016 (YTD)"
+    },
+    {
+      "source_id": "au-pbs-legacy-item",
+      "category": "legacy_pbs_item",
+      "url": "https://data.gov.au/data/dataset/14b536d4-eb6a-485d-bf87-2e6e77ddbac1/resource/08eda5ab-01c0-4c94-8b1a-157bcffe80d3/download/pbs-item-2016csvjuly.csv",
+      "filename": "pbs-item-2016csvjuly.csv",
+      "archive_path": "raw/pbs/utilisation/legacy/item/08eda5ab-01c0-4c94-8b1a-157bcffe80d3/pbs-item-2016csvjuly.csv",
+      "period_label": "CSV PBS Item Report 2016 (YTD)"
+    },
+    {
+      "source_id": "au-pbs-legacy-item",
+      "category": "legacy_pbs_item",
+      "url": "https://data.gov.au/data/dataset/14b536d4-eb6a-485d-bf87-2e6e77ddbac1/resource/dbb37cbd-2ccb-4eeb-a106-91beef2809ea/download/pbs-item-2015hr.xlsx",
+      "filename": "pbs-item-2015hr.xlsx",
+      "archive_path": "raw/pbs/utilisation/legacy/item/dbb37cbd-2ccb-4eeb-a106-91beef2809ea/pbs-item-2015hr.xlsx",
+      "period_label": "Excel PBS Item Report 2015"
+    },
+    {
+      "source_id": "au-pbs-legacy-item",
+      "category": "legacy_pbs_item",
+      "url": "https://data.gov.au/data/dataset/14b536d4-eb6a-485d-bf87-2e6e77ddbac1/resource/f5f87751-f23a-45a9-8265-34bcf043e8af/download/pbs-item-2015.csv",
+      "filename": "pbs-item-2015.csv",
+      "archive_path": "raw/pbs/utilisation/legacy/item/f5f87751-f23a-45a9-8265-34bcf043e8af/pbs-item-2015.csv",
+      "period_label": "CSV PBS Item Report 2015"
+    },
+    {
+      "source_id": "au-pbs-legacy-item",
+      "category": "legacy_pbs_item",
+      "url": "https://data.gov.au/data/dataset/14b536d4-eb6a-485d-bf87-2e6e77ddbac1/resource/453396ae-7f50-4466-bb91-05fd1f12ca4b/download/excel-pbs-item-historical-2012-2014.zip",
+      "filename": "excel-pbs-item-historical-2012-2014.zip",
+      "archive_path": "raw/pbs/utilisation/legacy/item/453396ae-7f50-4466-bb91-05fd1f12ca4b/excel-pbs-item-historical-2012-2014.zip",
+      "period_label": "Excel PBS Item Report Historical 2012-2014"
+    },
+    {
+      "source_id": "au-pbs-legacy-item",
+      "category": "legacy_pbs_item",
+      "url": "https://data.gov.au/data/dataset/14b536d4-eb6a-485d-bf87-2e6e77ddbac1/resource/6de08fc2-10c9-4328-9c45-78256ade45eb/download/excel-pbs-item-historical-2002-2011.zip",
+      "filename": "excel-pbs-item-historical-2002-2011.zip",
+      "archive_path": "raw/pbs/utilisation/legacy/item/6de08fc2-10c9-4328-9c45-78256ade45eb/excel-pbs-item-historical-2002-2011.zip",
+      "period_label": "Excel PBS Item Report Historical 2002-2011"
+    },
+    {
+      "source_id": "au-pbs-legacy-item",
+      "category": "legacy_pbs_item",
+      "url": "https://data.gov.au/data/dataset/14b536d4-eb6a-485d-bf87-2e6e77ddbac1/resource/55798711-f977-45b0-93bb-78469ae2cb44/download/excel-pbs-item-historical-1992-2001.zip",
+      "filename": "excel-pbs-item-historical-1992-2001.zip",
+      "archive_path": "raw/pbs/utilisation/legacy/item/55798711-f977-45b0-93bb-78469ae2cb44/excel-pbs-item-historical-1992-2001.zip",
+      "period_label": "Excel PBS Item Report Historical 1992-2001"
+    },
+    {
+      "source_id": "au-pbs-legacy-item",
+      "category": "legacy_pbs_item",
+      "url": "https://data.gov.au/data/dataset/14b536d4-eb6a-485d-bf87-2e6e77ddbac1/resource/56f87bbb-a7cb-4cbf-a723-7aec22996eee/download/csv-pbs-item-historical-1992-2014.zip",
+      "filename": "csv-pbs-item-historical-1992-2014.zip",
+      "archive_path": "raw/pbs/utilisation/legacy/item/56f87bbb-a7cb-4cbf-a723-7aec22996eee/csv-pbs-item-historical-1992-2014.zip",
+      "period_label": "CSV PBS Item Report Historical 1992-2014"
+    },
+    {
+      "source_id": "au-pbs-legacy-patient-category",
+      "category": "legacy_pbs_patient_category",
+      "url": "https://data.gov.au/data/dataset/ecb895fa-e512-4f96-bd66-38ee055f5784/resource/64e4fa5d-d84f-436d-9cb8-95461aadc230/download/pbs-patient-category-2016hr-july.xlsx",
+      "filename": "pbs-patient-category-2016hr-july.xlsx",
+      "archive_path": "raw/pbs/utilisation/legacy/patient-category/64e4fa5d-d84f-436d-9cb8-95461aadc230/pbs-patient-category-2016hr-july.xlsx",
+      "period_label": "Excel PBS Patient Category Report 2016 YTD"
+    },
+    {
+      "source_id": "au-pbs-legacy-patient-category",
+      "category": "legacy_pbs_patient_category",
+      "url": "https://data.gov.au/data/dataset/ecb895fa-e512-4f96-bd66-38ee055f5784/resource/49c8e3a8-1bca-4f1b-a6f7-4450b01c9362/download/pbs-patient-category-2016csvjuly.csv",
+      "filename": "pbs-patient-category-2016csvjuly.csv",
+      "archive_path": "raw/pbs/utilisation/legacy/patient-category/49c8e3a8-1bca-4f1b-a6f7-4450b01c9362/pbs-patient-category-2016csvjuly.csv",
+      "period_label": "CSV PBS Patient Category Report 2016 YTD"
+    },
+    {
+      "source_id": "au-pbs-legacy-patient-category",
+      "category": "legacy_pbs_patient_category",
+      "url": "https://data.gov.au/data/dataset/ecb895fa-e512-4f96-bd66-38ee055f5784/resource/6aea6958-ba00-4231-b2cc-007aedac9fe0/download/pbs-patient-category-2015hr.xlsx",
+      "filename": "pbs-patient-category-2015hr.xlsx",
+      "archive_path": "raw/pbs/utilisation/legacy/patient-category/6aea6958-ba00-4231-b2cc-007aedac9fe0/pbs-patient-category-2015hr.xlsx",
+      "period_label": "Excel PBS Patient Category Report 2015 "
+    },
+    {
+      "source_id": "au-pbs-legacy-patient-category",
+      "category": "legacy_pbs_patient_category",
+      "url": "https://data.gov.au/data/dataset/ecb895fa-e512-4f96-bd66-38ee055f5784/resource/467aa814-bf32-46a2-9adc-ccf2e6798b02/download/pbs-patient-category-2015.csv",
+      "filename": "pbs-patient-category-2015.csv",
+      "archive_path": "raw/pbs/utilisation/legacy/patient-category/467aa814-bf32-46a2-9adc-ccf2e6798b02/pbs-patient-category-2015.csv",
+      "period_label": "CSV PBS Patient Category Report 2015 "
+    },
+    {
+      "source_id": "au-pbs-legacy-patient-category",
+      "category": "legacy_pbs_patient_category",
+      "url": "https://data.gov.au/data/dataset/ecb895fa-e512-4f96-bd66-38ee055f5784/resource/77de74ef-5d80-4bdc-8fb0-b4e09d031d47/download/excel-patient-category-report-historical-1992-2014.zip",
+      "filename": "excel-patient-category-report-historical-1992-2014.zip",
+      "archive_path": "raw/pbs/utilisation/legacy/patient-category/77de74ef-5d80-4bdc-8fb0-b4e09d031d47/excel-patient-category-report-historical-1992-2014.zip",
+      "period_label": "Excel PBS Patient Category Report Historical 1992-2014"
+    },
+    {
+      "source_id": "au-pbs-legacy-patient-category",
+      "category": "legacy_pbs_patient_category",
+      "url": "https://data.gov.au/data/dataset/ecb895fa-e512-4f96-bd66-38ee055f5784/resource/cedcb521-4b71-49a3-b47c-b21b2d5deed3/download/csv-patient-category-report-historical-1992-2014.zip",
+      "filename": "csv-patient-category-report-historical-1992-2014.zip",
+      "archive_path": "raw/pbs/utilisation/legacy/patient-category/cedcb521-4b71-49a3-b47c-b21b2d5deed3/csv-patient-category-report-historical-1992-2014.zip",
+      "period_label": "CSV PBS Patient Category Report Historical 1992-2014"
+    },
+    {
+      "source_id": "au-pbs-legacy-atc",
+      "category": "legacy_pbs_atc",
+      "url": "https://data.gov.au/data/dataset/13ef77a2-acfe-4016-a9a3-cfe6c3850a13/resource/d8491b60-7a63-4115-bdba-ae78992d8579/download/pbs-atc-2016hrjuly.xlsx",
+      "filename": "pbs-atc-2016hrjuly.xlsx",
+      "archive_path": "raw/pbs/utilisation/legacy/atc/d8491b60-7a63-4115-bdba-ae78992d8579/pbs-atc-2016hrjuly.xlsx",
+      "period_label": "Excel PBS ATC Report 2016 (YTD)"
+    },
+    {
+      "source_id": "au-pbs-legacy-atc",
+      "category": "legacy_pbs_atc",
+      "url": "https://data.gov.au/data/dataset/13ef77a2-acfe-4016-a9a3-cfe6c3850a13/resource/c1eba414-7a0b-49c3-96d4-e7272c784a40/download/pbs-atc-2016csvjuly.csv",
+      "filename": "pbs-atc-2016csvjuly.csv",
+      "archive_path": "raw/pbs/utilisation/legacy/atc/c1eba414-7a0b-49c3-96d4-e7272c784a40/pbs-atc-2016csvjuly.csv",
+      "period_label": "CSV PBS ATC Report 2016 (YTD)"
+    },
+    {
+      "source_id": "au-pbs-legacy-atc",
+      "category": "legacy_pbs_atc",
+      "url": "https://data.gov.au/data/dataset/13ef77a2-acfe-4016-a9a3-cfe6c3850a13/resource/8997ad2a-3bd8-401d-be01-632de00d507b/download/pbs-atc-2015hr.xlsx",
+      "filename": "pbs-atc-2015hr.xlsx",
+      "archive_path": "raw/pbs/utilisation/legacy/atc/8997ad2a-3bd8-401d-be01-632de00d507b/pbs-atc-2015hr.xlsx",
+      "period_label": "Excel PBS ATC Report 2015"
+    },
+    {
+      "source_id": "au-pbs-legacy-atc",
+      "category": "legacy_pbs_atc",
+      "url": "https://data.gov.au/data/dataset/13ef77a2-acfe-4016-a9a3-cfe6c3850a13/resource/2eab7fa1-2a7b-4e32-ad7a-6188f6762fc5/download/pbs-atc-2015.csv",
+      "filename": "pbs-atc-2015.csv",
+      "archive_path": "raw/pbs/utilisation/legacy/atc/2eab7fa1-2a7b-4e32-ad7a-6188f6762fc5/pbs-atc-2015.csv",
+      "period_label": "CSV PBS ATC Report 2015"
+    },
+    {
+      "source_id": "au-pbs-legacy-atc",
+      "category": "legacy_pbs_atc",
+      "url": "https://data.gov.au/data/dataset/13ef77a2-acfe-4016-a9a3-cfe6c3850a13/resource/325541f0-564a-4792-a843-0e23b7dfa3d6/download/excel-pbs-atc-report-historical-1992-2014.zip",
+      "filename": "excel-pbs-atc-report-historical-1992-2014.zip",
+      "archive_path": "raw/pbs/utilisation/legacy/atc/325541f0-564a-4792-a843-0e23b7dfa3d6/excel-pbs-atc-report-historical-1992-2014.zip",
+      "period_label": "Excel PBS ATC Report Historical 1992-2014"
+    },
+    {
+      "source_id": "au-pbs-legacy-atc",
+      "category": "legacy_pbs_atc",
+      "url": "https://data.gov.au/data/dataset/13ef77a2-acfe-4016-a9a3-cfe6c3850a13/resource/99dbf213-f165-4daa-b0dc-88d8497d557a/download/csv-pbs-atc-report-historical-1992-2014.zip",
+      "filename": "csv-pbs-atc-report-historical-1992-2014.zip",
+      "archive_path": "raw/pbs/utilisation/legacy/atc/99dbf213-f165-4daa-b0dc-88d8497d557a/csv-pbs-atc-report-historical-1992-2014.zip",
+      "period_label": "CSV PBS ATC Report Historical 1992-2014"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/0f020136-4b9f-43a7-bd04-753854ec8f41/download/september-2026-pbs-item-data.csv",
+      "filename": "september-2026-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/0f020136-4b9f-43a7-bd04-753854ec8f41/september-2026-pbs-item-data.csv",
+      "period_label": "September 2026 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/e52b6e59-cef7-4cd6-9ff8-4d75f959bed6/download/jan-to-sep-2026-pbs-patient-category-data.csv",
+      "filename": "jan-to-sep-2026-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/e52b6e59-cef7-4cd6-9ff8-4d75f959bed6/jan-to-sep-2026-pbs-patient-category-data.csv",
+      "period_label": "Jan to Sep 2026 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/571033b6-01ca-49d1-b012-1623348307da/download/jan-to-sep-2026-pbs-atc-data.csv",
+      "filename": "jan-to-sep-2026-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/571033b6-01ca-49d1-b012-1623348307da/jan-to-sep-2026-pbs-atc-data.csv",
+      "period_label": "Jan to Sep 2026 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/204c093f-99ab-4a2a-b965-fba64ed00d60/download/august-2026-pbs-item-data.csv",
+      "filename": "august-2026-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/204c093f-99ab-4a2a-b965-fba64ed00d60/august-2026-pbs-item-data.csv",
+      "period_label": "August 2026 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/52ee5829-2de9-4c89-9f7a-13b6268936d6/download/jan-to-aug-2026-pbs-patient-category-data.csv",
+      "filename": "jan-to-aug-2026-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/52ee5829-2de9-4c89-9f7a-13b6268936d6/jan-to-aug-2026-pbs-patient-category-data.csv",
+      "period_label": "Jan to Aug 2026 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/3d05fb19-0605-4160-a657-8a91f89b2b90/download/jan-to-aug-2026-pbs-atc-data.csv",
+      "filename": "jan-to-aug-2026-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/3d05fb19-0605-4160-a657-8a91f89b2b90/jan-to-aug-2026-pbs-atc-data.csv",
+      "period_label": "Jan to Aug 2026 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/8e04d64e-c9d0-4883-9c19-0fd6c644511d/download/july-2026-pbs-item-data.csv",
+      "filename": "july-2026-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/8e04d64e-c9d0-4883-9c19-0fd6c644511d/july-2026-pbs-item-data.csv",
+      "period_label": "July 2026 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/c112f729-42fd-4604-84f9-90118de77249/download/jan-to-jul-2026-pbs-patient-category-data.csv",
+      "filename": "jan-to-jul-2026-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/c112f729-42fd-4604-84f9-90118de77249/jan-to-jul-2026-pbs-patient-category-data.csv",
+      "period_label": "Jan to Jul 2026 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/94c51140-a2fa-44e1-953d-e627c0b0a06c/download/jan-to-jul-2026-pbs-atc-data.csv",
+      "filename": "jan-to-jul-2026-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/94c51140-a2fa-44e1-953d-e627c0b0a06c/jan-to-jul-2026-pbs-atc-data.csv",
+      "period_label": "Jan to Jul 2026 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/58b3f8fa-b368-45e0-8a8e-629c097eab88/download/june-2026-pbs-item-data.csv",
+      "filename": "june-2026-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/58b3f8fa-b368-45e0-8a8e-629c097eab88/june-2026-pbs-item-data.csv",
+      "period_label": "June 2026 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/14181012-b339-4367-ad19-2ce88273d2c9/download/jan-to-jun-2026-pbs-item-data.csv",
+      "filename": "jan-to-jun-2026-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/14181012-b339-4367-ad19-2ce88273d2c9/jan-to-jun-2026-pbs-item-data.csv",
+      "period_label": "Jan to Jun 2026 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/a7240f60-375d-4bf5-8e1e-3fa6d271f161/download/jan-to-jun-2026-pbs-patient-category-data.csv",
+      "filename": "jan-to-jun-2026-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/a7240f60-375d-4bf5-8e1e-3fa6d271f161/jan-to-jun-2026-pbs-patient-category-data.csv",
+      "period_label": "Jan to Jun 2026 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/abcbd3ce-c8aa-44a8-84a7-51bc26bcbe20/download/jan-to-jun-2026-pbs-atc-data.csv",
+      "filename": "jan-to-jun-2026-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/abcbd3ce-c8aa-44a8-84a7-51bc26bcbe20/jan-to-jun-2026-pbs-atc-data.csv",
+      "period_label": "Jan to Jun 2026 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/cc329713-dab5-4000-94be-5c10dc606665/download/may-2026-pbs-item-data.csv",
+      "filename": "may-2026-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/cc329713-dab5-4000-94be-5c10dc606665/may-2026-pbs-item-data.csv",
+      "period_label": "May 2026 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/03fb5afc-c352-4011-9bac-2e6d988b9239/download/jan-to-may-2026-pbs-patient-category-data.csv",
+      "filename": "jan-to-may-2026-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/03fb5afc-c352-4011-9bac-2e6d988b9239/jan-to-may-2026-pbs-patient-category-data.csv",
+      "period_label": "Jan to May 2026 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/a4e2acd2-2d46-412f-932b-07f7118576ac/download/jan-to-may-2026-pbs-atc-data.csv",
+      "filename": "jan-to-may-2026-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/a4e2acd2-2d46-412f-932b-07f7118576ac/jan-to-may-2026-pbs-atc-data.csv",
+      "period_label": "Jan to May 2026 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/2f6e2a5b-8723-436b-b656-05c54f73771e/download/april-2026-pbs-item-data.csv",
+      "filename": "april-2026-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/2f6e2a5b-8723-436b-b656-05c54f73771e/april-2026-pbs-item-data.csv",
+      "period_label": "April 2026 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/2913f940-2e83-46fb-af94-e4b2e3bcef24/download/jan-to-apr-2026-pbs-patient-category-data.csv",
+      "filename": "jan-to-apr-2026-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/2913f940-2e83-46fb-af94-e4b2e3bcef24/jan-to-apr-2026-pbs-patient-category-data.csv",
+      "period_label": "Jan to Apr 2026 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/8a794ede-4e64-423f-94bb-ab414b202ac7/download/jan-to-apr-2026-pbs-atc-data.csv",
+      "filename": "jan-to-apr-2026-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/8a794ede-4e64-423f-94bb-ab414b202ac7/jan-to-apr-2026-pbs-atc-data.csv",
+      "period_label": "Jan to Apr 2026 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/f2365d64-7a3c-4111-a7d8-7277665020ff/download/march-2026-pbs-item-data.csv",
+      "filename": "march-2026-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/f2365d64-7a3c-4111-a7d8-7277665020ff/march-2026-pbs-item-data.csv",
+      "period_label": "March 2026 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/c2d073d6-8968-4416-a7ef-3dc1da8092a3/download/jan-to-mar-2026-pbs-patient-category-data.csv",
+      "filename": "jan-to-mar-2026-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/c2d073d6-8968-4416-a7ef-3dc1da8092a3/jan-to-mar-2026-pbs-patient-category-data.csv",
+      "period_label": "Jan to Mar 2026 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/2002767a-dbf7-4890-9a97-acc4fb98ece7/download/jan-to-mar-2026-pbs-atc-data.csv",
+      "filename": "jan-to-mar-2026-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/2002767a-dbf7-4890-9a97-acc4fb98ece7/jan-to-mar-2026-pbs-atc-data.csv",
+      "period_label": "Jan to Mar 2026 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/96b0c8fb-25e9-4353-8657-a88a1960d1c9/download/february-2026-pbs-item-data.csv",
+      "filename": "february-2026-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/96b0c8fb-25e9-4353-8657-a88a1960d1c9/february-2026-pbs-item-data.csv",
+      "period_label": "February 2026 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/22b60aa4-eaea-4eb9-b474-ad3c748d7fd1/download/jan-to-feb-2026-pbs-patient-category-data.csv",
+      "filename": "jan-to-feb-2026-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/22b60aa4-eaea-4eb9-b474-ad3c748d7fd1/jan-to-feb-2026-pbs-patient-category-data.csv",
+      "period_label": "Jan to Feb 2026 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/152b4fc2-b908-4811-95b6-4efa31a17d04/download/jan-to-feb-2026-pbs-atc-data.csv",
+      "filename": "jan-to-feb-2026-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/152b4fc2-b908-4811-95b6-4efa31a17d04/jan-to-feb-2026-pbs-atc-data.csv",
+      "period_label": "Jan to Feb 2026 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/0eda3298-6e01-4873-a82e-a288832e1b14/download/january-2026-pbs-item-data.csv",
+      "filename": "january-2026-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/0eda3298-6e01-4873-a82e-a288832e1b14/january-2026-pbs-item-data.csv",
+      "period_label": "January 2026 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/a5504df9-10f4-48ed-b702-faf4076eb5f9/download/jan-to-jan-2026-pbs-patient-category-data.csv",
+      "filename": "jan-to-jan-2026-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/a5504df9-10f4-48ed-b702-faf4076eb5f9/jan-to-jan-2026-pbs-patient-category-data.csv",
+      "period_label": "Jan to Jan 2026 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/62edaacc-5891-4434-8ee0-5f21d6331a1f/download/jan-to-jan-2026-pbs-atc-data.csv",
+      "filename": "jan-to-jan-2026-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/62edaacc-5891-4434-8ee0-5f21d6331a1f/jan-to-jan-2026-pbs-atc-data.csv",
+      "period_label": "Jan to Jan 2026 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/e88376e4-dfe0-4ac4-af2e-36147217b4c6/download/december-2025-pbs-item-data.csv",
+      "filename": "december-2025-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/e88376e4-dfe0-4ac4-af2e-36147217b4c6/december-2025-pbs-item-data.csv",
+      "period_label": "December 2025 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/fa6178ea-c139-49a5-b541-333d2d6f59bf/download/jan-to-dec-2025-pbs-patient-category-data.csv",
+      "filename": "jan-to-dec-2025-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/fa6178ea-c139-49a5-b541-333d2d6f59bf/jan-to-dec-2025-pbs-patient-category-data.csv",
+      "period_label": "Jan to Dec 2025 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/b4fb93eb-7866-4537-9d52-d43e907cd15f/download/jan-to-dec-2025-pbs-atc-data.csv",
+      "filename": "jan-to-dec-2025-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/b4fb93eb-7866-4537-9d52-d43e907cd15f/jan-to-dec-2025-pbs-atc-data.csv",
+      "period_label": "Jan to Dec 2025 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/68c18c6f-501f-4ef3-8dee-0c66cdbf8d55/download/november-2025-pbs-item-data.csv",
+      "filename": "november-2025-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/68c18c6f-501f-4ef3-8dee-0c66cdbf8d55/november-2025-pbs-item-data.csv",
+      "period_label": "November 2025 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/b4e688dc-1c6b-4c60-af01-1c0ee6accaae/download/jan-to-nov-2025-pbs-patient-category-data.csv",
+      "filename": "jan-to-nov-2025-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/b4e688dc-1c6b-4c60-af01-1c0ee6accaae/jan-to-nov-2025-pbs-patient-category-data.csv",
+      "period_label": "Jan to Nov 2025 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/f5399dbf-0c0c-4b7f-9d44-bd981ff398a3/download/jan-to-nov-2025-pbs-atc-data.csv",
+      "filename": "jan-to-nov-2025-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/f5399dbf-0c0c-4b7f-9d44-bd981ff398a3/jan-to-nov-2025-pbs-atc-data.csv",
+      "period_label": "Jan to Nov 2025 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/d33b4db2-c72a-45e1-9f35-b56326112c73/download/jan-to-jun-2025-pbs-item-data.csv",
+      "filename": "jan-to-jun-2025-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/d33b4db2-c72a-45e1-9f35-b56326112c73/jan-to-jun-2025-pbs-item-data.csv",
+      "period_label": "Jan to Jun 2025 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/056df472-15c4-4f60-95dc-0a593be2eac8/download/jan-to-jun-2025-pbs-patient-category-data.csv",
+      "filename": "jan-to-jun-2025-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/056df472-15c4-4f60-95dc-0a593be2eac8/jan-to-jun-2025-pbs-patient-category-data.csv",
+      "period_label": "Jan to Jun 2025 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/97307e52-203e-4bbe-85d2-cfc21712a995/download/jan-to-jun-2025-pbs-atc-data.csv",
+      "filename": "jan-to-jun-2025-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/97307e52-203e-4bbe-85d2-cfc21712a995/jan-to-jun-2025-pbs-atc-data.csv",
+      "period_label": "Jan to Jun 2025 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/6b9fed72-229e-4dbf-8e66-7ccdf1ccad09/download/jul-to-dec-2025-pbs-item-data.csv",
+      "filename": "jul-to-dec-2025-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/6b9fed72-229e-4dbf-8e66-7ccdf1ccad09/jul-to-dec-2025-pbs-item-data.csv",
+      "period_label": "Jul to Dec 2025 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/d053d125-ec37-405e-bed3-6d0e258b4a0f/download/jul-to-dec-2025-pbs-patient-category-data.csv",
+      "filename": "jul-to-dec-2025-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/d053d125-ec37-405e-bed3-6d0e258b4a0f/jul-to-dec-2025-pbs-patient-category-data.csv",
+      "period_label": "Jul to Dec 2025 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/0b3e3052-e9ee-47b6-b8b6-90253ba4ac89/download/jul-to-dec-2025-pbs-atc-data.csv",
+      "filename": "jul-to-dec-2025-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/0b3e3052-e9ee-47b6-b8b6-90253ba4ac89/jul-to-dec-2025-pbs-atc-data.csv",
+      "period_label": "Jul to Dec 2025 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/05bbe45c-c6d0-4086-8add-14cf43baea0f/download/jan-to-jun-2024-pbs-item-data.csv",
+      "filename": "jan-to-jun-2024-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/05bbe45c-c6d0-4086-8add-14cf43baea0f/jan-to-jun-2024-pbs-item-data.csv",
+      "period_label": "Jan to Jun 2024 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/2d8b242c-d8a1-4149-a8b0-98fd2af8bbe5/download/jan-to-jun-2024-pbs-patient-category-data.csv",
+      "filename": "jan-to-jun-2024-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/2d8b242c-d8a1-4149-a8b0-98fd2af8bbe5/jan-to-jun-2024-pbs-patient-category-data.csv",
+      "period_label": "Jan to Jun 2024 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/c7e07787-ed56-4fc3-84ed-6e7012184d96/download/jan-to-jun-2024-pbs-atc-data.csv",
+      "filename": "jan-to-jun-2024-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/c7e07787-ed56-4fc3-84ed-6e7012184d96/jan-to-jun-2024-pbs-atc-data.csv",
+      "period_label": "Jan to Jun 2024 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/a09012dc-2f59-45fb-8868-55ba44d97fd5/download/jul-to-dec-2024-pbs-item-data.csv",
+      "filename": "jul-to-dec-2024-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/a09012dc-2f59-45fb-8868-55ba44d97fd5/jul-to-dec-2024-pbs-item-data.csv",
+      "period_label": "Jul to Dec 2024 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/071bc914-3621-415f-847f-e4173f9d32fc/download/jul-to-dec-2024-pbs-patient-category-data.csv",
+      "filename": "jul-to-dec-2024-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/071bc914-3621-415f-847f-e4173f9d32fc/jul-to-dec-2024-pbs-patient-category-data.csv",
+      "period_label": "Jul to Dec 2024 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/42b39ac5-c5f8-44b6-a11c-824b88f1ba0f/download/jul-to-dec-2024-pbs-atc-data.csv",
+      "filename": "jul-to-dec-2024-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/42b39ac5-c5f8-44b6-a11c-824b88f1ba0f/jul-to-dec-2024-pbs-atc-data.csv",
+      "period_label": "Jul to Dec 2024 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/d114b326-5ca1-44a7-aae8-8aef02e111af/download/jan-to-jun-2023-pbs-item-data.csv",
+      "filename": "jan-to-jun-2023-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/d114b326-5ca1-44a7-aae8-8aef02e111af/jan-to-jun-2023-pbs-item-data.csv",
+      "period_label": "Jan to Jun 2023 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/f5cbae5a-be6f-4806-8b5f-7fd3031ed5ae/download/jan-to-jun-2023-pbs-patient-category-data.csv",
+      "filename": "jan-to-jun-2023-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/f5cbae5a-be6f-4806-8b5f-7fd3031ed5ae/jan-to-jun-2023-pbs-patient-category-data.csv",
+      "period_label": "Jan to Jun 2023 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/8c77bb95-9b57-4835-b3ff-d0ca481793ef/download/jan-to-jun-2023-pbs-atc-data.csv",
+      "filename": "jan-to-jun-2023-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/8c77bb95-9b57-4835-b3ff-d0ca481793ef/jan-to-jun-2023-pbs-atc-data.csv",
+      "period_label": "Jan to Jun 2023 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/16af0b8a-770a-4b89-b7ba-a550c965b55b/download/jul-to-dec-2023-pbs-item-data.csv",
+      "filename": "jul-to-dec-2023-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/16af0b8a-770a-4b89-b7ba-a550c965b55b/jul-to-dec-2023-pbs-item-data.csv",
+      "period_label": "Jul to Dec 2023 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/7be86ccd-5122-4a35-98ac-ef066899f00d/download/jul-to-dec-2023-pbs-patient-category-data.csv",
+      "filename": "jul-to-dec-2023-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/7be86ccd-5122-4a35-98ac-ef066899f00d/jul-to-dec-2023-pbs-patient-category-data.csv",
+      "period_label": "Jul to Dec 2023 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/b538afdf-065c-45b8-baaa-6337a3887bb1/download/jul-to-dec-2023-pbs-atc-data.csv",
+      "filename": "jul-to-dec-2023-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/b538afdf-065c-45b8-baaa-6337a3887bb1/jul-to-dec-2023-pbs-atc-data.csv",
+      "period_label": "Jul to Dec 2023 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/b89bd8bf-69df-4b06-85da-ed4c7dea4e55/download/jan-to-jun-2022-pbs-item-data.csv",
+      "filename": "jan-to-jun-2022-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/b89bd8bf-69df-4b06-85da-ed4c7dea4e55/jan-to-jun-2022-pbs-item-data.csv",
+      "period_label": "Jan to Jun 2022 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/9a754a25-4eb9-486e-9382-e6bfe658214c/download/jan-to-jun-2022-pbs-patient-category-data.csv",
+      "filename": "jan-to-jun-2022-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/9a754a25-4eb9-486e-9382-e6bfe658214c/jan-to-jun-2022-pbs-patient-category-data.csv",
+      "period_label": "Jan to Jun 2022 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/427021be-7c3e-41ab-8351-4595c6d4c4c6/download/jan-to-jun-2022-pbs-atc-data.csv",
+      "filename": "jan-to-jun-2022-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/427021be-7c3e-41ab-8351-4595c6d4c4c6/jan-to-jun-2022-pbs-atc-data.csv",
+      "period_label": "Jan to Jun 2022 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/ed1192f1-896b-4e85-a2a5-d49b8ce4283e/download/jul-to-dec-2022-pbs-item-data.csv",
+      "filename": "jul-to-dec-2022-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/ed1192f1-896b-4e85-a2a5-d49b8ce4283e/jul-to-dec-2022-pbs-item-data.csv",
+      "period_label": "Jul to Dec 2022 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/3bef9a4d-892e-4aa7-a3de-dae76c448559/download/jul-to-dec-2022-pbs-patient-category-data.csv",
+      "filename": "jul-to-dec-2022-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/3bef9a4d-892e-4aa7-a3de-dae76c448559/jul-to-dec-2022-pbs-patient-category-data.csv",
+      "period_label": "Jul to Dec 2022 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/446c69ef-2076-443b-a584-c829cc15d316/download/jul-to-dec-2022-pbs-atc-data.csv",
+      "filename": "jul-to-dec-2022-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/446c69ef-2076-443b-a584-c829cc15d316/jul-to-dec-2022-pbs-atc-data.csv",
+      "period_label": "Jul to Dec 2022 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/6e8d355b-8295-48dc-a872-9288e289b728/download/jan-to-jun-2021-pbs-item-data.csv",
+      "filename": "jan-to-jun-2021-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/6e8d355b-8295-48dc-a872-9288e289b728/jan-to-jun-2021-pbs-item-data.csv",
+      "period_label": "Jan to Jun 2021 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/01f1e9f2-61ef-481a-b597-a4d2b27176d7/download/jan-to-jun-2021-pbs-patient-category-data.csv",
+      "filename": "jan-to-jun-2021-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/01f1e9f2-61ef-481a-b597-a4d2b27176d7/jan-to-jun-2021-pbs-patient-category-data.csv",
+      "period_label": "Jan to Jun 2021 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/8b0239d9-ed42-4888-85f0-6715b12ee6b4/download/jan-to-jun-2021-pbs-atc-data.csv",
+      "filename": "jan-to-jun-2021-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/8b0239d9-ed42-4888-85f0-6715b12ee6b4/jan-to-jun-2021-pbs-atc-data.csv",
+      "period_label": "Jan to Jun 2021 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/7508ac4c-5ded-4b67-b27f-1fa645d1d840/download/jul-to-dec-2021-pbs-item-data.csv",
+      "filename": "jul-to-dec-2021-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/7508ac4c-5ded-4b67-b27f-1fa645d1d840/jul-to-dec-2021-pbs-item-data.csv",
+      "period_label": "Jul to Dec 2021 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/8460376b-d85f-4917-99c9-637fdd39ee85/download/jul-to-dec-2021-pbs-patient-category-data.csv",
+      "filename": "jul-to-dec-2021-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/8460376b-d85f-4917-99c9-637fdd39ee85/jul-to-dec-2021-pbs-patient-category-data.csv",
+      "period_label": "Jul to Dec 2021 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/cb0e423a-31e2-4884-827b-067cc0b4e4b4/download/jul-to-dec-2021-pbs-atc-data.csv",
+      "filename": "jul-to-dec-2021-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/cb0e423a-31e2-4884-827b-067cc0b4e4b4/jul-to-dec-2021-pbs-atc-data.csv",
+      "period_label": "Jul to Dec 2021 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/100e6800-823e-490a-99b6-f8403ec19faf/download/jan-to-jun-2020-pbs-item-data.csv",
+      "filename": "jan-to-jun-2020-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/100e6800-823e-490a-99b6-f8403ec19faf/jan-to-jun-2020-pbs-item-data.csv",
+      "period_label": "Jan to Jun 2020 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/d381cbc3-6725-4e34-92e2-bb49302964c1/download/jan-to-jun-2020-pbs-patient-category-data.csv",
+      "filename": "jan-to-jun-2020-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/d381cbc3-6725-4e34-92e2-bb49302964c1/jan-to-jun-2020-pbs-patient-category-data.csv",
+      "period_label": "Jan to Jun 2020 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/2115209f-4494-4ee6-b986-f3b05412b38b/download/jan-to-jun-2020-pbs-atc-data.csv",
+      "filename": "jan-to-jun-2020-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/2115209f-4494-4ee6-b986-f3b05412b38b/jan-to-jun-2020-pbs-atc-data.csv",
+      "period_label": "Jan to Jun 2020 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/9ddbe383-3ea6-4180-be1d-b844fc413af4/download/jul-to-dec-2020-pbs-item-data.csv",
+      "filename": "jul-to-dec-2020-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/9ddbe383-3ea6-4180-be1d-b844fc413af4/jul-to-dec-2020-pbs-item-data.csv",
+      "period_label": "Jul to Dec 2020 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/1934ef13-57c7-4bd4-a20e-4062106231e4/download/jul-to-dec-2020-pbs-patient-category-data.csv",
+      "filename": "jul-to-dec-2020-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/1934ef13-57c7-4bd4-a20e-4062106231e4/jul-to-dec-2020-pbs-patient-category-data.csv",
+      "period_label": "Jul to Dec 2020 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/5671d6ff-8189-42cf-ac0b-76d3d16c68c7/download/jul-to-dec-2020-pbs-atc-data.csv",
+      "filename": "jul-to-dec-2020-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/5671d6ff-8189-42cf-ac0b-76d3d16c68c7/jul-to-dec-2020-pbs-atc-data.csv",
+      "period_label": "Jul to Dec 2020 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/178c93ed-70f2-4a90-873e-e0f5e525a590/download/jan-to-jun-2019-pbs-item-data.csv",
+      "filename": "jan-to-jun-2019-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/178c93ed-70f2-4a90-873e-e0f5e525a590/jan-to-jun-2019-pbs-item-data.csv",
+      "period_label": "Jan to Jun 2019 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/51130537-6b60-42cb-a840-4d65c78feb3f/download/jan-to-jun-2019-pbs-patient-category-data.csv",
+      "filename": "jan-to-jun-2019-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/51130537-6b60-42cb-a840-4d65c78feb3f/jan-to-jun-2019-pbs-patient-category-data.csv",
+      "period_label": "Jan to Jun 2019 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/c2d577a6-891d-40d7-8c09-411af281e42f/download/jan-to-jun-2019-pbs-atc-data.csv",
+      "filename": "jan-to-jun-2019-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/c2d577a6-891d-40d7-8c09-411af281e42f/jan-to-jun-2019-pbs-atc-data.csv",
+      "period_label": "Jan to Jun 2019 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/ea694895-596d-4057-8e81-7b58c0213427/download/jul-to-dec-2019-pbs-item-data.csv",
+      "filename": "jul-to-dec-2019-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/ea694895-596d-4057-8e81-7b58c0213427/jul-to-dec-2019-pbs-item-data.csv",
+      "period_label": "Jul to Dec 2019 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/16161e49-1318-4e02-ac99-0c3f8906233e/download/jul-to-dec-2019-pbs-patient-category-data.csv",
+      "filename": "jul-to-dec-2019-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/16161e49-1318-4e02-ac99-0c3f8906233e/jul-to-dec-2019-pbs-patient-category-data.csv",
+      "period_label": "Jul to Dec 2019 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/b2d2e079-c8c7-4611-8b40-20480682531f/download/jul-to-dec-2019-pbs-atc-data.csv",
+      "filename": "jul-to-dec-2019-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/b2d2e079-c8c7-4611-8b40-20480682531f/jul-to-dec-2019-pbs-atc-data.csv",
+      "period_label": "Jul to Dec 2019 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/bd4582a8-9d3d-40c8-992b-7d15cfea7058/download/jan-to-jun-2018-pbs-item-data.csv",
+      "filename": "jan-to-jun-2018-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/bd4582a8-9d3d-40c8-992b-7d15cfea7058/jan-to-jun-2018-pbs-item-data.csv",
+      "period_label": "Jan to Jun 2018 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/36870105-eeab-4608-bc03-1336e5c2eeee/download/jan-to-jun-2018-pbs-patient-category-data.csv",
+      "filename": "jan-to-jun-2018-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/36870105-eeab-4608-bc03-1336e5c2eeee/jan-to-jun-2018-pbs-patient-category-data.csv",
+      "period_label": "Jan to Jun 2018 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/7efeb86a-e97b-4faa-bb84-9b5e80e762dc/download/jan-to-jun-2018-pbs-atc-data.csv",
+      "filename": "jan-to-jun-2018-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/7efeb86a-e97b-4faa-bb84-9b5e80e762dc/jan-to-jun-2018-pbs-atc-data.csv",
+      "period_label": "Jan to Jun 2018 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/079a2ea1-8044-4cdd-8257-b7b5fc671577/download/jul-to-dec-2018-pbs-item-data.csv",
+      "filename": "jul-to-dec-2018-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/079a2ea1-8044-4cdd-8257-b7b5fc671577/jul-to-dec-2018-pbs-item-data.csv",
+      "period_label": "Jul to Dec 2018 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/18849cf9-7063-41b4-9a76-99ea46b5820f/download/jul-to-dec-2018-pbs-patient-category-data.csv",
+      "filename": "jul-to-dec-2018-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/18849cf9-7063-41b4-9a76-99ea46b5820f/jul-to-dec-2018-pbs-patient-category-data.csv",
+      "period_label": "Jul to Dec 2018 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/ac50628c-f0cc-4a3f-9490-f665212e01b3/download/jul-to-dec-2018-pbs-atc-data.csv",
+      "filename": "jul-to-dec-2018-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/ac50628c-f0cc-4a3f-9490-f665212e01b3/jul-to-dec-2018-pbs-atc-data.csv",
+      "period_label": "Jul to Dec 2018 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/6c9ca732-54e8-4cdf-a198-5c734871f051/download/jan-to-jun-2017-pbs-item-data.csv",
+      "filename": "jan-to-jun-2017-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/6c9ca732-54e8-4cdf-a198-5c734871f051/jan-to-jun-2017-pbs-item-data.csv",
+      "period_label": "Jan to Jun 2017 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/181c7a5b-8e40-4ce7-b475-7b8dae1b37ac/download/jan-to-jun-2017-pbs-patient-category-data.csv",
+      "filename": "jan-to-jun-2017-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/181c7a5b-8e40-4ce7-b475-7b8dae1b37ac/jan-to-jun-2017-pbs-patient-category-data.csv",
+      "period_label": "Jan to Jun 2017 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/db059e50-e59d-48c4-a3b9-9c8dcd8f65a7/download/jan-to-jun-2017-pbs-atc-data.csv",
+      "filename": "jan-to-jun-2017-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/db059e50-e59d-48c4-a3b9-9c8dcd8f65a7/jan-to-jun-2017-pbs-atc-data.csv",
+      "period_label": "Jan to Jun 2017 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/5b7b3ee7-e5be-4568-b06a-941b71500421/download/jul-to-dec-2017-pbs-item-data.csv",
+      "filename": "jul-to-dec-2017-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/5b7b3ee7-e5be-4568-b06a-941b71500421/jul-to-dec-2017-pbs-item-data.csv",
+      "period_label": "Jul to Dec 2017 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/d2ffead4-24f0-4d05-88b2-a9ff4f7fd046/download/jul-to-dec-2017-pbs-patient-category-data.csv",
+      "filename": "jul-to-dec-2017-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/d2ffead4-24f0-4d05-88b2-a9ff4f7fd046/jul-to-dec-2017-pbs-patient-category-data.csv",
+      "period_label": "Jul to Dec 2017 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/6d5d85cf-8db1-44e8-8a88-39dcfaff2c70/download/jul-to-dec-2017-pbs-atc-data.csv",
+      "filename": "jul-to-dec-2017-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/6d5d85cf-8db1-44e8-8a88-39dcfaff2c70/jul-to-dec-2017-pbs-atc-data.csv",
+      "period_label": "Jul to Dec 2017 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/f02fc87e-f9ad-4836-a66b-de1ff80b0303/download/jan-to-jun-2016-pbs-item-data.csv",
+      "filename": "jan-to-jun-2016-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/f02fc87e-f9ad-4836-a66b-de1ff80b0303/jan-to-jun-2016-pbs-item-data.csv",
+      "period_label": "Jan to Jun 2016 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/7ce99b6e-88f7-41a8-911c-7113fef270de/download/jan-to-jun-2016-pbs-patient-category-data.csv",
+      "filename": "jan-to-jun-2016-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/7ce99b6e-88f7-41a8-911c-7113fef270de/jan-to-jun-2016-pbs-patient-category-data.csv",
+      "period_label": "Jan to Jun 2016 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/e94b0de6-34f0-4a13-a8be-f536818352af/download/jan-to-jun-2016-pbs-atc-data.csv",
+      "filename": "jan-to-jun-2016-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/e94b0de6-34f0-4a13-a8be-f536818352af/jan-to-jun-2016-pbs-atc-data.csv",
+      "period_label": "Jan to Jun 2016 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/94a6b3ea-e666-4956-9d86-ee8b9faa3b64/download/jul-to-dec-2016-pbs-item-data.csv",
+      "filename": "jul-to-dec-2016-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/94a6b3ea-e666-4956-9d86-ee8b9faa3b64/jul-to-dec-2016-pbs-item-data.csv",
+      "period_label": "Jul to Dec 2016 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/769d91a7-4d6e-4749-979b-b8d2efebcb3f/download/jul-to-dec-2016-pbs-patient-category-data.csv",
+      "filename": "jul-to-dec-2016-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/769d91a7-4d6e-4749-979b-b8d2efebcb3f/jul-to-dec-2016-pbs-patient-category-data.csv",
+      "period_label": "Jul to Dec 2016 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/6c88cac5-b106-4543-ba8d-0a9aa6ce0aca/download/jul-to-dec-2016-pbs-atc-data.csv",
+      "filename": "jul-to-dec-2016-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/6c88cac5-b106-4543-ba8d-0a9aa6ce0aca/jul-to-dec-2016-pbs-atc-data.csv",
+      "period_label": "Jul to Dec 2016 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/5e54ff5c-052b-448b-92bb-dd35de9b1bff/download/jan-to-jun-2015-pbs-item-data.csv",
+      "filename": "jan-to-jun-2015-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/5e54ff5c-052b-448b-92bb-dd35de9b1bff/jan-to-jun-2015-pbs-item-data.csv",
+      "period_label": "Jan to Jun 2015 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/80fb74ab-c2f8-429d-a08b-ed910cf29789/download/jan-to-jun-2015-pbs-patient-category-data.csv",
+      "filename": "jan-to-jun-2015-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/80fb74ab-c2f8-429d-a08b-ed910cf29789/jan-to-jun-2015-pbs-patient-category-data.csv",
+      "period_label": "Jan to Jun 2015 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/ac8d9434-a4ed-4800-b19e-572f83443d9d/download/jan-to-jun-2015-pbs-atc-data.csv",
+      "filename": "jan-to-jun-2015-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/ac8d9434-a4ed-4800-b19e-572f83443d9d/jan-to-jun-2015-pbs-atc-data.csv",
+      "period_label": "Jan to Jun 2015 - PBS ATC data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/e7bb815c-8bfa-4698-85d4-694063fccf89/download/jul-to-dec-2015-pbs-item-data.csv",
+      "filename": "jul-to-dec-2015-pbs-item-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/e7bb815c-8bfa-4698-85d4-694063fccf89/jul-to-dec-2015-pbs-item-data.csv",
+      "period_label": "Jul to Dec 2015 - PBS Item Data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/51cabfeb-d73e-48af-96ac-80884e92b667/download/jul-to-dec-2015-pbs-patient-category-data.csv",
+      "filename": "jul-to-dec-2015-pbs-patient-category-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/51cabfeb-d73e-48af-96ac-80884e92b667/jul-to-dec-2015-pbs-patient-category-data.csv",
+      "period_label": "Jul to Dec 2015 - PBS Patient Category data"
+    },
+    {
+      "source_id": "au-medicare-pbs-statistics",
+      "category": "medicare_pbs_statistics",
+      "url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/15a172d8-dcc9-49eb-a520-95ef2c5f80d6/download/jul-to-dec-2015-pbs-atc-data.csv",
+      "filename": "jul-to-dec-2015-pbs-atc-data.csv",
+      "archive_path": "raw/pbs/utilisation/medicare-statistics/15a172d8-dcc9-49eb-a520-95ef2c5f80d6/jul-to-dec-2015-pbs-atc-data.csv",
+      "period_label": "Jul to Dec 2015 - PBS ATC data"
+    }
+  ]
+}

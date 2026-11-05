@@ -9,18 +9,23 @@ GitHub Actions with anonymous clean-room verification.
 from __future__ import annotations
 
 import argparse
-import contextlib
+import hashlib
 import importlib
+import io
 import json
 import os
 import re
 import sys
+import urllib.parse
+import urllib.request
+import zipfile
 from pathlib import Path
 from typing import Any, cast
 
 from global_medicines_atlas.australian_harvesting import (
     ALLOWED_PBS_DOMAINS,
     DiscoveredHarvestResource,
+    GovernedRedirectHandler,
     HarvestStageResult,
     build_cumulative_harvest_manifest,
     build_harvest_manifest,
@@ -33,6 +38,8 @@ from global_medicines_atlas.australian_harvesting import (
 )
 
 DATASET = "edithatogo/australian-pbs-utilisation-archive"
+PAYLOAD_DOMAINS = ALLOWED_PBS_DOMAINS | frozenset({"data.gov.au"})
+MAX_RAW_BYTES = 256 * 1024 * 1024
 USER_AGENT = "GlobalMedicinesAtlas-PBSUtilisationHarvester/1.0"
 
 
@@ -64,11 +71,22 @@ def discover_selected_resources(
         "https://www.pbs.gov.au/statistics/expenditure-prescriptions/pbs-expenditure-and-prescriptions"
     )
     exp = discover_pbs_expenditure_resources(
-        exp_html, subpage_fetcher=fetch_url_text, max_subpages=2
+        exp_html,
+        subpage_fetcher=fetch_url_text,
+        max_subpages=64 if backfill_all else 2,
+        include_documents=backfill_all,
     )
     all_res = dos + exp
 
     if backfill_all:
+        frozen = json.loads(
+            Path(
+                "quality/qualifications/australian-pbs-backfill-authorized-resources-20261105.json"
+            ).read_text(encoding="utf-8")
+        )
+        all_res.extend(
+            DiscoveredHarvestResource(**r) for r in frozen["resources"]
+        )
         return all_res
 
     dos_files = [
@@ -95,26 +113,111 @@ def discover_selected_resources(
     return selected
 
 
+def fetch_payload(url: str) -> tuple[bytes, str]:
+    """Read at most 256 MiB through a redirect-host governed connection."""
+    parsed = urllib.parse.urlparse(url)
+    if parsed.scheme != "https" or parsed.netloc not in PAYLOAD_DOMAINS:
+        raise ValueError("Payload URL must use HTTPS and an authorized host")
+    opener = urllib.request.build_opener(
+        GovernedRedirectHandler(PAYLOAD_DOMAINS)
+    )
+    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})  # ruff: ignore[suspicious-url-open-usage]
+    with opener.open(request, timeout=90) as response:
+        length_header = response.headers.get("Content-Length")
+        expected_length = (
+            int(length_header) if length_header is not None else None
+        )
+        if (
+            expected_length is not None
+            and not 0 <= expected_length <= MAX_RAW_BYTES
+        ):
+            raise ValueError("Advertised payload size exceeds raw bound")
+        content = response.read(MAX_RAW_BYTES + 1)
+        if len(content) > MAX_RAW_BYTES:
+            raise ValueError("Raw payload exceeds 256 MiB bound")
+        if expected_length is not None and len(content) != expected_length:
+            raise ValueError("Truncated response: Content-Length mismatch")
+        if "text/html" in response.headers.get("Content-Type", "").lower():
+            raise ValueError("HTML response is not an aggregate data file")
+        return content, str(response.url)
+
+
+def inspect_raw_zip(payload: bytes, url: str) -> dict[str, Any]:
+    """Inventory bounded source ZIP members without extracting source values."""
+    with zipfile.ZipFile(io.BytesIO(payload)) as archive:
+        members = archive.infolist()
+        member_limit = 20_000
+        if (
+            len(members) > member_limit
+            or sum(m.file_size for m in members) > 4 * 1024**3
+        ):
+            raise ValueError("Historical ZIP exceeds raw archive bounds")
+        return {
+            "source_url": url,
+            "members": [
+                {"path": m.filename, "bytes": m.file_size, "crc32": m.CRC}
+                for m in members
+            ],
+        }
+
+
 def stage_resources(
     resources: list[DiscoveredHarvestResource], stage_dir: Path
 ) -> tuple[list[HarvestStageResult], dict[str, Any]]:
+    """Stage immutable raw versions, retaining individual acquisition failures."""
     if not resources:
         raise ValueError("Cannot stage empty resources")
     stage_dir.mkdir(parents=True, exist_ok=True)
     stages: list[HarvestStageResult] = []
-    for r in resources:
-        stage = stage_harvest_payload(
-            r,
-            stage_dir,
-            data_reader=fetch_url_bytes,
-            allowed_domains=ALLOWED_PBS_DOMAINS,
+    failures: list[dict[str, str]] = []
+    archive_inventory: list[dict[str, Any]] = []
+    for resource in resources:
+        try:  # ruff: ignore[too-many-statements-in-try-clause]
+            payload, final_url = fetch_payload(resource.url)
+            if resource.filename.lower().endswith(".zip"):
+                archive_inventory.append(inspect_raw_zip(payload, resource.url))
+            digest = hashlib.sha256(payload).hexdigest()
+            parent = Path(resource.archive_path).parent
+            versioned = resource.model_copy(
+                update={
+                    "archive_path": str(
+                        parent / "versions" / digest / resource.filename
+                    )
+                }
+            )
+            stage = stage_harvest_payload(
+                versioned,
+                stage_dir,
+                data_reader=lambda _url, data=payload, target=final_url: (
+                    data,
+                    target,
+                ),
+                allowed_domains=PAYLOAD_DOMAINS,
+                raw_archive=True,
+            )
+            stages.append(stage)
+        except (OSError, ValueError, zipfile.BadZipFile) as exc:
+            failures.append({
+                "source_id": resource.source_id,
+                "filename": resource.filename,
+                "error": str(exc),
+            })
+        print(
+            f"Acquisition {len(stages) + len(failures)}/{len(resources)}",
+            flush=True,
         )
-        stages.append(stage)
-
+    coverage = {
+        "coverage_status": "partial" if failures else "complete",
+        "failed_resources": failures,
+    }
+    (stage_dir / "coverage.json").write_text(
+        json.dumps(coverage, indent=2) + "\n", encoding="utf-8"
+    )
     manifest = build_harvest_manifest(DATASET, stages)
-    manifest_path = stage_dir / "manifest.json"
-    manifest_path.write_text(
-        json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    manifest["run_coverage"] = coverage
+    manifest["archive_inventory"] = archive_inventory
+    (stage_dir / "manifest.json").write_text(
+        json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
     )
     return stages, manifest
 
@@ -139,6 +242,7 @@ def _fetch_existing_manifest(
             repo_id=dataset,
             repo_type="dataset",
             filename="manifest.json",
+            revision=parent_commit,
             token=False,
         )
         return parent_commit, json.loads(
@@ -164,12 +268,24 @@ def publish_to_huggingface(
     parent_commit, existing_manifest = _fetch_existing_manifest(
         sdk, public_api, DATASET
     )
-    if parent_commit is None:
-        with contextlib.suppress(Exception):
-            api.create_repo(repo_id=DATASET, repo_type="dataset", private=False)
-
+    if parent_commit is None or existing_manifest is None:
+        raise RuntimeError("Existing archive parent could not be qualified")
+    existing_files = {
+        f["path"]: f for f in (existing_manifest or {}).get("files", [])
+    }
+    stages = [
+        stage
+        for stage in stages
+        if existing_files.get(stage.resource.archive_path, {}).get("sha256")
+        != stage.receipt.sha256
+    ]
+    if not stages:
+        raise RuntimeError("No new immutable payloads; archive unchanged")
     cumulative_manifest = build_cumulative_harvest_manifest(
-        DATASET, stages, existing_manifest
+        DATASET,
+        stages,
+        existing_manifest,
+        run_coverage=manifest.get("run_coverage"),
     )
     manifest_path = stage_dir / "manifest.json"
     manifest_path.write_text(
@@ -303,6 +419,8 @@ def main() -> int:
         "anonymous_digest_verification": "passed",
         "verified_file_count": final_manifest["file_count"],
         "temporary_source_bytes_removed": False,
+        "run_coverage": manifest.get("run_coverage"),
+        "archive_inventory": manifest.get("archive_inventory"),
     }
     args.receipt_output.parent.mkdir(parents=True, exist_ok=True)
     args.receipt_output.write_text(

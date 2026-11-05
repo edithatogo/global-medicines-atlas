@@ -26,7 +26,7 @@ jobs:
     name: Acquire PBS utilisation, append and anonymously verify
     runs-on: ubuntu-24.04
     environment: australian-hf-publication
-    timeout-minutes: 35
+    timeout-minutes: 90
     env:
       HF_HOME: ${{ github.workspace }}/build/pbs-hf-home
       HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
@@ -76,7 +76,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          python3 - <<'PY'
+          uv run --locked --python 3.15.1 python - <<'PY'
           import json
           import shutil
           from pathlib import Path
