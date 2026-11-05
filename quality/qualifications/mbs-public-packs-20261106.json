@@ -1,0 +1,439 @@
+{
+  "schema_version": 1,
+  "dataset": "edithatogo/australian-mbs-utilisation-archive",
+  "approval": "Maintainer requested public MBS backfill on 6 November 2026; participant and study-derived records excluded.",
+  "source_url": "https://data.gov.au/data/dataset/medicare-benefits-schedule-mbs-group-by-patient-demographics-report",
+  "provenance": "Historical custodial copies of public Medicare Australia/Services Australia aggregate query responses. Publisher landing URL is not a claim of fresh publisher acquisition; query periods and original bytes are retained in members. Source filenames, processing periods, source-modified times and custodial retrieval/materialization dates are distinct. No clinical, licensing or sparse-zero equivalence is inferred.",
+  "baseline_revision": "00b29a457ed209a779330466494e46a06743e0ae",
+  "baseline_files": [
+    {
+      "bytes": 852,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv.receipt.json",
+      "sha256": "8030d0700ce2062fe0c45a0429635e3eec794689f037f6cd1438a1951f4b9f59",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 845,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv.receipt.json",
+      "sha256": "b284c79f10cd4488c5fbb59b6cc4f25716f085a98b26449e866bf0db4305b92f",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 854,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv.receipt.json",
+      "sha256": "433be36482d0d52677606e3f1853afa2ef4269a26ba5dd91b6db6f54ba286ec0",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 858,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx.receipt.json",
+      "sha256": "964299dbd55b524629da727f56f451a825183f3772f8bc73b1efb1d97c55a628",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 855,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx.receipt.json",
+      "sha256": "e6b16613c8e9584e4dd4a3ebb1b7f57114f1fb13a4a6abbfb1c01b5604c0006c",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 860,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx.receipt.json",
+      "sha256": "db973bf12d0bc36209faea9faa7de4f74b5874bd833d64cff38cf6005c239289",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 885,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip.receipt.json",
+      "sha256": "3fe89ec4d65cda99aa4a918b23bf7c50b6a91c38c671f17a05a17ca99c73db2e",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 885,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip.receipt.json",
+      "sha256": "685fbbb522ed3252dd87a1508a91de61b1600bc119fcf0b7ccdbb97844b17ddd",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 888,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip.receipt.json",
+      "sha256": "c6c4b22e2eb7d8c05c65f499cd22a8463e3f78457077fdebf5eaadcd7b6d4c94",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 885,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip.receipt.json",
+      "sha256": "e5997cb6eca4c1176866899e3b28ee869750c31a9405f427f97d8ccb5433b4e5",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 864,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip.receipt.json",
+      "sha256": "4eefa03cb054d5b5e211441e7e616ab082dac12d9b87dabeea762dfe57bd5f39",
+      "source_id": "au-data-gov-mbs-group"
+    },
+    {
+      "bytes": 864,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip.receipt.json",
+      "sha256": "5996ad9fc9490f9f51c21e6c5ae0a07bda3c57b1f67d67060095bef158c7c74d",
+      "source_id": "au-data-gov-mbs-group"
+    },
+    {
+      "bytes": 797,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/group/mbs-group-2016-july.csv.receipt.json",
+      "sha256": "c9b3d7c944c2291d466a40d7d7bc2843f7b1d45d0ec078eb52f2ebf402a2c360",
+      "source_id": "au-data-gov-mbs-group"
+    },
+    {
+      "bytes": 807,
+      "kind": "b1_receipt",
+      "path": "bronze/mbs/utilisation/group/mbs-group-2016hr-july.xlsx.receipt.json",
+      "sha256": "d5bf8271a6505af32bf3c77b29f20d0fb19aee774bbfa098d565fcbc77b34150",
+      "source_id": "au-data-gov-mbs-group"
+    },
+    {
+      "bytes": 23934884,
+      "category": "mbs_demographics_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+      "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 23436706,
+      "category": "mbs_demographics_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+      "sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 7680041,
+      "category": "mbs_demographics_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+      "sha256": "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 21966140,
+      "category": "mbs_demographics_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+      "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 23765087,
+      "category": "mbs_demographics_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx",
+      "sha256": "7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 7316301,
+      "category": "mbs_demographics_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
+      "sha256": "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 185194594,
+      "category": "mbs_demographics_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip",
+      "sha256": "7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 240803157,
+      "category": "mbs_demographics_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip",
+      "sha256": "0c914176b3e45caaca9c14a926ea3d61740eabd4df53210f81858a84ce40ec8d",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 284302149,
+      "category": "mbs_demographics_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip",
+      "sha256": "9f649eb3c7c3fdc0c3b362d34f00ffb2e9f3374ec4629e9dd15a8c8ddc1d7c00",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 358227575,
+      "category": "mbs_demographics_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip",
+      "sha256": "7f7eeb62fbc6191ab76e3dcf6cc602aa9438b1eec037d7e5c385fe131acd5355",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "bytes": 205885063,
+      "category": "mbs_group_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+      "sha256": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33",
+      "source_id": "au-data-gov-mbs-group"
+    },
+    {
+      "bytes": 237142509,
+      "category": "mbs_group_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip",
+      "sha256": "5d45554d8eae96b8e0b7f86a9fb38b63862168791b95954c9be953c03c2d1c96",
+      "source_id": "au-data-gov-mbs-group"
+    },
+    {
+      "bytes": 12291303,
+      "category": "mbs_group_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+      "sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b",
+      "source_id": "au-data-gov-mbs-group"
+    },
+    {
+      "bytes": 6857437,
+      "category": "mbs_group_statistics",
+      "kind": "raw_payload",
+      "path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+      "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285",
+      "source_id": "au-data-gov-mbs-group"
+    }
+  ],
+  "batches": {
+    "public-reports": {
+      "input_sha256": "dc6d67d079cb7c189cc05116e3222077c014169469a3e11224bdfeb0bee23ebd",
+      "sha256": "f616afa395678253c5817b09ec69d737ca33d84981c530752fa2bdd35ba35c28",
+      "bytes": 68078158,
+      "members": 2350,
+      "path": "raw/mbs/utilisation/custodial-public-reports/20261106/f616afa395678253c5817b09ec69d737ca33d84981c530752fa2bdd35ba35c28.zip"
+    }
+  },
+  "segments": {
+    "stage-0000": {
+      "bytes": 45000,
+      "sha256": "f1b21d3bc7d50f5e047869c1404694dc689bfcc9d4be113ae6d886559896606a"
+    },
+    "stage-0001": {
+      "bytes": 45000,
+      "sha256": "4997fc763f93f24923f7041474ac504108c458bc5bde7b5fe8f9a37e7b7868c8"
+    },
+    "stage-0002": {
+      "bytes": 45000,
+      "sha256": "3ae29c6e676380a6671944d2029bf8463cfa4c14e507ebc2b3d7a5662fd72ce1"
+    },
+    "stage-0003": {
+      "bytes": 45000,
+      "sha256": "34af4c45ae6190ee26ea15ac17fef7be62595631d206124585e6cb35da9a9124"
+    },
+    "stage-0004": {
+      "bytes": 45000,
+      "sha256": "3efb6570e9c45d8ac67f2ea1539bbfb28b3c4eae05187a02417cf393b6ed1871"
+    },
+    "stage-0005": {
+      "bytes": 45000,
+      "sha256": "275a6966cfb58e7eeda4ce368194aad7e68b7219291ae53ba2b94237a5f20170"
+    },
+    "stage-0006": {
+      "bytes": 45000,
+      "sha256": "2d663b2fec67bbacbd89446b940ec98cc5a44fe5de5e98f50b9238d314106370"
+    },
+    "stage-0007": {
+      "bytes": 45000,
+      "sha256": "1bb451b0dd9942f84f1a7524cb752d775a01aa6d4b97038b023eb1bc91c45441"
+    },
+    "stage-0008": {
+      "bytes": 45000,
+      "sha256": "113d498c059b918d706d248dd681bc9e4e64e15098453216f02fc6e2e7720d9c"
+    },
+    "stage-0009": {
+      "bytes": 45000,
+      "sha256": "6e28bfe77b2ec8b9e291f33aed75bee7f6a4f8c10ce5a01077f79f305f5b7420"
+    },
+    "stage-0010": {
+      "bytes": 45000,
+      "sha256": "bb43189a35f56b7e7330a02b0e55b0a0803599ab44d05ab80ef0cf2983052af5"
+    },
+    "stage-0011": {
+      "bytes": 45000,
+      "sha256": "0a539743d25062f3fd1c34c481093a814a513637b0ae70f630ad52024984738f"
+    },
+    "stage-0012": {
+      "bytes": 45000,
+      "sha256": "7f6426f5bb5f8a6b1cfd126ecee4d8ddf3f3110a868f26cfd4024ca49e29ef2d"
+    },
+    "stage-0013": {
+      "bytes": 45000,
+      "sha256": "8cd920c7f4767eb7f5e71deca622877ae23ca5e63e472307bae2ba7670b8a03b"
+    },
+    "stage-0014": {
+      "bytes": 45000,
+      "sha256": "06f3a601e6c9ebbff2671a774bc72789673c74827625b27e2b1cd6015df2fa25"
+    },
+    "stage-0015": {
+      "bytes": 45000,
+      "sha256": "a8c63d6f497289fc29788e8b4eb29c56fbb25f2f07277bdfdb95f6e25756175e"
+    },
+    "stage-0016": {
+      "bytes": 45000,
+      "sha256": "bcb9613253bc8998d7271963d38faa05c9ff8fe8ee6a330021f4ebde9e990c43"
+    },
+    "stage-0017": {
+      "bytes": 45000,
+      "sha256": "9e1b567c575b25efd085a7c5fa1eee8aaccf14e2aaf4b97643e2574fdd5e0708"
+    },
+    "stage-0018": {
+      "bytes": 45000,
+      "sha256": "59b5e3200517301862b76fddc91d8142f71fed65d1ace9b58605ab9e4e515dfb"
+    },
+    "stage-0019": {
+      "bytes": 45000,
+      "sha256": "2483d6da61f9728ebf62ef9de6adecf2c4f551820e2347df801a55d440ed29a1"
+    },
+    "stage-0020": {
+      "bytes": 45000,
+      "sha256": "173ac40ed60e1191b92906cb1439e0355855d3a94a5d1bab5aa2debe8d7113f5"
+    },
+    "stage-0021": {
+      "bytes": 45000,
+      "sha256": "bda7d12be77d937c29b29171ca1e580a2d4db8143ed4c24298b9962a13d2d8e0"
+    },
+    "stage-0022": {
+      "bytes": 45000,
+      "sha256": "345867885c14b8a1373ca82f8c00600943b61504dc4c5dba9714686ddb3afdbb"
+    },
+    "stage-0023": {
+      "bytes": 45000,
+      "sha256": "de716c6c68351042f5102610e43ea1a5fb31a031dc371382dde7a3654b08db4f"
+    },
+    "stage-0024": {
+      "bytes": 45000,
+      "sha256": "97b2115c7de4936b09afa5ce3bbdddfebfe9fb64e5fb68a7e9788edd3b20f6ff"
+    },
+    "stage-0025": {
+      "bytes": 45000,
+      "sha256": "d6dae3ac8ec06f53dc5154fcf44a4172f1a626a877cceb9ed06b22f8bfea770e"
+    },
+    "stage-0026": {
+      "bytes": 45000,
+      "sha256": "b33eacb6276b62ebbf6472a7c16c512ecc55383aa80d5e7759d39c064369fd2d"
+    },
+    "stage-0027": {
+      "bytes": 45000,
+      "sha256": "bbfa50d894fa2f00dacd76ade3e5d72b02d3e45fad5226952bb4bdb35f1b5019"
+    },
+    "stage-0028": {
+      "bytes": 45000,
+      "sha256": "5f5794891e99e4bb90bebebe78795e0d3fee0b78000b889d6152131ab09a9368"
+    },
+    "stage-0029": {
+      "bytes": 45000,
+      "sha256": "56e8d8c9d7998f39bb184f6aba88e6622df5bf4e10554960c39538e468684c65"
+    },
+    "stage-0030": {
+      "bytes": 45000,
+      "sha256": "be68c03f7f274f8188bf43084249437416b4ea9a123107f60fbb3036fa58c15e"
+    },
+    "stage-0031": {
+      "bytes": 45000,
+      "sha256": "7711c0a725252858408ab81df650df3adbfc70bd8afa3b1aec32fbb4fb5caa05"
+    },
+    "stage-0032": {
+      "bytes": 45000,
+      "sha256": "dbc4323d5996304a06d8e3f20500c78b3fe157dd6c5d74a8cbf998d619e7af4b"
+    },
+    "stage-0033": {
+      "bytes": 28500,
+      "sha256": "45e2f869cb22e214a58891c56f798b0dde242655ab0152ab7bc94e5596928555"
+    }
+  },
+  "coverage": {
+    "logical_entries": 34887,
+    "qualified_public_reports": 2350,
+    "distinct_native_objects": 2347,
+    "excluded": {
+      "no_services_response": 9112,
+      "unqualified_content": 583,
+      "private_or_access_marker": 932,
+      "public_server_error": 3,
+      "metadata_matched_no_services_not_downloaded": 21907
+    },
+    "qualified_by_folder": {
+      "Benefit Data - Age Gender - 202411": 53,
+      "Standard_Reports": 329,
+      "Benefit Data - 135 - Age Gender - 202411": 4,
+      "Services Data - 135 - Age-Gender - 202411": 7,
+      "Benefit Data - 202411": 3,
+      "Benefit Data - 202502": 1,
+      "Services Data - 202411": 2,
+      "Benefit Data - Age Gender - 202504": 1939,
+      "additional-public-reports": 12
+    },
+    "explicit_native_month_range": [
+      "JUL1993",
+      "APR2025"
+    ],
+    "distinct_native_month_labels": 382,
+    "native_grid_rows_including_headers_totals": 146468,
+    "query_metrics": {
+      "benefit": 61,
+      "standard_or_group_report": 340,
+      "services": 1949
+    },
+    "observed_fields": [
+      "ACT",
+      "Age Range",
+      "Australia",
+      "Gender",
+      "Month",
+      "NSW",
+      "NT",
+      "QLD",
+      "SA",
+      "Services",
+      "State",
+      "TAS",
+      "VIC",
+      "WA"
+    ],
+    "cohort_names": {
+      "Benefit Data - 135 - Age Gender - 202411": "reports-01",
+      "Benefit Data - 202411": "reports-02",
+      "Benefit Data - 202502": "reports-03",
+      "Benefit Data - Age Gender - 202411": "reports-04",
+      "Benefit Data - Age Gender - 202504": "reports-05",
+      "Services Data - 135 - Age-Gender - 202411": "reports-06",
+      "Services Data - 202411": "reports-07",
+      "Standard_Reports": "reports-08",
+      "additional-public-reports": "additional-public-reports"
+    },
+    "source_periods": {
+      "Benefit Data - Age Gender - 202411": 50,
+      "Standard_Reports": 0,
+      "Benefit Data - 135 - Age Gender - 202411": 4,
+      "Services Data - 135 - Age-Gender - 202411": 7,
+      "Benefit Data - 202411": 257,
+      "Benefit Data - 202502": 58,
+      "Services Data - 202411": 209,
+      "Benefit Data - Age Gender - 202504": 148,
+      "additional-public-reports": 366
+    }
+  }
+}

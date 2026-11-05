@@ -252,6 +252,10 @@ def _fetch_existing_manifest(
         return parent_commit, None
 
 
+# Public seam for other governed archives; retain the original internal hook.
+fetch_existing_harvest_manifest = _fetch_existing_manifest
+
+
 def publish_to_huggingface(
     stages: list[HarvestStageResult],
     manifest: dict[str, Any],

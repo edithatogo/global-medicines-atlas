@@ -7,6 +7,18 @@ on:
         description: Exact reviewed main commit containing harvest authorization
         required: true
         type: string
+      public_batch:
+        description: Reviewed public pack, stage segment, or verify-all
+        required: false
+        type: string
+      public_bundle:
+        description: Digest-approved segment transport only
+        required: false
+        type: string
+      public_runs:
+        description: Exact successful segment run IDs as JSON
+        required: false
+        type: string
       backfill_all:
         description: Backfill all historical group and demographic archives
         required: false
@@ -18,7 +30,7 @@ on:
 permissions: {}
 
 concurrency:
-  group: australian-mbs-utilisation-harvest
+  group: australian-mbs-utilisation-harvest${{ startsWith(inputs.public_batch, 'stage-') && format('-{0}', inputs.public_batch) || '' }}
   cancel-in-progress: false
 
 jobs:
@@ -34,6 +46,7 @@ jobs:
       PYTHONUNBUFFERED: "1"
     permissions:
       contents: read
+      actions: read # Read exact-head approved transport artifacts; no workflow mutations.
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
@@ -52,19 +65,43 @@ jobs:
           test "$GITHUB_SHA" = "$(gh api repos/edithatogo/global-medicines-atlas/commits/main --jq .sha)"
           : # Outbound comments prohibited; retain workflow artifacts instead.
 
+      - name: Validate and retain approved public transport segment
+        if: startsWith(inputs.public_batch, 'stage-')
+        env:
+          MBS_PUBLIC_BATCH: ${{ inputs.public_batch }}
+          MBS_PUBLIC_BUNDLE: ${{ inputs.public_bundle }}
+        run: uv run --locked --python 3.15.1 python -m scripts.publish_mbs_public_exports
+
+      - name: Retain approved public segment
+        if: startsWith(inputs.public_batch, 'stage-')
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: mbs-public-${{ inputs.public_batch }}
+          path: build/mbs-public-segment/segment.bin
+          if-no-files-found: error
+          retention-days: 7
+
       - name: Acquire, publish and verify using anonymous reads
+        if: ${{ !startsWith(inputs.public_batch, 'stage-') }}
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           GH_TOKEN: ${{ github.token }}
+          MBS_PUBLIC_BATCH: ${{ inputs.public_batch }}
+          MBS_PUBLIC_RUNS: ${{ inputs.public_runs }}
           BACKFILL_ALL: ${{ inputs.backfill_all == true && '1' || '0' }}
         run: |
           set -euo pipefail
-          uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 python scripts/harvest_australian_mbs_utilisation.py \
-            --publish-hosted \
-            --receipt-output build/mbs-utilisation-harvest-receipt.json
+          if test -n "$MBS_PUBLIC_BATCH"; then
+            uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 python -m scripts.publish_mbs_public_exports
+          else
+            uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 python scripts/harvest_australian_mbs_utilisation.py \
+              --publish-hosted \
+              --receipt-output build/mbs-utilisation-harvest-receipt.json
+          fi
           : # Outbound comments prohibited; retain workflow artifacts instead.
 
       - name: Retain verification artifact 1 without outbound messages
+        if: ${{ !startsWith(inputs.public_batch, 'stage-') }}
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: retained-verification-1-${{ github.run_id }}-${{ github.run_attempt }}
@@ -72,11 +109,12 @@ jobs:
           if-no-files-found: error
           retention-days: 30
       - name: Remove verified hosted temporary materializations
+        if: ${{ !startsWith(inputs.public_batch, 'stage-') }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          python3 - <<'PY'
+          uv run --locked --python 3.15.1 python - <<'PY'
           import json
           import shutil
           from pathlib import Path
@@ -93,6 +131,7 @@ jobs:
           : # Outbound comments prohibited; retain workflow artifacts instead.
 
       - name: Retain verification artifact 2 without outbound messages
+        if: ${{ !startsWith(inputs.public_batch, 'stage-') }}
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: retained-verification-2-${{ github.run_id }}-${{ github.run_attempt }}

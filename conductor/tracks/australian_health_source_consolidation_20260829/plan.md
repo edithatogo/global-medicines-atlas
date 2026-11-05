@@ -1497,3 +1497,18 @@ frozen denominator or acceptance gates.
   and restoration of the workflow's previous disabled state.
 
 Ownership and scope: [comparison](../../../docs/qualification/pbs-public-export-comparison-20261105.md).
+
+### Custodial public MBS reports — 6 November 2026
+
+- [x] Inventory eight source report folders plus remaining raw registrant/group
+  pages; qualify 2,350 public reports while excluding private, error, no-services
+  and metadata-only responses.
+- [x] Compare the 1993 sample with the pinned HF workbook and retain unresolved
+  age labels, sparse zeros, later-period and measure-label limitations.
+- [x] Freeze exact native digests and prepare Actions-only publication without
+  source bytes or participant data in Git.
+- [ ] Required protected integration, exact-main hosted append, full anonymous
+  restore, and restoration of the prior disabled workflow state.
+
+Ownership, boundaries and evidence:
+[comparison](../../../docs/qualification/mbs-flinders-public-backfill-20261106.md).
