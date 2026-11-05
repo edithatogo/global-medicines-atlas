@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "record_kind": "public_aggregate_source_comparison_annotation",
+  "recorded_on": "2026-11-06",
+  "scope": {
+    "item": "73287",
+    "processing_month": "1993-12",
+    "measure": "benefit_aud",
+    "gender_for_three_cells": "F"
+  },
+  "disposition": "three_value_matches_confirmed; native_age_label_inconsistency_recorded",
+  "sources": {
+    "html": {
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "revision": "aa752d2eb9d5e123d1900912d5a150621d1c51b2",
+      "archive_path": "raw/mbs/utilisation/custodial-public-reports/20261106/f616afa395678253c5817b09ec69d737ca33d84981c530752fa2bdd35ba35c28.zip",
+      "archive_sha256": "f616afa395678253c5817b09ec69d737ca33d84981c530752fa2bdd35ba35c28",
+      "original_filename": "Item_73287_Month_199312.html",
+      "member_path": "objects/507ac556f5ed5cc638bab4b3d857c92913e5fd4f9b58a2452f3a0bac78e9d427.html",
+      "member_sha256": "507ac556f5ed5cc638bab4b3d857c92913e5fd4f9b58a2452f3a0bac78e9d427",
+      "locator": "Female table, terminal age row headed >=85; state columns NSW, VIC, QLD; DEC1993. Literal HTML heading is &gt;=85."
+    },
+    "workbook": {
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "revision": "aa752d2eb9d5e123d1900912d5a150621d1c51b2",
+      "archive_path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip",
+      "archive_sha256": "7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b",
+      "member_path": "MBS Demographics 1993 Qtr4 (December)_HR.xlsx",
+      "member_sha256": "7c3e9a3b692b141e096c6aa83d64571f61615b1472e04cc30d2f62fbcc30eae7",
+      "worksheet": "MBS AgeGender 1993 Qtr4 (Decemb",
+      "adjacent_native_labels": [
+        "\"75-84\"",
+        "\">85\""
+      ],
+      "metadata_processing_date_definition": "Month is determined by the date the service was processed by Medicare Australia, not the date the service was provided."
+    }
+  },
+  "comparison_rule": {
+    "rule": "Compare the three corresponding terminal-category benefit cells in these two exact reports after retaining both native labels. Use >=85 as the HTML report label.",
+    "scope_limited_to": "Exact item, processing month, gender, state and source digests recorded here.",
+    "not_asserted": [
+      "A universal mathematical equivalence of >85 and >=85.",
+      "A publisher-confirmed single-year-age definition for the workbook.",
+      "A global age-band remapping for other records or editions.",
+      "A correction to original amounts or immutable source files."
+    ],
+    "inference": "Correspondence of the three terminal-category cells is supported by exact item/month/state/gender, matching amounts, identical surrounding category sequence and equality of all 81 available workbook rows. It is a scoped comparison correspondence, not a rewritten workbook definition."
+  },
+  "cells": [
+    {
+      "state": "NSW",
+      "gender": "F",
+      "html_age_label": ">=85",
+      "workbook_age_label_literal": "\">85\"",
+      "html_benefit_aud": "240",
+      "workbook_benefit_aud": "240",
+      "workbook_value_cell": "H291352",
+      "workbook_age_cell": "E291352",
+      "value_comparison": "equal"
+    },
+    {
+      "state": "QLD",
+      "gender": "F",
+      "html_age_label": ">=85",
+      "workbook_age_label_literal": "\">85\"",
+      "html_benefit_aud": "293",
+      "workbook_benefit_aud": "293",
+      "workbook_value_cell": "H291374",
+      "workbook_age_cell": "E291374",
+      "value_comparison": "equal"
+    },
+    {
+      "state": "VIC",
+      "gender": "F",
+      "html_age_label": ">=85",
+      "workbook_age_label_literal": "\">85\"",
+      "html_benefit_aud": "240",
+      "workbook_benefit_aud": "240",
+      "workbook_value_cell": "H291395",
+      "workbook_age_cell": "E291395",
+      "value_comparison": "equal"
+    }
+  ],
+  "terminal_female_three_state_benefit_total_aud": "773",
+  "comparison_summary": {
+    "html_state_age_gender_cells": 176,
+    "workbook_rows_for_item_month": 81,
+    "exact_native_label_matches": 78,
+    "scoped_terminal_category_value_matches": 3,
+    "total_equal_value_matches": 81,
+    "different_values": 0,
+    "missing_nonzero_values_after_scoped_alignment": 0,
+    "explicit_html_zero_cells_without_sparse_workbook_row": 95,
+    "sparse_absence_interpreted_as_zero": false
+  },
+  "source_integrity": {
+    "original_files_modified": false,
+    "participant_files_accessed": false,
+    "participant_files_published": 0,
+    "archive_role": "Rebuildable comparison metadata over immutable public source bytes; not a new source payload, clinical claim or general semantic admission."
+  }
+}

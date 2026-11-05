@@ -1507,8 +1507,21 @@ Ownership and scope: [comparison](../../../docs/qualification/pbs-public-export-
   age labels, sparse zeros, later-period and measure-label limitations.
 - [x] Freeze exact native digests and prepare Actions-only publication without
   source bytes or participant data in Git.
-- [ ] Required protected integration, exact-main hosted append, full anonymous
-  restore, and restoration of the prior disabled workflow state.
+- [x] Required protected integration, exact-main hosted append, full anonymous
+  restore, and restoration of the prior disabled workflow state (PR #1416;
+  append 42107509303; full restore 42107726639; 30 objects).
 
 Ownership, boundaries and evidence:
 [comparison](../../../docs/qualification/mbs-flinders-public-backfill-20261106.md).
+
+### Original-report age-band resolution — 6 November 2026
+
+- [x] Verify original public archive/member bytes and inspect the literal HTML and
+  workbook labels, processing-period definition and source cell locators.
+- [x] Resolve all three value comparisons (240/293/240); all 81 sparse workbook
+  rows agree. Preserve native labels and scope the inferred terminal-band
+  correspondence without a universal age-boundary recode.
+- [ ] Qualify and integrate the metadata-only Actions append, anonymously verify
+  the annotation, preserve all 30 prior manifest rows, and restore disabled state.
+
+Owner/scope and exact evidence are in the existing comparison report.

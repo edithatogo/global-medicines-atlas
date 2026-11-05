@@ -435,5 +435,14 @@
       "Benefit Data - Age Gender - 202504": 148,
       "additional-public-reports": 366
     }
+  },
+  "annotations": {
+    "age-band-reconciliation": {
+      "local_path": "quality/qualifications/mbs-dec1993-age-band-reconciliation.json",
+      "path": "metadata/reconciliation/mbs-dec1993-age-band/f56dde2971f8dfdae54cadbd5b08e283379532e66823ce9594ace20e273120d3.json",
+      "sha256": "f56dde2971f8dfdae54cadbd5b08e283379532e66823ce9594ace20e273120d3",
+      "bytes": 4636,
+      "parent_revision": "aa752d2eb9d5e123d1900912d5a150621d1c51b2"
+    }
   }
 }

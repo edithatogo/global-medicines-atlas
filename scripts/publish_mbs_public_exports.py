@@ -16,6 +16,7 @@ import os
 import re
 import zipfile
 from http import HTTPStatus
+from operator import itemgetter
 from pathlib import Path
 from typing import Any, cast
 
@@ -234,6 +235,75 @@ def append_pack(
     return revision, full, verification, already_present
 
 
+def append_annotation(
+    sdk: Any, parent: str, existing: dict[str, Any], expected: dict[str, Any]
+) -> tuple[str, dict[str, Any], dict[str, Any], bool]:
+    """Append reviewed public comparison metadata without replacing source bytes."""
+    require_hosted()
+    if (
+        not expected["path"].startswith("metadata/reconciliation/")
+        or ".." in Path(expected["path"]).parts
+    ):
+        raise ValueError(
+            "MBS annotation must stay in comparison metadata scope"
+        )
+    payload = Path(expected["local_path"]).read_bytes()
+    if (
+        len(payload) != expected["bytes"]
+        or hashlib.sha256(payload).hexdigest() != expected["sha256"]
+    ):
+        raise ValueError(
+            "MBS annotation differs from reviewed public comparison"
+        )
+    addition = {
+        "path": expected["path"],
+        "bytes": len(payload),
+        "sha256": expected["sha256"],
+        "kind": "source_comparison_annotation",
+        "source_id": "au-mbs-custodial-public-reports",
+    }
+    files = {item["path"]: item for item in existing["files"]}
+    if len(files) != len(existing["files"]):
+        raise RuntimeError("MBS duplicate prior manifest paths")
+    present = addition["path"] in files
+    if present:
+        if files[addition["path"]] != addition:
+            raise RuntimeError("MBS immutable annotation path collision")
+        return parent, existing, {"files": [addition]}, True
+    if parent != expected["parent_revision"]:
+        raise RuntimeError(
+            "MBS annotation parent differs from reviewed archive"
+        )
+    files[addition["path"]] = addition
+    full = {
+        **existing,
+        "files": sorted(files.values(), key=itemgetter("path")),
+        "file_count": len(files),
+    }
+    target = Path("build/harvest/mbs-comparison-metadata")
+    target.mkdir(parents=True, exist_ok=True)
+    local = target / "annotation.json"
+    local.write_bytes(payload)
+    manifest = target / "manifest.json"
+    manifest.write_text(json.dumps(full, indent=2) + "\n", encoding="utf-8")
+    operations = [
+        sdk.CommitOperationAdd(
+            path_in_repo=addition["path"], path_or_fileobj=str(local)
+        ),
+        sdk.CommitOperationAdd(
+            path_in_repo="manifest.json", path_or_fileobj=str(manifest)
+        ),
+    ]
+    result = sdk.HfApi(token=os.environ["HF_TOKEN"]).create_commit(
+        repo_id=DATASET,
+        repo_type="dataset",
+        parent_commit=parent,
+        commit_message="Record scoped original-report age-band reconciliation; preserve native sources",
+        operations=operations,
+    )
+    return str(result.oid), full, {"files": [addition]}, False
+
+
 def audit_manifest(existing: dict[str, Any], contract: dict[str, Any]) -> None:
     """Require every approved pack before the final full-archive restore."""
     files = {item["path"]: item for item in existing["files"]}
@@ -336,7 +406,7 @@ def collect_segments(contract: dict[str, Any]) -> str:
 
 
 def main() -> None:
-    """Append one reviewed pack or perform the final hosted read-only audit."""
+    """Append reviewed public metadata or a pack, or audit the archive."""
     require_hosted()
     contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
     if contract["dataset"] != DATASET:
@@ -357,6 +427,10 @@ def main() -> None:
         if os.environ.get("MBS_PUBLIC_BUNDLE"):
             raise ValueError("MBS final verification takes no source input")
         audit_manifest(existing, contract)
+    elif batch in contract.get("annotations", {}):
+        revision, full, verification, already_present = append_annotation(
+            sdk, parent, existing, contract["annotations"][batch]
+        )
     else:
         expected = contract["batches"][batch]
         payload = decode_pack(collect_segments(contract), expected)
@@ -378,6 +452,10 @@ def main() -> None:
         )
         return Path(local).read_bytes()
 
+    if batch in contract.get("annotations", {}):
+        observed = json.loads(anonymous_get(DATASET, "manifest.json"))
+        if observed != full:
+            raise RuntimeError("MBS anonymous manifest readback differs")
     verify_anonymous_restore(
         DATASET, verification, anonymous_downloader=anonymous_get
     )
@@ -388,14 +466,24 @@ def main() -> None:
         "workflow_commit": os.environ["GITHUB_SHA"],
         "already_present": already_present,
         "anonymous_digest_verification": "passed",
-        "verification_scope": "full_archive"
-        if batch == "verify-all"
-        else "new_pack_and_receipt",
+        "verification_scope": (
+            "full_archive"
+            if batch == "verify-all"
+            else "new_annotation_with_prior_manifest_preserved"
+            if batch in contract.get("annotations", {})
+            else "new_pack_and_receipt"
+        ),
         "verified_file_count": len(verification["files"]),
         "archive_file_count": full["file_count"],
         "participant_files_published": 0,
         "temporary_source_bytes_removed": False,
     }
+    if batch in contract.get("annotations", {}):
+        receipt["anonymous_manifest_readback"] = "passed"
+        receipt["prior_manifest_objects_preserved"] = len(existing["files"])
+        receipt["prior_verified_archive_revision"] = contract["annotations"][
+            batch
+        ]["parent_revision"]
     Path("build").mkdir(exist_ok=True)
     Path("build/mbs-utilisation-harvest-receipt.json").write_text(
         json.dumps(receipt, indent=2) + "\n", encoding="utf-8"

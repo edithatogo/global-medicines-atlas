@@ -119,3 +119,63 @@ findings were false positives; their review-thread metadata was resolved without
 standalone comments. Initial policy CI correctly required an explanatory comment
 for the new Actions read permission; added the artifact-only purpose without
 changing or suppressing the gate. Final-head protected checks remain required.
+
+## Original-report age-band follow-up — 6 November 2026
+
+The maintainer requested resolution of the three cells and an HF update if needed.
+Owner remains chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236` in the same isolated
+worktree, now branch `codex/mbs-1993-age-band-reconciliation`. Owned scope is the
+public comparison annotation, bounded existing publisher extension, affected tests
+and this track increment; native scope is one append-only metadata object in the
+existing utilisation archive. The original checkout and native source files remain
+untouched. Stop after protected integration, anonymous annotation verification,
+prior-manifest preservation and restoration of the disabled workflow state.
+
+Both original public archive digests were verified before extraction. The original
+HTML literally contains `&gt;=85`, rendered `>=85`; the workbook's shared-string
+value is literally `">85"`. This is a native label inconsistency, not an HTML entity
+or comparison-parser error. Both reports define processing month rather than date
+of service. The workbook's metadata does not supply a separate single-year age
+boundary definition.
+
+| State | Gender | HTML benefit ($) | Workbook benefit ($) | Workbook value cell |
+| --- | --- | ---: | ---: | --- |
+| NSW | F | 240 | 240 | H291352 |
+| QLD | F | 293 | 293 | H291374 |
+| VIC | F | 240 | 240 | H291395 |
+
+All three amounts agree exactly and sum to $773, matching the original HTML's
+terminal-band female total. With that report-specific terminal-category
+correspondence, all 81 available workbook rows agree with the HTML; the other 95
+HTML cells are explicit zeros without sparse workbook rows. Sparse absence is not
+independently interpreted as zero.
+
+The numerical mismatch question is resolved. Preserve both native labels and the
+original HTML's explicit `>=85` label. The comparison correspondence is an explicit
+inference scoped to these exact item/month/gender/state cells and source digests;
+it is not a universal mathematical alias of `>85` and `>=85`, a publisher-confirmed
+workbook single-year-age definition, a global recode, or a change to source values.
+The metadata annotation records both the resolution and that semantic limit.
+No numeric or immutable source-file correction is warranted.
+
+[Machine-readable comparison](../../quality/qualifications/mbs-dec1993-age-band-reconciliation.json)
+retains both archive/member digests, original labels and worksheet cell locators.
+Only public aggregate comparison metadata is added to Git and HF. Participant data
+are neither accessed nor published in this follow-up. The existing Actions-only
+publisher verifies the annotation's committed byte count/digest and exact reviewed
+HF parent, retains every prior manifest row, adds only the annotation and updated
+manifest, then anonymously verifies the new object. The prior 30-object full
+restore receipt is reused; no repeat download of the unchanged archive is needed.
+
+### Scoped Conductor review
+
+The annotation follows the requested scope and preserves the original source
+labels, bytes and uncertainty. The new publisher branch is limited to comparison
+metadata, enforces the reviewed parent and committed payload digest, rejects
+collisions/duplicate prior paths, and anonymously reads back the resulting
+manifest before writing a passed receipt. No participant source is an input.
+The 25 focused publisher tests passed on CPython 3.15.1, including exact-parent,
+prior-object preservation, immutable reuse, substitution rejection, local-upload
+rejection and failed anonymous readback. Ruff, script BasedPyright, affected Ty
+and context validation passed. No unresolved implementation findings remain.
+Protected final-head CI and hosted native readback are still required.
