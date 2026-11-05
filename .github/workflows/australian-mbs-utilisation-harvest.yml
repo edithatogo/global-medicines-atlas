@@ -19,6 +19,11 @@ on:
         description: Exact successful segment run IDs as JSON
         required: false
         type: string
+      remaining_public:
+        description: Publish the exact reviewed remaining public-source cohort
+        required: false
+        default: false
+        type: boolean
       backfill_all:
         description: Backfill all historical group and demographic archives
         required: false
@@ -68,9 +73,16 @@ jobs:
       - name: Validate and retain approved public transport segment
         if: startsWith(inputs.public_batch, 'stage-')
         env:
+          PUBLIC_ARCHIVE_DESTINATION: mbs
           MBS_PUBLIC_BATCH: ${{ inputs.public_batch }}
           MBS_PUBLIC_BUNDLE: ${{ inputs.public_bundle }}
-        run: uv run --locked --python 3.15.1 python -m scripts.publish_mbs_public_exports
+        run: |
+          set -euo pipefail
+          if [[ "$MBS_PUBLIC_BATCH" == stage-remaining-* ]]; then
+            uv run --locked --python 3.15.1 python -m scripts.publish_remaining_public_archives
+          else
+            uv run --locked --python 3.15.1 python -m scripts.publish_mbs_public_exports
+          fi
 
       - name: Retain approved public segment
         if: startsWith(inputs.public_batch, 'stage-')
@@ -87,11 +99,16 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           GH_TOKEN: ${{ github.token }}
           MBS_PUBLIC_BATCH: ${{ inputs.public_batch }}
+          REMAINING_PUBLIC: ${{ inputs.remaining_public == true && '1' || '0' }}
+          PUBLIC_ARCHIVE_DESTINATION: mbs
           MBS_PUBLIC_RUNS: ${{ inputs.public_runs }}
           BACKFILL_ALL: ${{ inputs.backfill_all == true && '1' || '0' }}
         run: |
           set -euo pipefail
-          if test -n "$MBS_PUBLIC_BATCH"; then
+          if test "$REMAINING_PUBLIC" = 1; then
+            uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 \
+              python -m scripts.publish_remaining_public_archives
+          elif test -n "$MBS_PUBLIC_BATCH"; then
             uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 python -m scripts.publish_mbs_public_exports
           else
             uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 python scripts/harvest_australian_mbs_utilisation.py \
