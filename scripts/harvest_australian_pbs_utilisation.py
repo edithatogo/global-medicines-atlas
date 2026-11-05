@@ -64,7 +64,9 @@ def discover_selected_resources(
         "https://www.pbs.gov.au/statistics/expenditure-prescriptions/pbs-expenditure-and-prescriptions"
     )
     exp = discover_pbs_expenditure_resources(
-        exp_html, subpage_fetcher=fetch_url_text, max_subpages=2
+        exp_html,
+        subpage_fetcher=fetch_url_text,
+        max_subpages=64 if backfill_all else 2,
     )
     all_res = dos + exp
 

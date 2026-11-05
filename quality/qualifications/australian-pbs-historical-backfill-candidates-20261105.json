@@ -1,0 +1,794 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-11-05T07:25:50.427870+00:00",
+  "purpose": "reviewable PBS historical backfill candidates; not acquisition or publication proof",
+  "base_commit": "97d6d3a6be6be5f5bff8555c54d67e77e922a70e",
+  "legacy_catalogue_response_sha256": "a43330e9fedd275b57aef9d66e4dc81121c748085227d77ec37db6e2b51f663f",
+  "legacy_catalogue_api": "https://data.gov.au/data/api/3/action/package_search?q=title:Pharmaceutical%20Benefits%20Scheme&rows=30",
+  "candidates": [
+    {
+      "family": "Pharmaceutical Benefits Scheme (PBS) - Item Report",
+      "catalogue_id": "14b536d4-eb6a-485d-bf87-2e6e77ddbac1",
+      "publisher_resource_id": "c985c370-4cb1-4d08-bd21-6cd6795b135d",
+      "publisher_name": "Excel PBS Item Report 2016 (YTD)",
+      "url": "https://data.gov.au/data/dataset/14b536d4-eb6a-485d-bf87-2e6e77ddbac1/resource/c985c370-4cb1-4d08-bd21-6cd6795b135d/download/pbs-item-2016hr-july.xlsx",
+      "filename": "pbs-item-2016hr-july.xlsx",
+      "period_basis": "publisher filename and catalogue label; payload not inspected",
+      "publisher_licence_id": "cc-by",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://data.gov.au/data/dataset/14b536d4-eb6a-485d-bf87-2e6e77ddbac1/resource/c985c370-4cb1-4d08-bd21-6cd6795b135d/download/pbs-item-2016hr-july.xlsx",
+        "content_length": "20571942",
+        "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "last_modified": "Mon, 29 Aug 2016 06:14:22 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "Pharmaceutical Benefits Scheme (PBS) - Item Report",
+      "catalogue_id": "14b536d4-eb6a-485d-bf87-2e6e77ddbac1",
+      "publisher_resource_id": "08eda5ab-01c0-4c94-8b1a-157bcffe80d3",
+      "publisher_name": "CSV PBS Item Report 2016 (YTD)",
+      "url": "https://data.gov.au/data/dataset/14b536d4-eb6a-485d-bf87-2e6e77ddbac1/resource/08eda5ab-01c0-4c94-8b1a-157bcffe80d3/download/pbs-item-2016csvjuly.csv",
+      "filename": "pbs-item-2016csvjuly.csv",
+      "period_basis": "publisher filename and catalogue label; payload not inspected",
+      "publisher_licence_id": "cc-by",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://data.gov.au/data/dataset/14b536d4-eb6a-485d-bf87-2e6e77ddbac1/resource/08eda5ab-01c0-4c94-8b1a-157bcffe80d3/download/pbs-item-2016csvjuly.csv",
+        "content_length": "27086723",
+        "content_type": "text/csv; charset=utf-8",
+        "last_modified": "Mon, 29 Aug 2016 06:16:05 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "Pharmaceutical Benefits Scheme (PBS) - Item Report",
+      "catalogue_id": "14b536d4-eb6a-485d-bf87-2e6e77ddbac1",
+      "publisher_resource_id": "dbb37cbd-2ccb-4eeb-a106-91beef2809ea",
+      "publisher_name": "Excel PBS Item Report 2015",
+      "url": "https://data.gov.au/data/dataset/14b536d4-eb6a-485d-bf87-2e6e77ddbac1/resource/dbb37cbd-2ccb-4eeb-a106-91beef2809ea/download/pbs-item-2015hr.xlsx",
+      "filename": "pbs-item-2015hr.xlsx",
+      "period_basis": "publisher filename and catalogue label; payload not inspected",
+      "publisher_licence_id": "cc-by",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://data.gov.au/data/dataset/14b536d4-eb6a-485d-bf87-2e6e77ddbac1/resource/dbb37cbd-2ccb-4eeb-a106-91beef2809ea/download/pbs-item-2015hr.xlsx",
+        "content_length": "36305471",
+        "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "last_modified": "Wed, 16 Mar 2016 03:45:05 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "Pharmaceutical Benefits Scheme (PBS) - Item Report",
+      "catalogue_id": "14b536d4-eb6a-485d-bf87-2e6e77ddbac1",
+      "publisher_resource_id": "f5f87751-f23a-45a9-8265-34bcf043e8af",
+      "publisher_name": "CSV PBS Item Report 2015",
+      "url": "https://data.gov.au/data/dataset/14b536d4-eb6a-485d-bf87-2e6e77ddbac1/resource/f5f87751-f23a-45a9-8265-34bcf043e8af/download/pbs-item-2015.csv",
+      "filename": "pbs-item-2015.csv",
+      "period_basis": "publisher filename and catalogue label; payload not inspected",
+      "publisher_licence_id": "cc-by",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://data.gov.au/data/dataset/14b536d4-eb6a-485d-bf87-2e6e77ddbac1/resource/f5f87751-f23a-45a9-8265-34bcf043e8af/download/pbs-item-2015.csv",
+        "content_length": "51304550",
+        "content_type": "text/csv; charset=utf-8",
+        "last_modified": "Tue, 15 Mar 2016 23:57:24 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "Pharmaceutical Benefits Scheme (PBS) - Item Report",
+      "catalogue_id": "14b536d4-eb6a-485d-bf87-2e6e77ddbac1",
+      "publisher_resource_id": "453396ae-7f50-4466-bb91-05fd1f12ca4b",
+      "publisher_name": "Excel PBS Item Report Historical 2012-2014",
+      "url": "https://data.gov.au/data/dataset/14b536d4-eb6a-485d-bf87-2e6e77ddbac1/resource/453396ae-7f50-4466-bb91-05fd1f12ca4b/download/excel-pbs-item-historical-2012-2014.zip",
+      "filename": "excel-pbs-item-historical-2012-2014.zip",
+      "period_basis": "publisher filename and catalogue label; payload not inspected",
+      "publisher_licence_id": "cc-by",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://data.gov.au/data/dataset/14b536d4-eb6a-485d-bf87-2e6e77ddbac1/resource/453396ae-7f50-4466-bb91-05fd1f12ca4b/download/excel-pbs-item-historical-2012-2014.zip",
+        "content_length": "91373597",
+        "content_type": "application/zip",
+        "last_modified": "Fri, 28 Aug 2015 04:14:44 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "Pharmaceutical Benefits Scheme (PBS) - Item Report",
+      "catalogue_id": "14b536d4-eb6a-485d-bf87-2e6e77ddbac1",
+      "publisher_resource_id": "6de08fc2-10c9-4328-9c45-78256ade45eb",
+      "publisher_name": "Excel PBS Item Report Historical 2002-2011",
+      "url": "https://data.gov.au/data/dataset/14b536d4-eb6a-485d-bf87-2e6e77ddbac1/resource/6de08fc2-10c9-4328-9c45-78256ade45eb/download/excel-pbs-item-historical-2002-2011.zip",
+      "filename": "excel-pbs-item-historical-2002-2011.zip",
+      "period_basis": "publisher filename and catalogue label; payload not inspected",
+      "publisher_licence_id": "cc-by",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://data.gov.au/data/dataset/14b536d4-eb6a-485d-bf87-2e6e77ddbac1/resource/6de08fc2-10c9-4328-9c45-78256ade45eb/download/excel-pbs-item-historical-2002-2011.zip",
+        "content_length": "238641833",
+        "content_type": "application/zip",
+        "last_modified": "Fri, 28 Aug 2015 04:17:09 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "Pharmaceutical Benefits Scheme (PBS) - Item Report",
+      "catalogue_id": "14b536d4-eb6a-485d-bf87-2e6e77ddbac1",
+      "publisher_resource_id": "55798711-f977-45b0-93bb-78469ae2cb44",
+      "publisher_name": "Excel PBS Item Report Historical 1992-2001",
+      "url": "https://data.gov.au/data/dataset/14b536d4-eb6a-485d-bf87-2e6e77ddbac1/resource/55798711-f977-45b0-93bb-78469ae2cb44/download/excel-pbs-item-historical-1992-2001.zip",
+      "filename": "excel-pbs-item-historical-1992-2001.zip",
+      "period_basis": "publisher filename and catalogue label; payload not inspected",
+      "publisher_licence_id": "cc-by",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://data.gov.au/data/dataset/14b536d4-eb6a-485d-bf87-2e6e77ddbac1/resource/55798711-f977-45b0-93bb-78469ae2cb44/download/excel-pbs-item-historical-1992-2001.zip",
+        "content_length": "183771296",
+        "content_type": "application/zip",
+        "last_modified": "Fri, 28 Aug 2015 04:18:51 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "Pharmaceutical Benefits Scheme (PBS) - Item Report",
+      "catalogue_id": "14b536d4-eb6a-485d-bf87-2e6e77ddbac1",
+      "publisher_resource_id": "56f87bbb-a7cb-4cbf-a723-7aec22996eee",
+      "publisher_name": "CSV PBS Item Report Historical 1992-2014",
+      "url": "https://data.gov.au/data/dataset/14b536d4-eb6a-485d-bf87-2e6e77ddbac1/resource/56f87bbb-a7cb-4cbf-a723-7aec22996eee/download/csv-pbs-item-historical-1992-2014.zip",
+      "filename": "csv-pbs-item-historical-1992-2014.zip",
+      "period_basis": "publisher filename and catalogue label; payload not inspected",
+      "publisher_licence_id": "cc-by",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://data.gov.au/data/dataset/14b536d4-eb6a-485d-bf87-2e6e77ddbac1/resource/56f87bbb-a7cb-4cbf-a723-7aec22996eee/download/csv-pbs-item-historical-1992-2014.zip",
+        "content_length": "94043652",
+        "content_type": "application/zip",
+        "last_modified": "Fri, 28 Aug 2015 04:20:03 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "Pharmaceutical Benefits Scheme (PBS) - Patient Category Report",
+      "catalogue_id": "ecb895fa-e512-4f96-bd66-38ee055f5784",
+      "publisher_resource_id": "64e4fa5d-d84f-436d-9cb8-95461aadc230",
+      "publisher_name": "Excel PBS Patient Category Report 2016 YTD",
+      "url": "https://data.gov.au/data/dataset/ecb895fa-e512-4f96-bd66-38ee055f5784/resource/64e4fa5d-d84f-436d-9cb8-95461aadc230/download/pbs-patient-category-2016hr-july.xlsx",
+      "filename": "pbs-patient-category-2016hr-july.xlsx",
+      "period_basis": "publisher filename and catalogue label; payload not inspected",
+      "publisher_licence_id": "cc-by",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://data.gov.au/data/dataset/ecb895fa-e512-4f96-bd66-38ee055f5784/resource/64e4fa5d-d84f-436d-9cb8-95461aadc230/download/pbs-patient-category-2016hr-july.xlsx",
+        "content_length": "162664",
+        "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "last_modified": "Mon, 29 Aug 2016 06:17:39 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "Pharmaceutical Benefits Scheme (PBS) - Patient Category Report",
+      "catalogue_id": "ecb895fa-e512-4f96-bd66-38ee055f5784",
+      "publisher_resource_id": "49c8e3a8-1bca-4f1b-a6f7-4450b01c9362",
+      "publisher_name": "CSV PBS Patient Category Report 2016 YTD",
+      "url": "https://data.gov.au/data/dataset/ecb895fa-e512-4f96-bd66-38ee055f5784/resource/49c8e3a8-1bca-4f1b-a6f7-4450b01c9362/download/pbs-patient-category-2016csvjuly.csv",
+      "filename": "pbs-patient-category-2016csvjuly.csv",
+      "period_basis": "publisher filename and catalogue label; payload not inspected",
+      "publisher_licence_id": "cc-by",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://data.gov.au/data/dataset/ecb895fa-e512-4f96-bd66-38ee055f5784/resource/49c8e3a8-1bca-4f1b-a6f7-4450b01c9362/download/pbs-patient-category-2016csvjuly.csv",
+        "content_length": "51955",
+        "content_type": "text/csv; charset=utf-8",
+        "last_modified": "Mon, 29 Aug 2016 06:18:48 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "Pharmaceutical Benefits Scheme (PBS) - Patient Category Report",
+      "catalogue_id": "ecb895fa-e512-4f96-bd66-38ee055f5784",
+      "publisher_resource_id": "6aea6958-ba00-4231-b2cc-007aedac9fe0",
+      "publisher_name": "Excel PBS Patient Category Report 2015 ",
+      "url": "https://data.gov.au/data/dataset/ecb895fa-e512-4f96-bd66-38ee055f5784/resource/6aea6958-ba00-4231-b2cc-007aedac9fe0/download/pbs-patient-category-2015hr.xlsx",
+      "filename": "pbs-patient-category-2015hr.xlsx",
+      "period_basis": "publisher filename and catalogue label; payload not inspected",
+      "publisher_licence_id": "cc-by",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://data.gov.au/data/dataset/ecb895fa-e512-4f96-bd66-38ee055f5784/resource/6aea6958-ba00-4231-b2cc-007aedac9fe0/download/pbs-patient-category-2015hr.xlsx",
+        "content_length": "68617",
+        "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "last_modified": "Tue, 15 Mar 2016 23:11:19 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "Pharmaceutical Benefits Scheme (PBS) - Patient Category Report",
+      "catalogue_id": "ecb895fa-e512-4f96-bd66-38ee055f5784",
+      "publisher_resource_id": "467aa814-bf32-46a2-9adc-ccf2e6798b02",
+      "publisher_name": "CSV PBS Patient Category Report 2015 ",
+      "url": "https://data.gov.au/data/dataset/ecb895fa-e512-4f96-bd66-38ee055f5784/resource/467aa814-bf32-46a2-9adc-ccf2e6798b02/download/pbs-patient-category-2015.csv",
+      "filename": "pbs-patient-category-2015.csv",
+      "period_basis": "publisher filename and catalogue label; payload not inspected",
+      "publisher_licence_id": "cc-by",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://data.gov.au/data/dataset/ecb895fa-e512-4f96-bd66-38ee055f5784/resource/467aa814-bf32-46a2-9adc-ccf2e6798b02/download/pbs-patient-category-2015.csv",
+        "content_length": "91353",
+        "content_type": "text/csv; charset=utf-8",
+        "last_modified": "Thu, 26 May 2016 04:21:10 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "Pharmaceutical Benefits Scheme (PBS) - Patient Category Report",
+      "catalogue_id": "ecb895fa-e512-4f96-bd66-38ee055f5784",
+      "publisher_resource_id": "77de74ef-5d80-4bdc-8fb0-b4e09d031d47",
+      "publisher_name": "Excel PBS Patient Category Report Historical 1992-2014",
+      "url": "https://data.gov.au/data/dataset/ecb895fa-e512-4f96-bd66-38ee055f5784/resource/77de74ef-5d80-4bdc-8fb0-b4e09d031d47/download/excel-patient-category-report-historical-1992-2014.zip",
+      "filename": "excel-patient-category-report-historical-1992-2014.zip",
+      "period_basis": "publisher filename and catalogue label; payload not inspected",
+      "publisher_licence_id": "cc-by",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://data.gov.au/data/dataset/ecb895fa-e512-4f96-bd66-38ee055f5784/resource/77de74ef-5d80-4bdc-8fb0-b4e09d031d47/download/excel-patient-category-report-historical-1992-2014.zip",
+        "content_length": "1276962",
+        "content_type": "application/zip",
+        "last_modified": "Fri, 28 Aug 2015 04:11:12 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "Pharmaceutical Benefits Scheme (PBS) - Patient Category Report",
+      "catalogue_id": "ecb895fa-e512-4f96-bd66-38ee055f5784",
+      "publisher_resource_id": "cedcb521-4b71-49a3-b47c-b21b2d5deed3",
+      "publisher_name": "CSV PBS Patient Category Report Historical 1992-2014",
+      "url": "https://data.gov.au/data/dataset/ecb895fa-e512-4f96-bd66-38ee055f5784/resource/cedcb521-4b71-49a3-b47c-b21b2d5deed3/download/csv-patient-category-report-historical-1992-2014.zip",
+      "filename": "csv-patient-category-report-historical-1992-2014.zip",
+      "period_basis": "publisher filename and catalogue label; payload not inspected",
+      "publisher_licence_id": "cc-by",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://data.gov.au/data/dataset/ecb895fa-e512-4f96-bd66-38ee055f5784/resource/cedcb521-4b71-49a3-b47c-b21b2d5deed3/download/csv-patient-category-report-historical-1992-2014.zip",
+        "content_length": "256863",
+        "content_type": "application/zip",
+        "last_modified": "Fri, 28 Aug 2015 04:11:41 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "Pharmaceutical Benefits Scheme (PBS) - Anatomical Therapeutic Chemical Report",
+      "catalogue_id": "13ef77a2-acfe-4016-a9a3-cfe6c3850a13",
+      "publisher_resource_id": "d8491b60-7a63-4115-bdba-ae78992d8579",
+      "publisher_name": "Excel PBS ATC Report 2016 (YTD)",
+      "url": "https://data.gov.au/data/dataset/13ef77a2-acfe-4016-a9a3-cfe6c3850a13/resource/d8491b60-7a63-4115-bdba-ae78992d8579/download/pbs-atc-2016hrjuly.xlsx",
+      "filename": "pbs-atc-2016hrjuly.xlsx",
+      "period_basis": "publisher filename and catalogue label; payload not inspected",
+      "publisher_licence_id": "cc-by",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://data.gov.au/data/dataset/13ef77a2-acfe-4016-a9a3-cfe6c3850a13/resource/d8491b60-7a63-4115-bdba-ae78992d8579/download/pbs-atc-2016hrjuly.xlsx",
+        "content_length": "135230",
+        "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "last_modified": "Mon, 29 Aug 2016 06:11:27 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "Pharmaceutical Benefits Scheme (PBS) - Anatomical Therapeutic Chemical Report",
+      "catalogue_id": "13ef77a2-acfe-4016-a9a3-cfe6c3850a13",
+      "publisher_resource_id": "c1eba414-7a0b-49c3-96d4-e7272c784a40",
+      "publisher_name": "CSV PBS ATC Report 2016 (YTD)",
+      "url": "https://data.gov.au/data/dataset/13ef77a2-acfe-4016-a9a3-cfe6c3850a13/resource/c1eba414-7a0b-49c3-96d4-e7272c784a40/download/pbs-atc-2016csvjuly.csv",
+      "filename": "pbs-atc-2016csvjuly.csv",
+      "period_basis": "publisher filename and catalogue label; payload not inspected",
+      "publisher_licence_id": "cc-by",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://data.gov.au/data/dataset/13ef77a2-acfe-4016-a9a3-cfe6c3850a13/resource/c1eba414-7a0b-49c3-96d4-e7272c784a40/download/pbs-atc-2016csvjuly.csv",
+        "content_length": "207246",
+        "content_type": "text/csv; charset=utf-8",
+        "last_modified": "Mon, 29 Aug 2016 06:12:34 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "Pharmaceutical Benefits Scheme (PBS) - Anatomical Therapeutic Chemical Report",
+      "catalogue_id": "13ef77a2-acfe-4016-a9a3-cfe6c3850a13",
+      "publisher_resource_id": "8997ad2a-3bd8-401d-be01-632de00d507b",
+      "publisher_name": "Excel PBS ATC Report 2015",
+      "url": "https://data.gov.au/data/dataset/13ef77a2-acfe-4016-a9a3-cfe6c3850a13/resource/8997ad2a-3bd8-401d-be01-632de00d507b/download/pbs-atc-2015hr.xlsx",
+      "filename": "pbs-atc-2015hr.xlsx",
+      "period_basis": "publisher filename and catalogue label; payload not inspected",
+      "publisher_licence_id": "cc-by",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://data.gov.au/data/dataset/13ef77a2-acfe-4016-a9a3-cfe6c3850a13/resource/8997ad2a-3bd8-401d-be01-632de00d507b/download/pbs-atc-2015hr.xlsx",
+        "content_length": "207083",
+        "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "last_modified": "Tue, 15 Mar 2016 23:31:18 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "Pharmaceutical Benefits Scheme (PBS) - Anatomical Therapeutic Chemical Report",
+      "catalogue_id": "13ef77a2-acfe-4016-a9a3-cfe6c3850a13",
+      "publisher_resource_id": "2eab7fa1-2a7b-4e32-ad7a-6188f6762fc5",
+      "publisher_name": "CSV PBS ATC Report 2015",
+      "url": "https://data.gov.au/data/dataset/13ef77a2-acfe-4016-a9a3-cfe6c3850a13/resource/2eab7fa1-2a7b-4e32-ad7a-6188f6762fc5/download/pbs-atc-2015.csv",
+      "filename": "pbs-atc-2015.csv",
+      "period_basis": "publisher filename and catalogue label; payload not inspected",
+      "publisher_licence_id": "cc-by",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://data.gov.au/data/dataset/13ef77a2-acfe-4016-a9a3-cfe6c3850a13/resource/2eab7fa1-2a7b-4e32-ad7a-6188f6762fc5/download/pbs-atc-2015.csv",
+        "content_length": "361425",
+        "content_type": "text/csv; charset=utf-8",
+        "last_modified": "Thu, 26 May 2016 04:16:22 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "Pharmaceutical Benefits Scheme (PBS) - Anatomical Therapeutic Chemical Report",
+      "catalogue_id": "13ef77a2-acfe-4016-a9a3-cfe6c3850a13",
+      "publisher_resource_id": "325541f0-564a-4792-a843-0e23b7dfa3d6",
+      "publisher_name": "Excel PBS ATC Report Historical 1992-2014",
+      "url": "https://data.gov.au/data/dataset/13ef77a2-acfe-4016-a9a3-cfe6c3850a13/resource/325541f0-564a-4792-a843-0e23b7dfa3d6/download/excel-pbs-atc-report-historical-1992-2014.zip",
+      "filename": "excel-pbs-atc-report-historical-1992-2014.zip",
+      "period_basis": "publisher filename and catalogue label; payload not inspected",
+      "publisher_licence_id": "cc-by",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://data.gov.au/data/dataset/13ef77a2-acfe-4016-a9a3-cfe6c3850a13/resource/325541f0-564a-4792-a843-0e23b7dfa3d6/download/excel-pbs-atc-report-historical-1992-2014.zip",
+        "content_length": "3602616",
+        "content_type": "application/zip",
+        "last_modified": "Fri, 28 Aug 2015 04:06:55 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "Pharmaceutical Benefits Scheme (PBS) - Anatomical Therapeutic Chemical Report",
+      "catalogue_id": "13ef77a2-acfe-4016-a9a3-cfe6c3850a13",
+      "publisher_resource_id": "99dbf213-f165-4daa-b0dc-88d8497d557a",
+      "publisher_name": "CSV PBS ATC Report Historical 1992-2014",
+      "url": "https://data.gov.au/data/dataset/13ef77a2-acfe-4016-a9a3-cfe6c3850a13/resource/99dbf213-f165-4daa-b0dc-88d8497d557a/download/csv-pbs-atc-report-historical-1992-2014.zip",
+      "filename": "csv-pbs-atc-report-historical-1992-2014.zip",
+      "period_basis": "publisher filename and catalogue label; payload not inspected",
+      "publisher_licence_id": "cc-by",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://data.gov.au/data/dataset/13ef77a2-acfe-4016-a9a3-cfe6c3850a13/resource/99dbf213-f165-4daa-b0dc-88d8497d557a/download/csv-pbs-atc-report-historical-1992-2014.zip",
+        "content_length": "855120",
+        "content_type": "application/zip",
+        "last_modified": "Fri, 28 Aug 2015 04:08:08 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "date_of_processing_historical",
+      "source_id": "au-pbs-dos-utilisation",
+      "url": "https://www.pbs.gov.au/statistics/dos-and-dop/files/dop-ytd-jan-2018.zip",
+      "filename": "dop-ytd-jan-2018.zip",
+      "period_label": "processing_historical",
+      "archive_path": "raw/pbs/utilisation/dop/dop-ytd-jan-2018.zip",
+      "period_basis": "publisher filename and listing; payload not inspected",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://www.pbs.gov.au/statistics/dos-and-dop/files/dop-ytd-jan-2018.zip",
+        "content_length": "2153179",
+        "content_type": "application/zip",
+        "last_modified": "Thu, 22 Oct 2026 21:17:54 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "date_of_supply_monthly_prescriptions",
+      "source_id": "au-pbs-dos-utilisation",
+      "url": "https://www.pbs.gov.au/statistics/dos-and-dop/files/dos-jul-2020-to-jun-2021-phrmcy-type.csv",
+      "filename": "dos-jul-2020-to-jun-2021-phrmcy-type.csv",
+      "period_label": "jul-2020-to-jun-2021",
+      "archive_path": "raw/pbs/utilisation/dos/dos-jul-2020-to-jun-2021-phrmcy-type.csv",
+      "period_basis": "publisher filename and listing; payload not inspected",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://www.pbs.gov.au/statistics/dos-and-dop/files/dos-jul-2020-to-jun-2021-phrmcy-type.csv",
+        "content_length": "29359211",
+        "content_type": "text/csv",
+        "last_modified": "Thu, 22 Oct 2026 21:17:54 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "date_of_supply_monthly_prescriptions",
+      "source_id": "au-pbs-dos-utilisation",
+      "url": "https://www.pbs.gov.au/statistics/dos-and-dop/files/dos-jul-2021-to-jun-2022-phrmcy-type.csv",
+      "filename": "dos-jul-2021-to-jun-2022-phrmcy-type.csv",
+      "period_label": "jul-2021-to-jun-2022",
+      "archive_path": "raw/pbs/utilisation/dos/dos-jul-2021-to-jun-2022-phrmcy-type.csv",
+      "period_basis": "publisher filename and listing; payload not inspected",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://www.pbs.gov.au/statistics/dos-and-dop/files/dos-jul-2021-to-jun-2022-phrmcy-type.csv",
+        "content_length": "30271123",
+        "content_type": "text/csv",
+        "last_modified": "Thu, 22 Oct 2026 21:17:57 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "date_of_supply_multiyear_summary",
+      "source_id": "au-pbs-dos-utilisation",
+      "url": "https://www.pbs.gov.au/statistics/dos-and-dop/files/dos-jul-2022-to-aug-2026.xlsx",
+      "filename": "dos-jul-2022-to-aug-2026.xlsx",
+      "period_label": "jul-2022-to-aug-2026",
+      "archive_path": "raw/pbs/utilisation/summary/dos-jul-2022-to-aug-2026.xlsx",
+      "period_basis": "publisher filename and listing; payload not inspected",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://www.pbs.gov.au/statistics/dos-and-dop/files/dos-jul-2022-to-aug-2026.xlsx",
+        "content_length": "100992697",
+        "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "last_modified": "Thu, 22 Oct 2026 21:17:59 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "date_of_supply_monthly_prescriptions",
+      "source_id": "au-pbs-dos-utilisation",
+      "url": "https://www.pbs.gov.au/statistics/dos-and-dop/files/dos-jul-2022-to-jun-2023-phrmcy-type.csv",
+      "filename": "dos-jul-2022-to-jun-2023-phrmcy-type.csv",
+      "period_label": "jul-2022-to-jun-2023",
+      "archive_path": "raw/pbs/utilisation/dos/dos-jul-2022-to-jun-2023-phrmcy-type.csv",
+      "period_basis": "publisher filename and listing; payload not inspected",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://www.pbs.gov.au/statistics/dos-and-dop/files/dos-jul-2022-to-jun-2023-phrmcy-type.csv",
+        "content_length": "31112576",
+        "content_type": "text/csv",
+        "last_modified": "Thu, 22 Oct 2026 21:18:00 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "date_of_supply_monthly_prescriptions",
+      "source_id": "au-pbs-dos-utilisation",
+      "url": "https://www.pbs.gov.au/statistics/dos-and-dop/files/dos-jul-2023-to-jun-2024-phrmcy-type.csv",
+      "filename": "dos-jul-2023-to-jun-2024-phrmcy-type.csv",
+      "period_label": "jul-2023-to-jun-2024",
+      "archive_path": "raw/pbs/utilisation/dos/dos-jul-2023-to-jun-2024-phrmcy-type.csv",
+      "period_basis": "publisher filename and listing; payload not inspected",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://www.pbs.gov.au/statistics/dos-and-dop/files/dos-jul-2023-to-jun-2024-phrmcy-type.csv",
+        "content_length": "32713376",
+        "content_type": "text/csv",
+        "last_modified": "Thu, 22 Oct 2026 21:18:01 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "date_of_supply_monthly_prescriptions",
+      "source_id": "au-pbs-dos-utilisation",
+      "url": "https://www.pbs.gov.au/statistics/dos-and-dop/files/dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+      "filename": "dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+      "period_label": "jul-2024-to-jun-2025",
+      "archive_path": "raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+      "period_basis": "publisher filename and listing; payload not inspected",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://www.pbs.gov.au/statistics/dos-and-dop/files/dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+        "content_length": "35384567",
+        "content_type": "text/csv",
+        "last_modified": "Thu, 22 Oct 2026 21:18:01 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "date_of_supply_monthly_prescriptions",
+      "source_id": "au-pbs-dos-utilisation",
+      "url": "https://www.pbs.gov.au/statistics/dos-and-dop/files/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+      "filename": "dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+      "period_label": "jul-2025-to-jun-2026",
+      "archive_path": "raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+      "period_basis": "publisher filename and listing; payload not inspected",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://www.pbs.gov.au/statistics/dos-and-dop/files/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+        "content_length": "36398673",
+        "content_type": "text/csv",
+        "last_modified": "Thu, 22 Oct 2026 21:18:01 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "item_drug_mapping",
+      "source_id": "au-pbs-dos-utilisation",
+      "url": "https://www.pbs.gov.au/statistics/dos-and-dop/files/pbs-item-drug-map.csv",
+      "filename": "pbs-item-drug-map.csv",
+      "period_label": "reference",
+      "archive_path": "raw/pbs/utilisation/reference/pbs-item-drug-map.csv",
+      "period_basis": "publisher filename and listing; payload not inspected",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://www.pbs.gov.au/statistics/dos-and-dop/files/pbs-item-drug-map.csv",
+        "content_length": "1070507",
+        "content_type": "text/csv",
+        "last_modified": "Thu, 22 Oct 2026 21:18:01 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "annual_expenditure_and_prescriptions_report",
+      "source_id": "au-pbs-expenditure",
+      "url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2024-2025/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+      "filename": "Expenditure-prescriptions-report-tables-2024-25.XLSX",
+      "period_label": "expenditure-prescriptions-report-1-july-2024-30-june-2025",
+      "archive_path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+      "period_basis": "publisher filename and listing; payload not inspected",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2024-2025/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+        "content_length": "468764",
+        "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "last_modified": "Thu, 09 Apr 2026 23:52:54 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "annual_expenditure_and_prescriptions_report",
+      "source_id": "au-pbs-expenditure",
+      "url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2023-2024/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+      "filename": "Expenditure-prescriptions-report-tables-2023-24.XLSX",
+      "period_label": "expenditure-prescriptions-report-1-july-2023-30-june-2024",
+      "archive_path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+      "period_basis": "publisher filename and listing; payload not inspected",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2023-2024/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+        "content_length": "372149",
+        "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "last_modified": "Thu, 09 Apr 2026 23:52:54 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "annual_expenditure_and_prescriptions_report",
+      "source_id": "au-pbs-expenditure",
+      "url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2022-2023/Expenditure-prescriptions-report-tables-2022-23.xlsx",
+      "filename": "Expenditure-prescriptions-report-tables-2022-23.xlsx",
+      "period_label": "pbs-expenditure-and-prescriptions-report-1-july-2022-to-30-june-2023",
+      "archive_path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2022-23.xlsx",
+      "period_basis": "publisher filename and listing; payload not inspected",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2022-2023/Expenditure-prescriptions-report-tables-2022-23.xlsx",
+        "content_length": "487551",
+        "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "last_modified": "Thu, 09 Apr 2026 23:52:54 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "annual_expenditure_and_prescriptions_report",
+      "source_id": "au-pbs-expenditure",
+      "url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2021-2022/Expenditure-prescriptions-report-tables-2021-22.xlsx",
+      "filename": "Expenditure-prescriptions-report-tables-2021-22.xlsx",
+      "period_label": "pbs-expenditure-and-prescriptions-report-1-july-2021-to-30-june-2022",
+      "archive_path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2021-22.xlsx",
+      "period_basis": "publisher filename and listing; payload not inspected",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2021-2022/Expenditure-prescriptions-report-tables-2021-22.xlsx",
+        "content_length": "173079",
+        "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "last_modified": "Thu, 09 Apr 2026 23:52:54 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "annual_expenditure_and_prescriptions_report",
+      "source_id": "au-pbs-expenditure",
+      "url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2020-2021/Expenditure-prescriptions-report-tables-2020-21.xlsx",
+      "filename": "Expenditure-prescriptions-report-tables-2020-21.xlsx",
+      "period_label": "pbs-expenditure-and-prescriptions-report-30-june-2021",
+      "archive_path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2020-21.xlsx",
+      "period_basis": "publisher filename and listing; payload not inspected",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2020-2021/Expenditure-prescriptions-report-tables-2020-21.xlsx",
+        "content_length": "174157",
+        "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "last_modified": "Thu, 09 Apr 2026 23:52:54 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "annual_expenditure_and_prescriptions_report",
+      "source_id": "au-pbs-expenditure",
+      "url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2019-2020/Expenditure-prescriptions-report-tables-2019-20.xlsx",
+      "filename": "Expenditure-prescriptions-report-tables-2019-20.xlsx",
+      "period_label": "pb-expenditure-and-prescriptions-report-1-july-2019",
+      "archive_path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2019-20.xlsx",
+      "period_basis": "publisher filename and listing; payload not inspected",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2019-2020/Expenditure-prescriptions-report-tables-2019-20.xlsx",
+        "content_length": "167711",
+        "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "last_modified": "Thu, 09 Apr 2026 23:52:54 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "annual_expenditure_and_prescriptions_report",
+      "source_id": "au-pbs-expenditure",
+      "url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2017-2018/expenditure-prescriptions-report-tables-2017-18.xlsx",
+      "filename": "expenditure-prescriptions-report-tables-2017-18.xlsx",
+      "period_label": "expenditure-prescriptions-twelve-months-to-30-june-2018",
+      "archive_path": "raw/pbs/expenditure/expenditure-prescriptions-report-tables-2017-18.xlsx",
+      "period_basis": "publisher filename and listing; payload not inspected",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2017-2018/expenditure-prescriptions-report-tables-2017-18.xlsx",
+        "content_length": "166820",
+        "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "last_modified": "Thu, 09 Apr 2026 23:52:54 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "annual_expenditure_and_prescriptions_report",
+      "source_id": "au-pbs-expenditure",
+      "url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2016-2017/expenditure-prescriptions-report-tables-2016-17.xlsx",
+      "filename": "expenditure-prescriptions-report-tables-2016-17.xlsx",
+      "period_label": "expenditure-prescriptions-twelve-months-to-30-june-2017",
+      "archive_path": "raw/pbs/expenditure/expenditure-prescriptions-report-tables-2016-17.xlsx",
+      "period_basis": "publisher filename and listing; payload not inspected",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2016-2017/expenditure-prescriptions-report-tables-2016-17.xlsx",
+        "content_length": "190950",
+        "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "last_modified": "Thu, 09 Apr 2026 23:52:54 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "annual_expenditure_and_prescriptions_report",
+      "source_id": "au-pbs-expenditure",
+      "url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2015-2016/exp-prs-2015-16-tables-1-20.xlsx",
+      "filename": "exp-prs-2015-16-tables-1-20.xlsx",
+      "period_label": "pbs-expenditure-prescriptions-30-june-2016",
+      "archive_path": "raw/pbs/expenditure/exp-prs-2015-16-tables-1-20.xlsx",
+      "period_basis": "publisher filename and listing; payload not inspected",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2015-2016/exp-prs-2015-16-tables-1-20.xlsx",
+        "content_length": "194318",
+        "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "last_modified": "Thu, 09 Apr 2026 23:52:54 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "annual_expenditure_and_prescriptions_report",
+      "source_id": "au-pbs-expenditure",
+      "url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2014-2015-files/exp-prs-book-02-tables-1-20.xlsx",
+      "filename": "exp-prs-book-02-tables-1-20.xlsx",
+      "period_label": "pbs-expenditure-prescriptions-30-june-2015",
+      "archive_path": "raw/pbs/expenditure/exp-prs-book-02-tables-1-20.xlsx",
+      "period_basis": "publisher filename and listing; payload not inspected",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2014-2015-files/exp-prs-book-02-tables-1-20.xlsx",
+        "content_length": "202902",
+        "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "last_modified": "Thu, 09 Apr 2026 23:52:54 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "annual_expenditure_and_prescriptions_report",
+      "source_id": "au-pbs-expenditure",
+      "url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2014-2015-files/exp-prs-book-34-ndss-graph.xls",
+      "filename": "exp-prs-book-34-ndss-graph.xls",
+      "period_label": "pbs-expenditure-prescriptions-30-june-2015",
+      "archive_path": "raw/pbs/expenditure/exp-prs-book-34-ndss-graph.xls",
+      "period_basis": "publisher filename and listing; payload not inspected",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2014-2015-files/exp-prs-book-34-ndss-graph.xls",
+        "content_length": "45568",
+        "content_type": "application/vnd.ms-excel",
+        "last_modified": "Thu, 09 Apr 2026 23:52:54 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "annual_expenditure_and_prescriptions_report",
+      "source_id": "au-pbs-expenditure",
+      "url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2014-2015-files/exp-prs-book-36-com-pharm-agr-exp-rpt.xlsx",
+      "filename": "exp-prs-book-36-com-pharm-agr-exp-rpt.xlsx",
+      "period_label": "pbs-expenditure-prescriptions-30-june-2015",
+      "archive_path": "raw/pbs/expenditure/exp-prs-book-36-com-pharm-agr-exp-rpt.xlsx",
+      "period_basis": "publisher filename and listing; payload not inspected",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2014-2015-files/exp-prs-book-36-com-pharm-agr-exp-rpt.xlsx",
+        "content_length": "21053",
+        "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "last_modified": "Thu, 09 Apr 2026 23:52:54 GMT",
+        "payload_bytes_read": 0
+      }
+    },
+    {
+      "family": "annual_expenditure_and_prescriptions_report",
+      "source_id": "au-pbs-expenditure",
+      "url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2018-2019/Expenditure-prescriptions-report-tables-2018-19.xlsx",
+      "filename": "Expenditure-prescriptions-report-tables-2018-19.xlsx",
+      "period_label": "pbs-expenditure-and-prescriptions-report",
+      "archive_path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2018-19.xlsx",
+      "period_basis": "publisher filename and listing; payload not inspected",
+      "publication_authorized": false,
+      "head": {
+        "http_status": 200,
+        "final_url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2018-2019/Expenditure-prescriptions-report-tables-2018-19.xlsx",
+        "content_length": "161555",
+        "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "last_modified": "Thu, 09 Apr 2026 23:52:54 GMT",
+        "payload_bytes_read": 0
+      }
+    }
+  ],
+  "candidate_count": 42,
+  "limitations": [
+    "HEAD is availability metadata, not a verified payload or complete time series.",
+    "Legacy claims are processing-period aggregates; do not concatenate with Date of Supply series.",
+    "Annual reports before spreadsheets may exist as PDF/DOC; these are listed separately in the report and are not in this executable candidate cohort.",
+    "No source values inspected, files acquired, licence conclusion, publication, admission or federation acceptance.",
+    "64-page expenditure discovery bound; failed pages retain a completeness limitation."
+  ]
+}

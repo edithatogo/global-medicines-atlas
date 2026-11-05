@@ -361,7 +361,7 @@ def discover_pbs_expenditure_resources(
 ) -> list[DiscoveredHarvestResource]:
     """Discover PBS Annual Expenditure workbooks across annual subpages."""
     subpage_links = re.findall(
-        r"href=[\"\'](expenditure-prescriptions[^\"]*|pbs-expenditure[^\"]*)[\"\']",
+        r"href=[\"\']((?:expenditure|pbs?-expenditure)[^\"\']*)[\"\']",
         index_html,
         re.IGNORECASE,
     )

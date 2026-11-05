@@ -18,7 +18,7 @@
       "release_gate": "stable-v1-australian-health-federation",
       "capability": "Source-faithful Silver and reviewed Gold with explicit unknowns",
       "current_failure": "Structural and field-state evidence does not establish every required source meaning or semantic relationship.",
-      "next_action": "Deferred from the bounded software milestone by the 2026-10-29 maintainer decision. On explicit resumption of federation: Resolve only interpretations or reviewed relationships required by the declared consumer contract; reconcile every field state and retain unsupported values as unresolved.",
+      "next_action": "Deferred from the bounded software milestone by the 2026-10-29 maintainer decision. On explicit resumption of federation: Resolve only interpretations or reviewed relationships required by the declared consumer contract; reconcile every field state and retain unsupported values as unresolved. Scoped 2026-11-05 exception: prepare PBS historical utilisation backfill and exact candidate inventory under docs/qualification/pbs-historical-backfill-20261105.md; additional publication approval and workbook safety qualification remain required. General federation stays deferred.",
       "completion_evidence": "Existing exact-source semantic, field-state, reviewed-control and producer receipts satisfy the required product contract.",
       "stop_condition": "Stop interpretation work when that contract passes or lacks supporting evidence; carry missing evidence as a blocker and advance independent system tasks.",
       "validation": "Select affected contract or matcher tests and their negative controls; reuse unchanged corpus receipts."

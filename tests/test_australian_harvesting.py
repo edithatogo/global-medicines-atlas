@@ -13,7 +13,10 @@ from pathlib import Path
 from typing import Any, Never
 
 import pytest
-from scripts import harvest_australian_mbs_schedule
+from scripts import (
+    harvest_australian_mbs_schedule,
+    harvest_australian_pbs_utilisation,
+)
 from scripts.harvest_australian_mbs_utilisation import (
     discover_selected_resources,
     stage_resources,
@@ -192,6 +195,35 @@ def test_discover_pbs_expenditure_resources() -> None:
         resources[0].archive_path
         == "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX"
     )
+
+
+def test_pbs_backfill_reaches_older_expenditure_pages(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    pages = [
+        "expenditure-prescriptions-report-2025",
+        "pbs-expenditure-prescriptions-2024",
+        "pb-expenditure-and-prescriptions-report-2019",
+        "expenditure-and-prescriptions-30-06-2006",
+    ]
+    index = "".join(f'<a href="{page}">report</a>' for page in pages)
+
+    def fetch(url: str) -> str:
+        if url.endswith("pbs-expenditure-and-prescriptions"):
+            return index
+        if url.endswith("dos-and-dop"):
+            return ""
+        return f'<a href="{url.rsplit("/", 1)[-1]}.xlsx">table</a>'
+
+    monkeypatch.setattr(
+        harvest_australian_pbs_utilisation, "fetch_url_text", fetch
+    )
+    rolling = harvest_australian_pbs_utilisation.discover_selected_resources()
+    backfill = harvest_australian_pbs_utilisation.discover_selected_resources(
+        backfill_all=True
+    )
+    assert len(rolling) == 2
+    assert {resource.period_label for resource in backfill} == set(pages)
 
 
 def test_discover_mbs_schedule_resources() -> None:

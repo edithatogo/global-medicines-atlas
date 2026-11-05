@@ -1456,3 +1456,21 @@ authoritative contract, reconciliation, and bound receipts.
   validate extracted fields. The receipt schema prevents a verified claim and
   the validator checks only the recorded shape and HEAD URL consistency. No
   independent page evidence, M-106 acceptance, rights or acquisition is claimed.
+
+## PBS historical utilisation scope — 5 November 2026
+
+- [x] Assess maintainer-linked DataPlace results and inventory 42 exact candidates
+  with successful HEAD readbacks, including legacy ZIPs advertised from 1992.
+- [x] Repair the two-page backfill cap and missing historical annual-page forms;
+  focused harvesting tests pass (76).
+- [ ] Acquire/inspect the candidate payloads and historical ZIP member periods;
+  retain gaps and processing/supply distinctions.
+- [ ] Obtain exact-cohort publication approval for the 20 additional legacy
+  resources; existing PBS-site authorization is unchanged.
+- [ ] Resolve the observed workbook-size safety failure with bounded qualification,
+  then perform hosted acquisition/publication/readback for authorized objects.
+
+Ownership, exact worktree, source boundaries and stop conditions are recorded in
+[the backfill proposal](../../../docs/qualification/pbs-historical-backfill-20261105.md).
+This scoped maintainer request does not resume general federation or alter its
+frozen denominator or acceptance gates.
