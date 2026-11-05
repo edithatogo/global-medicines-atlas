@@ -41,12 +41,10 @@ The September 2025 schedule ZIP/33 CSVs already match reimbursement-atlas.
 The API SQLite cache has 14,353 item and 7,788 ATC rows, corresponding to that
 reference snapshot; local null/number transformations mean byte/value equality
 is not claimed. It is a rebuildable cache, not new utilisation history.
-Enriched study Parquet has participant identifiers and dates and is excluded.
-All three dated medicine extracts exactly match the 1,440 unique study
-descriptions. The three dated ATC Feather files each have 92,923 participant
-records and are excluded. Medicine lists are study-derived, not a
-publisher medicine inventory. They remain private. Other study/linkage artifacts,
-private summaries, logs, notebooks and participant extracts remain excluded.
+Study-derived extracts, classification outputs, vocabulary lists, caches,
+linkage artifacts, summaries, logs, notebooks and participant data remain
+excluded. Their detailed inspection results and counts are retained only in
+the private local comparison report.
 The 3.1.12 XML schema ZIP is developer documentation/schema material, not
 additional dispensing or schedule records; no schema publication is claimed.
 
