@@ -221,3 +221,15 @@ exact digest-approved Services Australia aggregate query exports, preserving
 explicit-zero/query-layout evidence. No participant artifacts or general source
 expansion are authorized. Use the existing Actions-only append and verification
 path; stop after readback. See the scoped comparison report.
+
+## Requested MBS custodial backfill — 6 November 2026
+
+The maintainer explicitly requested the analogous MBS OneDrive comparison,
+including the 1993 tranche, and publication of missing public data to the existing
+HF archive. Execute only the digest-frozen public cohort in
+[the comparison](../docs/qualification/mbs-flinders-public-backfill-20261106.md).
+The shared capability is Actions-only, immutable, verified custodial-public report
+preservation. Participant/linkage, study-derived, login/error and metadata-only
+responses remain excluded. Stop after protected integration, hosted append,
+full anonymous restore, and restoration of the disabled workflow state. General
+federation and every existing acceptance gate remain unchanged.
