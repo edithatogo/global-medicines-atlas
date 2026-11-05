@@ -860,7 +860,10 @@ def validate_xlsx_payload(
     """Check bounded OOXML package metadata; do not infer field semantics."""
     if not filename.lower().endswith(".xlsx"):
         return
-    if raw_archive_max_bytes not in {256 * 1024 * 1024, 512 * 1024 * 1024}:
+    if raw_archive and raw_archive_max_bytes not in {
+        256 * 1024 * 1024,
+        512 * 1024 * 1024,
+    }:
         raise ValueError("Unsupported raw workbook profile")
     payload_limit = (
         raw_archive_max_bytes if raw_archive else MAX_XLSX_PAYLOAD_BYTES

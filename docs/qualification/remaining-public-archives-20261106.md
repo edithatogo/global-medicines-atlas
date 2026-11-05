@@ -125,3 +125,28 @@ archives is required. Temporary source material is removed only after the hosted
 anonymous-verification receipt passes; staging artifacts and disabled workflow
 states are restored at closeout. Hosted publication and protected integration are
 pending; local validation is not publication proof.
+
+
+## Scoped review and recovery
+
+The first protected CI correctly rejected an unassigned new test module before
+its lanes ran. Assigned it to the existing unit inventory without relaxing the
+complete-accounting gate; the inventory now validates. An automated review found
+that the optional raw profile parameter should be ignored by normal analytical
+validation. Restricted its allowlist guard to raw mode and added a normal-mode
+regression; all existing analytical byte limits remain enforced.
+
+Local frozen-input validation initially resolved the shared interpreter's installed
+package from the original checkout and failed with TypeError before validating
+source bytes. Scoped `PYTHONPATH=src:.` selected the owned worktree source without
+changing the shared environment; all 215 exact payloads then passed SHA-256/length,
+ZIP metadata and applicable OOXML validation on Python 3.15.1. The unchanged frozen
+input proof is reused after the raw-only guard correction.
+
+The implementing agent performed the scoped Conductor review: no source bytes,
+private paths, participant/cohort data or credentials are committed. Native
+publication requires exact main and reviewed parents, and keeps prior manifest
+entries immutable. The 154 affected harvesting/public-export tests, Ruff, affected
+BasedPyright/Ty, context validation and test inventory pass. New publisher coverage
+is 96.04%. No independent reviewer is claimed. Protected final-head checks and
+hosted readback are still pending.

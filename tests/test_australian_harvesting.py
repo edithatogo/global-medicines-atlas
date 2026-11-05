@@ -2269,3 +2269,9 @@ def test_explicit_large_raw_workbook_profile_keeps_default_limits() -> None:
             raw_archive=True,
             raw_archive_max_bytes=1024**3,
         )
+
+
+def test_raw_profile_parameter_does_not_change_normal_validation() -> None:
+    australian_harvesting.validate_xlsx_payload(
+        "ordinary.xlsx", _minimal_xlsx_payload(), raw_archive_max_bytes=1024**3
+    )
