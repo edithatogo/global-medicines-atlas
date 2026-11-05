@@ -128,3 +128,52 @@ identity/rights checks; restricted claims/linkage collections remain excluded.
 The unfiltered data.gov.au search is discovery, not a fixed dataset or proof
 that every result is relevant or included. Additional acquisition/publication
 scope remains pending; the prior 20-file publication question is unanswered.
+
+## Publication execution approved — 5 November 2026
+
+The maintainer explicitly approved including and publishing additional legacy
+files and relevant Medicare Statistics data to the existing HF archive, completing
+historical backfill as far as possible, resolving the workbook blocker and checking
+AIHW results. This supersedes the pending-publication statements above. The grant
+now names the three legacy families and the PBS subset of Medicare Statistics;
+MBS/enrolment records are not relabelled as medicines or added to the PBS archive.
+The frozen additional cohort contains 120 resources (20 legacy, 100 PBS statistics).
+
+Full official annual-page discovery now inventories all linked spreadsheets,
+PDF/DOC reports and ZIPs, preserving URL identities and annual-page paths. The
+metadata-only discovery receipt contains 505 candidates: 376 annual-report files,
+9 DOS/DOP/reference files and the 120 additional resources. Index-linked reports
+start in 2002–03; legacy ZIP labels start in 1992. Payload/member qualification is
+pending the hosted run; these counts are discovery, not acquired coverage.
+
+Large raw workbooks use a separate metadata-only archive validation profile:
+256 MiB compressed, 4 GiB declared uncompressed, the existing 20,000-member and
+8 MiB metadata-member limits, required OOXML roots and duplicate-member rejection.
+No worksheets are inflated or parsed by this profile. Default analytical limits
+remain 32 MiB/128 MiB. Downloads read at most 256 MiB plus one sentinel byte.
+Historical ZIP member names, sizes and CRC metadata are recorded without extraction.
+This is raw preservation, not a semantic or exhaustive archive-integrity assessment.
+
+Each payload is stored under a SHA-256 version directory. Previously archived
+paths and source receipts are retained; unchanged versioned objects are skipped.
+The existing HF parent and its revision-pinned manifest must be read successfully
+before publication; no fallback dataset creation occurs. Per-file transport or
+validation failures are retained as partial coverage rather than erasing successes.
+
+AIHW's own search again rendered no result entries. An official-domain search
+located the monthly PBS report, medicines overview, environmental weekly PBS
+series, mental-health prescribing and restricted PBS data-collection metadata.
+The monthly data page states historical monthly tables from May 2002 to January
+2015, and revisions caused by late/updated claims and resident-population estimates.
+Its download list is JavaScript-populated and remained empty in the observed page;
+its script request did not yield the application bundle. This is a concrete
+unresolved download-discovery limitation, not proof that no tables exist.
+Reference: https://www.aihw.gov.au/reports/medicines/pbs-monthly-data/data
+AIHW derived rates and restricted record-level collections remain distinct from
+Services Australia aggregate counts; no restricted data were requested or published.
+
+Focused validation: 111 harvesting/context tests initially passed and one new
+annual-path test failed because its fixture linked the same absolute URL twice.
+The fixture was corrected to distinct annual URLs; the failure-only rerun passed.
+Ruff and the two changed Python modules' BasedPyright checks passed before final
+formatting. Hosted protected checks and actual backfill remain pending.

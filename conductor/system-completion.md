@@ -205,3 +205,10 @@ these utilisation families. The exact candidate cohort and gaps are in
 This exception does not resume broader federation, alter its frozen denominator,
 resolve source rights or authorize additional external dataset publication.
 Retain the explicit additional-cohort publication gate and workbook-size blocker.
+
+The maintainer subsequently explicitly approved publication of the additional
+legacy PBS files and relevant Medicare Statistics data into the existing HF
+archive and requested completion of this backfill. This supersedes the pending
+additional-cohort gate above for these sources; retain rights metadata, scoped
+archive-only validation, protected integration and hosted anonymous digest checks.
+No general federation, restricted-claims acquisition or release is implied.

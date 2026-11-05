@@ -1474,3 +1474,15 @@ Ownership, exact worktree, source boundaries and stop conditions are recorded in
 [the backfill proposal](../../../docs/qualification/pbs-historical-backfill-20261105.md).
 This scoped maintainer request does not resume general federation or alter its
 frozen denominator or acceptance gates.
+
+### Approved execution increment
+
+- [x] Maintainer approved additional legacy and relevant Medicare Statistics
+  publication to the existing archive on 5 November 2026.
+- [x] Freeze 120 additional exact resources; inventory 505 total backfill candidates.
+- [x] Add bounded raw-workbook validation, immutable version paths and partial
+  acquisition failure reporting; preserve default analytical limits.
+- [ ] Protected integration, single hosted backfill dispatch and anonymous
+  digest verification; report actual ZIP member years and any failed objects.
+- [x] Check AIHW relevant report families; retain empty dynamic-download-list
+  limitation and restricted-claims exclusion explicitly.

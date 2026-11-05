@@ -9,18 +9,29 @@
   "gated": false,
   "allowed_sources": [
     "au-pbs-dos-utilisation",
-    "au-pbs-expenditure"
+    "au-pbs-expenditure",
+    "au-pbs-legacy-item",
+    "au-pbs-legacy-patient-category",
+    "au-pbs-legacy-atc",
+    "au-medicare-pbs-statistics"
   ],
   "allowed_domains": [
     "www.pbs.gov.au",
-    "pbs.gov.au"
+    "pbs.gov.au",
+    "data.gov.au",
+    "www.aihw.gov.au",
+    "aihw.gov.au"
   ],
   "categories": [
     "date_of_supply_monthly_prescriptions",
     "item_drug_mapping",
     "annual_expenditure_and_prescriptions_report",
     "date_of_supply_multiyear_summary",
-    "date_of_processing_historical"
+    "date_of_processing_historical",
+    "legacy_pbs_item",
+    "legacy_pbs_patient_category",
+    "legacy_pbs_atc",
+    "medicare_pbs_statistics"
   ],
   "required_controls": [
     "github-actions-only-upload",
@@ -33,5 +44,7 @@
   "publication_does_not_authorize": [
     "medicine-level clinical equivalence claims",
     "unlicensed vocabulary redistribution"
-  ]
+  ],
+  "additional_authorized_at": "2026-11-05",
+  "additional_authority": "Maintainer explicitly approved additional legacy files and relevant Medicare Statistics data to the existing HF archive; complete historical backfill and resolve workbook blocker."
 }

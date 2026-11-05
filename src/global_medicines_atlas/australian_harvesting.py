@@ -358,6 +358,8 @@ def discover_pbs_expenditure_resources(
         "pbs-expenditure-and-prescriptions"
     ),
     max_subpages: int = 3,
+    *,
+    include_documents: bool = False,
 ) -> list[DiscoveredHarvestResource]:
     """Discover PBS Annual Expenditure workbooks across annual subpages."""
     subpage_links = re.findall(
@@ -376,28 +378,42 @@ def discover_pbs_expenditure_resources(
     discovered: list[DiscoveredHarvestResource] = []
     seen: set[str] = set()
 
-    for sp in unique_subpages:
+    for sp in (["index"] if include_documents else []) + unique_subpages:
         sp_url = urllib.parse.urljoin(base_url, sp)
         try:
-            sp_html = subpage_fetcher(sp_url)
+            sp_html = index_html if sp == "index" else subpage_fetcher(sp_url)
         except OSError, TimeoutError, ValueError:
+            if include_documents:
+                raise
             continue
 
+        file_pattern = (
+            r"href=[\"\']([^\"\']+\.(?:xlsx?|csv|pdf|docx?|zip))[\"\']"
+            if include_documents
+            else r"href=[\"\']([^\"\']+\.(?:xlsx?|csv))[\"\']"
+        )
         files = re.findall(
-            r"href=[\"\']([^\"\']+\.(?:xlsx?|csv))[\"\']",
+            file_pattern,
             sp_html,
             re.IGNORECASE,
         )
         for f in sorted(set(files)):
             full_url = urllib.parse.urljoin(sp_url, f)
             filename = full_url.split("/")[-1]
-            if filename in seen:
+            identity = full_url if include_documents else filename
+            if identity in seen:
                 continue
-            seen.add(filename)
+            seen.add(identity)
 
             # Match primary expenditure spreadsheets
-            if any(k in filename.lower() for k in ["expenditure", "exp-prs"]):
-                archive_path = f"raw/pbs/expenditure/{filename}"
+            if include_documents or any(
+                k in filename.lower() for k in ["expenditure", "exp-prs"]
+            ):
+                archive_path = (
+                    f"raw/pbs/expenditure/{sp}/{filename}"
+                    if include_documents
+                    else f"raw/pbs/expenditure/{filename}"
+                )
                 discovered.append(
                     DiscoveredHarvestResource(
                         source_id="au-pbs-expenditure",
@@ -834,14 +850,18 @@ def _open_xlsx_payload(content: bytes) -> zipfile.ZipFile:
         raise ValueError("Workbook is not a valid OOXML ZIP package") from exc
 
 
-def validate_xlsx_payload(filename: str, content: bytes) -> None:
+def validate_xlsx_payload(
+    filename: str, content: bytes, *, raw_archive: bool = False
+) -> None:
     """Check bounded OOXML package metadata; do not infer field semantics."""
     if not filename.lower().endswith(".xlsx"):
         return
-    if len(content) > MAX_XLSX_PAYLOAD_BYTES:
-        raise ValueError(
-            f"Workbook payload exceeds {MAX_XLSX_PAYLOAD_BYTES} byte limit"
-        )
+    payload_limit = 256 * 1024 * 1024 if raw_archive else MAX_XLSX_PAYLOAD_BYTES
+    uncompressed_limit = (
+        4 * 1024 * 1024 * 1024 if raw_archive else MAX_XLSX_UNCOMPRESSED_BYTES
+    )
+    if len(content) > payload_limit:
+        raise ValueError(f"Workbook payload exceeds {payload_limit} byte limit")
     with _open_xlsx_payload(content) as archive:
         members = archive.infolist()
         names = [member.filename for member in members]
@@ -854,10 +874,7 @@ def validate_xlsx_payload(filename: str, content: bytes) -> None:
             for name in names
         ):
             raise ValueError("Workbook ZIP contains no worksheet member")
-        if (
-            sum(member.file_size for member in members)
-            > MAX_XLSX_UNCOMPRESSED_BYTES
-        ):
+        if sum(member.file_size for member in members) > uncompressed_limit:
             raise ValueError("Workbook ZIP exceeds uncompressed size limit")
         try:
             content_types_info = archive.getinfo("[Content_Types].xml")
@@ -891,6 +908,8 @@ def stage_harvest_payload(
     work_dir: Path,
     data_reader: Callable[[str], bytes | tuple[bytes, str]],
     allowed_domains: frozenset[str] = ALLOWED_AUSTRALIAN_HARVEST_DOMAINS,
+    *,
+    raw_archive: bool = False,
 ) -> HarvestStageResult:
     """Download and stage a discovered payload fail-closed, producing its B1 receipt."""
     parsed = urllib.parse.urlparse(resource.url)
@@ -914,7 +933,7 @@ def stage_harvest_payload(
 
     if not content:
         raise ValueError(f"Payload from {resource.url} was empty")
-    validate_xlsx_payload(resource.filename, content)
+    validate_xlsx_payload(resource.filename, content, raw_archive=raw_archive)
 
     sha256 = hashlib.sha256(content).hexdigest()
     byte_count = len(content)
