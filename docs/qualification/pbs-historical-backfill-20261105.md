@@ -177,3 +177,22 @@ annual-path test failed because its fixture linked the same absolute URL twice.
 The fixture was corrected to distinct annual URLs; the failure-only rerun passed.
 Ruff and the two changed Python modules' BasedPyright checks passed before final
 formatting. Hosted protected checks and actual backfill remain pending.
+
+### AIHW download discovery recovered through publisher API
+
+The earlier dynamic-list limitation is superseded by the
+[read-only API receipt](../../quality/qualifications/aihw-pbs-monthly-resource-discovery-20261105.json).
+The publisher's `dataOrResource.js` exposes
+`POST /api/search/all-downloadable-resources`. Using the monthly page's component
+attributes returned four resources: ATC1 and ATC2 ZIPs for January 2015 onwards,
+and ATC1 and ATC2 workbooks for May 2002–January 2015. The initial query's
+`filterByItemNodeGUIDs` array produced HTTP 400; using the required string type
+returned four results. Each exact-file HEAD returned HTTP 403. This qualifies
+metadata discovery, not GET availability, payload fixity or publication. AIHW
+source files are outside this approved PBS/Medicare publication-host cohort.
+
+Final-head Codecov patch coverage reported 82.35% against 90.01%, despite all
+38 other checks passing. Added focused negative tests for the uncovered annual
+page-failure behavior and the raw profile's payload/expansion limits; no gate or
+limit was weakened. Reuse the unchanged successful behavioral checks locally;
+protected CI runs on the updated head.

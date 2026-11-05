@@ -2145,3 +2145,55 @@ def test_pbs_authorized_cohort_is_bounded_to_legacy_and_pbs_statistics() -> (
         for r in resources
         if r["source_id"] == "au-medicare-pbs-statistics"
     )
+
+
+def test_full_pbs_backfill_fails_on_unreadable_annual_page() -> None:
+    def unavailable(_url: str) -> str:
+        raise OSError("annual page unavailable")
+
+    with pytest.raises(OSError, match="annual page unavailable"):
+        discover_pbs_expenditure_resources(
+            '<a href="expenditure-and-prescriptions-2006">annual</a>',
+            unavailable,
+            include_documents=True,
+        )
+
+
+def test_raw_workbook_profile_rejects_oversized_payload_without_allocation() -> (
+    None
+):
+    class OversizedBytes(bytes):
+        def __len__(self) -> int:
+            return 256 * 1024 * 1024 + 1
+
+    with pytest.raises(ValueError, match="byte limit"):
+        australian_harvesting.validate_xlsx_payload(
+            "large.xlsx",
+            OversizedBytes(),
+            raw_archive=True,
+        )
+
+
+def test_raw_workbook_profile_rejects_excessive_declared_expansion(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    archive = zipfile.ZipFile(io.BytesIO(_minimal_xlsx_payload()))
+    archive.infolist()[0].file_size = 4 * 1024**3 + 1
+    monkeypatch.setattr(
+        australian_harvesting, "_open_xlsx_payload", lambda _data: archive
+    )
+    with pytest.raises(ValueError, match="uncompressed size limit"):
+        australian_harvesting.validate_xlsx_payload(
+            "expansion.xlsx",
+            _minimal_xlsx_payload(),
+            raw_archive=True,
+        )
+
+
+def test_pbs_annual_backfill_deduplicates_shared_resource_url() -> None:
+    resources = discover_pbs_expenditure_resources(
+        '<a href="expenditure-2006">old</a><a href="expenditure-2007">new</a>',
+        lambda _url: '<a href="/files/shared.xls">shared</a>',
+        include_documents=True,
+    )
+    assert len(resources) == 1
