@@ -5,6 +5,7 @@ import hashlib
 import io
 import json
 import lzma
+import urllib.error
 import zipfile
 from pathlib import Path
 from types import SimpleNamespace
@@ -364,3 +365,222 @@ def test_main_stages_only_exact_approved_segment(monkeypatch, tmp_path):
     monkeypatch.setattr(subject, "stage_segment", stage)
     subject.main()
     stage.assert_called_once_with("stage-remaining-0000", expected["custodial"])
+
+
+@pytest.mark.parametrize(
+    "case",
+    [
+        "complete_range",
+        "ignored_range",
+        "short_range",
+        "second_403",
+        "other_host",
+        "other_status",
+    ],
+)
+def test_aihw_media_range_recovery_is_bounded_and_exact(monkeypatch, case):
+    url = "https://www.aihw.gov.au/getmedia/synthetic/public.zip"
+    if case == "other_host":
+        url = "https://data.gov.au/public.zip"
+    first_code = 401 if case == "other_status" else 403
+    first = urllib.error.HTTPError(
+        url, first_code, "synthetic refusal", None, None
+    )
+    response = Mock(
+        status=206,
+        headers={"Content-Range": "bytes 0-2/3", "Content-Length": "3"},
+        url=url,
+    )
+    response.read.return_value = b"abc"
+    response.__enter__ = Mock(return_value=response)
+    response.__exit__ = Mock(return_value=False)
+    if case == "ignored_range":
+        response.status = 200
+        response.headers = {"Content-Length": "3"}
+    if case == "short_range":
+        response.headers["Content-Range"] = "bytes 0-1/3"
+    calls = []
+
+    def open_request(request, **_kwargs):
+        calls.append(dict(request.header_items()))
+        if len(calls) == 1:
+            raise first
+        assert request.get_header("Range") == "bytes=0-2"
+        if case == "second_403":
+            raise urllib.error.HTTPError(
+                url, 403, "synthetic refusal", None, None
+            )
+        return response
+
+    monkeypatch.setattr(
+        subject.urllib.request,
+        "build_opener",
+        lambda *_args: SimpleNamespace(open=open_request),
+    )
+    monkeypatch.setattr(
+        subject,
+        "read_aihw_with_curl",
+        Mock(side_effect=urllib.error.URLError("synthetic system refusal")),
+    )
+    if case in {"complete_range", "ignored_range"}:
+        assert subject.read_public_payload(url, 3) == (b"abc", url)
+    elif case == "short_range":
+        with pytest.raises(ValueError, match="Full public"):
+            subject.read_public_payload(url, 3)
+    else:
+        with pytest.raises(urllib.error.URLError):
+            subject.read_public_payload(url, 3)
+    assert len(calls) == (1 if case in {"other_host", "other_status"} else 2)
+
+
+@pytest.mark.usefixtures("_hosted")
+@pytest.mark.parametrize("all_unavailable", [False, True])
+def test_public_transport_failure_preserves_independent_successes(
+    monkeypatch, tmp_path, all_unavailable
+):
+    payload, item, existing, expected = cohort()
+    missing = json.loads(json.dumps(item))
+    missing["resource"]["filename"] = "unavailable.csv"
+    missing["resource"]["url"] = "https://data.gov.au/unavailable.csv"
+    missing["sha256"] = "f" * 64
+    expected["files"] = [item, missing]
+    monkeypatch.setattr(
+        subject, "snapshot", lambda *_args: ("parent", existing)
+    )
+
+    def read(url, _limit):
+        if all_unavailable or "unavailable" in url:
+            raise urllib.error.HTTPError(
+                url, 403, "synthetic public transport refusal", None, None
+            )
+        return payload, url
+
+    monkeypatch.setattr(subject, "read_public_payload", read)
+    sdk, api = sdk_fixture(tmp_path, existing)
+    if all_unavailable:
+        with pytest.raises(RuntimeError, match="HF unchanged"):
+            subject.publish(sdk, expected, tmp_path / "stage")
+        api.create_commit.assert_not_called()
+    else:
+        result = subject.publish(sdk, expected, tmp_path / "stage")
+        assert result["new_payloads"] == 1
+        assert result["run_coverage"]["coverage_status"] == "partial"
+        assert (
+            result["run_coverage"]["failed_resources"][0]["filename"]
+            == "unavailable.csv"
+        )
+        api.create_commit.assert_called_once()
+    audit = json.loads(
+        (tmp_path / "stage" / "acquisition.json").read_text(encoding="utf-8")
+    )
+    assert audit["coverage_status"] == "partial"
+    assert all(r["http_status"] == 403 for r in audit["failed_resources"])
+
+
+@pytest.mark.parametrize(
+    "case",
+    [
+        "ok",
+        "missing",
+        "old",
+        "bad_version",
+        "version_failure",
+        "version_timeout",
+        "http_failure",
+        "transfer_timeout",
+        "wrong_length",
+    ],
+)
+def test_system_aihw_client_is_size_bounded_and_has_no_auth_or_redirects(
+    monkeypatch, tmp_path, case
+):
+    url = "https://www.aihw.gov.au/getmedia/synthetic/public.zip"
+    if case == "missing":
+        monkeypatch.setattr(
+            subject, "CURL_EXECUTABLE", str(tmp_path / "missing-curl")
+        )
+    calls = []
+
+    def run(argv, **kwargs):
+        calls.append(argv)
+        assert argv[0] == "/usr/bin/curl"
+        assert argv[1] == "--disable"
+        assert kwargs["capture_output"] is True
+        assert kwargs["check"] is False
+        if "--version" in argv:
+            if case == "version_timeout":
+                raise subject.subprocess.TimeoutExpired(argv, 10)
+            version = (
+                b"curl 8.3.0"
+                if case == "old"
+                else b"unknown"
+                if case == "bad_version"
+                else b"curl 8.7.1 qualified"
+            )
+            return SimpleNamespace(
+                returncode=1 if case == "version_failure" else 0, stdout=version
+            )
+        assert "--location" not in argv
+        assert "--insecure" not in argv
+        assert "--proto" in argv
+        assert "=https" in argv
+        assert argv[argv.index("--max-filesize") + 1] == "3"
+        assert argv[argv.index("--range") + 1] == "0-2"
+        if case == "transfer_timeout":
+            raise subject.subprocess.TimeoutExpired(argv, 190)
+        return SimpleNamespace(
+            returncode=22 if case == "http_failure" else 0,
+            stdout=b"ab" if case == "wrong_length" else b"abc",
+        )
+
+    monkeypatch.setattr(subject.subprocess, "run", run)
+    if case == "ok":
+        assert subject.read_aihw_with_curl(url, 3) == (b"abc", url)
+    else:
+        with pytest.raises((urllib.error.URLError, ValueError)):
+            subject.read_aihw_with_curl(url, 3)
+    assert len(calls) == (
+        0
+        if case == "missing"
+        else 1
+        if case in {"old", "bad_version", "version_failure", "version_timeout"}
+        else 2
+    )
+
+
+@pytest.mark.parametrize(
+    ("url", "limit"),
+    [
+        ("http://www.aihw.gov.au/a", 3),
+        ("https://data.gov.au/a", 3),
+        ("https://www.aihw.gov.au/a", 0),
+    ],
+)
+def test_system_client_refuses_other_destinations(url, limit):
+    with pytest.raises(ValueError, match="Unapproved AIHW"):
+        subject.read_aihw_with_curl(url, limit)
+
+
+@pytest.mark.usefixtures("_hosted")
+def test_observed_canonical_url_keeps_original_source_provenance(
+    monkeypatch, tmp_path
+):
+    payload, item, existing, expected = cohort()
+    item["resolved_public_url"] = "https://data.gov.au/canonical.csv"
+    calls = []
+
+    def read(url, _limit):
+        calls.append(url)
+        return payload, url
+
+    monkeypatch.setattr(subject, "read_public_payload", read)
+    stages, coverage = subject.stage_public_sources(
+        expected, tmp_path, {r["path"]: r for r in existing["files"]}
+    )
+    assert calls == ["https://data.gov.au/canonical.csv"]
+    receipt = json.loads(
+        stages[0].staged_receipt_path.read_text(encoding="utf-8")
+    )
+    assert receipt["source_url"] == "https://data.gov.au/public.csv"
+    assert receipt["final_url"] == "https://data.gov.au/canonical.csv"
+    assert coverage["coverage_status"] == "complete"
