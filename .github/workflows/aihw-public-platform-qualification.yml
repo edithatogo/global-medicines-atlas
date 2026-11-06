@@ -1,0 +1,38 @@
+name: AIHW anonymous public download qualification
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/aihw-public-platform-qualification.yml
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  probe:
+    name: AIHW public GET / ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Read one committed public workbook anonymously
+        run: |
+          uv run --locked --python 3.15.1 python - <<'PYPROBE'
+          import json
+          from pathlib import Path
+          from scripts.publish_remaining_public_archives import read_public_payload, validate_payload
+          contract = json.loads(Path("quality/qualifications/remaining-public-archives-20261106.json").read_text())
+          item = next(f for a in contract["archives"].values() for f in a["files"] if f["bytes"] == 60382)
+          payload, final_url = read_public_payload(item.get("resolved_public_url", item["resource"]["url"]), item["bytes"])
+          validate_payload(payload, item)
+          print(json.dumps({"sha256": item["sha256"], "bytes": len(payload), "final_url": final_url, "anonymous_read": "passed"}))
+          PYPROBE
