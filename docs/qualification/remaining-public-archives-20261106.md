@@ -85,7 +85,7 @@ claims download and no such record-level collection was accessed.
 The expanded search completed 25 PBS pages (4,873 entries), 176 MBS pages
 (35,032 entries), 179 Medicare pages (35,658 entries) and five ATC pages (963
 entries). These overlapping search counts are not unique-file or coverage totals.
-The medicine search is still running. Eleven exact remaining folder inventories
+The generic medicine search reached its 300-page guard and stopped; those unretained results do not establish exhaustive all-OneDrive coverage. Eleven exact remaining folder inventories
 were fully paginated. Three copies of the 33-table PBS API extraction have equal
 names, sizes and QuickXor metadata; the earlier public-package byte proof is reused,
 without claiming that metadata alone is a new cryptographic content verification.
@@ -150,3 +150,62 @@ entries immutable. The 154 affected harvesting/public-export tests, Ruff, affect
 BasedPyright/Ty, context validation and test inventory pass. New publisher coverage
 is 96.04%. No independent reviewer is claimed. Protected final-head checks and
 hosted readback are still pending.
+
+
+## Hosted public-media transport recovery
+
+PR #1418 passed all 28 required contexts at head
+`965e967de0ade09860f03d0c09b05dae8b5a78d5` and merged as
+`5e2c73a5dfb522148a80cad137aa7203f42254bb`, tree
+`f5e0d3fae56d9960f92bdeb9e071819921fc290b`. Staging runs 42134009180 and
+42134021954 passed. Publication runs 42134114455 (PBS) and 42134126575 (MBS)
+then received HTTP 403 on AIHW media from the Ubuntu runner, despite successful
+local reads. Both failed before any HF commit; anonymous destination readback
+confirmed the original reviewed parents unchanged. Both workflows were restored
+to disabled_manually. These failures are retained separately from local proof.
+
+Owner remains the same chat/worktree, now branch
+`codex/aihw-hosted-download-recovery`; native publication is idle during recovery.
+The source cohort and approved lengths/digests are unchanged. The contract now
+also binds all 25 AIHW media URLs to the canonical final URLs observed during
+the original successful downloads. Original publisher link identities remain in
+source receipts; final retrieval URLs remain separate. No URL variant is guessed.
+
+The public-media reader tries ordinary GET, then a complete reviewed byte range
+only after an AIHW 403. Any 206 must describe the complete exact approved range.
+After a second 403, the already installed system curl is tried once with a fixed
+executable/argv, HTTPS only, no redirects, no curl configuration, no authentication
+flags, a 180-second total time limit and an exact streaming size cap. Curl 8.4 or
+newer is required because its size cap also applies without Content-Length; the
+installed 8.7.1 manual confirms that behavior. Local qualification against an
+observed canonical media URL returned the exact reviewed 60,382-byte workbook and
+SHA-256. A direct call on an uncanonicalized publisher link was correctly rejected
+for incomplete length; it returned a public canonicalization redirect rather than
+the workbook. The approved observed canonical URL resolves that case. TLS checks,
+redirect-domain checks, identity/length/digest gates and private-data exclusions
+are unchanged; no proxy, browser-cookie transfer or alternative identity is used.
+
+Transport/availability failures are retained per file and no rejected bytes are
+committed. Independent source files may still be appended with explicit partial
+coverage. Digest substitutions, immutable-path collisions, prior-manifest drift
+and failed anonymous readback still fail closed. If no new payload can be acquired,
+HF remains unchanged. An always-retained source-acquisition artifact distinguishes
+missing source files from verified published pairs, including when a batch fails.
+
+Recovery qualification: 175 affected harvesting/public-export tests passed on
+Python 3.15.1; Ruff, affected BasedPyright/Ty and context checks pass. The implementing
+agent reviewed the fixed system-CLI boundary and partial-coverage accounting;
+no independent reviewer is claimed. Reuse the unchanged 215-file byte-validation
+receipt and prior archive restore proofs. Protected integration and the observed
+hosted result remain required. No native mutation is retried without checking the
+first attempt's destination state and recording a new one-send intent.
+
+
+Recovery review corrections: the unchanged-digest no-op now returns a cleanup-
+compatible receipt only when its committed prior anonymous-proof reference exists.
+It explicitly records zero newly verified objects and reuse of prior proof plus
+the fresh exact manifest identity; no fresh payload verification is invented.
+Absent prior proof fails closed. A missing URL on a synthetic media HTTP error
+falls back to the already approved source URL before the same HTTPS host checks.
+The 57 publisher tests pass with these negative controls; protected CI reruns on
+the corrected head. No publication has been repeated or inferred from local checks.

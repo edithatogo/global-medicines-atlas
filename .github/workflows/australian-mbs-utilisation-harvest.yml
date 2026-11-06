@@ -117,6 +117,15 @@ jobs:
           fi
           : # Outbound comments prohibited; retain workflow artifacts instead.
 
+      - name: Retain exact public acquisition outcomes
+        if: ${{ always() && inputs.remaining_public == true }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: public-acquisition-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/harvest/remaining-public/acquisition.json
+          if-no-files-found: warn
+          retention-days: 30
+
       - name: Retain verification artifact 1 without outbound messages
         if: ${{ !startsWith(inputs.public_batch, 'stage-') }}
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0

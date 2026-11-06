@@ -14,6 +14,9 @@ import io
 import json
 import lzma
 import os
+import re
+import subprocess  # ruff: ignore[suspicious-subprocess-import] -- fixed system curl argv; no shell
+import urllib.error
 import urllib.request
 import zipfile
 from http import HTTPStatus
@@ -46,6 +49,8 @@ HOSTS = frozenset({"data.gov.au", "www.aihw.gov.au", "www.health.gov.au"})
 MAX_BYTES = 512 * 1024**2
 MAX_MEMBERS = 20_000
 MAX_CUSTODIAL_INPUT = 2_000_000
+MIN_CURL_BOUNDED_VERSION = (8, 4)
+CURL_EXECUTABLE = "/usr/bin/curl"
 
 
 def digest_json(value: Any) -> str:
@@ -53,6 +58,75 @@ def digest_json(value: Any) -> str:
     return hashlib.sha256(
         json.dumps(value, sort_keys=True, separators=(",", ":")).encode()
     ).hexdigest()
+
+
+def read_aihw_with_curl(url: str, limit: int) -> tuple[bytes, str]:
+    """Try the system HTTPS client once; exact bytes remain mandatory."""
+    if (
+        urlparse(url).scheme != "https"
+        or urlparse(url).netloc != "www.aihw.gov.au"
+        or not 0 < limit <= MAX_BYTES
+    ):
+        raise ValueError("Unapproved AIHW curl request")
+    executable = CURL_EXECUTABLE
+    if not Path(executable).is_file():
+        raise urllib.error.URLError("System public download client unavailable")
+    try:
+        version_result = subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true] -- fixed system executable, no shell
+            [executable, "--disable", "--version"],
+            capture_output=True,
+            check=False,
+            timeout=10,
+        )
+    except (OSError, subprocess.TimeoutExpired) as error:
+        raise urllib.error.URLError(
+            "System client qualification failed"
+        ) from error
+    version = version_result.stdout.decode("ascii", errors="replace")
+    matched = re.match(r"curl (\d+)\.(\d+)", version)
+    if (
+        version_result.returncode
+        or matched is None
+        or tuple(map(int, matched.groups())) < MIN_CURL_BOUNDED_VERSION
+    ):
+        raise urllib.error.URLError(
+            "System curl lacks qualified streaming size bound"
+        )
+    print(version.splitlines()[0], flush=True)
+    try:
+        result = subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true] -- HTTPS host validated; fixed argv, no shell
+            [
+                executable,
+                "--disable",
+                "--fail",
+                "--silent",
+                "--show-error",
+                "--proto",
+                "=https",
+                "--max-filesize",
+                str(limit),
+                "--max-time",
+                "180",
+                "--range",
+                f"0-{limit - 1}",
+                "--user-agent",
+                "Mozilla/5.0",
+                "--url",
+                url,
+            ],
+            capture_output=True,
+            check=False,
+            timeout=190,
+        )
+    except (OSError, subprocess.TimeoutExpired) as error:
+        raise urllib.error.URLError(
+            "System public download unavailable"
+        ) from error
+    if result.returncode:
+        raise urllib.error.URLError("System public download failed")
+    if len(result.stdout) != limit:
+        raise ValueError("System public download length differs from review")
+    return result.stdout, url
 
 
 def read_public_payload(url: str, limit: int) -> tuple[bytes, str]:
@@ -69,9 +143,38 @@ def read_public_payload(url: str, limit: int) -> tuple[bytes, str]:
             "Referer": "https://www.aihw.gov.au/reports/medicines/pbs-monthly-data/data",
         },
     )
-    with opener.open(request, timeout=180) as response:
-        if response.status != HTTPStatus.OK or response.headers.get(
-            "Content-Range"
+    ranged = False
+    try:
+        response = opener.open(request, timeout=180)
+    except urllib.error.HTTPError as error:
+        if (
+            error.code != HTTPStatus.FORBIDDEN
+            or urlparse(url).netloc != "www.aihw.gov.au"
+        ):
+            raise
+        error.close()
+        # The publisher's public media server supports RFC byte ranges. A
+        # full reviewed range retains all length, range and digest checks.
+        request.add_header("Range", f"bytes=0-{limit - 1}")
+        try:
+            response = opener.open(request, timeout=180)
+        except urllib.error.HTTPError as ranged_error:
+            if ranged_error.code != HTTPStatus.FORBIDDEN:
+                raise
+            resolved_url = str(ranged_error.url) if ranged_error.url else url
+            ranged_error.close()
+            return read_aihw_with_curl(resolved_url, limit)
+        ranged = True
+    with response:
+        complete_range = (
+            ranged
+            and response.status == HTTPStatus.PARTIAL_CONTENT
+            and response.headers.get("Content-Range")
+            == f"bytes 0-{limit - 1}/{limit}"
+        )
+        if not complete_range and (
+            response.status != HTTPStatus.OK
+            or response.headers.get("Content-Range")
         ):
             raise ValueError("Full public acquisition requires HTTP 200")
         length = response.headers.get("Content-Length")
@@ -175,22 +278,35 @@ def stage_custodial(
     return stages
 
 
-def publish(
-    sdk: Any, expected: dict[str, Any], stage_dir: Path
-) -> dict[str, Any]:
-    """Append only this committed cohort, then verify new pairs anonymously."""
-    require_hosted()
-    parent, existing = snapshot(sdk, expected)
-    prior = {f["path"]: f for f in existing["files"]}
+def stage_public_sources(
+    expected: dict[str, Any],
+    stage_dir: Path,
+    prior: dict[str, Any],
+) -> tuple[list[HarvestStageResult], dict[str, Any]]:
+    """Keep transport gaps explicit without discarding independent public files."""
     prior_digests = {(f["sha256"], f["bytes"]) for f in prior.values()}
+    stage_dir.mkdir(parents=True, exist_ok=True)
     stages = stage_custodial(expected, stage_dir)
+    failures: list[dict[str, Any]] = []
     for item in expected["files"]:
         if (item["sha256"], item["bytes"]) in prior_digests:
             continue
         resource = DiscoveredHarvestResource(**item["resource"])
         if resource.archive_path in prior:
             raise RuntimeError("Immutable public path collision")
-        payload, final_url = read_public_payload(resource.url, item["bytes"])
+        try:
+            payload, final_url = read_public_payload(
+                item.get("resolved_public_url", resource.url), item["bytes"]
+            )
+        except (urllib.error.URLError, TimeoutError, ValueError) as error:
+            failures.append({
+                "source_id": resource.source_id,
+                "filename": resource.filename,
+                "http_status": getattr(error, "code", None),
+                "error": type(error).__name__,
+            })
+            print(f"Unavailable public file: {resource.filename}", flush=True)
+            continue
         validate_payload(payload, item)
         stage = stage_harvest_payload(
             resource,
@@ -202,15 +318,50 @@ def publish(
         )
         stages.append(stage)
         print(f"Staged public object {len(stages)}", flush=True)
+    coverage = {
+        "coverage_status": "partial" if failures else "complete",
+        "failed_resources": failures,
+    }
+    (stage_dir / "acquisition.json").write_text(
+        json.dumps(coverage, indent=2) + "\n", encoding="utf-8"
+    )
+    return stages, coverage
+
+
+def publish(
+    sdk: Any, expected: dict[str, Any], stage_dir: Path
+) -> dict[str, Any]:
+    """Append only this committed cohort, then verify new pairs anonymously."""
+    require_hosted()
+    parent, existing = snapshot(sdk, expected)
+    prior = {f["path"]: f for f in existing["files"]}
+    stages, coverage = stage_public_sources(expected, stage_dir, prior)
+    failures = coverage["failed_resources"]
+    if not stages and failures:
+        raise RuntimeError("No reviewed public payload acquired; HF unchanged")
     if not stages:
+        if not expected.get("prior_verification_run"):
+            raise RuntimeError("No prior anonymous proof for archive reuse")
         return {
             "dataset": expected["dataset"],
             "revision": parent,
             "new_payloads": 0,
             "status": "all reviewed digests already present",
+            "anonymous_digest_verification": "passed",
+            "verification_scope": "prior anonymous proof reused; fresh exact manifest identity",
+            "verified_file_count": 0,
+            "prior_manifest_objects_preserved": len(prior),
+            "archive_file_count": len(prior),
+            "prior_anonymous_verification_run": expected[
+                "prior_verification_run"
+            ],
+            "temporary_source_bytes_removed": False,
+            "workflow_commit": os.environ["GITHUB_SHA"],
+            "workflow_run": os.environ["GITHUB_RUN_ID"],
+            "run_coverage": coverage,
         }
     full = build_cumulative_harvest_manifest(
-        expected["dataset"], stages, existing
+        expected["dataset"], stages, existing, run_coverage=coverage
     )
     full_by_path = {f["path"]: f for f in full["files"]}
     if any(full_by_path.get(path) != value for path, value in prior.items()):
@@ -281,6 +432,7 @@ def publish(
         "temporary_source_bytes_removed": False,
         "workflow_commit": os.environ["GITHUB_SHA"],
         "workflow_run": os.environ["GITHUB_RUN_ID"],
+        "run_coverage": coverage,
     }
 
 
