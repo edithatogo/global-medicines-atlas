@@ -12,6 +12,11 @@ on:
         required: false
         default: false
         type: boolean
+      historical_atc2:
+        description: Archive the exact approved historical teaching CSV and notices
+        required: false
+        default: false
+        type: boolean
       incremental_public:
         description: Publish committed public draft batches with verification checkpoints
         required: false
@@ -210,11 +215,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           BACKFILL_ALL: ${{ inputs.backfill_all == true && '1' || '0' }}
           REMAINING_PUBLIC: ${{ inputs.remaining_public == true && '1' || '0' }}
+          HISTORICAL_ATC2: ${{ inputs.historical_atc2 == true && '1' || '0' }}
           PUBLIC_ARCHIVE_DESTINATION: pbs
           PUBLIC_EXPORT_BUNDLE: ${{ inputs.public_export_bundle || '' }}
         run: |
           set -euo pipefail
-          if test "$REMAINING_PUBLIC" = 1; then
+          if test "$REMAINING_PUBLIC" = 1 || test "$HISTORICAL_ATC2" = 1; then
             uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 \
               python -m scripts.publish_remaining_public_archives
           elif test -n "$PUBLIC_EXPORT_BUNDLE"; then

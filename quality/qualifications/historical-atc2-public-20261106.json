@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "external_publication_authorized": true,
+  "authorized_at": "2026-11-06",
+  "authority": "Maintainer explicitly approved historical CSV archive with both notices, attribution, gap-filled-zero caveat, hosted publication and verified temporary cleanup.",
+  "archives": {
+    "pbs": {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "parent_revision": "02a7fb034c1254dfefa789d7a14dbd9014abe15c",
+      "manifest_sha256": "f7104aa08a7533bd6a298d00d163332772669f6aed6be9322419230ca0d5e54e",
+      "prior_verification_run": [
+        42205830107
+      ],
+      "files": [
+        {
+          "sha256": "9ba4509bb4920334efe6dc94632445b2ebebef6aa6fd06f1e6d0c1e761352e4a",
+          "bytes": 7040458,
+          "resource": {
+            "source_id": "au-pbs-historical-teaching",
+            "category": "historical_atc2_teaching",
+            "url": "https://raw.githubusercontent.com/mitchelloharawild/workshop-r-medicine-2024/169cd721399364b4b7de065639d8377b2cfd1004/data/pbs.csv",
+            "filename": "pbs-1991-2008.csv",
+            "period_label": "July 1991 to June 2008; public transformed teaching dataset and notices",
+            "archive_path": "raw/pbs/public-backfill/historical_atc2_teaching/9ba4509bb4920334efe6dc94632445b2ebebef6aa6fd06f1e6d0c1e761352e4a/pbs-1991-2008.csv"
+          }
+        },
+        {
+          "sha256": "7ed84c073380853e80ff2e0563a737a6582c42608492700cee02f53255a9e4be",
+          "bytes": 288,
+          "resource": {
+            "source_id": "au-pbs-historical-teaching",
+            "category": "historical_atc2_teaching",
+            "url": "https://raw.githubusercontent.com/mitchelloharawild/workshop-r-medicine-2024/169cd721399364b4b7de065639d8377b2cfd1004/license.qmd",
+            "filename": "workshop-CC-BY-4.0-notice.qmd",
+            "period_label": "July 1991 to June 2008; public transformed teaching dataset and notices",
+            "archive_path": "raw/pbs/public-backfill/historical_atc2_teaching/7ed84c073380853e80ff2e0563a737a6582c42608492700cee02f53255a9e4be/workshop-CC-BY-4.0-notice.qmd"
+          }
+        },
+        {
+          "sha256": "4e45ed1f85c122b46f8b4d7e0a5e413464a63fc8a23c8553d97e07c508c2e880",
+          "bytes": 995,
+          "resource": {
+            "source_id": "au-pbs-historical-teaching",
+            "category": "historical_atc2_teaching",
+            "url": "https://raw.githubusercontent.com/tidyverts/tsibbledata/ccfcb321bb4f0e12b7287f5a8f752097e35a20a5/DESCRIPTION",
+            "filename": "tsibbledata-GPL-3-DESCRIPTION.txt",
+            "period_label": "July 1991 to June 2008; public transformed teaching dataset and notices",
+            "archive_path": "raw/pbs/public-backfill/historical_atc2_teaching/4e45ed1f85c122b46f8b4d7e0a5e413464a63fc8a23c8553d97e07c508c2e880/tsibbledata-GPL-3-DESCRIPTION.txt"
+          }
+        },
+        {
+          "sha256": "90dc95b1c30dbb5661dbcb0a1851e8ec4217da8fdeb6e42523fda70791a683b7",
+          "bytes": 1982,
+          "resource": {
+            "source_id": "au-pbs-historical-teaching",
+            "category": "historical_atc2_teaching",
+            "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/main/quality/qualifications/historical-atc2-attribution-20261106.json",
+            "filename": "historical-atc2-attribution-20261106.json",
+            "period_label": "Attribution, retained licence declarations and zero-fill caveat",
+            "archive_path": "raw/pbs/public-backfill/historical_atc2_teaching/90dc95b1c30dbb5661dbcb0a1851e8ec4217da8fdeb6e42523fda70791a683b7/historical-atc2-attribution-20261106.json"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1545,3 +1545,13 @@ Owner, native scope and stop condition: [remaining archive work](../../../docs/q
 - [ ] Publish five PBS and four MBS batches from Actions, verify each checkpoint,
   remove only its temporary assets/copies, restore disabled workflow states and
   remove the empty unpublished draft. Keep the source's ATC2 monthly 404 explicit.
+
+### Approved historical ATC2 teaching archive
+
+- [x] Pin public CSV provenance, 67,596 rows and both licence declarations;
+  obtain explicit maintainer approval and disclose upstream zero filling.
+- [~] Integrate fixed four-object hosted contract, run focused checks and
+  protected CI; publish from exact main and anonymously verify before cleanup.
+- [ ] Remove verified owned temporary copies and restore disabled workflow state.
+
+Owner and native scope: remaining-public-archives qualification report.

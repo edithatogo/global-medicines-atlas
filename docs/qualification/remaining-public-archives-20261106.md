@@ -392,3 +392,36 @@ changes. The job-level eligibility also explicitly requires workflow_dispatch
 and refs/heads/main before its ephemeral push role is available. Routine jobs
 still use Contents read. Focused role/step guards and the original governed
 harvest-workflow regression remain intact. No second native dispatch occurred.
+
+## Approved historical ATC2 teaching CSV
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, standard worktree
+`/Volumes/PortableSSD/GitHub/gma-pbs-historical-backfill`, branch
+`codex/historical-atc2-public-archive`. Owned scope: the PBS workflow's explicit
+historical input, fixed contract selection, four-file manifest, attribution,
+focused tests and this track evidence. Native scope: one exact-parent append to
+`edithatogo/australian-pbs-utilisation-archive`; no other workflow, dataset,
+authentication or OneDrive writes. Next operation: protected integration then
+one manual exact-main hosted dispatch and anonymous readback.
+
+The maintainer approved the historical CSV with both upstream notices on
+6 November 2026. Freeze 67,596 rows, 204 months (July 1991–June 2008), 336
+concession/payment/ATC keys and nine native CSV fields. The workshop CSV matches
+its immutable GitHub source bytes. Preserve its CC BY 4.0 notice, the upstream
+GPL-3 DESCRIPTION and explicit attribution as separate archive objects. These
+upstream declarations are not replaced by GMA's Apache-2.0 code licence.
+
+Upstream preparation inserts `Scripts=0, Cost=0` for absent month/key combinations.
+Keep these source-transformation zeros unchanged, disclose their origin, and do
+not interpret them as independent evidence of zero use. This is a teaching
+representation of public national aggregates, not untouched Medicare export,
+participant data, cohort-derived claims, or a replacement for the missing AIHW
+2015-onward ATC2 age/LGA rate ZIP. The four reviewed objects are bound by digest
+and byte count; no source CSV bytes enter Git. No local upload is permitted.
+
+Prior native closeout: PR #1423 merged as `b516db5e95410965789ae6c829f5cbf27d59d5d9`
+after all 28 required checks. Runs 42205830107 (PBS) and 42205845751 (MBS)
+verified the 72-file cohort, preserved all earlier manifest entries and removed
+its temporary copies; both workflows were restored disabled. This new cohort
+reuses those unchanged receipts and verifies only its new pairs and full prior
+manifest preservation.
