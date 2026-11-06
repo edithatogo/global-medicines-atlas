@@ -199,3 +199,13 @@ no independent reviewer is claimed. Reuse the unchanged 215-file byte-validation
 receipt and prior archive restore proofs. Protected integration and the observed
 hosted result remain required. No native mutation is retried without checking the
 first attempt's destination state and recording a new one-send intent.
+
+
+Recovery review corrections: the unchanged-digest no-op now returns a cleanup-
+compatible receipt only when its committed prior anonymous-proof reference exists.
+It explicitly records zero newly verified objects and reuse of prior proof plus
+the fresh exact manifest identity; no fresh payload verification is invented.
+Absent prior proof fails closed. A missing URL on a synthetic media HTTP error
+falls back to the already approved source URL before the same HTTPS host checks.
+The 57 publisher tests pass with these negative controls; protected CI reruns on
+the corrected head. No publication has been repeated or inferred from local checks.

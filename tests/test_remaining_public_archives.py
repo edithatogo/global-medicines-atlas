@@ -175,7 +175,12 @@ def test_exact_digest_reuse_performs_no_mutation(monkeypatch, tmp_path):
         subject, "snapshot", lambda *_args: ("parent", existing)
     )
     sdk, api = sdk_fixture(tmp_path, existing)
-    assert subject.publish(sdk, expected, tmp_path)["new_payloads"] == 0
+    receipt = subject.publish(sdk, expected, tmp_path)
+    assert receipt["new_payloads"] == 0
+    assert receipt["anonymous_digest_verification"] == "passed"
+    assert receipt["verified_file_count"] == 0
+    assert receipt["prior_anonymous_verification_run"] == 123
+    assert "proof reused" in receipt["verification_scope"]
     api.create_commit.assert_not_called()
 
 
@@ -374,6 +379,7 @@ def test_main_stages_only_exact_approved_segment(monkeypatch, tmp_path):
         "ignored_range",
         "short_range",
         "second_403",
+        "second_403_no_url",
         "other_host",
         "other_status",
     ],
@@ -406,9 +412,13 @@ def test_aihw_media_range_recovery_is_bounded_and_exact(monkeypatch, case):
         if len(calls) == 1:
             raise first
         assert request.get_header("Range") == "bytes=0-2"
-        if case == "second_403":
+        if case in {"second_403", "second_403_no_url"}:
             raise urllib.error.HTTPError(
-                url, 403, "synthetic refusal", None, None
+                None if case == "second_403_no_url" else url,
+                403,
+                "synthetic refusal",
+                None,
+                None,
             )
         return response
 
@@ -584,3 +594,17 @@ def test_observed_canonical_url_keeps_original_source_provenance(
     assert receipt["source_url"] == "https://data.gov.au/public.csv"
     assert receipt["final_url"] == "https://data.gov.au/canonical.csv"
     assert coverage["coverage_status"] == "complete"
+
+
+@pytest.mark.usefixtures("_hosted")
+def test_noop_without_prior_anonymous_proof_fails_closed(monkeypatch, tmp_path):
+    _, item, existing, expected = cohort()
+    existing["files"][0].update(sha256=item["sha256"], bytes=item["bytes"])
+    expected.pop("prior_verification_run")
+    monkeypatch.setattr(
+        subject, "snapshot", lambda *_args: ("parent", existing)
+    )
+    sdk, api = sdk_fixture(tmp_path, existing)
+    with pytest.raises(RuntimeError, match="No prior anonymous proof"):
+        subject.publish(sdk, expected, tmp_path)
+    api.create_commit.assert_not_called()

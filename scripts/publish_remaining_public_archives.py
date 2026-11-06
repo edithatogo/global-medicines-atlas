@@ -161,7 +161,7 @@ def read_public_payload(url: str, limit: int) -> tuple[bytes, str]:
         except urllib.error.HTTPError as ranged_error:
             if ranged_error.code != HTTPStatus.FORBIDDEN:
                 raise
-            resolved_url = str(ranged_error.url)
+            resolved_url = str(ranged_error.url) if ranged_error.url else url
             ranged_error.close()
             return read_aihw_with_curl(resolved_url, limit)
         ranged = True
@@ -340,11 +340,25 @@ def publish(
     if not stages and failures:
         raise RuntimeError("No reviewed public payload acquired; HF unchanged")
     if not stages:
+        if not expected.get("prior_verification_run"):
+            raise RuntimeError("No prior anonymous proof for archive reuse")
         return {
             "dataset": expected["dataset"],
             "revision": parent,
             "new_payloads": 0,
             "status": "all reviewed digests already present",
+            "anonymous_digest_verification": "passed",
+            "verification_scope": "prior anonymous proof reused; fresh exact manifest identity",
+            "verified_file_count": 0,
+            "prior_manifest_objects_preserved": len(prior),
+            "archive_file_count": len(prior),
+            "prior_anonymous_verification_run": expected[
+                "prior_verification_run"
+            ],
+            "temporary_source_bytes_removed": False,
+            "workflow_commit": os.environ["GITHUB_SHA"],
+            "workflow_run": os.environ["GITHUB_RUN_ID"],
+            "run_coverage": coverage,
         }
     full = build_cumulative_harvest_manifest(
         expected["dataset"], stages, existing, run_coverage=coverage
