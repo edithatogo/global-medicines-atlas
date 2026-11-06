@@ -1133,7 +1133,7 @@ def test_historical_atc2_retains_acquisition_audit():
     step = next(
         s
         for s in steps
-        if s["name"] == ("Retain exact public acquisition outcomes")
+        if s.get("name") == "Retain exact public acquisition outcomes"
     )
     assert "always()" in step["if"]
     assert "inputs.historical_atc2 == true" in step["if"]
