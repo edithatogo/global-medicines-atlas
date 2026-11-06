@@ -383,3 +383,12 @@ both consume the same reviewed step list. Source payloads, digests, batch
 boundaries, original provenance and HF parents are unchanged. Retain the first
 failed dispatch journals; use a new one-send journal only after protected
 integration and unchanged-parent readback.
+
+
+The first correction CI retained an undocumented-permissions finding: the
+explanation above Contents write was not associated with that field by Zizmor.
+Moved the rationale onto the permission field without suppression or gate
+changes. The job-level eligibility also explicitly requires workflow_dispatch
+and refs/heads/main before its ephemeral push role is available. Routine jobs
+still use Contents read. Focused role/step guards and the original governed
+harvest-workflow regression remain intact. No second native dispatch occurred.

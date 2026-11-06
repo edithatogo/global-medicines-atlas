@@ -279,7 +279,7 @@ jobs:
           : # Outbound comments prohibited; retain workflow artifacts instead.
 
   incremental:
-    if: inputs.incremental_public == true
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.incremental_public == true
     name: Incremental reviewed PBS public files, append and anonymously verify
     runs-on: ubuntu-24.04
     environment: australian-hf-publication
@@ -288,5 +288,5 @@ jobs:
     permissions:
       # GitHub hides unpublished drafts from tokens without the push role.
       # This manual-only job performs GETs; routine harvest stays read-only.
-      contents: write
+      contents: write # Required push role to read unpublished draft assets; manual GET-only job.
     steps: *harvest_steps

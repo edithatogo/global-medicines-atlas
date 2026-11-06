@@ -1070,7 +1070,10 @@ def test_draft_access_role_is_manual_only(destination):
     incremental_job = workflow["jobs"]["incremental"]
     assert routine["permissions"]["contents"] == "read"
     assert routine["if"] == "inputs.incremental_public != true"
-    assert incremental_job["if"] == "inputs.incremental_public == true"
+    assert (
+        incremental_job["if"]
+        == "github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.incremental_public == true"
+    )
     assert incremental_job["permissions"] == {"contents": "write"}
     assert incremental_job["environment"] == "australian-hf-publication"
     assert incremental_job["steps"] is routine["steps"]
