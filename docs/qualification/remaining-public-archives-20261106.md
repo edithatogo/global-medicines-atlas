@@ -342,3 +342,10 @@ batch writes the common summary receipt, while the immutable per-batch checkpoin
 remains separate. JSON key order is not a manifest identity because hashes use
 canonical JSON. The 109 focused tests pass with 97.58% affected coverage; the
 draft reader remains at 100%. Protected checks rerun on the corrected head.
+
+
+A further review caught the existing PBS workflow's `build/pbs-hf-home` cache
+name differing from MBS's `build/mbs-util-hf-home`. The scope guard now matches
+each configured path; a PBS-specific regression verifies successful receipt
+creation. All 110 focused tests pass, affected coverage is 97.59%, and affected
+type/lint checks remain green. No native publication preceded this correction.

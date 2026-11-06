@@ -1031,3 +1031,25 @@ def test_incremental_failure_diagnostic_is_not_success(incremental_setup):
     assert failure["error_type"] == "RuntimeError"
     assert "not inferred" in failure["hf_mutation"]
     assert not (inc.CHECKPOINTS / "verification-1.json").exists()
+
+
+def test_incremental_pbs_matches_configured_workflow_cache(
+    incremental_setup, monkeypatch, tmp_path
+):
+    inc, archive, path, result, mock = incremental_setup
+    archive["dataset"] = "edithatogo/australian-pbs-utilisation-archive"
+    for batch in archive["batches"]:
+        batch["id"] = batch["id"].replace("mbs", "pbs")
+    path.write_text(
+        json.dumps({
+            "external_publication_authorized": True,
+            "archives": {"pbs": archive},
+        })
+    )
+    result["dataset"] = archive["dataset"]
+    monkeypatch.setenv("PUBLIC_ARCHIVE_DESTINATION", "pbs")
+    monkeypatch.setenv("HF_HOME", str(tmp_path / "build/pbs-hf-home"))
+    receipt = inc.execute_batch(None, 1)
+    assert receipt["batch_id"] == "pbs-01"
+    assert mock.called
+    assert (tmp_path / "build/pbs-utilisation-harvest-receipt.json").exists()

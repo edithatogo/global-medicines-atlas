@@ -100,10 +100,8 @@ def execute_batch(sdk: Any, index: int) -> dict[str, Any]:
         )
     expected = batch_expectation(archive, index, prior)
     cache = Path(os.environ["HF_HOME"])
-    if (
-        cache.resolve()
-        != (Path.cwd() / f"build/{destination}-util-hf-home").resolve()
-    ):
+    cache_name = "pbs-hf-home" if destination == "pbs" else "mbs-util-hf-home"
+    if cache.resolve() != (Path.cwd() / "build" / cache_name).resolve():
         raise ValueError("Incremental cache differs from workflow scope")
     try:
         receipt = publish(sdk, expected, Path("build/harvest/remaining-public"))
