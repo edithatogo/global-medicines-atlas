@@ -24,6 +24,11 @@ on:
         required: false
         default: false
         type: boolean
+      incremental_public:
+        description: Publish committed public draft batches with verification checkpoints
+        required: false
+        default: false
+        type: boolean
       backfill_all:
         description: Backfill all historical group and demographic archives
         required: false
@@ -93,8 +98,143 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+      - name: Publish and anonymously verify public batch 1
+        id: public_batch_1
+        if: inputs.incremental_public == true
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          PUBLIC_ARCHIVE_DESTINATION: mbs
+          PUBLIC_BATCH_INDEX: "1"
+        run: |
+          uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 \
+            python -m scripts.publish_incremental_public_archives
+
+      - name: Retain anonymous proof for public batch 1
+        if: ${{ inputs.incremental_public == true && steps.public_batch_1.outputs.applied == 'true' }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: incremental-mbs-${{ github.run_id }}-1
+          path: build/incremental-public/verification-1.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish and anonymously verify public batch 2
+        id: public_batch_2
+        if: inputs.incremental_public == true
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          PUBLIC_ARCHIVE_DESTINATION: mbs
+          PUBLIC_BATCH_INDEX: "2"
+        run: |
+          uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 \
+            python -m scripts.publish_incremental_public_archives
+
+      - name: Retain anonymous proof for public batch 2
+        if: ${{ inputs.incremental_public == true && steps.public_batch_2.outputs.applied == 'true' }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: incremental-mbs-${{ github.run_id }}-2
+          path: build/incremental-public/verification-2.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish and anonymously verify public batch 3
+        id: public_batch_3
+        if: inputs.incremental_public == true
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          PUBLIC_ARCHIVE_DESTINATION: mbs
+          PUBLIC_BATCH_INDEX: "3"
+        run: |
+          uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 \
+            python -m scripts.publish_incremental_public_archives
+
+      - name: Retain anonymous proof for public batch 3
+        if: ${{ inputs.incremental_public == true && steps.public_batch_3.outputs.applied == 'true' }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: incremental-mbs-${{ github.run_id }}-3
+          path: build/incremental-public/verification-3.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish and anonymously verify public batch 4
+        id: public_batch_4
+        if: inputs.incremental_public == true
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          PUBLIC_ARCHIVE_DESTINATION: mbs
+          PUBLIC_BATCH_INDEX: "4"
+        run: |
+          uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 \
+            python -m scripts.publish_incremental_public_archives
+
+      - name: Retain anonymous proof for public batch 4
+        if: ${{ inputs.incremental_public == true && steps.public_batch_4.outputs.applied == 'true' }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: incremental-mbs-${{ github.run_id }}-4
+          path: build/incremental-public/verification-4.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish and anonymously verify public batch 5
+        id: public_batch_5
+        if: inputs.incremental_public == true
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          PUBLIC_ARCHIVE_DESTINATION: mbs
+          PUBLIC_BATCH_INDEX: "5"
+        run: |
+          uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 \
+            python -m scripts.publish_incremental_public_archives
+
+      - name: Retain anonymous proof for public batch 5
+        if: ${{ inputs.incremental_public == true && steps.public_batch_5.outputs.applied == 'true' }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: incremental-mbs-${{ github.run_id }}-5
+          path: build/incremental-public/verification-5.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish and anonymously verify public batch 6
+        id: public_batch_6
+        if: inputs.incremental_public == true
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          PUBLIC_ARCHIVE_DESTINATION: mbs
+          PUBLIC_BATCH_INDEX: "6"
+        run: |
+          uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 \
+            python -m scripts.publish_incremental_public_archives
+
+      - name: Retain anonymous proof for public batch 6
+        if: ${{ inputs.incremental_public == true && steps.public_batch_6.outputs.applied == 'true' }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: incremental-mbs-${{ github.run_id }}-6
+          path: build/incremental-public/verification-6.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Retain incremental proofs on interruption or failure
+        if: ${{ always() && inputs.incremental_public == true }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: incremental-final-mbs-${{ github.run_id }}
+          path: build/incremental-public/
+          if-no-files-found: warn
+          retention-days: 30
+
       - name: Acquire, publish and verify using anonymous reads
-        if: ${{ !startsWith(inputs.public_batch, 'stage-') }}
+        if: ${{ !startsWith(inputs.public_batch, 'stage-') && inputs.incremental_public != true }}
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           GH_TOKEN: ${{ github.token }}

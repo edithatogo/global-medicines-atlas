@@ -1,0 +1,3178 @@
+{
+  "schema_version": 1,
+  "external_publication_authorized": true,
+  "authorized_at": "2026-11-06",
+  "authority": "Maintainer explicitly requests publication of remaining public files, removing temporary copies incrementally after verification; participant and cohort-derived data excluded",
+  "archives": {
+    "pbs": {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "parent_revision": "84616d37be03dde5bfbca13a031349a49a31d6d6",
+      "manifest_sha256": "919db3f8c0bb4aad83094225e61bf238d4d6d3efcfe715f48f41e4c28eacaf1a",
+      "prior_verification_run": [
+        42023233464
+      ],
+      "batches": [
+        {
+          "id": "pbs-01",
+          "files": [
+            {
+              "sha256": "ed148542e6b449ae270ea78b7a1d41e7e9f8fc7f0ca60c1b451ad8b572047dac",
+              "bytes": 60382,
+              "resource": {
+                "source_id": "au-aihw-pbs-aggregate",
+                "category": "aihw_pbs_additional_aggregate",
+                "url": "https://www.aihw.gov.au/getmedia/88f45c79-23c1-4096-a2d6-0cb08fb8ff0c/Mental-health-related-prescriptions-tables-2017-18.xlsx.aspx",
+                "filename": "Mental-health-related-prescriptions-tables-2017-18.xlsx",
+                "period_label": "Data tables: Mental health-related prescriptions 2017-18",
+                "archive_path": "raw/pbs/public-backfill/aihw_pbs_additional_aggregate/ed148542e6b449ae270ea78b7a1d41e7e9f8fc7f0ca60c1b451ad8b572047dac/Mental-health-related-prescriptions-tables-2017-18.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 31,
+                  "declared_uncompressed_bytes": 282139,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/workbook.xml",
+                    "xl/worksheets/sheet4.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/styles.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/sheet11.xml",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet9.xml",
+                    "xl/worksheets/sheet5.xml",
+                    "xl/worksheets/sheet6.xml",
+                    "xl/worksheets/sheet10.xml",
+                    "xl/worksheets/sheet7.xml",
+                    "xl/worksheets/sheet8.xml",
+                    "customXml/item1.xml",
+                    "customXml/_rels/item1.xml.rels",
+                    "customXml/_rels/item2.xml.rels",
+                    "customXml/_rels/item3.xml.rels",
+                    "docProps/custom.xml",
+                    "docProps/app.xml",
+                    "docProps/core.xml",
+                    "customXml/itemProps1.xml",
+                    "customXml/item2.xml",
+                    "customXml/itemProps2.xml",
+                    "customXml/item3.xml",
+                    "customXml/itemProps3.xml",
+                    "xl/calcChain.xml"
+                  ]
+                },
+                "publisher_licence_id": "see AIHW copyright and source footnotes"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/88f45c79-23c1-4096-a2d6-0cb08fb8ff0c/mental-health-related-prescriptions-tables-2017-18.xlsx.aspx",
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716619027,
+                "asset_name": "ed148542e6b449ae270ea78b7a1d41e7e9f8fc7f0ca60c1b451ad8b572047dac.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            }
+          ]
+        },
+        {
+          "id": "pbs-02",
+          "files": [
+            {
+              "sha256": "c789629c09543f9d53d34010e93f64e3d11e662848209e3e91830c2136a12671",
+              "bytes": 42910116,
+              "resource": {
+                "source_id": "au-aihw-pbs-monthly",
+                "category": "aihw_pbs_monthly_aggregate",
+                "url": "https://www.aihw.gov.au/getmedia/ce13d423-ed18-4169-8b76-2f671df935de/AIHW-HWE-098-PBS-ATC1-prescriptions-monthly-data_keep.zip",
+                "filename": "AIHW-HWE-098-PBS-ATC1-prescriptions-monthly-data_keep.zip",
+                "period_label": "Data tables: Pharmaceutical Benefits Scheme prescriptions by ATC Level 1 medicine group Jan 2015 onwards: supplementary data tables",
+                "archive_path": "raw/pbs/public-backfill/aihw_pbs_monthly_aggregate/c789629c09543f9d53d34010e93f64e3d11e662848209e3e91830c2136a12671/AIHW-HWE-098-PBS-ATC1-prescriptions-monthly-data_keep.zip"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 1,
+                  "declared_uncompressed_bytes": 45019320,
+                  "filenames": [
+                    "AIHW-HWE-098-PBS-ATC1-prescriptions-monthly-data.xlsx"
+                  ]
+                },
+                "publisher_licence_id": "see AIHW copyright and source footnotes"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/ce13d423-ed18-4169-8b76-2f671df935de/aihw-hwe-098-pbs-atc1-prescriptions-monthly-data_keep.zip",
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716623246,
+                "asset_name": "c789629c09543f9d53d34010e93f64e3d11e662848209e3e91830c2136a12671.zip",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "32c7cd5c9d6d28ee45526afc3706af523017f7b3c1ceecabe4dd95fb4532ca3c",
+              "bytes": 877661,
+              "resource": {
+                "source_id": "au-aihw-pbs-aggregate",
+                "category": "aihw_pbs_additional_aggregate",
+                "url": "https://www.aihw.gov.au/getmedia/464b35c8-9573-4a02-a508-0757c66feeb4/Mental-health-related-prescriptons-2024-25.zip",
+                "filename": "Mental-health-related-prescriptons-2024-25.zip",
+                "period_label": "Data tables: Mental health-related prescriptions 2024\u201325",
+                "archive_path": "raw/pbs/public-backfill/aihw_pbs_additional_aggregate/32c7cd5c9d6d28ee45526afc3706af523017f7b3c1ceecabe4dd95fb4532ca3c/Mental-health-related-prescriptons-2024-25.zip"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 4,
+                  "declared_uncompressed_bytes": 8997111,
+                  "filenames": [
+                    "CSV files user guide and metadata 2024-25.xlsx",
+                    "Mental health-related prescriptions quarters demographic 2024-25.csv",
+                    "Mental health-related prescription tables 2024-25.xlsx",
+                    "Mental health-related prescriptions PHN and SA4 2024-25 (6).csv"
+                  ]
+                },
+                "publisher_licence_id": "see AIHW copyright and source footnotes"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/464b35c8-9573-4a02-a508-0757c66feeb4/mental-health-related-prescriptons-2024-25.zip",
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716623243,
+                "asset_name": "32c7cd5c9d6d28ee45526afc3706af523017f7b3c1ceecabe4dd95fb4532ca3c.zip",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "40aa81e6351d0e7ad55d37a16b978db781a333cc14d9f32846036548a6954ecb",
+              "bytes": 97173,
+              "resource": {
+                "source_id": "au-aihw-pbs-aggregate",
+                "category": "aihw_pbs_additional_aggregate",
+                "url": "https://www.aihw.gov.au/getmedia/63b6e01a-c64c-49d9-8377-6427b23941b7/ADHD-prescriptions-by-sex-and-age-group-2004-05-to-2023-24.xlsx",
+                "filename": "ADHD-prescriptions-by-sex-and-age-group-2004-05-to-2023-24.xlsx",
+                "period_label": "Data tables: ADHD PBS prescriptions by age and sex for 2004\u201305 to 2023\u201324",
+                "archive_path": "raw/pbs/public-backfill/aihw_pbs_additional_aggregate/40aa81e6351d0e7ad55d37a16b978db781a333cc14d9f32846036548a6954ecb/ADHD-prescriptions-by-sex-and-age-group-2004-05-to-2023-24.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 25,
+                  "declared_uncompressed_bytes": 635799,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/workbook.xml",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/styles.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/worksheets/_rels/sheet1.xml.rels",
+                    "xl/worksheets/_rels/sheet2.xml.rels",
+                    "xl/printerSettings/printerSettings1.bin",
+                    "xl/printerSettings/printerSettings2.bin",
+                    "customXml/item1.xml",
+                    "customXml/itemProps1.xml",
+                    "customXml/item2.xml",
+                    "customXml/itemProps2.xml",
+                    "customXml/item3.xml",
+                    "customXml/itemProps3.xml",
+                    "docProps/core.xml",
+                    "docProps/app.xml",
+                    "docProps/custom.xml",
+                    "customXml/_rels/item1.xml.rels",
+                    "customXml/_rels/item2.xml.rels",
+                    "customXml/_rels/item3.xml.rels"
+                  ]
+                },
+                "publisher_licence_id": "see AIHW copyright and source footnotes"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/63b6e01a-c64c-49d9-8377-6427b23941b7/adhd-prescriptions-by-sex-and-age-group-2004-05-to-2023-24.xlsx",
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716623497,
+                "asset_name": "40aa81e6351d0e7ad55d37a16b978db781a333cc14d9f32846036548a6954ecb.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "8a154c9294624a710167d973f8f8e0466ba843f7b4620971111d0066a3cbc71b",
+              "bytes": 913794,
+              "resource": {
+                "source_id": "au-aihw-pbs-aggregate",
+                "category": "aihw_pbs_additional_aggregate",
+                "url": "https://www.aihw.gov.au/getmedia/9b8042b2-4789-4854-8fa5-a13cf8f81b79/Mental-health-related-prescriptions-2023-24.zip",
+                "filename": "Mental-health-related-prescriptions-2023-24.zip",
+                "period_label": "Data tables: Mental health-related prescriptions 2023\u201324",
+                "archive_path": "raw/pbs/public-backfill/aihw_pbs_additional_aggregate/8a154c9294624a710167d973f8f8e0466ba843f7b4620971111d0066a3cbc71b/Mental-health-related-prescriptions-2023-24.zip"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 4,
+                  "declared_uncompressed_bytes": 8994397,
+                  "filenames": [
+                    "CSV files user guide and metadata 2324.xlsx",
+                    "Mental health-related prescriptions PHN and SA4 2324.csv",
+                    "Mental health-related prescriptions quarters demographics 2324.csv",
+                    "Mental health-related prescriptions tables 2324.xlsx"
+                  ]
+                },
+                "publisher_licence_id": "see AIHW copyright and source footnotes"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/9b8042b2-4789-4854-8fa5-a13cf8f81b79/mental-health-related-prescriptions-2023-24.zip",
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716623706,
+                "asset_name": "8a154c9294624a710167d973f8f8e0466ba843f7b4620971111d0066a3cbc71b.zip",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "74f7c0be87beb0b02575ce4ddaa19bc46343a5b3830bd8bbdade39a7a987aa0a",
+              "bytes": 880561,
+              "resource": {
+                "source_id": "au-aihw-pbs-aggregate",
+                "category": "aihw_pbs_additional_aggregate",
+                "url": "https://www.aihw.gov.au/getmedia/3c2b9ccb-490e-43bd-8231-c3936d0f7ff6/Mental-health-related-prescriptions-tables.zip",
+                "filename": "Mental-health-related-prescriptions-tables.zip",
+                "period_label": "Data tables: Mental health prescriptions 2022\u201323",
+                "archive_path": "raw/pbs/public-backfill/aihw_pbs_additional_aggregate/74f7c0be87beb0b02575ce4ddaa19bc46343a5b3830bd8bbdade39a7a987aa0a/Mental-health-related-prescriptions-tables.zip"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 5,
+                  "declared_uncompressed_bytes": 8870504,
+                  "filenames": [
+                    "Mental health-related prescriptions PHN and SA4.csv",
+                    "Mental health-related prescriptions PHN and SA4.txt",
+                    "Mental health-related prescriptions quarters demographic.csv",
+                    "Mental health-related prescriptions quarters demographic.txt",
+                    "Mental health-related prescriptions tables.xlsx"
+                  ]
+                },
+                "publisher_licence_id": "see AIHW copyright and source footnotes"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/3c2b9ccb-490e-43bd-8231-c3936d0f7ff6/mental-health-related-prescriptions-tables.zip",
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716623911,
+                "asset_name": "74f7c0be87beb0b02575ce4ddaa19bc46343a5b3830bd8bbdade39a7a987aa0a.zip",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "339f1ac3e33a9b3753904a34c211b996ff83d07ec7bebe4fabe9fea646def60f",
+              "bytes": 1180365,
+              "resource": {
+                "source_id": "au-aihw-pbs-aggregate",
+                "category": "aihw_pbs_additional_aggregate",
+                "url": "https://www.aihw.gov.au/getmedia/c6a0044e-6870-4523-b6a1-f6ea9f352a19/Mental-health-related-prescriptions-2020-2021.xlsx.aspx",
+                "filename": "Mental-health-related-prescriptions-2020-2021.xlsx",
+                "period_label": "Data tables: Mental health-related prescriptions 2020-21",
+                "archive_path": "raw/pbs/public-backfill/aihw_pbs_additional_aggregate/339f1ac3e33a9b3753904a34c211b996ff83d07ec7bebe4fabe9fea646def60f/Mental-health-related-prescriptions-2020-2021.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 52,
+                  "declared_uncompressed_bytes": 8407822,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/workbook.xml",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/worksheets/sheet4.xml",
+                    "xl/worksheets/sheet5.xml",
+                    "xl/worksheets/sheet6.xml",
+                    "xl/worksheets/sheet7.xml",
+                    "xl/worksheets/sheet8.xml",
+                    "xl/worksheets/sheet9.xml",
+                    "xl/worksheets/sheet10.xml",
+                    "xl/worksheets/sheet11.xml",
+                    "xl/worksheets/sheet12.xml",
+                    "xl/worksheets/sheet13.xml",
+                    "xl/worksheets/sheet14.xml",
+                    "xl/worksheets/sheet15.xml",
+                    "xl/worksheets/sheet16.xml",
+                    "xl/worksheets/sheet17.xml",
+                    "xl/worksheets/sheet18.xml",
+                    "xl/worksheets/sheet19.xml",
+                    "xl/worksheets/sheet20.xml",
+                    "xl/worksheets/sheet21.xml",
+                    "xl/worksheets/sheet22.xml",
+                    "xl/worksheets/sheet23.xml",
+                    "xl/worksheets/sheet24.xml",
+                    "xl/worksheets/sheet25.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/styles.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/worksheets/_rels/sheet2.xml.rels",
+                    "xl/worksheets/_rels/sheet7.xml.rels",
+                    "xl/worksheets/_rels/sheet9.xml.rels",
+                    "xl/worksheets/_rels/sheet11.xml.rels",
+                    "customXml/itemProps2.xml",
+                    "customXml/item3.xml",
+                    "customXml/itemProps3.xml",
+                    "xl/printerSettings/printerSettings1.bin",
+                    "docProps/app.xml",
+                    "docProps/custom.xml",
+                    "xl/printerSettings/printerSettings2.bin",
+                    "xl/printerSettings/printerSettings3.bin",
+                    "xl/calcChain.xml",
+                    "customXml/item1.xml",
+                    "customXml/itemProps1.xml",
+                    "customXml/item2.xml",
+                    "customXml/_rels/item1.xml.rels",
+                    "customXml/_rels/item2.xml.rels",
+                    "customXml/_rels/item3.xml.rels",
+                    "docProps/core.xml"
+                  ]
+                },
+                "publisher_licence_id": "see AIHW copyright and source footnotes"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/c6a0044e-6870-4523-b6a1-f6ea9f352a19/mental-health-related-prescriptions-2020-2021.xlsx.aspx",
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716623928,
+                "asset_name": "339f1ac3e33a9b3753904a34c211b996ff83d07ec7bebe4fabe9fea646def60f.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "deecd3262c0dd6ab19665f107ea59caa35195d204c2ec1f5303b1746d157e06a",
+              "bytes": 1213151,
+              "resource": {
+                "source_id": "au-aihw-pbs-aggregate",
+                "category": "aihw_pbs_additional_aggregate",
+                "url": "https://www.aihw.gov.au/getmedia/d574a481-eda0-474a-88ea-7db003ab412b/Mental-health-related-prescriptions-2021-22.xlsx",
+                "filename": "Mental-health-related-prescriptions-2021-22.xlsx",
+                "period_label": "Data tables: Mental health-related prescriptions 2021-22",
+                "archive_path": "raw/pbs/public-backfill/aihw_pbs_additional_aggregate/deecd3262c0dd6ab19665f107ea59caa35195d204c2ec1f5303b1746d157e06a/Mental-health-related-prescriptions-2021-22.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 46,
+                  "declared_uncompressed_bytes": 8705472,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/workbook.xml",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/worksheets/sheet4.xml",
+                    "xl/worksheets/sheet6.xml",
+                    "xl/worksheets/sheet7.xml",
+                    "xl/worksheets/sheet8.xml",
+                    "xl/worksheets/sheet9.xml",
+                    "xl/worksheets/sheet10.xml",
+                    "xl/worksheets/sheet11.xml",
+                    "xl/worksheets/sheet12.xml",
+                    "xl/worksheets/sheet13.xml",
+                    "xl/worksheets/sheet14.xml",
+                    "xl/worksheets/sheet15.xml",
+                    "xl/worksheets/sheet16.xml",
+                    "xl/worksheets/sheet17.xml",
+                    "xl/worksheets/sheet18.xml",
+                    "xl/worksheets/sheet19.xml",
+                    "xl/worksheets/sheet20.xml",
+                    "xl/worksheets/sheet21.xml",
+                    "xl/worksheets/sheet5.xml",
+                    "xl/worksheets/sheet23.xml",
+                    "xl/worksheets/sheet24.xml",
+                    "xl/worksheets/sheet25.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/styles.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/sheet22.xml",
+                    "xl/worksheets/_rels/sheet2.xml.rels",
+                    "customXml/itemProps2.xml",
+                    "customXml/item3.xml",
+                    "xl/calcChain.xml",
+                    "docProps/core.xml",
+                    "docProps/app.xml",
+                    "docProps/custom.xml",
+                    "customXml/item1.xml",
+                    "customXml/itemProps1.xml",
+                    "customXml/item2.xml",
+                    "customXml/_rels/item1.xml.rels",
+                    "customXml/_rels/item2.xml.rels",
+                    "customXml/_rels/item3.xml.rels",
+                    "customXml/itemProps3.xml"
+                  ]
+                },
+                "publisher_licence_id": "see AIHW copyright and source footnotes"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/d574a481-eda0-474a-88ea-7db003ab412b/mental-health-related-prescriptions-2021-22.xlsx",
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716624034,
+                "asset_name": "deecd3262c0dd6ab19665f107ea59caa35195d204c2ec1f5303b1746d157e06a.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "92105bd710792085940e54b861ef537ecab0f7196b44a9edf4dfb76686c0261e",
+              "bytes": 1245448,
+              "resource": {
+                "source_id": "au-aihw-pbs-aggregate",
+                "category": "aihw_pbs_additional_aggregate",
+                "url": "https://www.aihw.gov.au/getmedia/0be146b6-2be1-4110-8733-66e6e069b5a9/Mental-health-related-prescriptions-tables.xlsx.aspx",
+                "filename": "Mental-health-related-prescriptions-tables.xlsx",
+                "period_label": "Data tables: Mental health-related prescriptions 2019\u201320 ",
+                "archive_path": "raw/pbs/public-backfill/aihw_pbs_additional_aggregate/92105bd710792085940e54b861ef537ecab0f7196b44a9edf4dfb76686c0261e/Mental-health-related-prescriptions-tables.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 49,
+                  "declared_uncompressed_bytes": 8056304,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/workbook.xml",
+                    "xl/worksheets/sheet4.xml",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet25.xml",
+                    "xl/worksheets/sheet24.xml",
+                    "xl/worksheets/sheet23.xml",
+                    "xl/worksheets/sheet22.xml",
+                    "xl/worksheets/sheet21.xml",
+                    "xl/styles.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/drawings/drawing1.xml",
+                    "xl/drawings/_rels/drawing1.xml.rels",
+                    "xl/worksheets/_rels/sheet1.xml.rels",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/media/image1.png",
+                    "xl/worksheets/sheet20.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/worksheets/sheet18.xml",
+                    "xl/worksheets/sheet9.xml",
+                    "xl/worksheets/sheet8.xml",
+                    "xl/worksheets/sheet7.xml",
+                    "xl/worksheets/sheet6.xml",
+                    "xl/worksheets/sheet5.xml",
+                    "xl/worksheets/sheet10.xml",
+                    "xl/worksheets/sheet19.xml",
+                    "xl/worksheets/sheet12.xml",
+                    "xl/worksheets/sheet17.xml",
+                    "xl/worksheets/sheet16.xml",
+                    "xl/worksheets/sheet15.xml",
+                    "xl/worksheets/sheet14.xml",
+                    "xl/worksheets/sheet11.xml",
+                    "xl/worksheets/sheet13.xml",
+                    "customXml/itemProps2.xml",
+                    "xl/calcChain.xml",
+                    "customXml/_rels/item1.xml.rels",
+                    "customXml/_rels/item2.xml.rels",
+                    "customXml/_rels/item3.xml.rels",
+                    "customXml/item1.xml",
+                    "customXml/itemProps1.xml",
+                    "docProps/custom.xml",
+                    "customXml/item3.xml",
+                    "customXml/itemProps3.xml",
+                    "docProps/core.xml",
+                    "docProps/app.xml",
+                    "customXml/item2.xml"
+                  ]
+                },
+                "publisher_licence_id": "see AIHW copyright and source footnotes"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/0be146b6-2be1-4110-8733-66e6e069b5a9/mental-health-related-prescriptions-tables.xlsx.aspx",
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716624113,
+                "asset_name": "92105bd710792085940e54b861ef537ecab0f7196b44a9edf4dfb76686c0261e.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "3d662c3b703af14fa5a6eb0402cc571e9730add1c1ca2c848e2e707376fee4d9",
+              "bytes": 94962,
+              "resource": {
+                "source_id": "au-aihw-pbs-aggregate",
+                "category": "aihw_pbs_additional_aggregate",
+                "url": "https://www.aihw.gov.au/getmedia/4d45a801-25ad-483a-9578-f5226e8d40c6/Mental-health-related-prescriptions-tables-20118-19.xlsx.aspx",
+                "filename": "Mental-health-related-prescriptions-tables-20118-19.xlsx",
+                "period_label": "Data tables: Mental health-related prescriptions 2018-19",
+                "archive_path": "raw/pbs/public-backfill/aihw_pbs_additional_aggregate/3d662c3b703af14fa5a6eb0402cc571e9730add1c1ca2c848e2e707376fee4d9/Mental-health-related-prescriptions-tables-20118-19.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 33,
+                  "declared_uncompressed_bytes": 454669,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/workbook.xml",
+                    "xl/worksheets/sheet4.xml",
+                    "xl/worksheets/sheet13.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/styles.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/sheet12.xml",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet10.xml",
+                    "xl/worksheets/sheet5.xml",
+                    "xl/worksheets/sheet6.xml",
+                    "xl/worksheets/sheet11.xml",
+                    "xl/worksheets/sheet8.xml",
+                    "xl/worksheets/sheet7.xml",
+                    "xl/worksheets/sheet9.xml",
+                    "xl/calcChain.xml",
+                    "docProps/custom.xml",
+                    "customXml/_rels/item1.xml.rels",
+                    "customXml/_rels/item3.xml.rels",
+                    "customXml/_rels/item2.xml.rels",
+                    "docProps/core.xml",
+                    "customXml/itemProps3.xml",
+                    "customXml/item1.xml",
+                    "customXml/itemProps1.xml",
+                    "customXml/item2.xml",
+                    "customXml/itemProps2.xml",
+                    "customXml/item3.xml",
+                    "docProps/app.xml"
+                  ]
+                },
+                "publisher_licence_id": "see AIHW copyright and source footnotes"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/4d45a801-25ad-483a-9578-f5226e8d40c6/mental-health-related-prescriptions-tables-20118-19.xlsx.aspx",
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716624157,
+                "asset_name": "3d662c3b703af14fa5a6eb0402cc571e9730add1c1ca2c848e2e707376fee4d9.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "80f24f9535f0c62725a2ce40b72f431114c8ea5b6c11d4af7cf645472d7a7a4e",
+              "bytes": 691612,
+              "resource": {
+                "source_id": "au-aihw-pbs-aggregate",
+                "category": "aihw_pbs_additional_aggregate",
+                "url": "https://www.aihw.gov.au/getmedia/b2d36280-1ea8-4150-ba0f-211fe8e97bc5/Mental-health-related-prescriptions-2016-17.xlsx.aspx",
+                "filename": "Mental-health-related-prescriptions-2016-17.xlsx",
+                "period_label": "Data tables: Mental health-related prescriptions 2016-17",
+                "archive_path": "raw/pbs/public-backfill/aihw_pbs_additional_aggregate/80f24f9535f0c62725a2ce40b72f431114c8ea5b6c11d4af7cf645472d7a7a4e/Mental-health-related-prescriptions-2016-17.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 144,
+                  "declared_uncompressed_bytes": 4838678,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/workbook.xml",
+                    "xl/worksheets/sheet4.xml",
+                    "xl/worksheets/_rels/sheet3.xml.rels",
+                    "xl/worksheets/_rels/sheet2.xml.rels",
+                    "xl/worksheets/_rels/sheet1.xml.rels",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/media/image1.png",
+                    "xl/worksheets/_rels/sheet4.xml.rels",
+                    "xl/worksheets/_rels/sheet5.xml.rels",
+                    "xl/worksheets/_rels/sheet6.xml.rels",
+                    "xl/drawings/_rels/drawing1.xml.rels",
+                    "xl/worksheets/_rels/sheet11.xml.rels",
+                    "xl/worksheets/_rels/sheet10.xml.rels",
+                    "xl/worksheets/_rels/sheet9.xml.rels",
+                    "xl/worksheets/_rels/sheet8.xml.rels",
+                    "xl/worksheets/_rels/sheet7.xml.rels",
+                    "xl/drawings/drawing1.xml",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet11.xml",
+                    "xl/worksheets/sheet10.xml",
+                    "xl/worksheets/sheet9.xml",
+                    "xl/worksheets/sheet8.xml",
+                    "xl/worksheets/sheet7.xml",
+                    "xl/worksheets/sheet6.xml",
+                    "xl/worksheets/sheet5.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/styles.xml",
+                    "xl/printerSettings/printerSettings84.bin",
+                    "xl/printerSettings/printerSettings6.bin",
+                    "xl/printerSettings/printerSettings85.bin",
+                    "xl/printerSettings/printerSettings82.bin",
+                    "xl/printerSettings/printerSettings81.bin",
+                    "xl/printerSettings/printerSettings83.bin",
+                    "xl/printerSettings/printerSettings80.bin",
+                    "xl/printerSettings/printerSettings87.bin",
+                    "xl/printerSettings/printerSettings88.bin",
+                    "xl/printerSettings/printerSettings89.bin",
+                    "xl/printerSettings/printerSettings90.bin",
+                    "xl/printerSettings/printerSettings86.bin",
+                    "xl/printerSettings/printerSettings74.bin",
+                    "xl/printerSettings/printerSettings78.bin",
+                    "xl/printerSettings/printerSettings71.bin",
+                    "xl/printerSettings/printerSettings70.bin",
+                    "xl/printerSettings/printerSettings69.bin",
+                    "xl/printerSettings/printerSettings68.bin",
+                    "xl/printerSettings/printerSettings72.bin",
+                    "xl/printerSettings/printerSettings73.bin",
+                    "xl/printerSettings/printerSettings91.bin",
+                    "xl/printerSettings/printerSettings75.bin",
+                    "xl/printerSettings/printerSettings76.bin",
+                    "xl/printerSettings/printerSettings77.bin",
+                    "xl/printerSettings/printerSettings79.bin",
+                    "xl/printerSettings/printerSettings97.bin",
+                    "xl/printerSettings/printerSettings93.bin",
+                    "xl/printerSettings/printerSettings4.bin",
+                    "docProps/custom.xml",
+                    "docProps/app.xml",
+                    "docProps/core.xml",
+                    "xl/printerSettings/printerSettings3.bin",
+                    "xl/printerSettings/printerSettings2.bin",
+                    "xl/printerSettings/printerSettings1.bin",
+                    "customXml/_rels/item1.xml.rels",
+                    "customXml/_rels/item2.xml.rels",
+                    "customXml/_rels/item3.xml.rels",
+                    "customXml/itemProps3.xml",
+                    "customXml/item3.xml",
+                    "customXml/itemProps2.xml",
+                    "xl/printerSettings/printerSettings67.bin",
+                    "xl/printerSettings/printerSettings96.bin",
+                    "xl/printerSettings/printerSettings95.bin",
+                    "xl/printerSettings/printerSettings94.bin",
+                    "xl/printerSettings/printerSettings98.bin",
+                    "xl/printerSettings/printerSettings99.bin",
+                    "xl/calcChain.xml",
+                    "customXml/item1.xml",
+                    "customXml/itemProps1.xml",
+                    "customXml/item2.xml",
+                    "xl/printerSettings/printerSettings92.bin",
+                    "xl/printerSettings/printerSettings66.bin",
+                    "xl/printerSettings/printerSettings65.bin",
+                    "xl/printerSettings/printerSettings26.bin",
+                    "xl/printerSettings/printerSettings25.bin",
+                    "xl/printerSettings/printerSettings24.bin",
+                    "xl/printerSettings/printerSettings23.bin",
+                    "xl/printerSettings/printerSettings22.bin",
+                    "xl/printerSettings/printerSettings27.bin",
+                    "xl/printerSettings/printerSettings28.bin",
+                    "xl/printerSettings/printerSettings29.bin",
+                    "xl/printerSettings/printerSettings34.bin",
+                    "xl/printerSettings/printerSettings33.bin",
+                    "xl/printerSettings/printerSettings32.bin",
+                    "xl/printerSettings/printerSettings31.bin",
+                    "xl/printerSettings/printerSettings30.bin",
+                    "xl/printerSettings/printerSettings21.bin",
+                    "xl/printerSettings/printerSettings20.bin",
+                    "xl/printerSettings/printerSettings19.bin",
+                    "xl/printerSettings/printerSettings11.bin",
+                    "xl/printerSettings/printerSettings10.bin",
+                    "xl/printerSettings/printerSettings9.bin",
+                    "xl/printerSettings/printerSettings8.bin",
+                    "xl/printerSettings/printerSettings5.bin",
+                    "xl/printerSettings/printerSettings12.bin",
+                    "xl/printerSettings/printerSettings13.bin",
+                    "xl/printerSettings/printerSettings14.bin",
+                    "xl/printerSettings/printerSettings18.bin",
+                    "xl/printerSettings/printerSettings17.bin",
+                    "xl/printerSettings/printerSettings16.bin",
+                    "xl/printerSettings/printerSettings15.bin",
+                    "xl/printerSettings/printerSettings35.bin",
+                    "xl/printerSettings/printerSettings36.bin",
+                    "xl/printerSettings/printerSettings37.bin",
+                    "xl/printerSettings/printerSettings57.bin",
+                    "xl/printerSettings/printerSettings56.bin",
+                    "xl/printerSettings/printerSettings55.bin",
+                    "xl/printerSettings/printerSettings54.bin",
+                    "xl/printerSettings/printerSettings53.bin",
+                    "xl/printerSettings/printerSettings58.bin",
+                    "xl/printerSettings/printerSettings59.bin",
+                    "xl/printerSettings/printerSettings60.bin",
+                    "xl/printerSettings/printerSettings64.bin",
+                    "xl/printerSettings/printerSettings63.bin",
+                    "xl/printerSettings/printerSettings62.bin",
+                    "xl/printerSettings/printerSettings61.bin",
+                    "xl/printerSettings/printerSettings52.bin",
+                    "xl/printerSettings/printerSettings51.bin",
+                    "xl/printerSettings/printerSettings50.bin",
+                    "xl/printerSettings/printerSettings42.bin",
+                    "xl/printerSettings/printerSettings41.bin",
+                    "xl/printerSettings/printerSettings40.bin",
+                    "xl/printerSettings/printerSettings39.bin",
+                    "xl/printerSettings/printerSettings38.bin",
+                    "xl/printerSettings/printerSettings43.bin",
+                    "xl/printerSettings/printerSettings44.bin",
+                    "xl/printerSettings/printerSettings45.bin",
+                    "xl/printerSettings/printerSettings49.bin",
+                    "xl/printerSettings/printerSettings48.bin",
+                    "xl/printerSettings/printerSettings47.bin",
+                    "xl/printerSettings/printerSettings46.bin",
+                    "xl/printerSettings/printerSettings7.bin"
+                  ]
+                },
+                "publisher_licence_id": "see AIHW copyright and source footnotes"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/b2d36280-1ea8-4150-ba0f-211fe8e97bc5/mental-health-related-prescriptions-2016-17.xlsx.aspx",
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716624239,
+                "asset_name": "80f24f9535f0c62725a2ce40b72f431114c8ea5b6c11d4af7cf645472d7a7a4e.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            }
+          ]
+        },
+        {
+          "id": "pbs-03",
+          "files": [
+            {
+              "sha256": "eb03d52528c9a1d82173d46254b3098b453b68a8aa7e65606a09bc15631deb27",
+              "bytes": 19640154,
+              "resource": {
+                "source_id": "au-aihw-pbs-aggregate",
+                "category": "aihw_pbs_additional_aggregate",
+                "url": "https://www.aihw.gov.au/getmedia/e0284393-7504-47bb-983b-b3b720088187/aihw-phe-338-pbs-prescriptions-data.zip",
+                "filename": "aihw-phe-338-pbs-prescriptions-data.zip",
+                "period_label": "Data tables: Geography and time specific health data for environmental analysis: PBS prescriptions",
+                "archive_path": "raw/pbs/public-backfill/aihw_pbs_additional_aggregate/eb03d52528c9a1d82173d46254b3098b453b68a8aa7e65606a09bc15631deb27/aihw-phe-338-pbs-prescriptions-data.zip"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 4,
+                  "declared_uncompressed_bytes": 110491735,
+                  "filenames": [
+                    "aihw-phe-338-pbs-prescriptions-data/aihw-phe-338-pbs-prescriptions-data-metadata.xlsx",
+                    "aihw-phe-338-pbs-prescriptions-data/aihw-phe-338-pbs-prescriptions-data-table-1-period-1.csv",
+                    "aihw-phe-338-pbs-prescriptions-data/aihw-phe-338-pbs-prescriptions-data-table-1-period-2.csv",
+                    "aihw-phe-338-pbs-prescriptions-data/aihw-phe-338-pbs-prescriptions-data-table-2.csv"
+                  ]
+                },
+                "publisher_licence_id": "see AIHW copyright and source footnotes"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/e0284393-7504-47bb-983b-b3b720088187/aihw-phe-338-pbs-prescriptions-data.zip",
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716624289,
+                "asset_name": "eb03d52528c9a1d82173d46254b3098b453b68a8aa7e65606a09bc15631deb27.zip",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "805d21b768124e54a0f498019192f33d1efbdd68ce7f877b9c7bf7fd80ffed05",
+              "bytes": 485411,
+              "resource": {
+                "source_id": "au-aihw-pbs-aggregate",
+                "category": "aihw_pbs_historical_report",
+                "url": "https://www.aihw.gov.au/getmedia/7a659816-c8ec-48e6-8948-853fe8d91a23/Mental-health-related-prescriptions.pdf.aspx",
+                "filename": "Mental-health-related-prescriptions.pdf",
+                "period_label": "PDF: Mental health-related prescriptions 2020-21",
+                "archive_path": "raw/pbs/public-backfill/aihw_pbs_historical_report/805d21b768124e54a0f498019192f33d1efbdd68ce7f877b9c7bf7fd80ffed05/Mental-health-related-prescriptions.pdf"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/7a659816-c8ec-48e6-8948-853fe8d91a23/mental-health-related-prescriptions.pdf.aspx",
+              "inspection": {
+                "publisher_licence_id": "see AIHW copyright and source footnotes",
+                "public_companion_report": true,
+                "text_characters": 28008
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716653584,
+                "asset_name": "805d21b768124e54a0f498019192f33d1efbdd68ce7f877b9c7bf7fd80ffed05.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "b5e31a6a607eade227b8d6994572602a2e862327c3188045c4947d403caa25ca",
+              "bytes": 784279,
+              "resource": {
+                "source_id": "au-aihw-pbs-aggregate",
+                "category": "aihw_pbs_historical_report",
+                "url": "https://www.aihw.gov.au/getmedia/a530183d-8d16-44bd-8f43-526adfd1385a/Mental-health-related-prescriptions.pdf.aspx",
+                "filename": "Mental-health-related-prescriptions.pdf",
+                "period_label": "PDF: Mental health-related prescriptions 2019-20",
+                "archive_path": "raw/pbs/public-backfill/aihw_pbs_historical_report/b5e31a6a607eade227b8d6994572602a2e862327c3188045c4947d403caa25ca/Mental-health-related-prescriptions.pdf"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/a530183d-8d16-44bd-8f43-526adfd1385a/mental-health-related-prescriptions.pdf.aspx",
+              "inspection": {
+                "publisher_licence_id": "see AIHW copyright and source footnotes",
+                "public_companion_report": true,
+                "text_characters": 25276
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716653679,
+                "asset_name": "b5e31a6a607eade227b8d6994572602a2e862327c3188045c4947d403caa25ca.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "449cc8735394788fe0f1e2c097c1f0dd34f8a86c31fe7c706fea2c74244f846d",
+              "bytes": 648569,
+              "resource": {
+                "source_id": "au-aihw-pbs-aggregate",
+                "category": "aihw_pbs_historical_report",
+                "url": "https://www.aihw.gov.au/getmedia/804315fb-3f1b-4b15-beb6-f66063ff8b7f/Mental-health-related-prescriptions-2017-18.pdf.aspx",
+                "filename": "Mental-health-related-prescriptions-2017-18.pdf",
+                "period_label": "PDF: Mental health-related prescriptions 2017-18",
+                "archive_path": "raw/pbs/public-backfill/aihw_pbs_historical_report/449cc8735394788fe0f1e2c097c1f0dd34f8a86c31fe7c706fea2c74244f846d/Mental-health-related-prescriptions-2017-18.pdf"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/804315fb-3f1b-4b15-beb6-f66063ff8b7f/mental-health-related-prescriptions-2017-18.pdf.aspx",
+              "inspection": {
+                "publisher_licence_id": "see AIHW copyright and source footnotes",
+                "public_companion_report": true,
+                "text_characters": 20450
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716653772,
+                "asset_name": "449cc8735394788fe0f1e2c097c1f0dd34f8a86c31fe7c706fea2c74244f846d.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "23fd829c17da97a673c1c6956acb2bb35afe5467a306fff81db9a5a537d5c09c",
+              "bytes": 355398,
+              "resource": {
+                "source_id": "au-aihw-pbs-aggregate",
+                "category": "aihw_pbs_historical_report",
+                "url": "https://www.aihw.gov.au/getmedia/584d7a31-7c4a-46cb-97db-a46874265354/Mental-health-related-prescriptions-2018-19.pdf.aspx",
+                "filename": "Mental-health-related-prescriptions-2018-19.pdf",
+                "period_label": " Mental health-related prescriptions 2018-19",
+                "archive_path": "raw/pbs/public-backfill/aihw_pbs_historical_report/23fd829c17da97a673c1c6956acb2bb35afe5467a306fff81db9a5a537d5c09c/Mental-health-related-prescriptions-2018-19.pdf"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/584d7a31-7c4a-46cb-97db-a46874265354/mental-health-related-prescriptions-2018-19.pdf.aspx",
+              "inspection": {
+                "publisher_licence_id": "see AIHW copyright and source footnotes",
+                "public_companion_report": true,
+                "text_characters": 27063
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716653823,
+                "asset_name": "23fd829c17da97a673c1c6956acb2bb35afe5467a306fff81db9a5a537d5c09c.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "690a78b451bd3c5f91e94c98502bd47dbcc40e4117f3de174b67815191d8a1d6",
+              "bytes": 654605,
+              "resource": {
+                "source_id": "au-aihw-pbs-aggregate",
+                "category": "aihw_pbs_historical_report",
+                "url": "https://www.aihw.gov.au/getmedia/d35a03a3-1500-4775-b3e1-9a99f3168bb8/Mental-health-related-prescriptions-2016-17.pdf.aspx",
+                "filename": "Mental-health-related-prescriptions-2016-17.pdf",
+                "period_label": "PDF: Mental health-related prescriptions 2016-17",
+                "archive_path": "raw/pbs/public-backfill/aihw_pbs_historical_report/690a78b451bd3c5f91e94c98502bd47dbcc40e4117f3de174b67815191d8a1d6/Mental-health-related-prescriptions-2016-17.pdf"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/d35a03a3-1500-4775-b3e1-9a99f3168bb8/mental-health-related-prescriptions-2016-17.pdf.aspx",
+              "inspection": {
+                "publisher_licence_id": "see AIHW copyright and source footnotes",
+                "public_companion_report": true,
+                "text_characters": 17452
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716654091,
+                "asset_name": "690a78b451bd3c5f91e94c98502bd47dbcc40e4117f3de174b67815191d8a1d6.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            }
+          ]
+        },
+        {
+          "id": "pbs-04",
+          "files": [
+            {
+              "sha256": "29eac4d321c9d7745abf3955b9edfe1d9368b5ddf0c0e68ec94ee746cc05128d",
+              "bytes": 116611095,
+              "resource": {
+                "source_id": "au-aihw-pbs-monthly",
+                "category": "aihw_pbs_monthly_aggregate",
+                "url": "https://www.aihw.gov.au/getmedia/c5fb8c47-e274-4495-a5f2-d9522bbd3f54/AIHW-HWE-098-PBS-ATC1-prescriptions-historical-data.xlsx",
+                "filename": "AIHW-HWE-098-PBS-ATC1-prescriptions-historical-data.xlsx",
+                "period_label": "Data tables: Pharmaceutical Benefits Scheme prescriptions by ATC Level 1 medicine group May 2002 to Jan 2015: historical supplementary data tables",
+                "archive_path": "raw/pbs/public-backfill/aihw_pbs_monthly_aggregate/29eac4d321c9d7745abf3955b9edfe1d9368b5ddf0c0e68ec94ee746cc05128d/AIHW-HWE-098-PBS-ATC1-prescriptions-historical-data.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 42,
+                  "declared_uncompressed_bytes": 527859272,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/workbook.xml",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/worksheets/sheet4.xml",
+                    "xl/worksheets/sheet5.xml",
+                    "xl/worksheets/sheet6.xml",
+                    "xl/worksheets/sheet7.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/styles.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/worksheets/_rels/sheet3.xml.rels",
+                    "xl/drawings/drawing1.xml",
+                    "xl/media/image1.emf",
+                    "xl/worksheets/_rels/sheet5.xml.rels",
+                    "xl/worksheets/_rels/sheet7.xml.rels",
+                    "xl/drawings/_rels/drawing1.xml.rels",
+                    "xl/worksheets/_rels/sheet1.xml.rels",
+                    "xl/worksheets/_rels/sheet2.xml.rels",
+                    "xl/printerSettings/printerSettings1.bin",
+                    "xl/printerSettings/printerSettings2.bin",
+                    "xl/printerSettings/printerSettings3.bin",
+                    "xl/printerSettings/printerSettings4.bin",
+                    "docProps/core.xml",
+                    "docProps/app.xml",
+                    "docProps/custom.xml",
+                    "customXml/itemProps1.xml",
+                    "customXml/item1.xml",
+                    "xl/printerSettings/printerSettings5.bin",
+                    "customXml/itemProps2.xml",
+                    "customXml/item3.xml",
+                    "customXml/itemProps3.xml",
+                    "customXml/item4.xml",
+                    "customXml/item2.xml",
+                    "customXml/_rels/item1.xml.rels",
+                    "customXml/_rels/item2.xml.rels",
+                    "customXml/_rels/item3.xml.rels",
+                    "customXml/_rels/item4.xml.rels",
+                    "customXml/itemProps4.xml"
+                  ]
+                },
+                "publisher_licence_id": "see AIHW copyright and source footnotes"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/c5fb8c47-e274-4495-a5f2-d9522bbd3f54/aihw-hwe-098-pbs-atc1-prescriptions-historical-data.xlsx",
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716623264,
+                "asset_name": "29eac4d321c9d7745abf3955b9edfe1d9368b5ddf0c0e68ec94ee746cc05128d.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            }
+          ]
+        },
+        {
+          "id": "pbs-05",
+          "files": [
+            {
+              "sha256": "83e530eada57bf8e501b96affa2c0db6179a962ea5d6e40f58500459c992d7a5",
+              "bytes": 427821043,
+              "resource": {
+                "source_id": "au-aihw-pbs-monthly",
+                "category": "aihw_pbs_monthly_aggregate",
+                "url": "https://www.aihw.gov.au/getmedia/fc588dac-5014-45b1-9e2b-fbf57545f221/AIHW-HWE-098-PBS-ATC2-prescriptions-historical-data.xlsx",
+                "filename": "AIHW-HWE-098-PBS-ATC2-prescriptions-historical-data.xlsx",
+                "period_label": "Data tables: Pharmaceutical Benefits Scheme prescriptions by ATC Level 2 medicine group May 2002 to Jan 2015: historical supplementary data tables",
+                "archive_path": "raw/pbs/public-backfill/aihw_pbs_monthly_aggregate/83e530eada57bf8e501b96affa2c0db6179a962ea5d6e40f58500459c992d7a5/AIHW-HWE-098-PBS-ATC2-prescriptions-historical-data.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 36,
+                  "declared_uncompressed_bytes": 2709909008,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/workbook.xml",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/worksheets/sheet4.xml",
+                    "xl/worksheets/sheet5.xml",
+                    "xl/worksheets/sheet6.xml",
+                    "xl/worksheets/sheet7.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/styles.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/drawings/drawing1.xml",
+                    "xl/media/image1.emf",
+                    "xl/worksheets/_rels/sheet1.xml.rels",
+                    "xl/worksheets/_rels/sheet2.xml.rels",
+                    "xl/drawings/_rels/drawing1.xml.rels",
+                    "xl/printerSettings/printerSettings1.bin",
+                    "xl/printerSettings/printerSettings2.bin",
+                    "customXml/item1.xml",
+                    "customXml/item3.xml",
+                    "customXml/itemProps3.xml",
+                    "customXml/item4.xml",
+                    "customXml/itemProps4.xml",
+                    "docProps/core.xml",
+                    "docProps/app.xml",
+                    "docProps/custom.xml",
+                    "customXml/itemProps1.xml",
+                    "customXml/itemProps2.xml",
+                    "customXml/_rels/item1.xml.rels",
+                    "customXml/_rels/item2.xml.rels",
+                    "customXml/_rels/item3.xml.rels",
+                    "customXml/_rels/item4.xml.rels",
+                    "customXml/item2.xml"
+                  ]
+                },
+                "publisher_licence_id": "see AIHW copyright and source footnotes"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/fc588dac-5014-45b1-9e2b-fbf57545f221/aihw-hwe-098-pbs-atc2-prescriptions-historical-data.xlsx",
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716653198,
+                "asset_name": "83e530eada57bf8e501b96affa2c0db6179a962ea5d6e40f58500459c992d7a5.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "mbs": {
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "parent_revision": "3fdcb5cac6151bb6a424dcd4d83c75fdd861f474",
+      "manifest_sha256": "c53df2794e2dc68524d9c6304a94b4ad4d4042cad5054c6a3273cdf0ae940d8c",
+      "prior_verification_run": [
+        42107726639,
+        42113102813,
+        42140010940
+      ],
+      "batches": [
+        {
+          "id": "mbs-01",
+          "files": [
+            {
+              "sha256": "78e82a9329444af9c86bd212bd8da5052b306feb4c6e0842a9ce7d0221fa8c4d",
+              "bytes": 85783,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-statistics-year-to-date-summary-tables-july-to-june-2025-26.xlsx",
+                "filename": "medicare-statistics-year-to-date-summary-tables-july-to-june-2025-26.xlsx",
+                "period_label": "Medicare statistics \u2013 year-to-date summary tables (July to June 2025-26) [Excel - 84 KB]",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/78e82a9329444af9c86bd212bd8da5052b306feb4c6e0842a9ce7d0221fa8c4d/medicare-statistics-year-to-date-summary-tables-july-to-june-2025-26.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 48,
+                  "declared_uncompressed_bytes": 371119,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/workbook.xml",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/worksheets/_rels/sheet7.xml.rels",
+                    "xl/worksheets/_rels/sheet5.xml.rels",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/sheet4.xml",
+                    "xl/worksheets/sheet5.xml",
+                    "xl/worksheets/sheet6.xml",
+                    "xl/worksheets/sheet7.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/styles.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/worksheets/_rels/sheet1.xml.rels",
+                    "xl/worksheets/_rels/sheet2.xml.rels",
+                    "xl/worksheets/_rels/sheet3.xml.rels",
+                    "xl/worksheets/_rels/sheet4.xml.rels",
+                    "xl/worksheets/_rels/sheet6.xml.rels",
+                    "docProps/core.xml",
+                    "docProps/app.xml",
+                    "docProps/custom.xml",
+                    "xl/printerSettings/printerSettings1.bin",
+                    "xl/printerSettings/printerSettings2.bin",
+                    "xl/tables/table1.xml",
+                    "xl/printerSettings/printerSettings3.bin",
+                    "xl/tables/table2.xml",
+                    "xl/tables/table3.xml",
+                    "xl/printerSettings/printerSettings4.bin",
+                    "customXml/item2.xml",
+                    "customXml/itemProps2.xml",
+                    "customXml/item3.xml",
+                    "customXml/itemProps3.xml",
+                    "xl/tables/table5.xml",
+                    "xl/tables/table4.xml",
+                    "xl/tables/table6.xml",
+                    "xl/printerSettings/printerSettings6.bin",
+                    "xl/tables/table7.xml",
+                    "xl/printerSettings/printerSettings7.bin",
+                    "xl/printerSettings/printerSettings5.bin",
+                    "xl/tables/table8.xml",
+                    "customXml/item1.xml",
+                    "customXml/_rels/item1.xml.rels",
+                    "customXml/_rels/item2.xml.rels",
+                    "customXml/_rels/item3.xml.rels",
+                    "customXml/itemProps1.xml"
+                  ]
+                },
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-summary-tables-july-to-june-2025-26?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716625885,
+                "asset_name": "78e82a9329444af9c86bd212bd8da5052b306feb4c6e0842a9ce7d0221fa8c4d.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            }
+          ]
+        },
+        {
+          "id": "mbs-02",
+          "files": [
+            {
+              "sha256": "e9985b5324753a370a04578fb3dba983ec1c974e05e762cf101d4d0af6cdcac1",
+              "bytes": 733064,
+              "resource": {
+                "source_id": "au-aihw-mbs-mental-health",
+                "category": "aihw_mbs_mental_health_aggregate",
+                "url": "https://www.aihw.gov.au/getmedia/e733afb1-0cba-4998-be88-86fa9291e621/Medicare-mental-health-service-2024-25.zip",
+                "filename": "Medicare-mental-health-service-2024-25.zip",
+                "period_label": "Data tables: Medicare mental health services 2024\u201325",
+                "archive_path": "raw/mbs/public-backfill/aihw_mbs_mental_health_aggregate/e9985b5324753a370a04578fb3dba983ec1c974e05e762cf101d4d0af6cdcac1/Medicare-mental-health-service-2024-25.zip"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 4,
+                  "declared_uncompressed_bytes": 6699387,
+                  "filenames": [
+                    "Medicare mental health service 2024-25.xlsx",
+                    "Medicare mental health services CSV user_guide.xlsx",
+                    "Medicare mental health services PHN SA4 2024-25.csv",
+                    "Medicare mental health services quarters and demographics 2024-25.csv"
+                  ]
+                },
+                "publisher_licence_id": "see AIHW copyright and source footnotes"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/e733afb1-0cba-4998-be88-86fa9291e621/medicare-mental-health-service-2024-25.zip",
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716624400,
+                "asset_name": "e9985b5324753a370a04578fb3dba983ec1c974e05e762cf101d4d0af6cdcac1.zip",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "fdb4e10ea195c74fb285e68832affb245a88fd19e23dea3dbe31ba0d6f0c6aa8",
+              "bytes": 698639,
+              "resource": {
+                "source_id": "au-aihw-mbs-mental-health",
+                "category": "aihw_mbs_mental_health_aggregate",
+                "url": "https://www.aihw.gov.au/getmedia/b885bb72-752a-4900-aaf4-6055de820041/Medicare-mental-health-services-2023-24.zip",
+                "filename": "Medicare-mental-health-services-2023-24.zip",
+                "period_label": "Data tables: Medicare mental health services 2023-24",
+                "archive_path": "raw/mbs/public-backfill/aihw_mbs_mental_health_aggregate/fdb4e10ea195c74fb285e68832affb245a88fd19e23dea3dbe31ba0d6f0c6aa8/Medicare-mental-health-services-2023-24.zip"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 4,
+                  "declared_uncompressed_bytes": 6664307,
+                  "filenames": [
+                    "Medicare mental health services quarters sex and age group 2023-24.csv",
+                    "Medicare mental health services 2023-24.xlsx",
+                    "Medicare mental health services CSV user guide 2023-24.xlsx",
+                    "Medicare mental health services PHN SA4 2023-24.csv"
+                  ]
+                },
+                "publisher_licence_id": "see AIHW copyright and source footnotes"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/b885bb72-752a-4900-aaf4-6055de820041/medicare-mental-health-services-2023-24.zip",
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716624500,
+                "asset_name": "fdb4e10ea195c74fb285e68832affb245a88fd19e23dea3dbe31ba0d6f0c6aa8.zip",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "3ad4c6b575c63111ab80c55ec4aedbe57ad1855a583f75abebb487e6c693a17a",
+              "bytes": 729207,
+              "resource": {
+                "source_id": "au-aihw-mbs-mental-health",
+                "category": "aihw_mbs_mental_health_aggregate",
+                "url": "https://www.aihw.gov.au/getmedia/285c5287-97ba-4acb-9003-e9edab1f61da/Medicare_mental_health_services_data_2223.zip",
+                "filename": "Medicare_mental_health_services_data_2223.zip",
+                "period_label": "Data tables: Medicare mental health services 2022\u201323",
+                "archive_path": "raw/mbs/public-backfill/aihw_mbs_mental_health_aggregate/3ad4c6b575c63111ab80c55ec4aedbe57ad1855a583f75abebb487e6c693a17a/Medicare_mental_health_services_data_2223.zip"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 5,
+                  "declared_uncompressed_bytes": 6644809,
+                  "filenames": [
+                    "MBS_Tables_2223.xlsx",
+                    "MH_MBS_PHN_SA4_2223.csv",
+                    "MH_MBS_QUARTERS_SEX_AGEGROUP_2223.csv",
+                    "README_MBS_PHN_SA4_DATA_FILE.txt",
+                    "README_MBS_QUARTERS_SEX_AGEGROUP_DATA_FILE.txt"
+                  ]
+                },
+                "publisher_licence_id": "see AIHW copyright and source footnotes"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/285c5287-97ba-4acb-9003-e9edab1f61da/medicare_mental_health_services_data_2223.zip",
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716624634,
+                "asset_name": "3ad4c6b575c63111ab80c55ec4aedbe57ad1855a583f75abebb487e6c693a17a.zip",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "3c86d1ed8f3104148098009fff85bcd2e6a3777ccc749cc04c860a81dd053976",
+              "bytes": 955632,
+              "resource": {
+                "source_id": "au-aihw-mbs-mental-health",
+                "category": "aihw_mbs_mental_health_aggregate",
+                "url": "https://www.aihw.gov.au/getmedia/b66cd6f8-0278-404a-9ec7-ed268df2266e/Medicare-subisdised-mental-health-specific-services-tables-2021.xlsx.aspx",
+                "filename": "Medicare-subisdised-mental-health-specific-services-tables-2021.xlsx",
+                "period_label": "Data tables: Medicare-subsidised mental health-specific services 2020-21",
+                "archive_path": "raw/mbs/public-backfill/aihw_mbs_mental_health_aggregate/3c86d1ed8f3104148098009fff85bcd2e6a3777ccc749cc04c860a81dd053976/Medicare-subisdised-mental-health-specific-services-tables-2021.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 54,
+                  "declared_uncompressed_bytes": 6159560,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/workbook.xml",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/worksheets/sheet4.xml",
+                    "xl/worksheets/sheet5.xml",
+                    "xl/worksheets/sheet7.xml",
+                    "xl/worksheets/sheet8.xml",
+                    "xl/worksheets/sheet9.xml",
+                    "xl/worksheets/sheet10.xml",
+                    "xl/worksheets/sheet11.xml",
+                    "xl/worksheets/sheet12.xml",
+                    "xl/worksheets/sheet13.xml",
+                    "xl/worksheets/sheet14.xml",
+                    "xl/worksheets/sheet15.xml",
+                    "xl/worksheets/sheet16.xml",
+                    "xl/worksheets/sheet17.xml",
+                    "xl/worksheets/sheet18.xml",
+                    "xl/worksheets/sheet19.xml",
+                    "xl/worksheets/sheet20.xml",
+                    "xl/worksheets/sheet21.xml",
+                    "xl/worksheets/sheet22.xml",
+                    "xl/worksheets/sheet23.xml",
+                    "xl/worksheets/sheet24.xml",
+                    "xl/worksheets/sheet25.xml",
+                    "xl/worksheets/sheet6.xml",
+                    "xl/worksheets/sheet27.xml",
+                    "xl/worksheets/sheet28.xml",
+                    "xl/worksheets/sheet29.xml",
+                    "xl/worksheets/sheet30.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/styles.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/sheet26.xml",
+                    "xl/worksheets/_rels/sheet2.xml.rels",
+                    "xl/worksheets/_rels/sheet24.xml.rels",
+                    "customXml/item2.xml",
+                    "customXml/itemProps2.xml",
+                    "xl/printerSettings/printerSettings1.bin",
+                    "customXml/itemProps3.xml",
+                    "docProps/core.xml",
+                    "docProps/app.xml",
+                    "docProps/custom.xml",
+                    "xl/printerSettings/printerSettings2.bin",
+                    "xl/calcChain.xml",
+                    "customXml/item1.xml",
+                    "customXml/itemProps1.xml",
+                    "customXml/_rels/item1.xml.rels",
+                    "customXml/_rels/item2.xml.rels",
+                    "customXml/_rels/item3.xml.rels",
+                    "customXml/item3.xml"
+                  ]
+                },
+                "publisher_licence_id": "see AIHW copyright and source footnotes"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/b66cd6f8-0278-404a-9ec7-ed268df2266e/medicare-subisdised-mental-health-specific-services-tables-2021.xlsx.aspx",
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716624826,
+                "asset_name": "3c86d1ed8f3104148098009fff85bcd2e6a3777ccc749cc04c860a81dd053976.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "9d6fae006f2b99c625e5ee064c56a18b968af2268be0bf5a079c5e3d3192291a",
+              "bytes": 420849,
+              "resource": {
+                "source_id": "au-aihw-mbs-mental-health",
+                "category": "aihw_mbs_mental_health_aggregate",
+                "url": "https://www.aihw.gov.au/getmedia/174ffa67-f355-4512-a3f4-23222bfb700c/Medicare-subsidised-mental-health-specific-2021-22.xlsx",
+                "filename": "Medicare-subsidised-mental-health-specific-2021-22.xlsx",
+                "period_label": "Data tables: Medicare-subsidised mental health-specific services 2021-22",
+                "archive_path": "raw/mbs/public-backfill/aihw_mbs_mental_health_aggregate/9d6fae006f2b99c625e5ee064c56a18b968af2268be0bf5a079c5e3d3192291a/Medicare-subsidised-mental-health-specific-2021-22.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 49,
+                  "declared_uncompressed_bytes": 2592224,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/workbook.xml",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/worksheets/sheet4.xml",
+                    "xl/worksheets/sheet5.xml",
+                    "xl/worksheets/sheet7.xml",
+                    "xl/worksheets/sheet8.xml",
+                    "xl/worksheets/sheet9.xml",
+                    "xl/worksheets/sheet10.xml",
+                    "xl/worksheets/sheet11.xml",
+                    "xl/worksheets/sheet12.xml",
+                    "xl/worksheets/sheet13.xml",
+                    "xl/worksheets/sheet14.xml",
+                    "xl/worksheets/sheet15.xml",
+                    "xl/worksheets/sheet16.xml",
+                    "xl/worksheets/sheet17.xml",
+                    "xl/worksheets/sheet18.xml",
+                    "xl/worksheets/sheet19.xml",
+                    "xl/worksheets/sheet20.xml",
+                    "xl/worksheets/sheet21.xml",
+                    "xl/worksheets/sheet22.xml",
+                    "xl/worksheets/sheet23.xml",
+                    "xl/worksheets/sheet6.xml",
+                    "xl/worksheets/sheet25.xml",
+                    "xl/worksheets/sheet26.xml",
+                    "xl/worksheets/sheet27.xml",
+                    "xl/worksheets/sheet28.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/styles.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet24.xml",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/_rels/sheet2.xml.rels",
+                    "xl/calcChain.xml",
+                    "customXml/item3.xml",
+                    "customXml/itemProps3.xml",
+                    "docProps/core.xml",
+                    "docProps/app.xml",
+                    "docProps/custom.xml",
+                    "customXml/item1.xml",
+                    "customXml/itemProps1.xml",
+                    "customXml/item2.xml",
+                    "customXml/_rels/item1.xml.rels",
+                    "customXml/_rels/item2.xml.rels",
+                    "customXml/_rels/item3.xml.rels",
+                    "customXml/itemProps2.xml"
+                  ]
+                },
+                "publisher_licence_id": "see AIHW copyright and source footnotes"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/174ffa67-f355-4512-a3f4-23222bfb700c/medicare-subsidised-mental-health-specific-2021-22.xlsx",
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716625046,
+                "asset_name": "9d6fae006f2b99c625e5ee064c56a18b968af2268be0bf5a079c5e3d3192291a.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "4157e8abfa2725a483794ebac7d72ee67d6647fa3b583575d0b7a225264fd6c2",
+              "bytes": 1218508,
+              "resource": {
+                "source_id": "au-aihw-mbs-mental-health",
+                "category": "aihw_mbs_mental_health_aggregate",
+                "url": "https://www.aihw.gov.au/getmedia/ceb794a3-7eca-48af-b3a4-ec90b8a4f465/Medicare-subsidised-mental-health-related-PHN-SA4_2122.csv",
+                "filename": "Medicare-subsidised-mental-health-related-PHN-SA4_2122.csv",
+                "period_label": "Data tables: Medicare-subsidised mental health-specific services 2021-22 (CSV)",
+                "archive_path": "raw/mbs/public-backfill/aihw_mbs_mental_health_aggregate/4157e8abfa2725a483794ebac7d72ee67d6647fa3b583575d0b7a225264fd6c2/Medicare-subsidised-mental-health-related-PHN-SA4_2122.csv"
+              },
+              "inspection": {
+                "csv": {
+                  "encoding_for_inspection": "cp1252",
+                  "records": 14281,
+                  "table_header_record_1based": null,
+                  "native_table_header": null,
+                  "record_count_includes_preamble_headers_totals_and_footnotes": true
+                },
+                "publisher_licence_id": "see AIHW copyright and source footnotes"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/ceb794a3-7eca-48af-b3a4-ec90b8a4f465/medicare-subsidised-mental-health-related-phn-sa4_2122.csv",
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716625175,
+                "asset_name": "4157e8abfa2725a483794ebac7d72ee67d6647fa3b583575d0b7a225264fd6c2.csv",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "c32f9f2b87a3656c5f777a0d5048d54f6937504f08301482f48af56196677138",
+              "bytes": 758005,
+              "resource": {
+                "source_id": "au-aihw-mbs-mental-health",
+                "category": "aihw_mbs_mental_health_aggregate",
+                "url": "https://www.aihw.gov.au/getmedia/b6a5745e-7ed3-4bbc-9810-ec8e59b788ce/Medicare-subsidised-mental-health-specific-services.xlsx.aspx",
+                "filename": "Medicare-subsidised-mental-health-specific-services.xlsx",
+                "period_label": "Data tables: Medicare-subsidised mental health\u2011specific services 2019\u201320",
+                "archive_path": "raw/mbs/public-backfill/aihw_mbs_mental_health_aggregate/c32f9f2b87a3656c5f777a0d5048d54f6937504f08301482f48af56196677138/Medicare-subsidised-mental-health-specific-services.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 57,
+                  "declared_uncompressed_bytes": 4037215,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/workbook.xml",
+                    "xl/worksheets/sheet4.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet29.xml",
+                    "xl/worksheets/sheet28.xml",
+                    "xl/worksheets/sheet27.xml",
+                    "xl/worksheets/sheet26.xml",
+                    "xl/worksheets/sheet25.xml",
+                    "xl/styles.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/drawings/drawing1.xml",
+                    "xl/drawings/_rels/drawing1.xml.rels",
+                    "xl/worksheets/_rels/sheet10.xml.rels",
+                    "xl/worksheets/_rels/sheet2.xml.rels",
+                    "xl/worksheets/_rels/sheet1.xml.rels",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/media/image1.png",
+                    "xl/worksheets/sheet24.xml",
+                    "xl/worksheets/sheet30.xml",
+                    "xl/worksheets/sheet22.xml",
+                    "xl/worksheets/sheet11.xml",
+                    "xl/worksheets/sheet10.xml",
+                    "xl/worksheets/sheet9.xml",
+                    "xl/worksheets/sheet8.xml",
+                    "xl/worksheets/sheet7.xml",
+                    "xl/worksheets/sheet6.xml",
+                    "xl/worksheets/sheet5.xml",
+                    "xl/worksheets/sheet12.xml",
+                    "xl/worksheets/sheet23.xml",
+                    "xl/worksheets/sheet14.xml",
+                    "xl/worksheets/sheet17.xml",
+                    "xl/worksheets/sheet18.xml",
+                    "xl/worksheets/sheet19.xml",
+                    "xl/worksheets/sheet20.xml",
+                    "xl/worksheets/sheet21.xml",
+                    "xl/worksheets/sheet16.xml",
+                    "xl/worksheets/sheet13.xml",
+                    "xl/worksheets/sheet15.xml",
+                    "customXml/item3.xml",
+                    "xl/printerSettings/printerSettings1.bin",
+                    "customXml/_rels/item1.xml.rels",
+                    "customXml/_rels/item2.xml.rels",
+                    "customXml/_rels/item3.xml.rels",
+                    "xl/calcChain.xml",
+                    "customXml/item1.xml",
+                    "customXml/itemProps1.xml",
+                    "customXml/itemProps3.xml",
+                    "docProps/core.xml",
+                    "docProps/app.xml",
+                    "docProps/custom.xml",
+                    "customXml/item2.xml",
+                    "customXml/itemProps2.xml"
+                  ]
+                },
+                "publisher_licence_id": "see AIHW copyright and source footnotes"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/b6a5745e-7ed3-4bbc-9810-ec8e59b788ce/medicare-subsidised-mental-health-specific-services.xlsx.aspx",
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716625243,
+                "asset_name": "c32f9f2b87a3656c5f777a0d5048d54f6937504f08301482f48af56196677138.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "78cb76e5455b6eace6a14fc6f0452bc0f468ed049f5333ee96c161b662a913df",
+              "bytes": 145408,
+              "resource": {
+                "source_id": "au-aihw-mbs-mental-health",
+                "category": "aihw_mbs_mental_health_aggregate",
+                "url": "https://www.aihw.gov.au/getmedia/cb823711-7822-4000-8515-2b49f3190d40/Medicare-subsidised-mental-health-related-services-2018-19.xlsx.aspx",
+                "filename": "Medicare-subsidised-mental-health-related-services-2018-19.xlsx",
+                "period_label": "Data tables: Medicare-subsidised mental health-related services 2018-19",
+                "archive_path": "raw/mbs/public-backfill/aihw_mbs_mental_health_aggregate/78cb76e5455b6eace6a14fc6f0452bc0f468ed049f5333ee96c161b662a913df/Medicare-subsidised-mental-health-related-services-2018-19.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 43,
+                  "declared_uncompressed_bytes": 729968,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/workbook.xml",
+                    "xl/worksheets/sheet4.xml",
+                    "xl/worksheets/sheet21.xml",
+                    "xl/worksheets/sheet20.xml",
+                    "xl/worksheets/sheet19.xml",
+                    "xl/worksheets/sheet18.xml",
+                    "xl/worksheets/sheet22.xml",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/styles.xml",
+                    "xl/worksheets/_rels/sheet2.xml.rels",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/worksheets/sheet17.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/worksheets/sheet15.xml",
+                    "xl/worksheets/sheet8.xml",
+                    "xl/worksheets/sheet7.xml",
+                    "xl/worksheets/sheet6.xml",
+                    "xl/worksheets/sheet5.xml",
+                    "xl/worksheets/sheet9.xml",
+                    "xl/worksheets/sheet16.xml",
+                    "xl/worksheets/sheet11.xml",
+                    "xl/worksheets/sheet14.xml",
+                    "xl/worksheets/sheet13.xml",
+                    "xl/worksheets/sheet12.xml",
+                    "xl/worksheets/sheet10.xml",
+                    "customXml/itemProps2.xml",
+                    "xl/calcChain.xml",
+                    "customXml/_rels/item1.xml.rels",
+                    "customXml/_rels/item2.xml.rels",
+                    "customXml/_rels/item3.xml.rels",
+                    "customXml/item1.xml",
+                    "customXml/itemProps1.xml",
+                    "docProps/custom.xml",
+                    "customXml/item3.xml",
+                    "customXml/itemProps3.xml",
+                    "docProps/core.xml",
+                    "docProps/app.xml",
+                    "customXml/item2.xml"
+                  ]
+                },
+                "publisher_licence_id": "see AIHW copyright and source footnotes"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/cb823711-7822-4000-8515-2b49f3190d40/medicare-subsidised-mental-health-related-services-2018-19.xlsx.aspx",
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716625336,
+                "asset_name": "78cb76e5455b6eace6a14fc6f0452bc0f468ed049f5333ee96c161b662a913df.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "c33927384a02613b62abd833ce5d665fe8f39641e5cf89892f1b68743ca4ce9e",
+              "bytes": 138130,
+              "resource": {
+                "source_id": "au-aihw-mbs-mental-health",
+                "category": "aihw_mbs_mental_health_aggregate",
+                "url": "https://www.aihw.gov.au/getmedia/ccd1ffc5-5c17-405c-8304-c378867629a6/Medicare-subsidised-mental-health-related-services-tables-2017-18.xlsx.aspx",
+                "filename": "Medicare-subsidised-mental-health-related-services-tables-2017-18.xlsx",
+                "period_label": "Data tables: Medicare-subsidised mental health-specific services 2017-18",
+                "archive_path": "raw/mbs/public-backfill/aihw_mbs_mental_health_aggregate/c33927384a02613b62abd833ce5d665fe8f39641e5cf89892f1b68743ca4ce9e/Medicare-subsidised-mental-health-related-services-tables-2017-18.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 45,
+                  "declared_uncompressed_bytes": 684332,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/workbook.xml",
+                    "xl/worksheets/sheet4.xml",
+                    "xl/worksheets/sheet22.xml",
+                    "xl/worksheets/sheet21.xml",
+                    "xl/worksheets/sheet20.xml",
+                    "xl/worksheets/sheet19.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/worksheets/_rels/sheet3.xml.rels",
+                    "xl/worksheets/_rels/sheet2.xml.rels",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/worksheets/sheet18.xml",
+                    "xl/styles.xml",
+                    "xl/worksheets/sheet16.xml",
+                    "xl/worksheets/sheet8.xml",
+                    "xl/worksheets/sheet7.xml",
+                    "xl/worksheets/sheet6.xml",
+                    "xl/worksheets/sheet5.xml",
+                    "xl/worksheets/sheet9.xml",
+                    "xl/worksheets/sheet17.xml",
+                    "xl/worksheets/sheet11.xml",
+                    "xl/worksheets/sheet15.xml",
+                    "xl/worksheets/sheet14.xml",
+                    "xl/worksheets/sheet13.xml",
+                    "xl/worksheets/sheet12.xml",
+                    "xl/worksheets/sheet10.xml",
+                    "customXml/itemProps2.xml",
+                    "xl/calcChain.xml",
+                    "xl/printerSettings/printerSettings1.bin",
+                    "customXml/_rels/item1.xml.rels",
+                    "customXml/_rels/item2.xml.rels",
+                    "customXml/_rels/item3.xml.rels",
+                    "customXml/item1.xml",
+                    "customXml/itemProps1.xml",
+                    "docProps/custom.xml",
+                    "customXml/item3.xml",
+                    "customXml/itemProps3.xml",
+                    "docProps/core.xml",
+                    "docProps/app.xml",
+                    "customXml/item2.xml"
+                  ]
+                },
+                "publisher_licence_id": "see AIHW copyright and source footnotes"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/ccd1ffc5-5c17-405c-8304-c378867629a6/medicare-subsidised-mental-health-related-services-tables-2017-18.xlsx.aspx",
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716625397,
+                "asset_name": "c33927384a02613b62abd833ce5d665fe8f39641e5cf89892f1b68743ca4ce9e.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "a6bd33a39284f5dc243cea5a5a70f13946dc826f3f03fc01a1ec1ba93794d24f",
+              "bytes": 3560448,
+              "resource": {
+                "source_id": "au-aihw-mbs-mental-health",
+                "category": "aihw_mbs_mental_health_aggregate",
+                "url": "https://www.aihw.gov.au/getmedia/fb8fd454-1d40-4dbb-b412-5c3831d50cea/Medicare-subsidised-mental-health-related-services.xls.aspx",
+                "filename": "Medicare-subsidised-mental-health-related-services.xls",
+                "period_label": "Data tables: Medicare-subsidised mental health-related services 2016-17",
+                "archive_path": "raw/mbs/public-backfill/aihw_mbs_mental_health_aggregate/a6bd33a39284f5dc243cea5a5a70f13946dc826f3f03fc01a1ec1ba93794d24f/Medicare-subsidised-mental-health-related-services.xls"
+              },
+              "inspection": {
+                "publisher_licence_id": "see AIHW copyright and source footnotes"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/fb8fd454-1d40-4dbb-b412-5c3831d50cea/medicare-subsidised-mental-health-related-services.xls.aspx",
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716625503,
+                "asset_name": "a6bd33a39284f5dc243cea5a5a70f13946dc826f3f03fc01a1ec1ba93794d24f.xls",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "4d385038f360df770d8904ec09ce0696971c071018364d465bfa5765ae98e0dc",
+              "bytes": 6821572,
+              "resource": {
+                "source_id": "au-aihw-mbs-environment",
+                "category": "aihw_mbs_environment_aggregate",
+                "url": "https://www.aihw.gov.au/getmedia/158f1d65-96cc-448e-bd3d-f205aabf05d1/aihw-phe-338-mbs-services-data.zip",
+                "filename": "aihw-phe-338-mbs-services-data.zip",
+                "period_label": "Data tables: Geography and time specific health data for environmental analysis: MBS services",
+                "archive_path": "raw/mbs/public-backfill/aihw_mbs_environment_aggregate/4d385038f360df770d8904ec09ce0696971c071018364d465bfa5765ae98e0dc/aihw-phe-338-mbs-services-data.zip"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 3,
+                  "declared_uncompressed_bytes": 43189766,
+                  "filenames": [
+                    "aihw-phe-338-mbs-services-data/aihw-phe-338-mbs-services-data-metadata.xlsx",
+                    "aihw-phe-338-mbs-services-data/aihw-phe-338-mbs-services-data-table-1.csv",
+                    "aihw-phe-338-mbs-services-data/aihw-phe-338-mbs-services-data-table-2.csv"
+                  ]
+                },
+                "publisher_licence_id": "see AIHW copyright and source footnotes"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/158f1d65-96cc-448e-bd3d-f205aabf05d1/aihw-phe-338-mbs-services-data.zip",
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716625562,
+                "asset_name": "4d385038f360df770d8904ec09ce0696971c071018364d465bfa5765ae98e0dc.zip",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "95408ec7d592e37479e3ef8b7a9248ac5f9aca3f6619c9e143a3115b6b193b75",
+              "bytes": 390672,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-statistics-year-to-date-dashboard-july-to-june-2025-26.pdf",
+                "filename": "medicare-statistics-year-to-date-dashboard-july-to-june-2025-26.pdf",
+                "period_label": "Medicare statistics \u2013 year-to-date dashboard (July to June 2025-26) [PDF - 382 KB]",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/95408ec7d592e37479e3ef8b7a9248ac5f9aca3f6619c9e143a3115b6b193b75/medicare-statistics-year-to-date-dashboard-july-to-june-2025-26.pdf"
+              },
+              "inspection": {
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-dashboard-july-to-june-2025-26?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716625726,
+                "asset_name": "95408ec7d592e37479e3ef8b7a9248ac5f9aca3f6619c9e143a3115b6b193b75.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "fd9e4024d5a155c0f78ab228baea980176db7928db5769058641e92cfd86c52a",
+              "bytes": 205553,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-statistics-per-patient-bulk-billing-dashboard-2025-26.pdf",
+                "filename": "medicare-statistics-per-patient-bulk-billing-dashboard-2025-26.pdf",
+                "period_label": "Medicare statistics \u2013 per patient bulk billing dashboard 2025\u201326 [PDF - 201 KB]\n                  - 4 pages",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/fd9e4024d5a155c0f78ab228baea980176db7928db5769058641e92cfd86c52a/medicare-statistics-per-patient-bulk-billing-dashboard-2025-26.pdf"
+              },
+              "inspection": {
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-statistics-per-patient-bulk-billing-dashboard-2025-26?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716625992,
+                "asset_name": "fd9e4024d5a155c0f78ab228baea980176db7928db5769058641e92cfd86c52a.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "f875a6b7391c88215ac3081f95931ca31bd48ec428da2c88a4fa4ea30d428462",
+              "bytes": 3160065,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-quarterly-statistics-state-and-territory-june-quarter-2025-26.xlsx",
+                "filename": "medicare-quarterly-statistics-state-and-territory-june-quarter-2025-26.xlsx",
+                "period_label": "Medicare quarterly statistics \u2013 State and territory (June quarter 2025-26) [Excel - 4 MB]",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/f875a6b7391c88215ac3081f95931ca31bd48ec428da2c88a4fa4ea30d428462/medicare-quarterly-statistics-state-and-territory-june-quarter-2025-26.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 25,
+                  "declared_uncompressed_bytes": 13480672,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/workbook.xml",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/worksheets/sheet4.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/styles.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/worksheets/_rels/sheet1.xml.rels",
+                    "xl/worksheets/_rels/sheet2.xml.rels",
+                    "xl/worksheets/_rels/sheet3.xml.rels",
+                    "xl/worksheets/_rels/sheet4.xml.rels",
+                    "xl/printerSettings/printerSettings1.bin",
+                    "xl/printerSettings/printerSettings2.bin",
+                    "xl/tables/table1.xml",
+                    "xl/printerSettings/printerSettings3.bin",
+                    "xl/tables/table2.xml",
+                    "xl/printerSettings/printerSettings4.bin",
+                    "xl/tables/table3.xml",
+                    "docProps/core.xml",
+                    "docProps/app.xml",
+                    "docProps/custom.xml"
+                  ]
+                },
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-quarterly-statistics-state-and-territory-june-quarter-2025-26?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716626130,
+                "asset_name": "f875a6b7391c88215ac3081f95931ca31bd48ec428da2c88a4fa4ea30d428462.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "d3b165d57e37b88ca8e5bef4647794f140bb9be492e85e2106456fa2780c144c",
+              "bytes": 2838617,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-quarterly-statistics-modified-monash-model-locations-march-quarter-2025-26.xlsx",
+                "filename": "medicare-quarterly-statistics-modified-monash-model-locations-march-quarter-2025-26.xlsx",
+                "period_label": "Medicare quarterly statistics \u2013 Modified Monash Model locations (June quarter 2025-26) [Excel - 3 MB]",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/d3b165d57e37b88ca8e5bef4647794f140bb9be492e85e2106456fa2780c144c/medicare-quarterly-statistics-modified-monash-model-locations-march-quarter-2025-26.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 34,
+                  "declared_uncompressed_bytes": 11745359,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/workbook.xml",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/worksheets/sheet4.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/styles.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/worksheets/_rels/sheet1.xml.rels",
+                    "xl/worksheets/_rels/sheet2.xml.rels",
+                    "xl/worksheets/_rels/sheet3.xml.rels",
+                    "xl/worksheets/_rels/sheet4.xml.rels",
+                    "docProps/core.xml",
+                    "docProps/app.xml",
+                    "docProps/custom.xml",
+                    "xl/printerSettings/printerSettings1.bin",
+                    "xl/printerSettings/printerSettings2.bin",
+                    "xl/tables/table1.xml",
+                    "xl/printerSettings/printerSettings3.bin",
+                    "customXml/item1.xml",
+                    "customXml/itemProps1.xml",
+                    "customXml/item2.xml",
+                    "customXml/itemProps2.xml",
+                    "customXml/item3.xml",
+                    "customXml/itemProps3.xml",
+                    "xl/tables/table2.xml",
+                    "xl/tables/table3.xml",
+                    "customXml/_rels/item1.xml.rels",
+                    "customXml/_rels/item2.xml.rels",
+                    "customXml/_rels/item3.xml.rels",
+                    "xl/printerSettings/printerSettings4.bin"
+                  ]
+                },
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-quarterly-statistics-modified-monash-model-locations-june-quarter-2025-26?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716626129,
+                "asset_name": "d3b165d57e37b88ca8e5bef4647794f140bb9be492e85e2106456fa2780c144c.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "f63f78e31086e868b2eb191f1876a89d8a0ecee6d0e2a7d491b2ea64ca871b23",
+              "bytes": 3249645,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-quarterly-statistics-bulk-billing-by-primary-health-network-june-quarter-2025-26.xlsx",
+                "filename": "medicare-quarterly-statistics-bulk-billing-by-primary-health-network-june-quarter-2025-26.xlsx",
+                "period_label": "Medicare quarterly statistics \u2013 Bulk Billing by Primary Health Network (June quarter 2025-26) [Excel - 4 MB]",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/f63f78e31086e868b2eb191f1876a89d8a0ecee6d0e2a7d491b2ea64ca871b23/medicare-quarterly-statistics-bulk-billing-by-primary-health-network-june-quarter-2025-26.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 34,
+                  "declared_uncompressed_bytes": 15782279,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/workbook.xml",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/worksheets/sheet4.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/styles.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/worksheets/_rels/sheet1.xml.rels",
+                    "xl/worksheets/_rels/sheet2.xml.rels",
+                    "xl/worksheets/_rels/sheet3.xml.rels",
+                    "xl/worksheets/_rels/sheet4.xml.rels",
+                    "docProps/core.xml",
+                    "docProps/app.xml",
+                    "docProps/custom.xml",
+                    "xl/printerSettings/printerSettings1.bin",
+                    "xl/printerSettings/printerSettings2.bin",
+                    "xl/tables/table1.xml",
+                    "xl/printerSettings/printerSettings3.bin",
+                    "customXml/item1.xml",
+                    "customXml/itemProps1.xml",
+                    "customXml/item2.xml",
+                    "customXml/itemProps2.xml",
+                    "customXml/item3.xml",
+                    "customXml/itemProps3.xml",
+                    "xl/tables/table2.xml",
+                    "xl/tables/table3.xml",
+                    "customXml/_rels/item1.xml.rels",
+                    "customXml/_rels/item2.xml.rels",
+                    "customXml/_rels/item3.xml.rels",
+                    "xl/printerSettings/printerSettings4.bin"
+                  ]
+                },
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-quarterly-statistics-bulk-billing-by-primary-health-network-june-quarter-2025-26?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716626348,
+                "asset_name": "f63f78e31086e868b2eb191f1876a89d8a0ecee6d0e2a7d491b2ea64ca871b23.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "e473d75e46a52eb6d580df42e3351a4c34d74f7ca19d0d7117daa1b4ed57b8bf",
+              "bytes": 1471072,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-quarterly-statistics-diagnostic-imaging-summary-march-quarter-2025-26.xlsx",
+                "filename": "medicare-quarterly-statistics-diagnostic-imaging-summary-march-quarter-2025-26.xlsx",
+                "period_label": "Medicare quarterly statistics \u2013 Diagnostic Imaging Summary (June quarter 2025-26) [Excel - 2 MB]",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/e473d75e46a52eb6d580df42e3351a4c34d74f7ca19d0d7117daa1b4ed57b8bf/medicare-quarterly-statistics-diagnostic-imaging-summary-march-quarter-2025-26.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 29,
+                  "declared_uncompressed_bytes": 6560983,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/workbook.xml",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/styles.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/worksheets/_rels/sheet1.xml.rels",
+                    "xl/worksheets/_rels/sheet2.xml.rels",
+                    "xl/worksheets/_rels/sheet3.xml.rels",
+                    "docProps/core.xml",
+                    "docProps/app.xml",
+                    "docProps/custom.xml",
+                    "xl/printerSettings/printerSettings1.bin",
+                    "xl/tables/table1.xml",
+                    "xl/printerSettings/printerSettings2.bin",
+                    "xl/tables/table2.xml",
+                    "customXml/item1.xml",
+                    "customXml/itemProps1.xml",
+                    "customXml/item2.xml",
+                    "customXml/itemProps2.xml",
+                    "customXml/item3.xml",
+                    "customXml/itemProps3.xml",
+                    "customXml/_rels/item1.xml.rels",
+                    "customXml/_rels/item2.xml.rels",
+                    "customXml/_rels/item3.xml.rels"
+                  ]
+                },
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-quarterly-statistics-diagnostic-imaging-summary-june-quarter-2025-26?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716626354,
+                "asset_name": "e473d75e46a52eb6d580df42e3351a4c34d74f7ca19d0d7117daa1b4ed57b8bf.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "8538718081b989590674e19854033c27233bdcb7c325b195206f849a810ec194",
+              "bytes": 2872678,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-quarterly-statistics-total-pathology-summary-march-quarter-2025-26.xlsx",
+                "filename": "medicare-quarterly-statistics-total-pathology-summary-march-quarter-2025-26.xlsx",
+                "period_label": "Medicare quarterly statistics \u2013 Total Pathology Summary (June quarter 2025-26) [Excel - 3 MB]",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/8538718081b989590674e19854033c27233bdcb7c325b195206f849a810ec194/medicare-quarterly-statistics-total-pathology-summary-march-quarter-2025-26.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 29,
+                  "declared_uncompressed_bytes": 13669990,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/workbook.xml",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/styles.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/worksheets/_rels/sheet1.xml.rels",
+                    "xl/worksheets/_rels/sheet2.xml.rels",
+                    "xl/worksheets/_rels/sheet3.xml.rels",
+                    "docProps/core.xml",
+                    "docProps/app.xml",
+                    "docProps/custom.xml",
+                    "xl/printerSettings/printerSettings1.bin",
+                    "xl/printerSettings/printerSettings2.bin",
+                    "xl/tables/table1.xml",
+                    "xl/tables/table2.xml",
+                    "customXml/item1.xml",
+                    "customXml/itemProps1.xml",
+                    "customXml/item2.xml",
+                    "customXml/itemProps2.xml",
+                    "customXml/item3.xml",
+                    "customXml/itemProps3.xml",
+                    "customXml/_rels/item1.xml.rels",
+                    "customXml/_rels/item2.xml.rels",
+                    "customXml/_rels/item3.xml.rels"
+                  ]
+                },
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-quarterly-statistics-total-pathology-summary-june-quarter-2025-26?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716626537,
+                "asset_name": "8538718081b989590674e19854033c27233bdcb7c325b195206f849a810ec194.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "dc6ff8d4d95880b8a74e965b7675e8be44d4e56a964fedfd47f75473a34d9f3d",
+              "bytes": 3638434,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-quarterly-statistics-primary-care-service-type-summary-march-quarter-2025-26.xlsx",
+                "filename": "medicare-quarterly-statistics-primary-care-service-type-summary-march-quarter-2025-26.xlsx",
+                "period_label": "Medicare quarterly statistics \u2013 Primary Care Service Type Summary (June quarter 2025-26) [Excel - 4 MB]",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/dc6ff8d4d95880b8a74e965b7675e8be44d4e56a964fedfd47f75473a34d9f3d/medicare-quarterly-statistics-primary-care-service-type-summary-march-quarter-2025-26.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 34,
+                  "declared_uncompressed_bytes": 16310530,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/workbook.xml",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/worksheets/sheet4.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/styles.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/worksheets/_rels/sheet1.xml.rels",
+                    "xl/worksheets/_rels/sheet2.xml.rels",
+                    "xl/worksheets/_rels/sheet3.xml.rels",
+                    "xl/worksheets/_rels/sheet4.xml.rels",
+                    "docProps/core.xml",
+                    "docProps/app.xml",
+                    "docProps/custom.xml",
+                    "xl/printerSettings/printerSettings1.bin",
+                    "xl/printerSettings/printerSettings2.bin",
+                    "xl/tables/table1.xml",
+                    "xl/printerSettings/printerSettings3.bin",
+                    "customXml/item1.xml",
+                    "customXml/itemProps1.xml",
+                    "customXml/item2.xml",
+                    "customXml/itemProps2.xml",
+                    "customXml/item3.xml",
+                    "customXml/itemProps3.xml",
+                    "xl/tables/table2.xml",
+                    "xl/tables/table3.xml",
+                    "customXml/_rels/item1.xml.rels",
+                    "customXml/_rels/item2.xml.rels",
+                    "customXml/_rels/item3.xml.rels",
+                    "xl/printerSettings/printerSettings4.bin"
+                  ]
+                },
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-quarterly-statistics-primary-care-service-type-summary-june-quarter-2025-26?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716626559,
+                "asset_name": "dc6ff8d4d95880b8a74e965b7675e8be44d4e56a964fedfd47f75473a34d9f3d.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "9374cf744e66142ece6d6a27f41b0c7db79e248ab3d0d067ef2ca3748aa41ebd",
+              "bytes": 2454797,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-quarterly-statistics-socio-economic-indexes-for-areas-seifa-summary-march-quarter-2025-26.xlsx",
+                "filename": "medicare-quarterly-statistics-socio-economic-indexes-for-areas-seifa-summary-march-quarter-2025-26.xlsx",
+                "period_label": "Medicare quarterly statistics \u2013 Socio-Economic Indexes for Areas (SEIFA) Summary (June quarter 2025-26) [Excel - 3 MB]",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/9374cf744e66142ece6d6a27f41b0c7db79e248ab3d0d067ef2ca3748aa41ebd/medicare-quarterly-statistics-socio-economic-indexes-for-areas-seifa-summary-march-quarter-2025-26.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 34,
+                  "declared_uncompressed_bytes": 10401076,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/workbook.xml",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/worksheets/sheet4.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/styles.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/worksheets/_rels/sheet1.xml.rels",
+                    "xl/worksheets/_rels/sheet2.xml.rels",
+                    "xl/worksheets/_rels/sheet3.xml.rels",
+                    "xl/worksheets/_rels/sheet4.xml.rels",
+                    "docProps/core.xml",
+                    "docProps/app.xml",
+                    "docProps/custom.xml",
+                    "xl/printerSettings/printerSettings1.bin",
+                    "xl/printerSettings/printerSettings2.bin",
+                    "xl/tables/table1.xml",
+                    "xl/printerSettings/printerSettings3.bin",
+                    "customXml/item1.xml",
+                    "customXml/itemProps1.xml",
+                    "customXml/item2.xml",
+                    "customXml/itemProps2.xml",
+                    "customXml/item3.xml",
+                    "customXml/itemProps3.xml",
+                    "xl/tables/table2.xml",
+                    "xl/tables/table3.xml",
+                    "customXml/_rels/item1.xml.rels",
+                    "customXml/_rels/item2.xml.rels",
+                    "customXml/_rels/item3.xml.rels",
+                    "xl/printerSettings/printerSettings4.bin"
+                  ]
+                },
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-quarterly-statistics-socio-economic-indexes-for-areas-seifa-summary-june-quarter-2025-26?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716626667,
+                "asset_name": "9374cf744e66142ece6d6a27f41b0c7db79e248ab3d0d067ef2ca3748aa41ebd.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            }
+          ]
+        },
+        {
+          "id": "mbs-03",
+          "files": [
+            {
+              "sha256": "446fb8ac118cdf525c019ba6fb3f517ac62e0821273644948000c1f2222683db",
+              "bytes": 1163254,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-quarterly-and-annual-statistics-concession-summary-june-quarter-2025-26_1.xlsx",
+                "filename": "medicare-quarterly-and-annual-statistics-concession-summary-june-quarter-2025-26_1.xlsx",
+                "period_label": "Medicare quarterly and annual statistics \u2013 Concession Summary (June quarter 2025-26) [Excel - 2 MB]",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/446fb8ac118cdf525c019ba6fb3f517ac62e0821273644948000c1f2222683db/medicare-quarterly-and-annual-statistics-concession-summary-june-quarter-2025-26_1.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 25,
+                  "declared_uncompressed_bytes": 4880040,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/workbook.xml",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/worksheets/sheet4.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/styles.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/worksheets/_rels/sheet1.xml.rels",
+                    "xl/worksheets/_rels/sheet2.xml.rels",
+                    "xl/worksheets/_rels/sheet3.xml.rels",
+                    "xl/worksheets/_rels/sheet4.xml.rels",
+                    "xl/printerSettings/printerSettings1.bin",
+                    "xl/printerSettings/printerSettings2.bin",
+                    "xl/tables/table1.xml",
+                    "xl/printerSettings/printerSettings3.bin",
+                    "xl/tables/table2.xml",
+                    "xl/printerSettings/printerSettings4.bin",
+                    "xl/tables/table3.xml",
+                    "docProps/core.xml",
+                    "docProps/app.xml",
+                    "docProps/custom.xml"
+                  ]
+                },
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-quarterly-and-annual-statistics-concession-summary-june-quarter-2025-26?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716626705,
+                "asset_name": "446fb8ac118cdf525c019ba6fb3f517ac62e0821273644948000c1f2222683db.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "9ab8c426091529abc981b7b84204948e3edd7ce4a6769b92e23b01650498bdb5",
+              "bytes": 1304052,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-quarterly-statistics-statistical-area-sa3-summary-march-quarter-2025-26.xlsx",
+                "filename": "medicare-quarterly-statistics-statistical-area-sa3-summary-march-quarter-2025-26.xlsx",
+                "period_label": "Medicare quarterly statistics \u2013 Statistical Area (SA3) Summary (June quarter 2025-26) [Excel - 2 MB]",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/9ab8c426091529abc981b7b84204948e3edd7ce4a6769b92e23b01650498bdb5/medicare-quarterly-statistics-statistical-area-sa3-summary-march-quarter-2025-26.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 30,
+                  "declared_uncompressed_bytes": 5370883,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/workbook.xml",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/styles.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/worksheets/_rels/sheet1.xml.rels",
+                    "xl/worksheets/_rels/sheet2.xml.rels",
+                    "xl/worksheets/_rels/sheet3.xml.rels",
+                    "docProps/core.xml",
+                    "docProps/app.xml",
+                    "docProps/custom.xml",
+                    "xl/printerSettings/printerSettings1.bin",
+                    "xl/printerSettings/printerSettings2.bin",
+                    "xl/tables/table1.xml",
+                    "xl/printerSettings/printerSettings3.bin",
+                    "xl/tables/table2.xml",
+                    "customXml/item1.xml",
+                    "customXml/itemProps1.xml",
+                    "customXml/item2.xml",
+                    "customXml/itemProps2.xml",
+                    "customXml/item3.xml",
+                    "customXml/itemProps3.xml",
+                    "customXml/_rels/item1.xml.rels",
+                    "customXml/_rels/item2.xml.rels",
+                    "customXml/_rels/item3.xml.rels"
+                  ]
+                },
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-quarterly-statistics-statistical-area-sa3-summary-june-quarter-2025-26?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716626726,
+                "asset_name": "9ab8c426091529abc981b7b84204948e3edd7ce4a6769b92e23b01650498bdb5.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "ace9d6e72dcfca3c9fd779b4c476788ea1d465ceaafd465f97cea712dad44598",
+              "bytes": 1058479,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx",
+                "filename": "medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx",
+                "period_label": "Medicare annual statistics \u2013 State and territory (2009-10 to 2025-26) [Excel - 2 MB]",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/ace9d6e72dcfca3c9fd779b4c476788ea1d465ceaafd465f97cea712dad44598/medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 29,
+                  "declared_uncompressed_bytes": 4537390,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/workbook.xml",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/worksheets/sheet4.xml",
+                    "xl/worksheets/sheet5.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/styles.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/worksheets/_rels/sheet1.xml.rels",
+                    "xl/worksheets/_rels/sheet2.xml.rels",
+                    "xl/worksheets/_rels/sheet3.xml.rels",
+                    "xl/worksheets/_rels/sheet4.xml.rels",
+                    "xl/worksheets/_rels/sheet5.xml.rels",
+                    "xl/printerSettings/printerSettings1.bin",
+                    "xl/printerSettings/printerSettings2.bin",
+                    "xl/tables/table1.xml",
+                    "xl/printerSettings/printerSettings3.bin",
+                    "xl/tables/table2.xml",
+                    "xl/printerSettings/printerSettings4.bin",
+                    "xl/tables/table3.xml",
+                    "xl/printerSettings/printerSettings5.bin",
+                    "xl/tables/table4.xml",
+                    "docProps/core.xml",
+                    "docProps/app.xml",
+                    "docProps/custom.xml"
+                  ]
+                },
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-annual-statistics-state-and-territory-2009-10-to-2025-26?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716626975,
+                "asset_name": "ace9d6e72dcfca3c9fd779b4c476788ea1d465ceaafd465f97cea712dad44598.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "3267671c80d617f9bd3946d76bc7a27d018c0c3b72c6c3b0017c0ce25a130f1b",
+              "bytes": 693982,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-annual-statistics-modified-monash-model-locations-2009-10-to-2024-25.xlsx",
+                "filename": "medicare-annual-statistics-modified-monash-model-locations-2009-10-to-2024-25.xlsx",
+                "period_label": "Medicare annual statistics \u2013 Modified Monash Model locations (2009-10 to 2025-26) [Excel - 678 KB]",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/3267671c80d617f9bd3946d76bc7a27d018c0c3b72c6c3b0017c0ce25a130f1b/medicare-annual-statistics-modified-monash-model-locations-2009-10-to-2024-25.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 25,
+                  "declared_uncompressed_bytes": 2928260,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/workbook.xml",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/worksheets/sheet4.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/styles.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/worksheets/_rels/sheet1.xml.rels",
+                    "xl/worksheets/_rels/sheet2.xml.rels",
+                    "xl/worksheets/_rels/sheet3.xml.rels",
+                    "xl/worksheets/_rels/sheet4.xml.rels",
+                    "xl/printerSettings/printerSettings1.bin",
+                    "xl/printerSettings/printerSettings2.bin",
+                    "xl/tables/table1.xml",
+                    "xl/printerSettings/printerSettings3.bin",
+                    "xl/tables/table2.xml",
+                    "xl/printerSettings/printerSettings4.bin",
+                    "xl/tables/table3.xml",
+                    "docProps/core.xml",
+                    "docProps/app.xml",
+                    "docProps/custom.xml"
+                  ]
+                },
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-annual-statistics-modified-monash-model-locations-2009-10-to-2025-26?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716627015,
+                "asset_name": "3267671c80d617f9bd3946d76bc7a27d018c0c3b72c6c3b0017c0ce25a130f1b.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "a5f6a9a0591200da69194e8863d4a0dfd2dc91233760dfc0f5b105d295af1d0e",
+              "bytes": 5832520,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-annual-statistics-rolling-12-months-july-2009-to-march-2026.xlsx",
+                "filename": "medicare-annual-statistics-rolling-12-months-july-2009-to-march-2026.xlsx",
+                "period_label": "Medicare annual statistics \u2013 Rolling 12 months (July 2009 to June 2026) [Excel - 6 MB]",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/a5f6a9a0591200da69194e8863d4a0dfd2dc91233760dfc0f5b105d295af1d0e/medicare-annual-statistics-rolling-12-months-july-2009-to-march-2026.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 38,
+                  "declared_uncompressed_bytes": 25678436,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/workbook.xml",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/theme/theme1.xml",
+                    "xl/styles.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/worksheets/sheet4.xml",
+                    "xl/worksheets/sheet5.xml",
+                    "xl/worksheets/_rels/sheet1.xml.rels",
+                    "xl/worksheets/_rels/sheet2.xml.rels",
+                    "xl/worksheets/_rels/sheet3.xml.rels",
+                    "xl/worksheets/_rels/sheet4.xml.rels",
+                    "xl/worksheets/_rels/sheet5.xml.rels",
+                    "xl/tables/table1.xml",
+                    "xl/printerSettings/printerSettings3.bin",
+                    "xl/tables/table2.xml",
+                    "xl/tables/table4.xml",
+                    "customXml/item1.xml",
+                    "customXml/itemProps1.xml",
+                    "customXml/item2.xml",
+                    "customXml/itemProps2.xml",
+                    "customXml/item3.xml",
+                    "customXml/itemProps3.xml",
+                    "xl/printerSettings/printerSettings4.bin",
+                    "xl/printerSettings/printerSettings5.bin",
+                    "docProps/core.xml",
+                    "docProps/app.xml",
+                    "docProps/custom.xml",
+                    "xl/printerSettings/printerSettings1.bin",
+                    "xl/printerSettings/printerSettings2.bin",
+                    "customXml/_rels/item1.xml.rels",
+                    "customXml/_rels/item2.xml.rels",
+                    "customXml/_rels/item3.xml.rels",
+                    "xl/tables/table3.xml"
+                  ]
+                },
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-annual-statistics-rolling-12-months-july-2009-to-june-2026?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716627042,
+                "asset_name": "a5f6a9a0591200da69194e8863d4a0dfd2dc91233760dfc0f5b105d295af1d0e.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "4bfb682145f0c664e76b153840b1fcfbdd3b17742d68ac00b358c83d15adedec",
+              "bytes": 96955,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-gp-non-referred-attendances-patient-bulk-billing-ranges-primary-health-networks-2009-10-to-2024-25.xlsx",
+                "filename": "medicare-gp-non-referred-attendances-patient-bulk-billing-ranges-primary-health-networks-2009-10-to-2024-25.xlsx",
+                "period_label": "Medicare GP Non-Referred Attendances patient bulk billing ranges \u2013 Primary Health Networks (2009-10 to 2025-26) [Excel - 95 KB]",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/4bfb682145f0c664e76b153840b1fcfbdd3b17742d68ac00b358c83d15adedec/medicare-gp-non-referred-attendances-patient-bulk-billing-ranges-primary-health-networks-2009-10-to-2024-25.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 21,
+                  "declared_uncompressed_bytes": 559559,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/workbook.xml",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/worksheets/sheet3.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/styles.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/worksheets/_rels/sheet1.xml.rels",
+                    "xl/worksheets/_rels/sheet2.xml.rels",
+                    "xl/worksheets/_rels/sheet3.xml.rels",
+                    "xl/printerSettings/printerSettings1.bin",
+                    "xl/printerSettings/printerSettings2.bin",
+                    "xl/tables/table1.xml",
+                    "xl/printerSettings/printerSettings3.bin",
+                    "xl/tables/table2.xml",
+                    "docProps/core.xml",
+                    "docProps/app.xml",
+                    "docProps/custom.xml"
+                  ]
+                },
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-gp-non-referred-attendances-patient-bulk-billing-ranges-primary-health-networks-2009-10-to-2025-26?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716627152,
+                "asset_name": "4bfb682145f0c664e76b153840b1fcfbdd3b17742d68ac00b358c83d15adedec.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "851cc4f345507f307d20312e4d2ddfbdef1a12c50070fc64bd8639fd936add5d",
+              "bytes": 446713,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2026-05/explanatory-notes-for-medicare-statistics_0.pdf",
+                "filename": "explanatory-notes-for-medicare-statistics_0.pdf",
+                "period_label": "Explanatory notes for Medicare statistics [PDF - 437 KB]",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/851cc4f345507f307d20312e4d2ddfbdef1a12c50070fc64bd8639fd936add5d/explanatory-notes-for-medicare-statistics_0.pdf"
+              },
+              "inspection": {
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/explanatory-notes-for-medicare-statistics?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716627183,
+                "asset_name": "851cc4f345507f307d20312e4d2ddfbdef1a12c50070fc64bd8639fd936add5d.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "0e51711033d3eeacc34012ec736f5d51e8311a3dd674a7700346221a0b72fade",
+              "bytes": 156402,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2026-05/explanatory-notes-for-medicare-statistics_0.docx",
+                "filename": "explanatory-notes-for-medicare-statistics_0.docx",
+                "period_label": "Explanatory notes for Medicare statistics [Word - 153 KB]",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/0e51711033d3eeacc34012ec736f5d51e8311a3dd674a7700346221a0b72fade/explanatory-notes-for-medicare-statistics_0.docx"
+              },
+              "inspection": {
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/explanatory-notes-for-medicare-statistics?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716627232,
+                "asset_name": "0e51711033d3eeacc34012ec736f5d51e8311a3dd674a7700346221a0b72fade.docx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "552512c70ce82bc23411dcf79840525f0b42e0e78ff694b8c470970d96cd3fd6",
+              "bytes": 121420,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2026-08/dental-benefits-schedule-quarterly-statistics-by-state-and-territory-june-quarter-2025-26.xlsx",
+                "filename": "dental-benefits-schedule-quarterly-statistics-by-state-and-territory-june-quarter-2025-26.xlsx",
+                "period_label": "Dental Benefits Schedule quarterly statistics by state and territory (June quarter 2025-26) [Excel - 119 KB]",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/552512c70ce82bc23411dcf79840525f0b42e0e78ff694b8c470970d96cd3fd6/dental-benefits-schedule-quarterly-statistics-by-state-and-territory-june-quarter-2025-26.xlsx"
+              },
+              "inspection": {
+                "archive": {
+                  "members": 17,
+                  "declared_uncompressed_bytes": 513812,
+                  "filenames": [
+                    "[Content_Types].xml",
+                    "_rels/.rels",
+                    "xl/workbook.xml",
+                    "xl/_rels/workbook.xml.rels",
+                    "xl/worksheets/sheet1.xml",
+                    "xl/worksheets/sheet2.xml",
+                    "xl/theme/theme1.xml",
+                    "xl/styles.xml",
+                    "xl/sharedStrings.xml",
+                    "xl/worksheets/_rels/sheet1.xml.rels",
+                    "xl/worksheets/_rels/sheet2.xml.rels",
+                    "xl/printerSettings/printerSettings1.bin",
+                    "xl/printerSettings/printerSettings2.bin",
+                    "xl/tables/table1.xml",
+                    "docProps/core.xml",
+                    "docProps/app.xml",
+                    "docProps/custom.xml"
+                  ]
+                },
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/dental-benefits-schedule-quarterly-statistics-by-state-and-territory-june-quarter-2025-26?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716627261,
+                "asset_name": "552512c70ce82bc23411dcf79840525f0b42e0e78ff694b8c470970d96cd3fd6.xlsx",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "0fd6a14077442f87717f32a8bbe2692a100b8b379c14c49ff0790fe58019224f",
+              "bytes": 356734,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-statistics-year-to-date-dashboards.pdf",
+                "filename": "medicare-statistics-year-to-date-dashboards.pdf",
+                "period_label": "Medicare Statistics \u2013 Year-to-date Dashboards [PDF - 349 KB]",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/0fd6a14077442f87717f32a8bbe2692a100b8b379c14c49ff0790fe58019224f/medicare-statistics-year-to-date-dashboards.pdf"
+              },
+              "inspection": {
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-dashboards?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716627284,
+                "asset_name": "0fd6a14077442f87717f32a8bbe2692a100b8b379c14c49ff0790fe58019224f.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "9255bfd740afe5b7a30d892b9326032ebd9013af8a9892f550123fa01fb292b7",
+              "bytes": 310714,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2026-05/medicare-statistics-year-to-date-dashboards_0.pdf",
+                "filename": "medicare-statistics-year-to-date-dashboards_0.pdf",
+                "period_label": "Medicare Statistics \u2013 Year-to-date Dashboards [PDF - 304 KB]",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/9255bfd740afe5b7a30d892b9326032ebd9013af8a9892f550123fa01fb292b7/medicare-statistics-year-to-date-dashboards_0.pdf"
+              },
+              "inspection": {
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-dashboards?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716627335,
+                "asset_name": "9255bfd740afe5b7a30d892b9326032ebd9013af8a9892f550123fa01fb292b7.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "a53e52194ff0f85b0c80c782a79bf2f79addd2cba922f00b67e9393dc2599cfb",
+              "bytes": 356053,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2026-02/medicare-statistics-year-to-date-dashboards.pdf",
+                "filename": "medicare-statistics-year-to-date-dashboards.pdf",
+                "period_label": "Medicare Statistics \u2013 Year-to-date Dashboards [PDF - 348 KB]",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/a53e52194ff0f85b0c80c782a79bf2f79addd2cba922f00b67e9393dc2599cfb/medicare-statistics-year-to-date-dashboards.pdf"
+              },
+              "inspection": {
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-dashboards?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716627362,
+                "asset_name": "a53e52194ff0f85b0c80c782a79bf2f79addd2cba922f00b67e9393dc2599cfb.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "2c93d302c5e2efbd105f23b6dae9d8bf64fe862c74dbfd9388440a1a7b84527b",
+              "bytes": 352650,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2025-11/medicare-statistics-year-to-date-dashboards.pdf",
+                "filename": "medicare-statistics-year-to-date-dashboards.pdf",
+                "period_label": "Medicare Statistics \u2013 Year-to-date Dashboards [PDF - 345 KB]\n                  - 5 pages",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/2c93d302c5e2efbd105f23b6dae9d8bf64fe862c74dbfd9388440a1a7b84527b/medicare-statistics-year-to-date-dashboards.pdf"
+              },
+              "inspection": {
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-dashboards?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716627417,
+                "asset_name": "2c93d302c5e2efbd105f23b6dae9d8bf64fe862c74dbfd9388440a1a7b84527b.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "2b924cc7400384f7c670111a532c74c49b9610514aa25f07cc111d044cfa7398",
+              "bytes": 406142,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2025-08/medicare-statistics-year-to-date-dashboards.pdf",
+                "filename": "medicare-statistics-year-to-date-dashboards.pdf",
+                "period_label": "Medicare Statistics \u2013 Year-to-date Dashboards [PDF - 397 KB]\n                  - 5 pages",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/2b924cc7400384f7c670111a532c74c49b9610514aa25f07cc111d044cfa7398/medicare-statistics-year-to-date-dashboards.pdf"
+              },
+              "inspection": {
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-dashboards?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716627493,
+                "asset_name": "2b924cc7400384f7c670111a532c74c49b9610514aa25f07cc111d044cfa7398.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "48fda0f3c115181929837df12a109b2bf239ddb5131fa9a0432d503fed30114b",
+              "bytes": 363844,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2025-05/medicare-statistics-year-to-date-dashboards.pdf",
+                "filename": "medicare-statistics-year-to-date-dashboards.pdf",
+                "period_label": "Medicare Statistics \u2013 Year-to-date Dashboards [PDF - 356 KB]\n                  - 5 pages",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/48fda0f3c115181929837df12a109b2bf239ddb5131fa9a0432d503fed30114b/medicare-statistics-year-to-date-dashboards.pdf"
+              },
+              "inspection": {
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-dashboards?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716627527,
+                "asset_name": "48fda0f3c115181929837df12a109b2bf239ddb5131fa9a0432d503fed30114b.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "251dffa8c554731d2e86b6828384978a51b9bcf1d6f1c13cacb361934a6d0d59",
+              "bytes": 352591,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2025-02/2024-09_-_mbs_quarterly_statistics_-_year_to_date_dashboard.pdf",
+                "filename": "2024-09_-_mbs_quarterly_statistics_-_year_to_date_dashboard.pdf",
+                "period_label": "Medicare Statistics \u2013 Year-to-date Dashboards [PDF - 345 KB]\n                  - 5 pages",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/251dffa8c554731d2e86b6828384978a51b9bcf1d6f1c13cacb361934a6d0d59/2024-09_-_mbs_quarterly_statistics_-_year_to_date_dashboard.pdf"
+              },
+              "inspection": {
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-dashboards?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716627575,
+                "asset_name": "251dffa8c554731d2e86b6828384978a51b9bcf1d6f1c13cacb361934a6d0d59.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "e3605c064f140eab3cc877fe1ddab010ad8eac8aff3d310fc82eff8e02d782c8",
+              "bytes": 350725,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2025-02/2024-06_-_mbs_quarterly_statistics_-_year_to_date_dashboard.pdf",
+                "filename": "2024-06_-_mbs_quarterly_statistics_-_year_to_date_dashboard.pdf",
+                "period_label": "Medicare Statistics \u2013 Year-to-date Dashboards [PDF - 343 KB]\n                  - 5 pages",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/e3605c064f140eab3cc877fe1ddab010ad8eac8aff3d310fc82eff8e02d782c8/2024-06_-_mbs_quarterly_statistics_-_year_to_date_dashboard.pdf"
+              },
+              "inspection": {
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-dashboards?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716627618,
+                "asset_name": "e3605c064f140eab3cc877fe1ddab010ad8eac8aff3d310fc82eff8e02d782c8.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "4ea38d23ca8761103c0a7a61239c5d04ce3e65123b78c89ac4a587fe2fc8b0d3",
+              "bytes": 351365,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2025-02/2024-03_-_mbs_quarterly_statistics_-_year_to_date_dashboard.pdf",
+                "filename": "2024-03_-_mbs_quarterly_statistics_-_year_to_date_dashboard.pdf",
+                "period_label": "Medicare Statistics \u2013 Year-to-date Dashboards [PDF - 344 KB]\n                  - 5 pages",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/4ea38d23ca8761103c0a7a61239c5d04ce3e65123b78c89ac4a587fe2fc8b0d3/2024-03_-_mbs_quarterly_statistics_-_year_to_date_dashboard.pdf"
+              },
+              "inspection": {
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-dashboards?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716627647,
+                "asset_name": "4ea38d23ca8761103c0a7a61239c5d04ce3e65123b78c89ac4a587fe2fc8b0d3.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "bc822c4a0b0f33d6d23be6864d2f0dec0a95f71232b1ab7c8271db82eff65275",
+              "bytes": 351282,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2025-02/2023-12_-_mbs_quarterly_statistics_-_year_to_date_dashboard.pdf",
+                "filename": "2023-12_-_mbs_quarterly_statistics_-_year_to_date_dashboard.pdf",
+                "period_label": "Medicare Statistics \u2013 Year-to-date Dashboards [PDF - 344 KB]\n                  - 5 pages",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/bc822c4a0b0f33d6d23be6864d2f0dec0a95f71232b1ab7c8271db82eff65275/2023-12_-_mbs_quarterly_statistics_-_year_to_date_dashboard.pdf"
+              },
+              "inspection": {
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-dashboards?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716627782,
+                "asset_name": "bc822c4a0b0f33d6d23be6864d2f0dec0a95f71232b1ab7c8271db82eff65275.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "dab4fdf2b4b62df2445c5a7f84ab7ab23491e44e99f9319c2b77aac409b974ce",
+              "bytes": 350325,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2025-02/2023-09_-_mbs_quarterly_statistics_-_year_to_date_dashboard.pdf",
+                "filename": "2023-09_-_mbs_quarterly_statistics_-_year_to_date_dashboard.pdf",
+                "period_label": "Medicare Statistics \u2013 Year-to-date Dashboards [PDF - 343 KB]\n                  - 5 pages",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/dab4fdf2b4b62df2445c5a7f84ab7ab23491e44e99f9319c2b77aac409b974ce/2023-09_-_mbs_quarterly_statistics_-_year_to_date_dashboard.pdf"
+              },
+              "inspection": {
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-dashboards?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716627840,
+                "asset_name": "dab4fdf2b4b62df2445c5a7f84ab7ab23491e44e99f9319c2b77aac409b974ce.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            }
+          ]
+        },
+        {
+          "id": "mbs-04",
+          "files": [
+            {
+              "sha256": "2784d51e2155391a82ddccd141e98c175163d8af0087ebcecc56cc87e866d56d",
+              "bytes": 349622,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2025-02/2023-06_-_mbs_quarterly_statistics_-_year_to_date_dashboard.pdf",
+                "filename": "2023-06_-_mbs_quarterly_statistics_-_year_to_date_dashboard.pdf",
+                "period_label": "Medicare Statistics \u2013 Year-to-date Dashboards [PDF - 342 KB]\n                  - 5 pages",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/2784d51e2155391a82ddccd141e98c175163d8af0087ebcecc56cc87e866d56d/2023-06_-_mbs_quarterly_statistics_-_year_to_date_dashboard.pdf"
+              },
+              "inspection": {
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-dashboards?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716627936,
+                "asset_name": "2784d51e2155391a82ddccd141e98c175163d8af0087ebcecc56cc87e866d56d.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "088de98ff67d07697806fb3f07d2aec4f83d639f11edf486357c5fb708ec5271",
+              "bytes": 362859,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2023-08/medicare-statistics-year-to-date-dashboards.pdf",
+                "filename": "medicare-statistics-year-to-date-dashboards.pdf",
+                "period_label": "Medicare Statistics \u2013 Year-to-date Dashboards [PDF - 355 KB]\n                  - 4 pages",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/088de98ff67d07697806fb3f07d2aec4f83d639f11edf486357c5fb708ec5271/medicare-statistics-year-to-date-dashboards.pdf"
+              },
+              "inspection": {
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-dashboards?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716653148,
+                "asset_name": "088de98ff67d07697806fb3f07d2aec4f83d639f11edf486357c5fb708ec5271.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "8e178ee8d09b8c008f7da58d7e807cfa8d012ba7a22b04a9876001b17cebe436",
+              "bytes": 332718,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2023-08/2022-12_-_mbs_quarterly_statistics_-_year_to_date_dashboard_0.pdf",
+                "filename": "2022-12_-_mbs_quarterly_statistics_-_year_to_date_dashboard_0.pdf",
+                "period_label": "Medicare Statistics \u2013 Year-to-date Dashboards [PDF - 325 KB]\n                  - 3 pages",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/8e178ee8d09b8c008f7da58d7e807cfa8d012ba7a22b04a9876001b17cebe436/2022-12_-_mbs_quarterly_statistics_-_year_to_date_dashboard_0.pdf"
+              },
+              "inspection": {
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-dashboards?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716653156,
+                "asset_name": "8e178ee8d09b8c008f7da58d7e807cfa8d012ba7a22b04a9876001b17cebe436.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "9fdc5ffab06b892ecfbfb95b9b1d92ebbe0202e96d10d51409ef88caae4d3e5e",
+              "bytes": 224592,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-statistics-per-patient-bulk-billing-dashboards.pdf",
+                "filename": "medicare-statistics-per-patient-bulk-billing-dashboards.pdf",
+                "period_label": "Medicare Statistics \u2013 per patient bulk billing dashboards [PDF - 220 KB]",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/9fdc5ffab06b892ecfbfb95b9b1d92ebbe0202e96d10d51409ef88caae4d3e5e/medicare-statistics-per-patient-bulk-billing-dashboards.pdf"
+              },
+              "inspection": {
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-statistics-per-patient-bulk-billing-dashboards?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716653149,
+                "asset_name": "9fdc5ffab06b892ecfbfb95b9b1d92ebbe0202e96d10d51409ef88caae4d3e5e.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "c07d8d2bcd8d77cf39ca3ab1422f665780c75b6a8984070dce43497839066010",
+              "bytes": 245813,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2025-08/medicare-statistics-per-patient-bulk-billing-dashboards.pdf",
+                "filename": "medicare-statistics-per-patient-bulk-billing-dashboards.pdf",
+                "period_label": "Medicare Statistics \u2013 per patient bulk billing dashboards [PDF - 241 KB]\n                  - 4 pages",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/c07d8d2bcd8d77cf39ca3ab1422f665780c75b6a8984070dce43497839066010/medicare-statistics-per-patient-bulk-billing-dashboards.pdf"
+              },
+              "inspection": {
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-statistics-per-patient-bulk-billing-dashboards?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716653405,
+                "asset_name": "c07d8d2bcd8d77cf39ca3ab1422f665780c75b6a8984070dce43497839066010.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "8b8e62b050ba384f8d5b784c2b5c47a8af368d0b86fd35a395028b96324fc241",
+              "bytes": 194241,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2024-08/medicare-statistics-per-patient-bulk-billing-dashboards_0.pdf",
+                "filename": "medicare-statistics-per-patient-bulk-billing-dashboards_0.pdf",
+                "period_label": "Medicare Statistics \u2013 per patient bulk billing dashboards [PDF - 190 KB]\n                  - 4 pages",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/8b8e62b050ba384f8d5b784c2b5c47a8af368d0b86fd35a395028b96324fc241/medicare-statistics-per-patient-bulk-billing-dashboards_0.pdf"
+              },
+              "inspection": {
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-statistics-per-patient-bulk-billing-dashboards?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716653293,
+                "asset_name": "8b8e62b050ba384f8d5b784c2b5c47a8af368d0b86fd35a395028b96324fc241.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "a9dd0f26ed5cc035d96a0fa90c4e1da7aa6cdc19c505d2e321b70eef873ef33f",
+              "bytes": 238824,
+              "resource": {
+                "source_id": "au-health-medicare-statistics",
+                "category": "medicare_statistics_collection_attachment",
+                "url": "https://www.health.gov.au/sites/default/files/2024-08/2022-06_-_mbs_financial_year_statistics_-_patient_bulk_billing_ranges_dashboard.pdf",
+                "filename": "2022-06_-_mbs_financial_year_statistics_-_patient_bulk_billing_ranges_dashboard.pdf",
+                "period_label": "Medicare Statistics \u2013 per patient bulk billing dashboards [PDF - 234 KB]\n                  - 4 pages",
+                "archive_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/a9dd0f26ed5cc035d96a0fa90c4e1da7aa6cdc19c505d2e321b70eef873ef33f/2022-06_-_mbs_financial_year_statistics_-_patient_bulk_billing_ranges_dashboard.pdf"
+              },
+              "inspection": {
+                "publisher_licence_id": "see publisher attachment and source terms",
+                "source_page": "https://www.health.gov.au/resources/publications/medicare-statistics-per-patient-bulk-billing-dashboards?language=en"
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716653302,
+                "asset_name": "a9dd0f26ed5cc035d96a0fa90c4e1da7aa6cdc19c505d2e321b70eef873ef33f.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "a40d8c545cca58c7fcbd4e7b6c6b7c913c4d4619e1761bf845dee9af7c9dcaf7",
+              "bytes": 452401,
+              "resource": {
+                "source_id": "au-aihw-mbs-aggregate",
+                "category": "aihw_mbs_historical_report",
+                "url": "https://www.aihw.gov.au/getmedia/b9feb4a2-38c0-403d-8b37-41cb745d8955/Medicare-subsidised_mental_health-specific_services_2020-21.pdf.aspx",
+                "filename": "Medicare-subsidised_mental_health-specific_services_2020-21.pdf",
+                "period_label": "PDF: Medicare-subsidised mental health-specific services 2020-21",
+                "archive_path": "raw/mbs/public-backfill/aihw_mbs_historical_report/a40d8c545cca58c7fcbd4e7b6c6b7c913c4d4619e1761bf845dee9af7c9dcaf7/Medicare-subsidised_mental_health-specific_services_2020-21.pdf"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/b9feb4a2-38c0-403d-8b37-41cb745d8955/medicare-subsidised_mental_health-specific_services_2020-21.pdf.aspx",
+              "inspection": {
+                "publisher_licence_id": "see AIHW copyright and source footnotes",
+                "public_companion_report": true,
+                "text_characters": 48141
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716653538,
+                "asset_name": "a40d8c545cca58c7fcbd4e7b6c6b7c913c4d4619e1761bf845dee9af7c9dcaf7.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "504eb5129bb3f0e2560727672ceb79ce75526cf7e9b5a54c22458d33b7d94689",
+              "bytes": 338593,
+              "resource": {
+                "source_id": "au-aihw-mbs-aggregate",
+                "category": "aihw_mbs_historical_report",
+                "url": "https://www.aihw.gov.au/getmedia/78aad118-149e-49e3-bacf-6be3cf8d1734/MEDICA-1.PDF.aspx",
+                "filename": "MEDICA-1.PDF",
+                "period_label": "PDF: Medicare-subsidised mental health-specific services 2019-20",
+                "archive_path": "raw/mbs/public-backfill/aihw_mbs_historical_report/504eb5129bb3f0e2560727672ceb79ce75526cf7e9b5a54c22458d33b7d94689/MEDICA-1.PDF"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/78aad118-149e-49e3-bacf-6be3cf8d1734/medica-1.pdf.aspx",
+              "inspection": {
+                "publisher_licence_id": "see AIHW copyright and source footnotes",
+                "public_companion_report": true,
+                "text_characters": 43686
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716653609,
+                "asset_name": "504eb5129bb3f0e2560727672ceb79ce75526cf7e9b5a54c22458d33b7d94689.PDF",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "4b4b11454e136626c6b982e0b20370b6efefa17e777ba7af8e9932e8f2736941",
+              "bytes": 580764,
+              "resource": {
+                "source_id": "au-aihw-mbs-aggregate",
+                "category": "aihw_mbs_historical_report",
+                "url": "https://www.aihw.gov.au/getmedia/34a59e46-888c-4988-8097-65bd7f4d5504/Medicare-subsidised-mental-health-related-services-2017-18.pdf.aspx",
+                "filename": "Medicare-subsidised-mental-health-related-services-2017-18.pdf",
+                "period_label": "PDF: Medicare-subsidised mental health-specific services 2017-18",
+                "archive_path": "raw/mbs/public-backfill/aihw_mbs_historical_report/4b4b11454e136626c6b982e0b20370b6efefa17e777ba7af8e9932e8f2736941/Medicare-subsidised-mental-health-related-services-2017-18.pdf"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/34a59e46-888c-4988-8097-65bd7f4d5504/medicare-subsidised-mental-health-related-services-2017-18.pdf.aspx",
+              "inspection": {
+                "publisher_licence_id": "see AIHW copyright and source footnotes",
+                "public_companion_report": true,
+                "text_characters": 22568
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716653758,
+                "asset_name": "4b4b11454e136626c6b982e0b20370b6efefa17e777ba7af8e9932e8f2736941.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "69e71d1e2c757fa43a581bf7f639d484dfff9295ca7c80dbcb5c6a8db739377c",
+              "bytes": 292245,
+              "resource": {
+                "source_id": "au-aihw-mbs-aggregate",
+                "category": "aihw_mbs_historical_report",
+                "url": "https://www.aihw.gov.au/getmedia/66853416-fffe-480e-a40c-2211139077ed/Medicare-subsidised-mental-health-related-services-2018-19.pdf.aspx",
+                "filename": "Medicare-subsidised-mental-health-related-services-2018-19.pdf",
+                "period_label": "PDF: Medicare-subsidised mental health-specific services 2018-19",
+                "archive_path": "raw/mbs/public-backfill/aihw_mbs_historical_report/69e71d1e2c757fa43a581bf7f639d484dfff9295ca7c80dbcb5c6a8db739377c/Medicare-subsidised-mental-health-related-services-2018-19.pdf"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/66853416-fffe-480e-a40c-2211139077ed/medicare-subsidised-mental-health-related-services-2018-19.pdf.aspx",
+              "inspection": {
+                "publisher_licence_id": "see AIHW copyright and source footnotes",
+                "public_companion_report": true,
+                "text_characters": 30312
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716653974,
+                "asset_name": "69e71d1e2c757fa43a581bf7f639d484dfff9295ca7c80dbcb5c6a8db739377c.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            },
+            {
+              "sha256": "2b2fd8bb0c464e11d5f0c9c7d8b65a80796daebe85bfee9a1ae249f5f9bfb902",
+              "bytes": 562885,
+              "resource": {
+                "source_id": "au-aihw-mbs-aggregate",
+                "category": "aihw_mbs_historical_report",
+                "url": "https://www.aihw.gov.au/getmedia/eb4b7a2d-270a-4a7d-ab16-f16907585d6e/Medicare-Benefits-Schedule-2016-17.pdf.aspx",
+                "filename": "Medicare-Benefits-Schedule-2016-17.pdf",
+                "period_label": "PDF: Medicare-subsidised mental health-related services 2016-17",
+                "archive_path": "raw/mbs/public-backfill/aihw_mbs_historical_report/2b2fd8bb0c464e11d5f0c9c7d8b65a80796daebe85bfee9a1ae249f5f9bfb902/Medicare-Benefits-Schedule-2016-17.pdf"
+              },
+              "resolved_public_url": "https://www.aihw.gov.au/getmedia/eb4b7a2d-270a-4a7d-ab16-f16907585d6e/medicare-benefits-schedule-2016-17.pdf.aspx",
+              "inspection": {
+                "publisher_licence_id": "see AIHW copyright and source footnotes",
+                "public_companion_report": true,
+                "text_characters": 22827
+              },
+              "draft_transport": {
+                "release_id": 436314022,
+                "asset_id": 716654069,
+                "asset_name": "2b2fd8bb0c464e11d5f0c9c7d8b65a80796daebe85bfee9a1ae249f5f9bfb902.pdf",
+                "tag_name": "codex-public-transport-20261106",
+                "target_commitish": "c707a021c21e464ac4ed99f7a1d849d52f2a2ac0"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

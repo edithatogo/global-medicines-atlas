@@ -11,7 +11,10 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import Mock
 
+import httpx
 import pytest
+from scripts import public_draft_transport as transport
+from scripts import publish_incremental_public_archives as incremental
 from scripts import publish_remaining_public_archives as subject
 
 
@@ -608,3 +611,381 @@ def test_noop_without_prior_anonymous_proof_fails_closed(monkeypatch, tmp_path):
     with pytest.raises(RuntimeError, match="No prior anonymous proof"):
         subject.publish(sdk, expected, tmp_path)
     api.create_commit.assert_not_called()
+
+
+@pytest.fixture
+def draft_transport(monkeypatch):
+    payload, item, _, _ = cohort()
+    item["draft_transport"] = {
+        "release_id": 10,
+        "asset_id": 20,
+        "asset_name": "public.csv",
+        "tag_name": "temporary",
+        "target_commitish": "reviewed",
+    }
+    asset = {
+        "id": 20,
+        "name": "public.csv",
+        "size": len(payload),
+        "digest": "sha256:" + item["sha256"],
+        "state": "uploaded",
+        "url": transport.API + "/releases/assets/20",
+    }
+    release = {
+        "id": 10,
+        "draft": True,
+        "published_at": None,
+        "tag_name": "temporary",
+        "target_commitish": "reviewed",
+        "author": {"login": "edithatogo"},
+        "assets": [asset],
+    }
+    requests = []
+    settings = {
+        "redirect": True,
+        "host": transport.ASSET_HOST,
+        "body": payload,
+        "status": 200,
+        "network_error": False,
+    }
+    real_client = httpx.Client
+
+    def handler(request):
+        requests.append(request)
+        if request.url.path.endswith("/releases/10"):
+            return httpx.Response(200, json=release)
+        if request.url.host == "api.github.com":
+            if settings["redirect"]:
+                return httpx.Response(
+                    302,
+                    headers={
+                        "location": "https://"
+                        + settings["host"]
+                        + "/asset?token=synthetic"
+                    },
+                )
+            return httpx.Response(settings["status"], content=settings["body"])
+        if settings["network_error"]:
+            raise httpx.ReadTimeout(
+                "signed URL token=synthetic", request=request
+            )
+        return httpx.Response(settings["status"], content=settings["body"])
+
+    monkeypatch.setenv("GH_TOKEN", "synthetic")
+    monkeypatch.setattr(
+        transport.httpx,
+        "Client",
+        lambda **kwargs: real_client(
+            transport=httpx.MockTransport(handler), **kwargs
+        ),
+    )
+    return transport, payload, item, release, asset, requests, settings
+
+
+@pytest.mark.parametrize("redirect", [True, False])
+def test_draft_exact_read_and_bearer_boundary(draft_transport, redirect):
+    t, payload, item, _, _, requests, settings = draft_transport
+    settings["redirect"] = redirect
+    assert t.read_draft_payload(item) == payload
+    for request in requests:
+        assert request.headers.get("authorization") == (
+            "Bearer synthetic" if request.url.host == "api.github.com" else None
+        )
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("release_id", True),
+        ("release_id", 0),
+        ("asset_id", "20"),
+        ("asset_id", -1),
+    ],
+)
+def test_draft_identity_rejected_before_network(draft_transport, field, value):
+    t, _, item, _, _, requests, _ = draft_transport
+    item["draft_transport"][field] = value
+    with pytest.raises(ValueError, match="identity"):
+        t.read_draft_payload(item)
+    assert not requests
+
+
+@pytest.mark.parametrize("value", [0, 512 * 1024**2 + 1])
+def test_draft_payload_bound_rejected(draft_transport, value):
+    t, _, item, _, _, requests, _ = draft_transport
+    item["bytes"] = value
+    with pytest.raises(ValueError, match="identity"):
+        t.read_draft_payload(item)
+    assert not requests
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("id", 11),
+        ("draft", False),
+        ("published_at", "published"),
+        ("tag_name", "other"),
+        ("target_commitish", "other"),
+        ("author", {"login": "other"}),
+    ],
+)
+def test_draft_state_or_owner_change_rejected(draft_transport, field, value):
+    t, _, item, release, _, requests, _ = draft_transport
+    release[field] = value
+    with pytest.raises(ValueError, match="ownership or state"):
+        t.read_draft_payload(item)
+    assert len(requests) == 1
+
+
+@pytest.mark.parametrize("assets", [[], [20, 20]])
+def test_draft_missing_or_ambiguous_asset_rejected(draft_transport, assets):
+    t, _, item, release, asset, _, _ = draft_transport
+    release["assets"] = [asset for _ in assets]
+    with pytest.raises(ValueError, match="missing or ambiguous"):
+        t.read_draft_payload(item)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("name", "other"),
+        ("state", "starter"),
+        ("size", 1),
+        ("digest", "sha256:wrong"),
+        ("url", "https://untrusted.invalid/asset"),
+    ],
+)
+def test_draft_metadata_substitution_rejected(draft_transport, field, value):
+    t, _, item, _, asset, requests, _ = draft_transport
+    asset[field] = value
+    with pytest.raises(ValueError, match="metadata differs"):
+        t.read_draft_payload(item)
+    assert len(requests) == 1
+
+
+def test_draft_redirect_and_response_boundaries(draft_transport):
+    t, payload, item, _, _, requests, settings = draft_transport
+    settings["host"] = "untrusted.invalid"
+    with pytest.raises(ValueError, match="redirect target denied"):
+        t.read_draft_payload(item)
+    assert all(r.url.host == "api.github.com" for r in requests)
+    settings["host"] = t.ASSET_HOST
+    settings["status"] = 206
+    with pytest.raises(ValueError, match="complete object"):
+        t.read_draft_payload(item)
+    settings["status"] = 200
+    settings["body"] = payload + b"x"
+    with pytest.raises(ValueError, match="byte bound"):
+        t.read_draft_payload(item)
+    settings["body"] = payload[:-1]
+    with pytest.raises(ValueError, match="length differs"):
+        t.read_draft_payload(item)
+    settings["redirect"] = False
+    settings["status"] = 404
+    with pytest.raises(ValueError, match="unavailable; URL withheld"):
+        t.read_draft_payload(item)
+
+
+def test_draft_network_error_withholds_signed_url(draft_transport):
+    t, _, item, _, _, _, settings = draft_transport
+    settings["network_error"] = True
+    with pytest.raises(RuntimeError, match="URLs withheld") as error:
+        t.read_draft_payload(item)
+    assert "token=" not in str(error.value)
+    assert error.value.__suppress_context__
+
+
+@pytest.mark.usefixtures("_hosted")
+def test_draft_source_provenance_and_atomic_failure(tmp_path, monkeypatch):
+    payload, item, existing, expected = cohort()
+    item["draft_transport"] = {"release_id": 10, "asset_id": 20}
+    monkeypatch.setattr(subject, "read_draft_payload", lambda _item: payload)
+    stages, coverage = subject.stage_public_sources(
+        expected, tmp_path / "stage", {f["path"]: f for f in existing["files"]}
+    )
+    receipt = json.loads(stages[0].staged_receipt_path.read_text())
+    assert receipt["source_url"] == item["resource"]["url"]
+    assert receipt["retrieved_at_role"] == "hosted public-copy materialization"
+    assert receipt["transport"]["asset_id"] == 20
+    assert coverage["coverage_status"] == "complete"
+    monkeypatch.setattr(
+        subject,
+        "read_draft_payload",
+        Mock(side_effect=ValueError("draft state changed")),
+    )
+    with pytest.raises(ValueError, match="state changed"):
+        subject.stage_public_sources(expected, tmp_path / "failed", {})
+
+
+@pytest.fixture
+def incremental_setup(tmp_path, monkeypatch, _hosted):
+    _, item, _, expected = cohort()
+    item["draft_transport"] = {"release_id": 10, "asset_id": 20}
+    archive = dict(
+        expected,
+        batches=[
+            {"id": "mbs-01", "files": [item]},
+            {"id": "mbs-02", "files": [item]},
+        ],
+    )
+    archive.pop("files")
+    archive["prior_verification_run"] = [123]
+    contract = tmp_path / "contract.json"
+    contract.write_text(
+        json.dumps({
+            "external_publication_authorized": True,
+            "archives": {"mbs": archive},
+        })
+    )
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("PUBLIC_ARCHIVE_DESTINATION", "mbs")
+    monkeypatch.setenv("HF_HOME", str(tmp_path / "build/mbs-util-hf-home"))
+    monkeypatch.setattr(incremental, "CONTRACT", contract)
+    monkeypatch.setattr(incremental, "CHECKPOINTS", tmp_path / "checkpoints")
+    result = {
+        "dataset": archive["dataset"],
+        "new_payloads": 1,
+        "anonymous_digest_verification": "passed",
+        "manifest_sha256": "digest",
+        "revision": "next",
+        "workflow_commit": "reviewed",
+        "workflow_run": "123",
+        "run_coverage": {"coverage_status": "complete", "failed_resources": []},
+        "temporary_source_bytes_removed": False,
+    }
+    mock = Mock(side_effect=lambda *_args: dict(result))
+    monkeypatch.setattr(incremental, "publish", mock)
+    return incremental, archive, contract, result, mock
+
+
+def test_incremental_parent_chain_and_cleanup(incremental_setup, tmp_path):
+    inc, archive, _, _, publish_mock = incremental_setup
+    for directory in ["build/harvest", "build/mbs-util-hf-home"]:
+        q = tmp_path / directory
+        q.mkdir(parents=True)
+        (q / "public-source").write_bytes(b"synthetic")
+    first = inc.execute_batch(None, 1)
+    assert first["batch_id"] == "mbs-01"
+    assert first["temporary_source_bytes_removed"] is True
+    assert not (tmp_path / "build/harvest").exists()
+    assert not (tmp_path / "build/mbs-util-hf-home").exists()
+    second = inc.execute_batch(None, 2)
+    expected = publish_mock.call_args.args[1]
+    assert expected["parent_revision"] == first["revision"]
+    assert expected["manifest_sha256"] == first["manifest_sha256"]
+    assert expected["prior_verification_run"] == [123, 123]
+    assert second["incremental_total_new_payloads"] == 2
+    with pytest.raises(ValueError, match="substitute another parent"):
+        inc.batch_expectation(archive, 1, first)
+    assert inc.execute_batch(None, 6)["status"] == "not applicable"
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("batch_id", "other"),
+        ("dataset", "other"),
+        ("workflow_commit", "other"),
+        ("workflow_run", "other"),
+        ("anonymous_digest_verification", "failed"),
+        ("run_coverage", {"coverage_status": "partial"}),
+        ("new_payloads", 0),
+        ("temporary_source_bytes_removed", False),
+        ("manifest_sha256", ""),
+        ("revision", ""),
+    ],
+)
+def test_incremental_wrong_prior_proof_rejected(
+    incremental_setup, field, value
+):
+    inc, archive, _, _, _ = incremental_setup
+    proof = inc.execute_batch(None, 1)
+    proof[field] = value
+    with pytest.raises(RuntimeError, match="proof missing or invalid"):
+        inc.batch_expectation(archive, 2, proof)
+    with pytest.raises(RuntimeError, match="proof missing or invalid"):
+        inc.batch_expectation(archive, 2, None)
+
+
+@pytest.mark.parametrize("mode", ["empty", "too_many", "no_transport", "large"])
+def test_incremental_invalid_batch_rejected(incremental_setup, mode):
+    inc, archive, _, _, _ = incremental_setup
+    files = archive["batches"][0]["files"]
+    if mode == "empty":
+        files.clear()
+    elif mode == "too_many":
+        files *= 21
+    elif mode == "no_transport":
+        files[0].pop("draft_transport")
+    else:
+        files[0]["bytes"] = 64 * 1024**2
+        files *= 2
+    with pytest.raises(ValueError, match="incremental profile"):
+        inc.batch_expectation(archive, 1, None)
+    with pytest.raises(ValueError, match="outside committed"):
+        inc.batch_expectation(archive, 0, None)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("new_payloads", 0),
+        ("anonymous_digest_verification", "failed"),
+        ("run_coverage", {"coverage_status": "partial"}),
+        ("manifest_sha256", ""),
+    ],
+)
+def test_incremental_failed_batch_cannot_cleanup(
+    incremental_setup, field, value
+):
+    inc, _, _, result, _ = incremental_setup
+    result[field] = value
+    with pytest.raises(RuntimeError, match="exact cohort"):
+        inc.execute_batch(None, 1)
+    assert not inc.CHECKPOINTS.exists()
+
+
+def test_incremental_authority_destination_and_cache_guard(
+    incremental_setup, monkeypatch
+):
+    inc, _, path, _, mock = incremental_setup
+    contract = json.loads(path.read_text())
+    contract["external_publication_authorized"] = False
+    path.write_text(json.dumps(contract))
+    with pytest.raises(PermissionError, match="not authorized"):
+        inc.execute_batch(None, 1)
+    contract["external_publication_authorized"] = True
+    contract["archives"]["mbs"]["dataset"] = "other"
+    path.write_text(json.dumps(contract))
+    with pytest.raises(ValueError, match="destination differs"):
+        inc.execute_batch(None, 1)
+    contract["archives"]["mbs"]["dataset"] = (
+        "edithatogo/australian-mbs-utilisation-archive"
+    )
+    path.write_text(json.dumps(contract))
+    monkeypatch.setenv("HF_HOME", "/outside-owned-cache")
+    with pytest.raises(ValueError, match="cache differs"):
+        inc.execute_batch(None, 1)
+    assert not mock.called
+
+
+@pytest.mark.parametrize(("index", "applied"), [(1, "true"), (6, "false")])
+def test_incremental_main_outputs(
+    incremental_setup, monkeypatch, tmp_path, index, applied
+):
+    inc, _, _, _, _ = incremental_setup
+    output = tmp_path / "output"
+    monkeypatch.setenv("PUBLIC_BATCH_INDEX", str(index))
+    monkeypatch.setenv("GITHUB_OUTPUT", str(output))
+    monkeypatch.setattr(inc.importlib, "import_module", lambda _name: None)
+    inc.main()
+    assert output.read_text() == "applied=" + applied + "\n"
+    monkeypatch.setenv("PUBLIC_BATCH_INDEX", "7")
+    with pytest.raises(ValueError, match="fixed workflow"):
+        inc.main()
+    monkeypatch.delenv("GITHUB_ACTIONS")
+    with pytest.raises(PermissionError, match="Actions main"):
+        inc.main()
+    with pytest.raises(PermissionError, match="Actions main"):
+        inc.execute_batch(None, 1)

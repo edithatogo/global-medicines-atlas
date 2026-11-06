@@ -1533,3 +1533,15 @@ Owner/scope and exact evidence are in the existing comparison report.
 - [ ] Protected integration, Actions-only append, anonymous new-object verification and prior-manifest preservation.
 
 Owner, native scope and stop condition: [remaining archive work](../../../docs/qualification/remaining-public-archives-20261106.md).
+
+### Incremental retained public-copy publication
+
+- [x] Publish and anonymously verify the reachable 153-file increment; preserve
+  all 31 prior MBS manifest entries (PR #1421, hosted run 42140010940).
+- [x] Reconcile 72 remaining exact public payloads with current HF; stage only
+  digest-approved copies in an unpublished draft outside Git history.
+- [~] Qualify bounded draft transport and same-run parent chaining through
+  protected CI; retain original source provenance and participant exclusions.
+- [ ] Publish five PBS and four MBS batches from Actions, verify each checkpoint,
+  remove only its temporary assets/copies, restore disabled workflow states and
+  remove the empty unpublished draft. Keep the source's ATC2 monthly 404 explicit.
