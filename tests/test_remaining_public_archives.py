@@ -13,6 +13,7 @@ from unittest.mock import Mock
 
 import httpx
 import pytest
+import yaml
 from scripts import public_draft_transport as transport
 from scripts import publish_incremental_public_archives as incremental
 from scripts import publish_remaining_public_archives as subject
@@ -1053,3 +1054,31 @@ def test_incremental_pbs_matches_configured_workflow_cache(
     assert receipt["batch_id"] == "pbs-01"
     assert mock.called
     assert (tmp_path / "build/pbs-utilisation-harvest-receipt.json").exists()
+
+
+@pytest.mark.parametrize("destination", ["pbs", "mbs"])
+def test_draft_access_role_is_manual_only(destination):
+    workflow = yaml.safe_load(
+        (
+            Path(__file__).resolve().parents[1]
+            / ".github"
+            / "workflows"
+            / f"australian-{destination}-utilisation-harvest.yml"
+        ).read_text()
+    )
+    routine = workflow["jobs"]["harvest"]
+    incremental_job = workflow["jobs"]["incremental"]
+    assert routine["permissions"]["contents"] == "read"
+    assert routine["if"] == "inputs.incremental_public != true"
+    assert incremental_job["if"] == "inputs.incremental_public == true"
+    assert incremental_job["permissions"] == {"contents": "write"}
+    assert incremental_job["environment"] == "australian-hf-publication"
+    assert incremental_job["steps"] is routine["steps"]
+    assert incremental_job["env"] is routine["env"]
+    assert workflow["permissions"] == {}
+
+
+def test_draft_http_status_diagnostic_contains_no_url():
+    with pytest.raises(ValueError, match="HTTP 404") as error:
+        transport.bounded_body(httpx.Response(404), 100)
+    assert "https:" not in str(error.value)
