@@ -1085,3 +1085,85 @@ def test_draft_http_status_diagnostic_contains_no_url():
     with pytest.raises(ValueError, match="HTTP 404") as error:
         transport.bounded_body(httpx.Response(404), 100)
     assert "https:" not in str(error.value)
+
+
+@pytest.mark.usefixtures("_hosted")
+@pytest.mark.parametrize("destination", ["pbs", "mbs"])
+def test_historical_atc2_uses_fixed_pbs_contract(
+    monkeypatch, tmp_path, destination
+):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("HISTORICAL_ATC2", "1")
+    monkeypatch.setenv("PUBLIC_ARCHIVE_DESTINATION", destination)
+    path = Path("quality/qualifications/historical-atc2-public-20261106.json")
+    path.parent.mkdir(parents=True)
+    path.write_text(
+        json.dumps({
+            "external_publication_authorized": True,
+            "archives": {
+                "pbs": {
+                    "dataset": "edithatogo/australian-pbs-utilisation-archive",
+                    "files": ["exact-reviewed-cohort"],
+                }
+            },
+        }),
+        encoding="utf-8",
+    )
+    Path("build").mkdir()
+    publish = Mock(return_value={"anonymous_digest_verification": "passed"})
+    monkeypatch.setattr(subject, "publish", publish)
+    monkeypatch.setattr(subject.importlib, "import_module", lambda _: None)
+    if destination == "mbs":
+        with pytest.raises(ValueError, match="restricted to PBS"):
+            subject.main()
+        publish.assert_not_called()
+    else:
+        subject.main()
+        assert publish.call_args.args[1]["files"] == ["exact-reviewed-cohort"]
+        assert Path("build/pbs-utilisation-harvest-receipt.json").is_file()
+
+
+def test_historical_atc2_retains_acquisition_audit():
+    workflow = yaml.safe_load(
+        Path(
+            ".github/workflows/australian-pbs-utilisation-harvest.yml"
+        ).read_text(encoding="utf-8")
+    )
+    steps = workflow["jobs"]["harvest"]["steps"]
+    step = next(
+        s
+        for s in steps
+        if s.get("name") == "Retain exact public acquisition outcomes"
+    )
+    assert "always()" in step["if"]
+    assert "inputs.historical_atc2 == true" in step["if"]
+    assert step["with"]["path"].endswith("acquisition.json")
+
+
+@pytest.mark.usefixtures("_hosted")
+def test_required_notices_failure_prevents_any_public_commit(
+    monkeypatch, tmp_path
+):
+    payload, item, existing, expected = cohort()
+    missing = json.loads(json.dumps(item))
+    missing["resource"]["filename"] = "required-notice.txt"
+    missing["resource"]["url"] = "https://data.gov.au/notice.txt"
+    missing["sha256"] = "f" * 64
+    expected["files"] = [item, missing]
+    expected["require_complete_acquisition"] = True
+    monkeypatch.setattr(subject, "snapshot", lambda *_: ("parent", existing))
+
+    def read(url, _limit):
+        if url.endswith("notice.txt"):
+            raise TimeoutError("Required notice unavailable")
+        return payload, url
+
+    monkeypatch.setattr(subject, "read_public_payload", read)
+    sdk, api = sdk_fixture(tmp_path, existing)
+    with pytest.raises(RuntimeError, match="cohort incomplete; HF unchanged"):
+        subject.publish(sdk, expected, tmp_path / "stage")
+    api.create_commit.assert_not_called()
+    audit = json.loads(
+        (tmp_path / "stage/acquisition.json").read_text(encoding="utf-8")
+    )
+    assert audit["coverage_status"] == "partial"

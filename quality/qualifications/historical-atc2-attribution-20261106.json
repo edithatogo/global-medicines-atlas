@@ -1,0 +1,41 @@
+{
+  "title": "Historical PBS ATC2 teaching dataset, July 1991 to June 2008",
+  "attribution": "Medicare Australia (original statistics); Mitchell O\u2019Hara-Wild, Rob Hyndman, Earo Wang and Rakshitha Godahewa (tsibbledata); Mitchell O\u2019Hara-Wild (R/Medicine 2024 workshop CSV).",
+  "workshop_commit": "169cd721399364b4b7de065639d8377b2cfd1004",
+  "upstream_commit": "ccfcb321bb4f0e12b7287f5a8f752097e35a20a5",
+  "notices": [
+    {
+      "declared_by": "R/Medicine 2024 workshop",
+      "licence": "CC BY 4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    {
+      "declared_by": "tsibbledata package DESCRIPTION",
+      "licence": "GPL-3",
+      "url": "https://www.gnu.org/licenses/gpl-3.0.html"
+    }
+  ],
+  "licensing_scope": "Both upstream declarations retained; neither is replaced by project Apache-2.0. Maintainer approved archiving with both notices on 6 November 2026. No assertion that the workshop relabels upstream rights.",
+  "source_transformations": [
+    "ATC descriptions added",
+    "wide source reshaped",
+    "concession/payment type recoded",
+    "missing month/key combinations filled with Scripts=0 and Cost=0 by upstream fill_gaps"
+  ],
+  "zero_caveat": "Upstream fill_gaps(Scripts=0, Cost=0) inserts zero-valued missing month/key combinations. Zeros are source-transformation output, not independent evidence of zero utilisation. GMA preserves CSV bytes unchanged.",
+  "coverage": {
+    "rows": 67596,
+    "months": 204,
+    "keys": 336,
+    "date_min": "1991-07-01",
+    "date_max": "2008-06-01",
+    "geography": "Australia national aggregate",
+    "age_or_lga_fields": false
+  },
+  "limitations": [
+    "Transformed teaching data; not a native untouched Medicare export.",
+    "Does not replace AIHW ATC2 monthly 2015-onward age/LGA rates.",
+    "Archival inclusion is not semantic admission or clinical qualification."
+  ],
+  "privacy": "Public aggregate sources only; no participant, cohort-derived or OneDrive inputs."
+}

@@ -253,3 +253,13 @@ exclusions, existing upstream terms, exact public-source identities, Actions-onl
 publication and anonymous verification. Stop at the scoped archive readback;
 no federation, semantic admission or release gate changes. See the
 [bounded packet](../docs/qualification/remaining-public-archives-20261106.md).
+
+## Historical ATC2 teaching archive — 6 November 2026
+
+The maintainer explicitly approved archiving the 1991–2008 workshop PBS CSV
+with CC BY 4.0 and upstream GPL-3 notices, attribution and the gap-filled-zero
+caveat, publication to the existing HF archive and verified temporary cleanup.
+Execute only the four-object digest-frozen historical ATC2 contract through
+Actions. Continue bounded public ATC2 discovery; participant/cohort-derived
+sources, general federation, semantic admission and public releases remain
+excluded. Stop this publication at anonymous readback and workflow restoration.

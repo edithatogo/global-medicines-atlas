@@ -46,7 +46,12 @@ from global_medicines_atlas.australian_harvesting import (
 CONTRACT = Path(
     "quality/qualifications/remaining-public-archives-20261106.json"
 )
-HOSTS = frozenset({"data.gov.au", "www.aihw.gov.au", "www.health.gov.au"})
+HOSTS = frozenset({
+    "data.gov.au",
+    "www.aihw.gov.au",
+    "www.health.gov.au",
+    "raw.githubusercontent.com",
+})
 MAX_BYTES = 512 * 1024**2
 MAX_MEMBERS = 20_000
 MAX_CUSTODIAL_INPUT = 2_000_000
@@ -368,6 +373,8 @@ def publish(
     prior = {f["path"]: f for f in existing["files"]}
     stages, coverage = stage_public_sources(expected, stage_dir, prior)
     failures = coverage["failed_resources"]
+    if failures and expected.get("require_complete_acquisition") is True:
+        raise RuntimeError("Required public cohort incomplete; HF unchanged")
     if not stages and failures:
         raise RuntimeError("No reviewed public payload acquired; HF unchanged")
     if not stages:
@@ -474,7 +481,14 @@ def main() -> None:
     """Load only committed public files after checking the hosted-only guard."""
     require_hosted()
     destination = os.environ["PUBLIC_ARCHIVE_DESTINATION"]
-    contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
+    contract_path = CONTRACT
+    if os.environ.get("HISTORICAL_ATC2") == "1":
+        if destination != "pbs":
+            raise ValueError("Historical ATC2 is restricted to PBS")
+        contract_path = Path(
+            "quality/qualifications/historical-atc2-public-20261106.json"
+        )
+    contract = json.loads(contract_path.read_text(encoding="utf-8"))
     if contract.get("external_publication_authorized") is not True:
         raise PermissionError("Public archive publication is not authorized")
     expected = contract["archives"][destination]
