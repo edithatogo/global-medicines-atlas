@@ -209,3 +209,54 @@ Absent prior proof fails closed. A missing URL on a synthetic media HTTP error
 falls back to the already approved source URL before the same HTTPS host checks.
 The 57 publisher tests pass with these negative controls; protected CI reruns on
 the corrected head. No publication has been repeated or inferred from local checks.
+
+
+## Reachable-source increment and retained transport gaps
+
+Owner remains the same chat and standard worktree, branch
+`codex/public-archive-reachable-source-batch`. PR #1419 passed all 28 required
+contexts at `cd83fe4e3ab7441a822311ec0df5a346c1840c75` and merged as
+`dfa12b5f198c29ad559f10a85f57ed86c1e3a844`, tree
+`98af6f639a087db85ea985c1b543332689e7c99d`. Recovery staging runs
+42137735985 and 42137747766 succeeded. PBS run 42137830617 failed before
+mutation because all 14 AIHW downloads remained unavailable.
+
+A separate read-only diagnostic (PR #1420, run 42138054294) tested one exact
+60,382-byte public workbook on Ubuntu 24.04 and macOS 15, without publication
+secrets or write permission. Both hosted clients received HTTP 403. The same
+canonical URL still returns the exact complete public payload locally. The
+diagnostic PR was closed without merging; its negative outcome does not
+qualify a publication platform. No browser cookies, proxy, alternative account
+or credential transfer was used to bypass the publisher restriction.
+
+MBS run 42137842578 staged 152 source objects, recorded 11 unavailable AIHW
+files, then stalled on the first Health.gov acquisition. Cancellation was
+requested while acquisition was visibly active and both HF parents remained
+unchanged; its terminal result is cancelled. Destination readback remains
+mandatory before another publication. Separate the reachable source cohort
+from those unavailable hosts so independent public files can be preserved.
+
+The active contract now selects 140 direct Services Australia/DHS payloads
+and the same 13 original public custodial MBS exports: 153 payloads. It selects
+no new PBS payloads in this increment. The former 25 AIHW files and 37 Health.gov
+attachments remain explicitly listed as deferred, with original URL, observed
+final URL where available, size, digest and inspection evidence. None is
+represented as published or covered by a hosted restore proof.
+
+AIHW's separate archived-content index (node 72544) returned 202 entries. Its
+28 Medicare/prescription matches include 18 already-selected table links
+(including a duplicate listing) and 10 additional companion PDFs, five per
+archive, covering 2016–17 through 2020–21. All 10 PDFs were acquired from actual
+public publisher links, validated as PDFs, inspected as public aggregate
+reports, and compared by digest with both existing manifests: none matched.
+Their exact metadata joins the deferred list, bringing it to 72 payloads.
+These PDFs preserve published interpretation, charts and aggregate context;
+they are not participant records or 10 independent new statistical series.
+The current mental-health catalogue contains 143 results; repeated page probes
+and the string includeArchived=true probe returned the same relevant URL set.
+Those probes do not prove eight independent historical page batches.
+
+The current ATC2 monthly ZIP still has no acquired payload because its own
+publisher link returns HTTP 404. It is distinct from the 72 acquired but
+unpublished files. This work does not settle the unresolved >85 definition.
+Participant and cohort-derived files remain private and untouched.
