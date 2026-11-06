@@ -260,3 +260,92 @@ The current ATC2 monthly ZIP still has no acquired payload because its own
 publisher link returns HTTP 404. It is distinct from the 72 acquired but
 unpublished files. This work does not settle the unresolved >85 definition.
 Participant and cohort-derived files remain private and untouched.
+
+
+## Incremental publication from retained public copies
+
+The maintainer explicitly requested publication of the remaining files and
+incremental removal of temporary copies. Owner remains chat
+`01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, standard worktree
+`/Volumes/PortableSSD/GitHub/gma-pbs-historical-backfill`, now branch
+`codex/incremental-public-draft-transport`. Native scope is the two existing HF
+archives and temporary unpublished GitHub draft release 436314022 only.
+The original checkout and private Microsoft bindings remain untouched.
+
+PR #1421 completed the independently reachable 153-file increment. Checked
+head `c7728525d753cae99099e66ecfdfd9533618cb6e` passed all 28 required contexts;
+merge `c707a021c21e464ac4ed99f7a1d849d52f2a2ac0` preserved checked tree
+`1fa9a696e0f04da52fab3ebdba223959aa1f6388`. Hosted run 42140010940 published
+153 raw payloads and 153 B1 receipts to MBS revision
+`3fdcb5cac6151bb6a424dcd4d83c75fdd861f474`. All 306 new objects passed
+anonymous digest verification; final manifest readback preserved the prior 31
+entries unchanged (337 total). Six staging artifacts and 153 temporary public
+copies were removed after proof. Both workflows were restored disabled.
+
+The new exact contract is
+`quality/qualifications/incremental-public-archives-20261106.json`. Its 72
+payloads are an unchanged subset of the already inspected public source copies:
+19 PBS and 53 MBS/context files. Every retained length and SHA256 was rechecked
+against the frozen record and both current anonymous HF manifests. No private
+OneDrive file is an input. The unavailable current ATC2 monthly ZIP has no
+payload and is not invented or included.
+
+Because publisher-host acquisition remains blocked from hosted runners, the
+retained approved copies are transported through an unpublished draft, outside
+Git history. The draft is never published as a GitHub release. A first 60,382-byte
+workbook passed authenticated exact-byte readback and anonymous access returned
+404; all 72 staged assets match GitHub-reported size and SHA256. Upload was
+interrupted once: no uploader remained, native asset inventory was reconciled,
+and only absent assets were resumed with original intents retained as history.
+Source copies remain until hosted HF proof. No credential creation, alternate
+client, browser-cookie transfer, proxy or local HF upload is introduced.
+
+The Actions reader uses existing repository Contents read permission, checks
+the exact draft identity, owner, unpublished state, target commit, asset ID,
+name, size and digest, then downloads bounded bytes. Only the GitHub API receives
+a bearer; the single approved HTTPS asset redirect receives none, and signed
+URLs are withheld from logs and exceptions. Original publisher URLs remain
+source provenance; receipts explicitly identify later public-copy transport
+and materialization rather than claiming a fresh publisher download.
+
+Five PBS batches and four MBS batches begin with a small file per archive.
+Multi-file batches contain at most 20 payloads and 64 MiB; each larger workbook
+is isolated. Every append requires the approved initial parent or the preceding
+same-run, same-commit verified checkpoint. All new pairs and the cumulative
+manifest are anonymously verified before advancing or cleaning. Failure stops
+the current batch before mutation when transport/integrity fails; already
+verified batches remain durable. Each checkpoint is retained as an Actions
+artifact so the owning local lane can remove only its covered draft assets and
+temporary copies immediately after proof. Original OneDrive files are never
+removed. Final workflow states return to disabled and the empty draft is removed.
+
+This increment changes transport and archive preservation only. It does not
+interpret age cutoffs, promote federation/admission, change upstream rights or
+publish participant/cohort-derived data. Protected integration and native proof
+remain pending; local tests and private draft staging are not HF publication.
+
+Scoped implementation review retained the original hosted-only guard, public
+allowlist, source identities, raw-workbook bounds, exact-parent compare-and-swap
+and anonymous restore gates. Synthetic negative controls cover wrong draft
+state/owner/asset identity, unsafe redirects, bearer isolation, full-response
+bounds, URL-safe errors, wrong-run checkpoints, invalid batch sizes and cleanup
+without proof. The 103 affected tests passed on Python 3.15.1; affected coverage
+is 97.54%, including 100% of the draft reader. Ruff, BasedPyright, Ty and context
+validation pass. No independent reviewer or native qualification is claimed.
+
+
+Incremental review hardening binds checkpoint chains to the same workflow
+attempt as well as run/commit, sanitizes malformed metadata and missing/invalid
+redirect errors, and retains a separate failure diagnostic without claiming an
+HF outcome. Existing final-summary artifacts are intentional: each successful
+batch writes the common summary receipt, while the immutable per-batch checkpoint
+remains separate. JSON key order is not a manifest identity because hashes use
+canonical JSON. The 109 focused tests pass with 97.58% affected coverage; the
+draft reader remains at 100%. Protected checks rerun on the corrected head.
+
+
+A further review caught the existing PBS workflow's `build/pbs-hf-home` cache
+name differing from MBS's `build/mbs-util-hf-home`. The scope guard now matches
+each configured path; a PBS-specific regression verifies successful receipt
+creation. All 110 focused tests pass, affected coverage is 97.59%, and affected
+type/lint checks remain green. No native publication preceded this correction.

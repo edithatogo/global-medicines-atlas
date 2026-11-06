@@ -27,6 +27,7 @@ from urllib.parse import urlparse
 from scripts.harvest_australian_pbs_utilisation import (
     fetch_existing_harvest_manifest,
 )
+from scripts.public_draft_transport import read_draft_payload
 from scripts.publish_mbs_public_exports import (
     collect_segments,
     require_hosted,
@@ -294,19 +295,28 @@ def stage_public_sources(
         resource = DiscoveredHarvestResource(**item["resource"])
         if resource.archive_path in prior:
             raise RuntimeError("Immutable public path collision")
-        try:
-            payload, final_url = read_public_payload(
-                item.get("resolved_public_url", resource.url), item["bytes"]
-            )
-        except (urllib.error.URLError, TimeoutError, ValueError) as error:
-            failures.append({
-                "source_id": resource.source_id,
-                "filename": resource.filename,
-                "http_status": getattr(error, "code", None),
-                "error": type(error).__name__,
-            })
-            print(f"Unavailable public file: {resource.filename}", flush=True)
-            continue
+        if "draft_transport" in item:
+            # A reviewed draft batch is atomic: any transport/state failure
+            # stops before HF mutation, leaving prior verified batches intact.
+            payload = read_draft_payload(item)
+            final_url = item.get("resolved_public_url", resource.url)
+        else:
+            try:
+                payload, final_url = read_public_payload(
+                    item.get("resolved_public_url", resource.url),
+                    item["bytes"],
+                )
+            except (urllib.error.URLError, TimeoutError, ValueError) as error:
+                failures.append({
+                    "source_id": resource.source_id,
+                    "filename": resource.filename,
+                    "http_status": getattr(error, "code", None),
+                    "error": type(error).__name__,
+                })
+                print(
+                    f"Unavailable public file: {resource.filename}", flush=True
+                )
+                continue
         validate_payload(payload, item)
         stage = stage_harvest_payload(
             resource,
@@ -316,6 +326,27 @@ def stage_public_sources(
             raw_archive=True,
             raw_archive_max_bytes=MAX_BYTES,
         )
+        if "draft_transport" in item:
+            receipt = json.loads(
+                stage.staged_receipt_path.read_text(encoding="utf-8")
+            )
+            receipt.update(
+                source_url_role="original public publisher acquisition",
+                final_url_role="observed original publisher retrieval URL",
+                retrieved_at_role="hosted public-copy materialization",
+                transport={
+                    "kind": "unpublished GitHub draft asset",
+                    "release_id": item["draft_transport"]["release_id"],
+                    "asset_id": item["draft_transport"]["asset_id"],
+                },
+                provenance_limitation=(
+                    "Public publisher bytes acquired before hosted transport; "
+                    "hosted SHA256 and length match the reviewed acquisition."
+                ),
+            )
+            stage.staged_receipt_path.write_text(
+                json.dumps(receipt, indent=2) + "\n", encoding="utf-8"
+            )
         stages.append(stage)
         print(f"Staged public object {len(stages)}", flush=True)
     coverage = {
@@ -358,6 +389,7 @@ def publish(
             "temporary_source_bytes_removed": False,
             "workflow_commit": os.environ["GITHUB_SHA"],
             "workflow_run": os.environ["GITHUB_RUN_ID"],
+            "workflow_attempt": os.environ.get("GITHUB_RUN_ATTEMPT", "1"),
             "run_coverage": coverage,
         }
     full = build_cumulative_harvest_manifest(
@@ -420,6 +452,7 @@ def publish(
     return {
         "dataset": expected["dataset"],
         "revision": revision,
+        "manifest_sha256": digest_json(full),
         "parent_revision": parent,
         "new_payloads": len(stages),
         "verified_file_count": len(verification["files"]),
@@ -432,6 +465,7 @@ def publish(
         "temporary_source_bytes_removed": False,
         "workflow_commit": os.environ["GITHUB_SHA"],
         "workflow_run": os.environ["GITHUB_RUN_ID"],
+        "workflow_attempt": os.environ.get("GITHUB_RUN_ATTEMPT", "1"),
         "run_coverage": coverage,
     }
 
