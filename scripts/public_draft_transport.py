@@ -19,7 +19,10 @@ MAX_PAYLOAD = 512 * 1024**2
 def bounded_body(response: httpx.Response, limit: int) -> bytes:
     """Require a full, bounded success without exposing response URLs."""
     if response.status_code != HTTPStatus.OK:
-        raise ValueError("Draft transport did not return a complete object")
+        raise ValueError(
+            "Draft transport did not return a complete object "
+            f"(HTTP {response.status_code})"
+        )
     chunks: list[bytes] = []
     total = 0
     for chunk in response.iter_bytes():

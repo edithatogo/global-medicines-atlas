@@ -349,3 +349,46 @@ name differing from MBS's `build/mbs-util-hf-home`. The scope guard now matches
 each configured path; a PBS-specific regression verifies successful receipt
 creation. All 110 focused tests pass, affected coverage is 97.59%, and affected
 type/lint checks remain green. No native publication preceded this correction.
+
+
+## Native draft-access qualification correction
+
+PR #1422 passed all 28 required contexts at
+`778f853994a5411e0be31585c152c42aa8a12d9b` and merged as
+`1c61a6085df732fba383b0326991a2ee2512e259`, preserving checked tree
+`47f4b6b5ea3c6ae07d5b626fb579a5e870fcb90c`. First small-batch runs
+42202719632 (PBS) and 42202732422 (MBS) failed reading the unpublished draft
+metadata with the repository's read-only Actions token. Their retained failure
+diagnostics do not claim an HF outcome. Anonymous readback confirmed both
+approved HF revisions unchanged; both workflows were restored disabled. All
+72 public source copies and draft assets remain intact. No batch cleanup or
+HF publication occurred in this attempt.
+
+Owner remains the same chat/worktree, now branch
+`codex/incremental-draft-access-qualification`. GitHub restricts draft access
+to the push role. Qualify the existing ephemeral Actions token with Contents
+write only in a separate job gated by the explicit manual incremental input;
+routine/scheduled harvest jobs retain Contents read. Both jobs reuse identical
+anchored steps and environment, main/commit binding, the existing protected
+publication environment and unchanged public allowlist. The incremental code
+performs GitHub GETs only; no GitHub write primitive, new credential, client,
+public release or private source input is introduced. This is a bounded role
+qualification for the same repository/draft, not a claim that a successful
+owner login grants the read-only workload access. Hosted readback is required.
+
+Scalar HTTP status is now included in controlled transport failures without
+URLs or tokens. The 113 focused tests pass, including guards that routine jobs
+remain read-only, elevated jobs require explicit incremental selection, and
+both consume the same reviewed step list. Source payloads, digests, batch
+boundaries, original provenance and HF parents are unchanged. Retain the first
+failed dispatch journals; use a new one-send journal only after protected
+integration and unchanged-parent readback.
+
+
+The first correction CI retained an undocumented-permissions finding: the
+explanation above Contents write was not associated with that field by Zizmor.
+Moved the rationale onto the permission field without suppression or gate
+changes. The job-level eligibility also explicitly requires workflow_dispatch
+and refs/heads/main before its ephemeral push role is available. Routine jobs
+still use Contents read. Focused role/step guards and the original governed
+harvest-workflow regression remain intact. No second native dispatch occurred.

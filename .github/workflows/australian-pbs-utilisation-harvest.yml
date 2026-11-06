@@ -38,18 +38,19 @@ concurrency:
 
 jobs:
   harvest:
+    if: inputs.incremental_public != true
     name: Acquire PBS utilisation, append and anonymously verify
     runs-on: ubuntu-24.04
     environment: australian-hf-publication
     timeout-minutes: 90
-    env:
+    env: &harvest_environment
       HF_HOME: ${{ github.workspace }}/build/pbs-hf-home
       HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
       HF_HUB_DISABLE_XET: "1"
       PYTHONUNBUFFERED: "1"
     permissions:
       contents: read
-    steps:
+    steps: &harvest_steps
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           persist-credentials: false
@@ -276,3 +277,16 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           : # Outbound comments prohibited; retain workflow artifacts instead.
+
+  incremental:
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.incremental_public == true
+    name: Incremental reviewed PBS public files, append and anonymously verify
+    runs-on: ubuntu-24.04
+    environment: australian-hf-publication
+    timeout-minutes: 90
+    env: *harvest_environment
+    permissions:
+      # GitHub hides unpublished drafts from tokens without the push role.
+      # This manual-only job performs GETs; routine harvest stays read-only.
+      contents: write # Required push role to read unpublished draft assets; manual GET-only job.
+    steps: *harvest_steps
