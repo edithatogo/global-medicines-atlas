@@ -1138,3 +1138,32 @@ def test_historical_atc2_retains_acquisition_audit():
     assert "always()" in step["if"]
     assert "inputs.historical_atc2 == true" in step["if"]
     assert step["with"]["path"].endswith("acquisition.json")
+
+
+@pytest.mark.usefixtures("_hosted")
+def test_required_notices_failure_prevents_any_public_commit(
+    monkeypatch, tmp_path
+):
+    payload, item, existing, expected = cohort()
+    missing = json.loads(json.dumps(item))
+    missing["resource"]["filename"] = "required-notice.txt"
+    missing["resource"]["url"] = "https://data.gov.au/notice.txt"
+    missing["sha256"] = "f" * 64
+    expected["files"] = [item, missing]
+    expected["require_complete_acquisition"] = True
+    monkeypatch.setattr(subject, "snapshot", lambda *_: ("parent", existing))
+
+    def read(url, _limit):
+        if url.endswith("notice.txt"):
+            raise TimeoutError("Required notice unavailable")
+        return payload, url
+
+    monkeypatch.setattr(subject, "read_public_payload", read)
+    sdk, api = sdk_fixture(tmp_path, existing)
+    with pytest.raises(RuntimeError, match="cohort incomplete; HF unchanged"):
+        subject.publish(sdk, expected, tmp_path / "stage")
+    api.create_commit.assert_not_called()
+    audit = json.loads(
+        (tmp_path / "stage/acquisition.json").read_text(encoding="utf-8")
+    )
+    assert audit["coverage_status"] == "partial"

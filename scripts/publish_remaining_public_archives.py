@@ -373,6 +373,8 @@ def publish(
     prior = {f["path"]: f for f in existing["files"]}
     stages, coverage = stage_public_sources(expected, stage_dir, prior)
     failures = coverage["failed_resources"]
+    if failures and expected.get("require_complete_acquisition") is True:
+        raise RuntimeError("Required public cohort incomplete; HF unchanged")
     if not stages and failures:
         raise RuntimeError("No reviewed public payload acquired; HF unchanged")
     if not stages:

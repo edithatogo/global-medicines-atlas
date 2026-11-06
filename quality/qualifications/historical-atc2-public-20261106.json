@@ -6,6 +6,7 @@
   "archives": {
     "pbs": {
       "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "require_complete_acquisition": true,
       "parent_revision": "02a7fb034c1254dfefa789d7a14dbd9014abe15c",
       "manifest_sha256": "f7104aa08a7533bd6a298d00d163332772669f6aed6be9322419230ca0d5e54e",
       "prior_verification_run": [
