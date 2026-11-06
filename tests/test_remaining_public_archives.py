@@ -658,7 +658,9 @@ def draft_transport(monkeypatch):
             if settings["redirect"]:
                 return httpx.Response(
                     302,
-                    headers={
+                    headers={}
+                    if settings.get("missing_location")
+                    else {
                         "location": "https://"
                         + settings["host"]
                         + "/asset?token=synthetic"
@@ -851,6 +853,7 @@ def incremental_setup(tmp_path, monkeypatch, _hosted):
         "revision": "next",
         "workflow_commit": "reviewed",
         "workflow_run": "123",
+        "workflow_attempt": "1",
         "run_coverage": {"coverage_status": "complete", "failed_resources": []},
         "temporary_source_bytes_removed": False,
     }
@@ -888,6 +891,7 @@ def test_incremental_parent_chain_and_cleanup(incremental_setup, tmp_path):
         ("dataset", "other"),
         ("workflow_commit", "other"),
         ("workflow_run", "other"),
+        ("workflow_attempt", "2"),
         ("anonymous_digest_verification", "failed"),
         ("run_coverage", {"coverage_status": "partial"}),
         ("new_payloads", 0),
@@ -989,3 +993,41 @@ def test_incremental_main_outputs(
         inc.main()
     with pytest.raises(PermissionError, match="Actions main"):
         inc.execute_batch(None, 1)
+
+
+@pytest.mark.parametrize(
+    "case",
+    ["missing_assets", "invalid_json", "missing_location", "invalid_location"],
+)
+def test_draft_malformed_metadata_and_redirect_are_withheld(
+    draft_transport, monkeypatch, case
+):
+    t, _, item, release, _, _, settings = draft_transport
+    if case == "missing_assets":
+        release.pop("assets")
+    elif case == "invalid_json":
+        monkeypatch.setattr(
+            t.json,
+            "loads",
+            Mock(side_effect=json.JSONDecodeError("invalid", "synthetic", 0)),
+        )
+    elif case == "missing_location":
+        settings["missing_location"] = True
+    else:
+        settings["host"] = "[invalid"
+    expected = ValueError if case == "invalid_location" else RuntimeError
+    with pytest.raises(expected) as error:
+        t.read_draft_payload(item)
+    assert "token=" not in str(error.value)
+    assert error.value.__suppress_context__
+
+
+def test_incremental_failure_diagnostic_is_not_success(incremental_setup):
+    inc, _, _, _, mock = incremental_setup
+    mock.side_effect = RuntimeError("synthetic transport failure")
+    with pytest.raises(RuntimeError, match="transport failure"):
+        inc.execute_batch(None, 1)
+    failure = json.loads((inc.CHECKPOINTS / "failure-1.json").read_text())
+    assert failure["error_type"] == "RuntimeError"
+    assert "not inferred" in failure["hf_mutation"]
+    assert not (inc.CHECKPOINTS / "verification-1.json").exists()

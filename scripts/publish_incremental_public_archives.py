@@ -51,6 +51,7 @@ def batch_expectation(
             "dataset": archive["dataset"],
             "workflow_commit": os.environ["GITHUB_SHA"],
             "workflow_run": os.environ["GITHUB_RUN_ID"],
+            "workflow_attempt": os.environ.get("GITHUB_RUN_ATTEMPT", "1"),
             "anonymous_digest_verification": "passed",
             "run_coverage": {
                 "coverage_status": "complete",
@@ -104,7 +105,26 @@ def execute_batch(sdk: Any, index: int) -> dict[str, Any]:
         != (Path.cwd() / f"build/{destination}-util-hf-home").resolve()
     ):
         raise ValueError("Incremental cache differs from workflow scope")
-    receipt = publish(sdk, expected, Path("build/harvest/remaining-public"))
+    try:
+        receipt = publish(sdk, expected, Path("build/harvest/remaining-public"))
+    except Exception as error:
+        CHECKPOINTS.mkdir(parents=True, exist_ok=True)
+        (CHECKPOINTS / f"failure-{index}.json").write_text(
+            json.dumps(
+                {
+                    "batch_id": archive["batches"][index - 1]["id"],
+                    "status": "failed; no successful checkpoint",
+                    "error_type": type(error).__name__,
+                    "workflow_commit": os.environ["GITHUB_SHA"],
+                    "workflow_run": os.environ["GITHUB_RUN_ID"],
+                    "hf_mutation": "not inferred; reconcile destination state",
+                },
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        raise
     if (
         receipt["new_payloads"] != len(expected["files"])
         or receipt["anonymous_digest_verification"] != "passed"

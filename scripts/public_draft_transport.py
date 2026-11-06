@@ -86,7 +86,12 @@ def _read_draft_payload(item: dict[str, Any]) -> bytes:
                 payload = bounded_body(response, item["bytes"])
             elif response.status_code == HTTPStatus.FOUND:
                 target = response.headers["location"]
-                parsed = urlparse(target)
+                try:
+                    parsed = urlparse(target)
+                except ValueError:
+                    raise ValueError(
+                        "Draft asset redirect target denied"
+                    ) from None
                 if (
                     parsed.scheme != "https"
                     or parsed.netloc != ASSET_HOST
@@ -109,7 +114,7 @@ def read_draft_payload(item: dict[str, Any]) -> bytes:
     """Withhold signed URLs from transport-error tracebacks and logs."""
     try:
         return _read_draft_payload(item)
-    except httpx.HTTPError:
+    except httpx.HTTPError, KeyError, json.JSONDecodeError:
         raise RuntimeError(
             "Draft transport unavailable; URLs withheld"
         ) from None

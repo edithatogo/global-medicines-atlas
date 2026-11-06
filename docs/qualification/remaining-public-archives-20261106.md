@@ -332,3 +332,13 @@ bounds, URL-safe errors, wrong-run checkpoints, invalid batch sizes and cleanup
 without proof. The 103 affected tests passed on Python 3.15.1; affected coverage
 is 97.54%, including 100% of the draft reader. Ruff, BasedPyright, Ty and context
 validation pass. No independent reviewer or native qualification is claimed.
+
+
+Incremental review hardening binds checkpoint chains to the same workflow
+attempt as well as run/commit, sanitizes malformed metadata and missing/invalid
+redirect errors, and retains a separate failure diagnostic without claiming an
+HF outcome. Existing final-summary artifacts are intentional: each successful
+batch writes the common summary receipt, while the immutable per-batch checkpoint
+remains separate. JSON key order is not a manifest identity because hashes use
+canonical JSON. The 109 focused tests pass with 97.58% affected coverage; the
+draft reader remains at 100%. Protected checks rerun on the corrected head.

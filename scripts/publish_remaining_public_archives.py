@@ -389,6 +389,7 @@ def publish(
             "temporary_source_bytes_removed": False,
             "workflow_commit": os.environ["GITHUB_SHA"],
             "workflow_run": os.environ["GITHUB_RUN_ID"],
+            "workflow_attempt": os.environ.get("GITHUB_RUN_ATTEMPT", "1"),
             "run_coverage": coverage,
         }
     full = build_cumulative_harvest_manifest(
@@ -464,6 +465,7 @@ def publish(
         "temporary_source_bytes_removed": False,
         "workflow_commit": os.environ["GITHUB_SHA"],
         "workflow_run": os.environ["GITHUB_RUN_ID"],
+        "workflow_attempt": os.environ.get("GITHUB_RUN_ATTEMPT", "1"),
         "run_coverage": coverage,
     }
 
