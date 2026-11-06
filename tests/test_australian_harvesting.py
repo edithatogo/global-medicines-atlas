@@ -2238,3 +2238,40 @@ def test_pbs_fetch_rejects_truncation_and_excessive_advertised_size(
         harvest_australian_pbs_utilisation.fetch_payload(
             "https://data.gov.au/x.csv"
         )
+
+
+def test_explicit_large_raw_workbook_profile_keeps_default_limits() -> None:
+    payload = _minimal_xlsx_payload()
+
+    class LargeBytes(bytes):
+        def __len__(self) -> int:
+            return 256 * 1024**2 + 1
+
+    large = LargeBytes(payload)
+    with pytest.raises(ValueError, match="byte limit"):
+        australian_harvesting.validate_xlsx_payload(
+            "large.xlsx", large, raw_archive=True
+        )
+    australian_harvesting.validate_xlsx_payload(
+        "large.xlsx",
+        large,
+        raw_archive=True,
+        raw_archive_max_bytes=512 * 1024**2,
+    )
+    with pytest.raises(ValueError, match="byte limit"):
+        australian_harvesting.validate_xlsx_payload(
+            "large.xlsx", large, raw_archive_max_bytes=512 * 1024**2
+        )
+    with pytest.raises(ValueError, match="Unsupported raw workbook"):
+        australian_harvesting.validate_xlsx_payload(
+            "large.xlsx",
+            payload,
+            raw_archive=True,
+            raw_archive_max_bytes=1024**3,
+        )
+
+
+def test_raw_profile_parameter_does_not_change_normal_validation() -> None:
+    australian_harvesting.validate_xlsx_payload(
+        "ordinary.xlsx", _minimal_xlsx_payload(), raw_archive_max_bytes=1024**3
+    )

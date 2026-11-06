@@ -7,6 +7,11 @@ on:
         description: Exact reviewed main commit containing harvest authorization
         required: true
         type: string
+      remaining_public:
+        description: Publish the exact reviewed remaining public-source cohort
+        required: false
+        default: false
+        type: boolean
       backfill_all:
         description: Backfill all historical annual files instead of just rolling year
         required: false
@@ -62,10 +67,15 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           GH_TOKEN: ${{ github.token }}
           BACKFILL_ALL: ${{ inputs.backfill_all == true && '1' || '0' }}
+          REMAINING_PUBLIC: ${{ inputs.remaining_public == true && '1' || '0' }}
+          PUBLIC_ARCHIVE_DESTINATION: pbs
           PUBLIC_EXPORT_BUNDLE: ${{ inputs.public_export_bundle || '' }}
         run: |
           set -euo pipefail
-          if test -n "$PUBLIC_EXPORT_BUNDLE"; then
+          if test "$REMAINING_PUBLIC" = 1; then
+            uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 \
+              python -m scripts.publish_remaining_public_archives
+          elif test -n "$PUBLIC_EXPORT_BUNDLE"; then
             uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 \
               python -m scripts.publish_pbs_public_exports
           else

@@ -1525,3 +1525,11 @@ Ownership, boundaries and evidence:
   the annotation, preserve all 30 prior manifest rows, and restore disabled state.
 
 Owner/scope and exact evidence are in the existing comparison report.
+
+### Remaining public archive work — 6 November 2026
+
+- [~] Complete remaining OneDrive metadata checks, preserving participant and cohort-derived exclusions.
+- [~] Compare remaining public Medicare/MBS and AIHW downloads against HF and freeze missing exact public objects.
+- [ ] Protected integration, Actions-only append, anonymous new-object verification and prior-manifest preservation.
+
+Owner, native scope and stop condition: [remaining archive work](../../../docs/qualification/remaining-public-archives-20261106.md).

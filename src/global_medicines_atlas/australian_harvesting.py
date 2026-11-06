@@ -851,12 +851,23 @@ def _open_xlsx_payload(content: bytes) -> zipfile.ZipFile:
 
 
 def validate_xlsx_payload(
-    filename: str, content: bytes, *, raw_archive: bool = False
+    filename: str,
+    content: bytes,
+    *,
+    raw_archive: bool = False,
+    raw_archive_max_bytes: int = 256 * 1024 * 1024,
 ) -> None:
     """Check bounded OOXML package metadata; do not infer field semantics."""
     if not filename.lower().endswith(".xlsx"):
         return
-    payload_limit = 256 * 1024 * 1024 if raw_archive else MAX_XLSX_PAYLOAD_BYTES
+    if raw_archive and raw_archive_max_bytes not in {
+        256 * 1024 * 1024,
+        512 * 1024 * 1024,
+    }:
+        raise ValueError("Unsupported raw workbook profile")
+    payload_limit = (
+        raw_archive_max_bytes if raw_archive else MAX_XLSX_PAYLOAD_BYTES
+    )
     uncompressed_limit = (
         4 * 1024 * 1024 * 1024 if raw_archive else MAX_XLSX_UNCOMPRESSED_BYTES
     )
@@ -910,6 +921,7 @@ def stage_harvest_payload(
     allowed_domains: frozenset[str] = ALLOWED_AUSTRALIAN_HARVEST_DOMAINS,
     *,
     raw_archive: bool = False,
+    raw_archive_max_bytes: int = 256 * 1024 * 1024,
 ) -> HarvestStageResult:
     """Download and stage a discovered payload fail-closed, producing its B1 receipt."""
     parsed = urllib.parse.urlparse(resource.url)
@@ -933,7 +945,12 @@ def stage_harvest_payload(
 
     if not content:
         raise ValueError(f"Payload from {resource.url} was empty")
-    validate_xlsx_payload(resource.filename, content, raw_archive=raw_archive)
+    validate_xlsx_payload(
+        resource.filename,
+        content,
+        raw_archive=raw_archive,
+        raw_archive_max_bytes=raw_archive_max_bytes,
+    )
 
     sha256 = hashlib.sha256(content).hexdigest()
     byte_count = len(content)

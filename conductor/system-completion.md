@@ -242,3 +242,14 @@ comparison annotation in the existing MBS archive, preserving native labels,
 source bytes, semantic uncertainty and participant privacy. Reuse the verified
 30-object archive receipt and verify only the new metadata object plus manifest
 preservation. All broader federation and release gates remain unchanged.
+
+## Remaining public archive authorisation — 6 November 2026
+
+The maintainer explicitly requested remaining OneDrive checks, public MBS,
+Medicare and AIHW acquisition/comparison, resolution of the AIHW download blocker
+and publication of missing public evidence. This supersedes the prior AIHW
+discovery-only boundary for this finite cohort. Retain participant/cohort-derived
+exclusions, existing upstream terms, exact public-source identities, Actions-only
+publication and anonymous verification. Stop at the scoped archive readback;
+no federation, semantic admission or release gate changes. See the
+[bounded packet](../docs/qualification/remaining-public-archives-20261106.md).
