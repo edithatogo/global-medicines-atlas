@@ -234,7 +234,7 @@ jobs:
           : # Outbound comments prohibited; retain workflow artifacts instead.
 
       - name: Retain exact public acquisition outcomes
-        if: ${{ always() && inputs.remaining_public == true }}
+        if: ${{ always() && (inputs.remaining_public == true || inputs.historical_atc2 == true) }}
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: public-acquisition-${{ github.run_id }}-${{ github.run_attempt }}

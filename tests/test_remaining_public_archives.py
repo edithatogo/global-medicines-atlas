@@ -1121,3 +1121,20 @@ def test_historical_atc2_uses_fixed_pbs_contract(
         subject.main()
         assert publish.call_args.args[1]["files"] == ["exact-reviewed-cohort"]
         assert Path("build/pbs-utilisation-harvest-receipt.json").is_file()
+
+
+def test_historical_atc2_retains_acquisition_audit():
+    workflow = yaml.safe_load(
+        Path(
+            ".github/workflows/australian-pbs-utilisation-harvest.yml"
+        ).read_text(encoding="utf-8")
+    )
+    steps = workflow["jobs"]["harvest"]["steps"]
+    step = next(
+        s
+        for s in steps
+        if s["name"] == ("Retain exact public acquisition outcomes")
+    )
+    assert "always()" in step["if"]
+    assert "inputs.historical_atc2 == true" in step["if"]
+    assert step["with"]["path"].endswith("acquisition.json")
