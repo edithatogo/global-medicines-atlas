@@ -4,7 +4,7 @@
   "imported_evidence": [
     {
       "path": "quality/qualifications/datahouse-experiment-matrix.json",
-      "sha256": "4bd356d87f202136bd11b976c79bb18ba533424a61216c214a39e3419b28673d"
+      "sha256": "79706ed522ea9183fb35943fbbe993f9a60d50ba571caa5dbea16af54497ddf3"
     },
     {
       "path": "quality/qualifications/free-tier-datahouse-decision-packet.json",

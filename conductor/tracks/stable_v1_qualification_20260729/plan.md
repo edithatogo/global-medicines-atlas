@@ -1379,3 +1379,17 @@ PR body was removed and GitHub's automatic issue closure reversed.
 Do not replace Python 3.15.1 with ZeroGPU's older supported runtimes. Free tier
 sleep/quota limits remain explicit. Production temporal data and original #61
 acceptance stay incomplete; no broader federation or Stable release.
+
+## Soup Sieve security-update evidence — 13 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, managed worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/soupsieve-security-evidence`, based on Renovate PR #1427.
+Scope is the existing Soup Sieve lock update, active lock export, affected
+current evidence bindings, focused validation and protected integration.
+The prior experiment outcomes and dated receipts remain historical evidence.
+Native scope is the repository and its existing CI. The isolated Python
+3.15.1 checks and locked third-party audit passed. Next operation is the
+companion pull request and protected CI. Codecov pull-request comments are
+disabled to enforce the existing outbound-message prohibition; coverage
+uploads, status checks and thresholds remain unchanged.
