@@ -1390,4 +1390,6 @@ current evidence bindings, focused validation and protected integration.
 The prior experiment outcomes and dated receipts remain historical evidence.
 Native scope is the repository and its existing CI. The isolated Python
 3.15.1 checks and locked third-party audit passed. Next operation is the
-companion pull request and protected CI.
+companion pull request and protected CI. Codecov pull-request comments are
+disabled to enforce the existing outbound-message prohibition; coverage
+uploads, status checks and thresholds remain unchanged.
