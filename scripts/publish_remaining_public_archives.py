@@ -19,9 +19,10 @@ import subprocess  # ruff: ignore[suspicious-subprocess-import] -- fixed system 
 import urllib.error
 import urllib.request
 import zipfile
+from collections.abc import Mapping
 from http import HTTPStatus
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 from urllib.parse import urlparse
 
 from scripts.harvest_australian_pbs_utilisation import (
@@ -332,15 +333,18 @@ def stage_public_sources(
             raw_archive_max_bytes=MAX_BYTES,
         )
         if "source_rights" in item:
-            rights = item["source_rights"]
-            if (
-                not isinstance(rights, dict)
-                or set(rights)
-                != {"licence", "licence_url", "rights_source", "attribution"}
-                or any(
-                    not isinstance(value, str) or not value
-                    for value in rights.values()
-                )
+            raw_rights: object = item["source_rights"]
+            if not isinstance(raw_rights, dict):
+                raise ValueError("Public source rights metadata is incomplete")
+            rights = cast("Mapping[object, object]", raw_rights)
+            if set(rights) != {
+                "licence",
+                "licence_url",
+                "rights_source",
+                "attribution",
+            } or any(
+                not isinstance(value, str) or not value.strip()
+                for value in rights.values()
             ):
                 raise ValueError("Public source rights metadata is incomplete")
             receipt = json.loads(
