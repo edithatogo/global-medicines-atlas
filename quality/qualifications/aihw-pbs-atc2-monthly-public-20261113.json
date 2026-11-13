@@ -24,6 +24,13 @@
             "period_label": "January 2015 to September 2026, monthly prescriptions and government spending per resident by ATC level 2"
           },
           "resolved_public_url": "https://www.aihw.gov.au/getmedia/e348a99b-6a60-4743-b3de-dececda9d43b/aihw-hwe-098-pbs-atc2-prescriptions-monthly-data_keep.zip",
+          "draft_transport": {
+            "release_id": 444173498,
+            "tag_name": "codex-atc2-public-transport-20261113",
+            "target_commitish": "4ee482a2e05e50d7f36a45e36632eacbcf59a85f",
+            "asset_id": 743483280,
+            "asset_name": "aihw-atc2-current-2026-11-13.zip"
+          },
           "source_rights": {
             "licence": "CC BY 4.0, subject to AIHW website exclusions and any separate source terms",
             "licence_url": "https://creativecommons.org/licenses/by/4.0/",
@@ -35,7 +42,10 @@
             "workbook_member": "AIHW-HWE-098-PBS-ATC2-prescriptions-monthly-data.xlsx",
             "workbook_bytes": 159895216,
             "monthly_columns": "January 2015 to September 2026",
+            "monthly_column_count_per_table": 141,
             "tables": 6,
+            "data_rows_excluding_title_and_header": [688, 5504, 93912, 93912, 93912, 93912],
+            "total_data_rows": 381840,
             "declared_worksheet_dimensions": [
               "A1:EN690",
               "A1:EO5506",

@@ -18,7 +18,7 @@ on:
         default: false
         type: boolean
       current_atc2:
-        description: Archive the reviewed AIHW monthly ATC2 workbook ZIP
+        description: Archive the reviewed AIHW monthly ATC2 ZIP from its pinned draft asset
         required: false
         default: false
         type: boolean
@@ -48,7 +48,7 @@ concurrency:
 
 jobs:
   harvest:
-    if: inputs.incremental_public != true
+    if: inputs.incremental_public != true && inputs.current_atc2 != true
     name: Acquire PBS utilisation, append and anonymously verify
     runs-on: ubuntu-24.04
     environment: australian-hf-publication
@@ -307,8 +307,8 @@ jobs:
           : # Outbound comments prohibited; retain workflow artifacts instead.
 
   incremental:
-    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.incremental_public == true
-    name: Incremental reviewed PBS public files, append and anonymously verify
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && (inputs.incremental_public == true || inputs.current_atc2 == true)
+    name: Read reviewed public draft assets, append and anonymously verify
     runs-on: ubuntu-24.04
     environment: australian-hf-publication
     timeout-minutes: 90

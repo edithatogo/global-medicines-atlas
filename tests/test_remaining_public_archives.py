@@ -1083,10 +1083,17 @@ def test_draft_access_role_is_manual_only(destination):
     routine = workflow["jobs"]["harvest"]
     incremental_job = workflow["jobs"]["incremental"]
     assert routine["permissions"]["contents"] == "read"
-    assert routine["if"] == "inputs.incremental_public != true"
-    assert (
-        incremental_job["if"]
-        == "github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.incremental_public == true"
+    expected_routine = "inputs.incremental_public != true"
+    expected_manual_input = "inputs.incremental_public == true"
+    if destination == "pbs":
+        expected_routine += " && inputs.current_atc2 != true"
+        expected_manual_input = (
+            "(inputs.incremental_public == true || inputs.current_atc2 == true)"
+        )
+    assert routine["if"] == expected_routine
+    assert incremental_job["if"] == (
+        "github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && "
+        + expected_manual_input
     )
     assert incremental_job["permissions"] == {"contents": "write"}
     assert incremental_job["environment"] == "australian-hf-publication"
@@ -1201,7 +1208,10 @@ def test_current_atc2_uses_fixed_pbs_contract(
 
 @pytest.mark.usefixtures("_hosted")
 @pytest.mark.parametrize("invalid", [False, True])
-def test_public_source_rights_are_retained(monkeypatch, tmp_path, invalid):
+@pytest.mark.parametrize("from_draft", [False, True])
+def test_public_source_rights_are_retained(
+    monkeypatch, tmp_path, invalid, from_draft
+):
     payload, item, _, expected = cohort()
     rights = {
         "licence": "CC BY 4.0",
@@ -1211,9 +1221,13 @@ def test_public_source_rights_are_retained(monkeypatch, tmp_path, invalid):
     }
     item["source_rights"] = {} if invalid else rights
     expected["files"] = [item]
-    monkeypatch.setattr(
-        subject, "read_public_payload", lambda url, _limit: (payload, url)
-    )
+    if from_draft:
+        item["draft_transport"] = {"release_id": 10, "asset_id": 20}
+        monkeypatch.setattr(subject, "read_draft_payload", lambda _: payload)
+    else:
+        monkeypatch.setattr(
+            subject, "read_public_payload", lambda url, _limit: (payload, url)
+        )
     if invalid:
         with pytest.raises(ValueError, match="rights metadata is incomplete"):
             subject.stage_public_sources(expected, tmp_path, {})
@@ -1221,6 +1235,9 @@ def test_public_source_rights_are_retained(monkeypatch, tmp_path, invalid):
         stages, coverage = subject.stage_public_sources(expected, tmp_path, {})
         receipt = json.loads(stages[0].staged_receipt_path.read_text())
         assert receipt["source_rights"] == rights
+        if from_draft:
+            assert receipt["transport"]["asset_id"] == 20
+            assert receipt["transport"]["release_id"] == 10
         assert coverage["coverage_status"] == "complete"
 
 
@@ -1244,7 +1261,13 @@ def test_current_atc2_contract_binds_one_public_source():
     assert item["source_rights"]["attribution"] == (
         "Source: Australian Institute of Health and Welfare."
     )
-    assert "draft_transport" not in item
+    assert item["draft_transport"] == {
+        "release_id": 444173498,
+        "tag_name": "codex-atc2-public-transport-20261113",
+        "target_commitish": "4ee482a2e05e50d7f36a45e36632eacbcf59a85f",
+        "asset_id": 743483280,
+        "asset_name": "aihw-atc2-current-2026-11-13.zip",
+    }
 
 
 def test_current_atc2_workflow_retains_acquisition_audit():
