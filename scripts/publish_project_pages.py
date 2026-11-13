@@ -1,4 +1,4 @@
-"""Update only the reviewed catalogue card and diagrams from hosted main."""
+"""Update a reviewed catalogue metadata packet from hosted main."""
 
 from __future__ import annotations
 
@@ -32,20 +32,33 @@ FILES = {
     "assets/medallion.svg": "docs/publication/project-pages-approved-20261103/assets/medallion.svg",
     "assets/roadmap.svg": "docs/publication/project-pages-approved-20261103/assets/roadmap.svg",
 }
+AUSTRALIAN_APPROVAL = (
+    ROOT / "docs/publication/australian-archive-card-approval.json"
+)
+AUSTRALIAN_FILES = {
+    "README.md": "docs/publication/huggingface-catalogue-card.md",
+}
 
 
-def approved_files() -> tuple[str, tuple[ArtifactBinding, ...]]:
-    """Bind an exact three-file metadata scope without accessing credentials."""
-    document = json.loads(APPROVAL.read_bytes())
+def approved_files(
+    *, australian_archive: bool = False
+) -> tuple[str, tuple[ArtifactBinding, ...]]:
+    """Bind an exact metadata scope without accessing credentials."""
+    approval, files = (
+        (AUSTRALIAN_APPROVAL, AUSTRALIAN_FILES)
+        if australian_archive
+        else (APPROVAL, FILES)
+    )
+    document = json.loads(approval.read_bytes())
     if (
         document["dataset"] != DATASET
         or document["metadata_update_approved"] is not True
-        or set(document["files"]) != set(FILES)
+        or set(document["files"]) != set(files)
         or not re.fullmatch(r"[0-9a-f]{40}", document["parent_revision"])
     ):
         raise ValueError("project page approval scope differs")
     bindings: list[ArtifactBinding] = []
-    for remote, local in FILES.items():
+    for remote, local in files.items():
         path = ROOT / local
         if path.is_symlink() or not path.is_file():
             raise ValueError("project page input must be a regular file")
@@ -72,10 +85,17 @@ def inventory(api: Any, revision: str) -> dict[str, str]:
     return result
 
 
-def publish(exact_commit: str, receipt_path: Path, sdk: Any) -> None:
-    """CAS-write exactly three metadata files once, then verify anonymously."""
+def publish(
+    exact_commit: str,
+    receipt_path: Path,
+    sdk: Any,
+    *,
+    australian_archive: bool = False,
+) -> None:
+    """CAS-write the approved metadata files once, then verify anonymously."""
     require_hosted_main(exact_commit)
-    parent, bindings = approved_files()
+    parent, bindings = approved_files(australian_archive=australian_archive)
+    files = AUSTRALIAN_FILES if australian_archive else FILES
     public = sdk.HfApi(token=False)
     if public.dataset_info(DATASET).sha != parent:
         raise ValueError("catalogue advanced; reconcile before publication")
@@ -95,12 +115,16 @@ def publish(exact_commit: str, receipt_path: Path, sdk: Any) -> None:
         repo_id=DATASET,
         repo_type="dataset",
         parent_commit=parent,
-        commit_message="Refresh project architecture, roadmap and navigation",
+        commit_message=(
+            "Link the verified Australian MBS and PBS archive inventory"
+            if australian_archive
+            else "Refresh project architecture, roadmap and navigation"
+        ),
         operations=[
             sdk.CommitOperationAdd(
                 path_in_repo=remote, path_or_fileobj=str(ROOT / local)
             )
-            for remote, local in FILES.items()
+            for remote, local in files.items()
         ],
     )
     revision = str(result.oid)
@@ -111,10 +135,10 @@ def publish(exact_commit: str, receipt_path: Path, sdk: Any) -> None:
         json.dumps(receipt, indent=2) + "\n", encoding="utf-8"
     )
     after = inventory(public, revision)
-    if set(after) != set(before) | set(FILES) or any(
+    if set(after) != set(before) | set(files) or any(
         after[path] != blob
         for path, blob in before.items()
-        if path not in FILES
+        if path not in files
     ):
         raise ValueError("catalogue objects outside the page scope changed")
     verifier = HuggingFaceAnonymousArtifactVerifier()
@@ -132,7 +156,7 @@ def publish(exact_commit: str, receipt_path: Path, sdk: Any) -> None:
             raise ValueError("anonymous page verification differs")
     receipt.update(
         state="anonymously_verified",
-        unchanged_other_git_objects=len(set(before) - set(FILES)),
+        unchanged_other_git_objects=len(set(before) - set(files)),
         source_payloads_downloaded=False,
     )
     receipt_path.write_text(
@@ -144,6 +168,7 @@ def main() -> None:
     """Check the local scope, or explicitly publish from exact hosted main."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--publish", action="store_true")
+    parser.add_argument("--australian-archive", action="store_true")
     parser.add_argument("--exact-commit", default="")
     parser.add_argument(
         "--receipt", type=Path, default=Path("build/project-pages.json")
@@ -155,9 +180,12 @@ def main() -> None:
             args.exact_commit,
             args.receipt,
             cast("Any", import_module("huggingface_hub")),
+            australian_archive=args.australian_archive,
         )
     else:
-        parent, bindings = approved_files()
+        parent, bindings = approved_files(
+            australian_archive=args.australian_archive
+        )
         print(
             json.dumps({
                 "parent_revision": parent,

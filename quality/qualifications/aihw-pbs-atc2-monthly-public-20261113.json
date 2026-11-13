@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "external_publication_authorized": true,
+  "authority": "Maintainer requested the missing ATC2 monthly ZIP be compared and missing public data published, with participant and cohort-derived data kept private.",
+  "archives": {
+    "pbs": {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "require_complete_acquisition": true,
+      "parent_revision": "e7d39f34e48adba2aaef601281887503baaf3354",
+      "manifest_sha256": "bcbae19f33e234c2ce01ba71aebb432f831fd875876152cfbd2f111f83407700",
+      "prior_verification_run": [
+        42215694518
+      ],
+      "files": [
+        {
+          "sha256": "30552d9f7e49e35787b2ac2719cf2177352fb1c38fe9e100127ce790b7ab1a0a",
+          "bytes": 88904070,
+          "resource": {
+            "source_id": "au-aihw-pbs-monthly",
+            "category": "aihw_pbs_monthly_aggregate",
+            "url": "https://www.aihw.gov.au/getmedia/e348a99b-6a60-4743-b3de-dececda9d43b/AIHW-HWE-098-PBS-ATC2-prescriptions-monthly-data_keep.zip",
+            "filename": "AIHW-HWE-098-PBS-ATC2-prescriptions-monthly-data_keep.zip",
+            "archive_path": "raw/pbs/public-backfill/aihw_pbs_monthly_aggregate/30552d9f7e49e35787b2ac2719cf2177352fb1c38fe9e100127ce790b7ab1a0a/AIHW-HWE-098-PBS-ATC2-prescriptions-monthly-data_keep.zip",
+            "period_label": "January 2015 to September 2026, monthly prescriptions and government spending per resident by ATC level 2"
+          },
+          "resolved_public_url": "https://www.aihw.gov.au/getmedia/e348a99b-6a60-4743-b3de-dececda9d43b/aihw-hwe-098-pbs-atc2-prescriptions-monthly-data_keep.zip",
+          "source_rights": {
+            "licence": "CC BY 4.0, subject to AIHW website exclusions and any separate source terms",
+            "licence_url": "https://creativecommons.org/licenses/by/4.0/",
+            "rights_source": "https://www.aihw.gov.au/copyright",
+            "attribution": "Source: Australian Institute of Health and Welfare."
+          },
+          "inspection": {
+            "outer_zip_crc": "passed",
+            "workbook_member": "AIHW-HWE-098-PBS-ATC2-prescriptions-monthly-data.xlsx",
+            "workbook_bytes": 159895216,
+            "monthly_columns": "January 2015 to September 2026",
+            "tables": 6,
+            "declared_worksheet_dimensions": [
+              "A1:EN690",
+              "A1:EO5506",
+              "A1:EP93914",
+              "A1:EP93914",
+              "A1:EP93914",
+              "A1:EP93914"
+            ],
+            "geography": [
+              "Australia",
+              "state or territory",
+              "local government area"
+            ],
+            "age_groups": [
+              "0-18",
+              "19-64",
+              "65+",
+              "all ages"
+            ],
+            "measures": [
+              "benefits per estimated resident population",
+              "scripts per estimated resident population"
+            ],
+            "comparison": "The archived AIHW environmental extract uses weekly periods and SA4 rather than the monthly LGA fields checked here. Exact file digest was absent from the prior PBS archive manifest."
+          }
+        }
+      ]
+    }
+  }
+}

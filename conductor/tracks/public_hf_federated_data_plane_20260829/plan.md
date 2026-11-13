@@ -1091,3 +1091,31 @@ This closes the exact approved append and digest-verification work. It does
 not perform v4 admission, consumer canaries or independent recovery, and does
 not close the broader incomplete track tasks above. No additional append is
 authorized by this transaction.
+
+## Australian MBS and PBS archive reconciliation (2026-11-13)
+
+- [x] Reconcile the frozen inventory and exact schedule and utilisation outputs
+  against the public Hub revisions. Record archive identity, product
+  qualification and remaining gaps in a public discovery record.
+- [~] Link the record from GitHub and the Hugging Face catalogue, using one
+  hosted exact-parent card update and anonymous readback. Align the local
+  checkout with protected GitHub main at the terminal checkpoint.
+
+Owner: Codex chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, checkout
+`/Volumes/PortableSSD/GitHub/global-medicines-atlas`, branch
+`codex/reconcile-australian-hf-archive`. Owned paths are the reconciliation
+record, discovery links, this track increment and the existing project-page
+publisher and its focused tests. Native write scope is the catalogue README.
+The owned test scope also includes the incremental archive publication fixture,
+whose workflow-attempt assumptions caused reproducible failures on a CI rerun.
+
+## Recovered AIHW ATC2 monthly archive (2026-11-13)
+
+- [x] Verify the recovered public ZIP digest and CRC, inspect its six worksheet
+  headers and compare the archive manifest and the existing environmental file.
+- [~] Qualify one exact PBS archive append, retain source rights and attribution,
+  then publish from protected main and verify anonymously before local cleanup.
+
+The current chat owns the existing reconciliation checkout and the PBS harvest
+workflow, public-source publisher, focused tests and exact ATC2 contract for this
+batch. The native write scope is one append to the PBS utilisation archive.

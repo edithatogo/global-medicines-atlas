@@ -843,6 +843,7 @@ def incremental_setup(tmp_path, monkeypatch, _hosted):
     )
     monkeypatch.chdir(tmp_path)
     monkeypatch.setenv("PUBLIC_ARCHIVE_DESTINATION", "mbs")
+    monkeypatch.setenv("GITHUB_RUN_ATTEMPT", "1")
     monkeypatch.setenv("HF_HOME", str(tmp_path / "build/mbs-util-hf-home"))
     monkeypatch.setattr(incremental, "CONTRACT", contract)
     monkeypatch.setattr(incremental, "CHECKPOINTS", tmp_path / "checkpoints")
@@ -883,6 +884,19 @@ def test_incremental_parent_chain_and_cleanup(incremental_setup, tmp_path):
     with pytest.raises(ValueError, match="substitute another parent"):
         inc.batch_expectation(archive, 1, first)
     assert inc.execute_batch(None, 6)["status"] == "not applicable"
+
+
+def test_incremental_prior_proof_binds_retry_attempt(
+    incremental_setup, monkeypatch
+):
+    inc, archive, _, result, _ = incremental_setup
+    monkeypatch.setenv("GITHUB_RUN_ATTEMPT", "2")
+    result["workflow_attempt"] = "2"
+    proof = inc.execute_batch(None, 1)
+    assert inc.batch_expectation(archive, 2, proof)["parent_revision"] == "next"
+    proof["workflow_attempt"] = "1"
+    with pytest.raises(RuntimeError, match="proof missing or invalid"):
+        inc.batch_expectation(archive, 2, proof)
 
 
 @pytest.mark.parametrize(
@@ -1138,6 +1152,122 @@ def test_historical_atc2_retains_acquisition_audit():
     assert "always()" in step["if"]
     assert "inputs.historical_atc2 == true" in step["if"]
     assert step["with"]["path"].endswith("acquisition.json")
+
+
+@pytest.mark.usefixtures("_hosted")
+@pytest.mark.parametrize("destination", ["pbs", "mbs"])
+def test_current_atc2_uses_fixed_pbs_contract(
+    monkeypatch, tmp_path, destination
+):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("CURRENT_ATC2", "1")
+    monkeypatch.setenv("PUBLIC_ARCHIVE_DESTINATION", destination)
+    path = Path(
+        "quality/qualifications/aihw-pbs-atc2-monthly-public-20261113.json"
+    )
+    path.parent.mkdir(parents=True)
+    path.write_text(
+        json.dumps({
+            "external_publication_authorized": True,
+            "archives": {
+                "pbs": {
+                    "dataset": "edithatogo/australian-pbs-utilisation-archive",
+                    "files": ["exact-reviewed-cohort"],
+                }
+            },
+        }),
+        encoding="utf-8",
+    )
+    Path("build").mkdir()
+    publish = Mock(return_value={"anonymous_digest_verification": "passed"})
+    monkeypatch.setattr(subject, "publish", publish)
+    monkeypatch.setattr(subject.importlib, "import_module", lambda _: None)
+    if destination == "mbs":
+        with pytest.raises(ValueError, match="restricted to PBS"):
+            subject.main()
+        publish.assert_not_called()
+    else:
+        subject.main()
+        assert publish.call_args.args[1]["files"] == ["exact-reviewed-cohort"]
+        for flag in ("HISTORICAL_ATC2", "REMAINING_PUBLIC"):
+            monkeypatch.setenv(flag, "1")
+            with pytest.raises(
+                ValueError, match="only one public archive cohort"
+            ):
+                subject.main()
+            monkeypatch.delenv(flag)
+        assert publish.call_count == 1
+
+
+@pytest.mark.usefixtures("_hosted")
+@pytest.mark.parametrize("invalid", [False, True])
+def test_public_source_rights_are_retained(monkeypatch, tmp_path, invalid):
+    payload, item, _, expected = cohort()
+    rights = {
+        "licence": "CC BY 4.0",
+        "licence_url": "https://creativecommons.org/licenses/by/4.0/",
+        "rights_source": "https://www.aihw.gov.au/copyright",
+        "attribution": "Source: Australian Institute of Health and Welfare.",
+    }
+    item["source_rights"] = {} if invalid else rights
+    expected["files"] = [item]
+    monkeypatch.setattr(
+        subject, "read_public_payload", lambda url, _limit: (payload, url)
+    )
+    if invalid:
+        with pytest.raises(ValueError, match="rights metadata is incomplete"):
+            subject.stage_public_sources(expected, tmp_path, {})
+    else:
+        stages, coverage = subject.stage_public_sources(expected, tmp_path, {})
+        receipt = json.loads(stages[0].staged_receipt_path.read_text())
+        assert receipt["source_rights"] == rights
+        assert coverage["coverage_status"] == "complete"
+
+
+def test_current_atc2_contract_binds_one_public_source():
+    contract = json.loads(
+        Path(
+            "quality/qualifications/aihw-pbs-atc2-monthly-public-20261113.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert contract["external_publication_authorized"] is True
+    assert set(contract["archives"]) == {"pbs"}
+    archive = contract["archives"]["pbs"]
+    assert archive["require_complete_acquisition"] is True
+    (item,) = archive["files"]
+    assert item["bytes"] == 88_904_070
+    assert item["sha256"] == (
+        "30552d9f7e49e35787b2ac2719cf2177352fb1c38fe9e100127ce790b7ab1a0a"
+    )
+    assert item["sha256"] in item["resource"]["archive_path"]
+    assert item["resource"]["url"].startswith("https://www.aihw.gov.au/")
+    assert item["source_rights"]["attribution"] == (
+        "Source: Australian Institute of Health and Welfare."
+    )
+    assert "draft_transport" not in item
+
+
+def test_current_atc2_workflow_retains_acquisition_audit():
+    workflow = yaml.safe_load(
+        Path(
+            ".github/workflows/australian-pbs-utilisation-harvest.yml"
+        ).read_text(encoding="utf-8")
+    )
+    steps = workflow["jobs"]["harvest"]["steps"]
+    audit = next(
+        step
+        for step in steps
+        if step.get("name") == "Retain exact public acquisition outcomes"
+    )
+    assert "always()" in audit["if"]
+    assert "inputs.current_atc2 == true" in audit["if"]
+    bind = next(
+        step
+        for step in steps
+        if step.get("name") == "Bind main head and exact harvest authorization"
+    )
+    assert "CURRENT_ATC2_SELECTED" in bind["env"]
+    assert "Select only one public archive cohort" in bind["run"]
 
 
 @pytest.mark.usefixtures("_hosted")

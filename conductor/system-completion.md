@@ -263,3 +263,13 @@ Execute only the four-object digest-frozen historical ATC2 contract through
 Actions. Continue bounded public ATC2 discovery; participant/cohort-derived
 sources, general federation, semantic admission and public releases remain
 excluded. Stop this publication at anonymous readback and workflow restoration.
+
+## Recovered AIHW ATC2 monthly file — 13 November 2026
+
+The maintainer requested recovery, comparison and publication of missing public
+ATC2 data. The previously unavailable publisher ZIP is now available and the
+exact 88,904,070-byte object is absent from the verified PBS archive manifest.
+Prepare one source-faithful append under the existing hosted publication and
+anonymous-verification boundary. Keep the publisher attribution and licence
+notice with the object, preserve the prior manifest, and retain the local copy
+until verification succeeds. Participant and cohort-derived data remain private.

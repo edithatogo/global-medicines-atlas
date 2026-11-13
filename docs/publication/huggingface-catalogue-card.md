@@ -47,6 +47,18 @@ current global coverage or production acceptance. Related approved archives:
 and [historical NZULM 2023](https://huggingface.co/datasets/edithatogo/nzulm-2023-source-archive).
 Their own editions, receipts, source terms and licence exclusions govern use.
 
+## Australian MBS and PBS archives
+
+The public Australian inventory was reconciled on 13 November 2026.
+All 1,759 frozen objects matched their approved archive identities.
+The September 2025 PBS schedule API ZIP contains 33 CSVs. Historical MBS
+demographics source ZIPs start in 1993. PBS utilisation includes the 1991–2008
+ATC2 teaching CSV and the May 2002–January 2015 AIHW historical workbook.
+
+[Pinned revisions, the September ZIP and its 33 member names, and qualification status](https://github.com/edithatogo/global-medicines-atlas/blob/main/docs/qualification/australian-public-archive-reconciliation-20261113.md) ·
+[MBS utilisation archive](https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive) ·
+[PBS utilisation archive](https://huggingface.co/datasets/edithatogo/australian-pbs-utilisation-archive)
+
 <!-- gma-progress:start -->
 ## Roadmap snapshot — 3 November 2026
 
