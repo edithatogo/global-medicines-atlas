@@ -1108,3 +1108,14 @@ record, discovery links, this track increment and the existing project-page
 publisher and its focused tests. Native write scope is the catalogue README.
 The owned test scope also includes the incremental archive publication fixture,
 whose workflow-attempt assumptions caused reproducible failures on a CI rerun.
+
+## Recovered AIHW ATC2 monthly archive (2026-11-13)
+
+- [x] Verify the recovered public ZIP digest and CRC, inspect its six worksheet
+  headers and compare the archive manifest and the existing environmental file.
+- [~] Qualify one exact PBS archive append, retain source rights and attribution,
+  then publish from protected main and verify anonymously before local cleanup.
+
+The current chat owns the existing reconciliation checkout and the PBS harvest
+workflow, public-source publisher, focused tests and exact ATC2 contract for this
+batch. The native write scope is one append to the PBS utilisation archive.

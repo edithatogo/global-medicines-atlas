@@ -331,6 +331,25 @@ def stage_public_sources(
             raw_archive=True,
             raw_archive_max_bytes=MAX_BYTES,
         )
+        if "source_rights" in item:
+            rights = item["source_rights"]
+            if (
+                not isinstance(rights, dict)
+                or set(rights)
+                != {"licence", "licence_url", "rights_source", "attribution"}
+                or any(
+                    not isinstance(value, str) or not value
+                    for value in rights.values()
+                )
+            ):
+                raise ValueError("Public source rights metadata is incomplete")
+            receipt = json.loads(
+                stage.staged_receipt_path.read_text(encoding="utf-8")
+            )
+            receipt["source_rights"] = rights
+            stage.staged_receipt_path.write_text(
+                json.dumps(receipt, indent=2) + "\n", encoding="utf-8"
+            )
         if "draft_transport" in item:
             receipt = json.loads(
                 stage.staged_receipt_path.read_text(encoding="utf-8")
@@ -482,6 +501,17 @@ def main() -> None:
     require_hosted()
     destination = os.environ["PUBLIC_ARCHIVE_DESTINATION"]
     contract_path = CONTRACT
+    if os.environ.get("CURRENT_ATC2") == "1":
+        if destination != "pbs":
+            raise ValueError("Current ATC2 is restricted to PBS")
+        if (
+            os.environ.get("HISTORICAL_ATC2") == "1"
+            or os.environ.get("REMAINING_PUBLIC") == "1"
+        ):
+            raise ValueError("Select only one public archive cohort")
+        contract_path = Path(
+            "quality/qualifications/aihw-pbs-atc2-monthly-public-20261113.json"
+        )
     if os.environ.get("HISTORICAL_ATC2") == "1":
         if destination != "pbs":
             raise ValueError("Historical ATC2 is restricted to PBS")

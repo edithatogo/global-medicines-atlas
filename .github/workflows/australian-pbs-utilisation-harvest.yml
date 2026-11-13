@@ -17,6 +17,11 @@ on:
         required: false
         default: false
         type: boolean
+      current_atc2:
+        description: Archive the reviewed AIHW monthly ATC2 workbook ZIP
+        required: false
+        default: false
+        type: boolean
       incremental_public:
         description: Publish committed public draft batches with verification checkpoints
         required: false
@@ -66,11 +71,27 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           REQUESTED_COMMIT: ${{ inputs.exact_contract_commit || github.sha }}
+          CURRENT_ATC2_SELECTED: ${{ inputs.current_atc2 == true && '1' || '0' }}
+          HISTORICAL_ATC2_SELECTED: ${{ inputs.historical_atc2 == true && '1' || '0' }}
+          REMAINING_PUBLIC_SELECTED: ${{ inputs.remaining_public == true && '1' || '0' }}
+          INCREMENTAL_PUBLIC_SELECTED: ${{ inputs.incremental_public == true && '1' || '0' }}
+          BACKFILL_ALL_SELECTED: ${{ inputs.backfill_all == true && '1' || '0' }}
+          EXPORT_BUNDLE_SELECTED: ${{ inputs.public_export_bundle || '' }}
         run: |
           set -euo pipefail
           test "$GITHUB_REF" = refs/heads/main
           test "$GITHUB_SHA" = "$REQUESTED_COMMIT"
           test "$GITHUB_SHA" = "$(gh api repos/edithatogo/global-medicines-atlas/commits/main --jq .sha)"
+          if [[ "$CURRENT_ATC2_SELECTED" == 1 ]] && {
+            [[ "$HISTORICAL_ATC2_SELECTED" == 1 ]] ||
+            [[ "$REMAINING_PUBLIC_SELECTED" == 1 ]] ||
+            [[ "$INCREMENTAL_PUBLIC_SELECTED" == 1 ]] ||
+            [[ "$BACKFILL_ALL_SELECTED" == 1 ]] ||
+            [[ -n "$EXPORT_BUNDLE_SELECTED" ]]
+          }; then
+            echo "::error::Select only one public archive cohort"
+            exit 1
+          fi
           : # Outbound comments prohibited; retain workflow artifacts instead.
 
       - name: Publish and anonymously verify public batch 1
@@ -216,11 +237,12 @@ jobs:
           BACKFILL_ALL: ${{ inputs.backfill_all == true && '1' || '0' }}
           REMAINING_PUBLIC: ${{ inputs.remaining_public == true && '1' || '0' }}
           HISTORICAL_ATC2: ${{ inputs.historical_atc2 == true && '1' || '0' }}
+          CURRENT_ATC2: ${{ inputs.current_atc2 == true && '1' || '0' }}
           PUBLIC_ARCHIVE_DESTINATION: pbs
           PUBLIC_EXPORT_BUNDLE: ${{ inputs.public_export_bundle || '' }}
         run: |
           set -euo pipefail
-          if test "$REMAINING_PUBLIC" = 1 || test "$HISTORICAL_ATC2" = 1; then
+          if test "$REMAINING_PUBLIC" = 1 || test "$HISTORICAL_ATC2" = 1 || test "$CURRENT_ATC2" = 1; then
             uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 \
               python -m scripts.publish_remaining_public_archives
           elif test -n "$PUBLIC_EXPORT_BUNDLE"; then
@@ -234,7 +256,7 @@ jobs:
           : # Outbound comments prohibited; retain workflow artifacts instead.
 
       - name: Retain exact public acquisition outcomes
-        if: ${{ always() && (inputs.remaining_public == true || inputs.historical_atc2 == true) }}
+        if: ${{ always() && (inputs.remaining_public == true || inputs.historical_atc2 == true || inputs.current_atc2 == true) }}
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: public-acquisition-${{ github.run_id }}-${{ github.run_attempt }}
