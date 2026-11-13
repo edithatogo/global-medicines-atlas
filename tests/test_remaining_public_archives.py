@@ -843,6 +843,7 @@ def incremental_setup(tmp_path, monkeypatch, _hosted):
     )
     monkeypatch.chdir(tmp_path)
     monkeypatch.setenv("PUBLIC_ARCHIVE_DESTINATION", "mbs")
+    monkeypatch.setenv("GITHUB_RUN_ATTEMPT", "1")
     monkeypatch.setenv("HF_HOME", str(tmp_path / "build/mbs-util-hf-home"))
     monkeypatch.setattr(incremental, "CONTRACT", contract)
     monkeypatch.setattr(incremental, "CHECKPOINTS", tmp_path / "checkpoints")
@@ -883,6 +884,19 @@ def test_incremental_parent_chain_and_cleanup(incremental_setup, tmp_path):
     with pytest.raises(ValueError, match="substitute another parent"):
         inc.batch_expectation(archive, 1, first)
     assert inc.execute_batch(None, 6)["status"] == "not applicable"
+
+
+def test_incremental_prior_proof_binds_retry_attempt(
+    incremental_setup, monkeypatch
+):
+    inc, archive, _, result, _ = incremental_setup
+    monkeypatch.setenv("GITHUB_RUN_ATTEMPT", "2")
+    result["workflow_attempt"] = "2"
+    proof = inc.execute_batch(None, 1)
+    assert inc.batch_expectation(archive, 2, proof)["parent_revision"] == "next"
+    proof["workflow_attempt"] = "1"
+    with pytest.raises(RuntimeError, match="proof missing or invalid"):
+        inc.batch_expectation(archive, 2, proof)
 
 
 @pytest.mark.parametrize(

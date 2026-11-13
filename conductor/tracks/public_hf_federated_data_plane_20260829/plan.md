@@ -1106,3 +1106,5 @@ Owner: Codex chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, checkout
 `codex/reconcile-australian-hf-archive`. Owned paths are the reconciliation
 record, discovery links, this track increment and the existing project-page
 publisher and its focused tests. Native write scope is the catalogue README.
+The owned test scope also includes the incremental archive publication fixture,
+whose workflow-attempt assumptions caused reproducible failures on a CI rerun.
