@@ -1,0 +1,13 @@
+{
+  "authorization": "Direct maintainer request on 13 November 2026 to reconcile the GitHub, Hugging Face and local repositories after the public MBS and PBS inventory check. Scope is the catalogue README only.",
+  "dataset": "edithatogo/global-medicines-atlas-catalogue",
+  "files": {
+    "README.md": {
+      "relative_path": "README.md",
+      "sha256": "228f0d6c19503a78232b68849d0902fdf288d54c3cd2ac18e23409811472cc5b",
+      "size": 8345
+    }
+  },
+  "metadata_update_approved": true,
+  "parent_revision": "b7e5efac7625f9a7ba392fe10fa3f34134b0fd08"
+}

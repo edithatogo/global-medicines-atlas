@@ -73,6 +73,10 @@ Selected linked archives include:
 | [Australian PBS](https://huggingface.co/datasets/edithatogo/australian-pbs-source-archive) | Funding/formulary source archive and published projections |
 | [Historical NZULM 2023](https://huggingface.co/datasets/edithatogo/nzulm-2023-source-archive) | 102 permitted historical members; licence exclusions retained |
 
+The [Australian MBS and PBS archive reconciliation](docs/qualification/australian-public-archive-reconciliation-20261113.md)
+links exact archive revisions, the September 2025 PBS schedule ZIP and its 33
+CSV members, and public utilisation files including MBS demographics from 1993.
+
 Pin a full revision and verify the object digest before use. Publication and
 byte verification do not establish semantic qualification, v4 admission,
 complete historical coverage or clinical suitability. Each dataset card and

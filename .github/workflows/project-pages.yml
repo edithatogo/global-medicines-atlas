@@ -4,9 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       exact_commit:
-        description: Exact reviewed main commit for the three-file page update
+        description: Exact reviewed main commit for the metadata update
         required: true
         type: string
+      australian_archive:
+        description: Apply the reviewed Australian archive README-only packet
+        type: boolean
+        default: false
 
 permissions: {}
 concurrency:
@@ -42,13 +46,19 @@ jobs:
           test "$(git rev-parse HEAD)" = "$REQUESTED_COMMIT"
           test "$GITHUB_SHA" = "$(gh api repos/edithatogo/global-medicines-atlas/commits/main --jq .sha)"
           uv run --locked --python 3.15.1 python scripts/render_project_overview.py --check
-      - name: Publish only the approved card and diagrams
+      - name: Publish only the approved metadata packet
         env:
+          AUSTRALIAN_ARCHIVE: ${{ inputs.australian_archive }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: >-
-          uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0
-          python -m scripts.publish_project_pages --publish
-          --exact-commit "$GITHUB_SHA" --receipt build/project-pages.json
+        run: |
+          set -euo pipefail
+          args=()
+          if [[ "$AUSTRALIAN_ARCHIVE" == "true" ]]; then
+            args+=(--australian-archive)
+          fi
+          uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 \
+            python -m scripts.publish_project_pages --publish "${args[@]}" \
+            --exact-commit "$GITHUB_SHA" --receipt build/project-pages.json
       - name: Preserve intent, outcome and anonymous verification
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0

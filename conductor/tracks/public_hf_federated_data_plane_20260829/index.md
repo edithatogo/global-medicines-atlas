@@ -14,3 +14,6 @@ publication, rights, sensitivity, and restore evidence independent.
 
 Current M-108 product status: [derived-product reconciliation](../../../docs/qualification/australian-m108-derived-products.md)
 and [machine-readable inventory](../../../quality/qualifications/australian-m108-derived-products-20261005.json).
+
+Current public archive identities and remaining product gates are recorded in the
+[13 November MBS and PBS reconciliation](../../../docs/qualification/australian-public-archive-reconciliation-20261113.md).
