@@ -673,3 +673,109 @@ def test_pbs_reader_rechecks_bind_six_prior_admissions() -> None:
         assert canary["boundaries"]["source_values_or_rows_included"] is False
         assert canary["boundaries"]["source_payload_bytes_retained"] is False
         assert canary["boundaries"]["public_dataset_mutated"] is False
+
+
+def test_mbs_reader_rechecks_bind_eight_prior_admissions() -> None:  # ruff: ignore[too-many-statements] -- Each object must bind its own independent evidence.
+    manifest = _read(
+        "quality/qualifications/"
+        "australian-m112-mbs-reader-recheck-20261115/manifest.json"
+    )
+    ledger_ref = manifest["prior_ledger"]
+    ledger_bytes = (ROOT / ledger_ref["path"]).read_bytes()
+    assert hashlib.sha256(ledger_bytes).hexdigest() == ledger_ref["sha256"]
+    ledger = json.loads(ledger_bytes)
+    keys = (
+        "dataset",
+        "revision",
+        "path",
+        "sha256",
+        "contract_path",
+        "contract_sha256",
+    )
+    previous = {
+        tuple(row[key] for key in keys)
+        for row in ledger["prior_admitted_identities"]
+    }
+    assert len(previous) == manifest["rechecked_existing_objects"] == 8
+    assert {
+        tuple(row[key] for key in keys) for row in manifest["objects"]
+    } == previous
+    assert manifest["new_unique_admissions"] == 0
+    assert (
+        manifest["raw_admissions_before_and_after"]
+        == ledger["effective_counts"]["raw_v4_admissions"]
+        == 14
+    )
+    assert (
+        manifest["raw_canaries_before_and_after"]
+        == ledger["effective_counts"]["raw_admitted_object_reader_canaries"]
+        == 14
+    )
+    assert (
+        manifest["deferred_before_and_after"]
+        == ledger["effective_counts"]["deferred_objects"]
+        == 1745
+    )
+    assert all(value is False for value in manifest["boundaries"].values())
+    assert (
+        sum(row["byte_count"] for row in manifest["objects"])
+        == manifest["total_bytes"]
+    )
+    for row in manifest["objects"]:
+        contract_bytes = (ROOT / row["contract_path"]).read_bytes()
+        assert (
+            hashlib.sha256(contract_bytes).hexdigest() == row["contract_sha256"]
+        )
+        contract = json.loads(contract_bytes)
+        assert contract["rights"]["sensitivity"] == "non_sensitive"
+        assert contract["rights"]["publication"] == "approved_exact_scope"
+        assert contract["rights"]["subject_sha256"] == row["sha256"]
+        assert contract["location"]["bytes"] == row["byte_count"]
+        receipt_bytes = (ROOT / row["receipt_path"]).read_bytes()
+        assert (
+            hashlib.sha256(receipt_bytes).hexdigest() == row["receipt_sha256"]
+        )
+        receipt = json.loads(receipt_bytes)
+        assert receipt["status"] == "admitted_with_consumer_canary"
+        assert receipt["source_values_or_payload_bytes_retained"] is False
+        assert receipt["receipt_closure"]["receipt_content_retained"] is False
+        assert receipt["admission"]["contract_sha256"] == row["contract_sha256"]
+        assert all(
+            receipt["admission"][key] == row[key]
+            for key in ("dataset", "revision", "path", "sha256", "byte_count")
+        )
+        canary = receipt["consumer_canary"]
+        assert canary["status"] == row["status"] == "passed"
+        assert all(
+            canary["object"][key] == row[key]
+            for key in ("dataset", "revision", "path", "sha256")
+        )
+        assert canary["object"]["bytes"] == row["byte_count"]
+        assert canary["hosted_workflow"]["run_id"] == row["run_id"]
+        assert canary["hosted_workflow"]["run_attempt"] == row["run_attempt"]
+        assert (
+            canary["hosted_workflow"]["commit"] == manifest["workflow_commit"]
+        )
+        assert canary["verification"]["origin"] == "remote"
+        assert canary["verification"]["remote_digest_match"] is True
+        assert canary["verification"]["consumer_stream_digest_match"] is True
+        assert canary["verification"]["reader_cache_bytes_after_close"] == 0
+        assert (
+            canary["verification"]["source_values_or_rows_interpreted"] is False
+        )
+        assert canary["boundaries"]["source_values_or_rows_included"] is False
+        assert canary["boundaries"]["source_payload_bytes_retained"] is False
+        assert canary["boundaries"]["public_dataset_mutated"] is False
+    retry = manifest["retained_retry"]
+    assert retry["first_attempt_status"] == "failed_before_reader"
+    assert (
+        retry["first_attempt_failure"]
+        == "anonymous_github_receipt_http_403_rate_limit"
+    )
+    assert retry["additional_attempts"] == 1
+    assert retry["second_attempt_status"] == "passed"
+    assert [
+        (row["run_id"], row["run_attempt"])
+        for row in manifest["objects"]
+        if row["run_attempt"] != 1
+    ] == [(retry["run_id"], 2)]

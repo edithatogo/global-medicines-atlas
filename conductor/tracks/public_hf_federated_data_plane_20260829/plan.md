@@ -1182,3 +1182,32 @@ PR #1435 passed 29 reported required checks on head
 unrelated data-layer run `43613625929` was canceled with no runner, executed
 step or artifact. The regular workflow remains enabled; no data was acquired
 or published by that run.
+
+## Existing PBS crosswalk and admitted-object consumers (2026-11-15)
+
+The maintainer requested the existing PBS metadata crosswalk, investigation of
+four unmatched publisher links, and continued privacy, admission and consumer
+checks, with no new or published data. Owner: chat
+`01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/pbs-federation-metadata-20261115`, base
+`1abd398b97f230ebfdf6729bfb1dd6f4c9f4dfac`. The Australian Silver/Gold track
+owns the metadata-only crosswalk and link investigation; this track owns
+read-only rechecks of already admitted, source-profiled public objects.
+
+- [x] Verify each of the eight existing MBS contracts identifies the exact
+  non-sensitive, previously admitted public aggregate object. The 311 distinct
+  reimbursement B1 candidates retain unknown sensitivity and remain blocked
+  from payload reads and new v4 admission.
+- [x] Recheck all eight objects through the bounded hosted reader, retaining
+  value-free receipts. One GitHub receipt request was rate-limited before its
+  reader ran; its one bounded retry passed. Repeat checks are not new admissions.
+- [x] Reconcile the consumer and admission evidence without adding sources,
+  publishing datasets or accepting the full federation. Effective raw counts
+  remain 14 admitted, 14 checked and 1,745 deferred.
+
+The preceding batch was integrated as PR #1437 after the required checks
+passed on head `11644ac00f77993adc06e1c79ab0dc4f39fb108a`; its squash merge
+`1abd398b97f230ebfdf6729bfb1dd6f4c9f4dfac` has the same checked tree
+`649fe7404027d7c183a138405f8e2f97bbddab09`. No dataset publication or
+acquisition workflow was run as part of that integration.

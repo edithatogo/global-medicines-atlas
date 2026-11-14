@@ -209,6 +209,16 @@ def _validate_metadata_records(
     return references, observed
 
 
+# Public aliases allow later metadata-only qualifications to reuse the same
+# bounded readers and identity checks without changing historical reports.
+read_bound_metadata = _read_bound
+validate_metadata_records = _validate_metadata_records
+metadata_object = _object
+metadata_rows = _rows
+metadata_index = _index
+metadata_identity = _identity
+
+
 def _raw_record(
     root: Path,
     *,

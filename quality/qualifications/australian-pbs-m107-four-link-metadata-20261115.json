@@ -1,0 +1,92 @@
+{
+  "schema_id": "global-medicines-atlas.pbs-m107-four-link-metadata-observation",
+  "schema_version": 1,
+  "observed_on": "2026-11-15",
+  "source_crosswalk": {
+    "path": "quality/qualifications/australian-pbs-m107-link-crosswalk-20261018.json",
+    "sha256": "4614d529de0f290319757520b95cea004a2d271e18e2f67a5c1350370e5b127d"
+  },
+  "publisher_probe": {
+    "method": "HEAD",
+    "redirects_followed": false,
+    "response_bodies_read": false,
+    "objects": [
+      {
+        "url": "https://www.pbs.gov.au/publication/schedule/2022/08/2022-08-01-sch.zip?variant=3",
+        "status": 200,
+        "declared_bytes": 8237182,
+        "content_type": "application/zip",
+        "etag": null
+      },
+      {
+        "url": "https://www.pbs.gov.au/publication/schedule/2022/08/2022-08-01-down.zip?variant=3",
+        "status": 200,
+        "declared_bytes": 8781017,
+        "content_type": "application/zip",
+        "etag": null
+      },
+      {
+        "url": "https://www.pbs.gov.au/publication/schedule/2026/09/2026-09-01-PBS-API-CSV-files.zip?variant=3",
+        "status": 200,
+        "declared_bytes": 4454192,
+        "content_type": "application/zip",
+        "etag": null
+      },
+      {
+        "url": "https://www.pbs.gov.au/publication/schedule/2026/08/2026-08-01-PBS-API-CSV-files.zip?variant=3",
+        "status": 200,
+        "declared_bytes": 4459097,
+        "content_type": "application/zip",
+        "etag": null
+      }
+    ]
+  },
+  "anonymous_archive_tree_scans": [
+    {
+      "dataset": "edithatogo/reimbursement-atlas",
+      "revision": "8c75366a5d5fbf72cdde1d9f83e6f1cbaef7a338",
+      "tree_entries_including_directories": 3458,
+      "exact_basename_matches": 0,
+      "same_declared_size_matches": 0
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-source-archive",
+      "revision": "3995deb3e2a82f09472d6a78020fb13bbbc96056",
+      "tree_entries_including_directories": 22,
+      "exact_basename_matches": 0,
+      "same_declared_size_matches": 0
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "ba60e1d18b81e4af3cae50bc9fbfe719406fa5f3",
+      "tree_entries_including_directories": 2757,
+      "exact_basename_matches": 0,
+      "same_declared_size_matches": 0
+    }
+  ],
+  "tree_scan_method": "Anonymous hf 2.4.0 recursive revision-pinned file listing; matched exact basenames case-insensitively and publisher-declared sizes against path and size metadata. Response bodies for these tree listings are not retained.",
+  "reimbursement_manifest": {
+    "dataset": "edithatogo/reimbursement-atlas",
+    "revision": "8c75366a5d5fbf72cdde1d9f83e6f1cbaef7a338",
+    "path": "raw/pbs/manifest.json",
+    "bytes": 1252503,
+    "git_blob_oid": "9c680d1d4437a851db0dde0e23c67a94cf5a8319",
+    "sha256": "569d18a843791e666be9e878e52859355d48f8cce76cabf1f7b97034c7ae12ff",
+    "four_source_filenames_mentioned": 0,
+    "response_body_retained": false
+  },
+  "limits": [
+    "A successful HEAD response and content length do not establish source bytes or digest.",
+    "File-name and size searches cover only the three stated pinned public trees; unobserved aliases or earlier source bytes may exist.",
+    "Existing same-period structured extracts have different source locators and are not treated as the XML ZIPs.",
+    "No unmatched object is declared absent or admitted."
+  ],
+  "boundaries": {
+    "publisher_payload_bytes_read": false,
+    "archive_payload_bytes_read": false,
+    "individual_participant_or_cohort_data_accessed": false,
+    "dataset_published_or_modified": false,
+    "source_rights_changed": false,
+    "missing_objects_declared_absent": false
+  }
+}
