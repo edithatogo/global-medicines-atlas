@@ -1,0 +1,15 @@
+{
+  "schema_id": "global-medicines-atlas.opentelemetry-security-update-audit",
+  "schema_version": 1,
+  "recorded_at": "2026-11-14T06:40:30.237654+00:00",
+  "lock_sha256": "607c351ada26621c07100e7f0947a1275b9f99c21a9e5417c91c4e14c08f9c6b",
+  "auditor": "pip-audit 2.10.1",
+  "source": "PyPI vulnerability service",
+  "input": "All 138 third-party package/version pairs from uv.lock, independently matched to the all-groups/all-extras PEP 751 export. The editable first-party project is excluded because it is not published on PyPI.",
+  "method": "pip-audit --strict --disable-pip --no-deps; no vulnerability ignores",
+  "third_party_package_count": 138,
+  "known_vulnerabilities": 0,
+  "unaudited_third_party_entries": 0,
+  "raw_report_sha256": "c0e5b9d3151c859886082af9d19ddb76fa62ce7055a54e458153e910a8aceed7",
+  "raw_report_path": "quality/qualifications/opentelemetry-security-audit-raw-20261114.json"
+}
