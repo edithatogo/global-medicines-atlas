@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+import scripts.qualify_australian_existing_derived_gates as derived_gates
 import scripts.qualify_m112_existing_reimbursement_batch as batch_qualification
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -87,8 +88,18 @@ def test_existing_archive_batch_binds_evidence_without_promoting_gates() -> (
         "australian-federation-existing-archive-reconciliation-20261115.json"
     )
     for reference in batch["evidence_inputs"].values():
+        evidence_path = ROOT / reference["path"]
+        if (
+            reference["path"]
+            == "quality/qualifications/stable-v1-contract.json"
+        ):
+            # This dated batch bound the pre-D-006-14 contract; preserve its bytes.
+            evidence_path = (
+                ROOT
+                / "quality/qualifications/scoped-software-v1-original-contract-20261114.json"
+            )
         assert (
-            hashlib.sha256((ROOT / reference["path"]).read_bytes()).hexdigest()
+            hashlib.sha256(evidence_path.read_bytes()).hexdigest()
             == reference["sha256"]
         )
 
@@ -779,3 +790,106 @@ def test_mbs_reader_rechecks_bind_eight_prior_admissions() -> None:  # ruff: ign
         for row in manifest["objects"]
         if row["run_attempt"] != 1
     ] == [(retry["run_id"], 2)]
+
+
+def test_existing_derived_objects_reconcile_without_promoting_gates() -> None:
+    report = derived_gates.build_report(ROOT)
+    recorded = _read(
+        "quality/qualifications/australian-existing-derived-gates-20261115.json"
+    )
+    assert report == recorded
+    assert report["result"] == {
+        "mbs_outside_frozen_candidates": 4,
+        "pbs_silver_candidates": 1,
+        "candidate_privacy_qualified_by_this_check": 0,
+        "new_admissions": 0,
+        "new_live_consumer_canaries": 0,
+        "previous_mbs_silver_consumer_objects_revalidated": 6,
+    }
+    assert all(value is False for value in report["boundaries"].values())
+    assert len({row["path"] for row in report["mbs_candidates"]}) == 4
+    for row in report["mbs_candidates"]:
+        assert row["frozen_m112_member"] is False
+        assert row["privacy"] == "not_qualified_in_selected_evidence"
+        assert row["v4_admission"] == row["consumer_check"] == "not_performed"
+        assert row["payload_read_permitted_by_this_report"] is False
+    pbs = report["pbs_candidate"]
+    assert pbs["revision"] == "3995deb3e2a82f09472d6a78020fb13bbbc96056"
+    assert (
+        pbs["public_location"]
+        == "prior_hosted_and_anonymous_digest_verification_passed"
+    )
+    assert pbs["field_state"] == "prior_receipt_names_different_output"
+    assert pbs["privacy"] == "not_qualified_in_selected_evidence"
+    assert pbs["v4_admission"] == pbs["consumer_check"] == "not_performed"
+    assert pbs["independent_recovery"] == "not_qualified"
+    consumers = report["prior_mbs_consumer_objects"]
+    assert len(consumers) == len({row["path"] for row in consumers}) == 6
+    assert all(
+        row["admission"] == "previously_admitted_candidate_product"
+        for row in consumers
+    )
+    assert all(
+        row["privacy"] == "non_sensitive_in_exact_previously_admitted_contract"
+        for row in consumers
+    )
+
+
+def test_derived_mbs_equal_size_does_not_prove_identity() -> None:
+    sources = {
+        name: _read(path)
+        for name, (path, _digest) in derived_gates.INPUTS.items()
+    }
+    tree = sources["mbs_tree"]["readback"]["objects"]
+    assert tree[0]["byte_count"] == tree[2]["byte_count"]
+    tree[0]["sha256"] = tree[2]["sha256"]
+    with pytest.raises(ValueError, match="object binding differs"):
+        derived_gates.mbs_candidates(sources)
+
+
+def test_derived_pbs_rejects_misbound_verified_revision() -> None:
+    sources = {
+        name: _read(path)
+        for name, (path, _digest) in derived_gates.INPUTS.items()
+    }
+    sources["pbs_verification"]["revision"] = "a" * 40
+    with pytest.raises(ValueError, match="candidate evidence differs"):
+        derived_gates.pbs_candidate(sources)
+
+
+def test_existing_consumer_check_rejects_wrong_object_and_request() -> None:
+    receipt = _read(derived_gates.INPUTS["consumer_receipt"][0])
+    manifest = _read(derived_gates.INPUTS["consumer_manifest"][0])
+    semantics = _read(derived_gates.INPUTS["consumer_semantic_manifest"][0])
+    receipt["remote_reads"][0]["object_sha256"] = "a" * 64
+    with pytest.raises(ValueError, match="object, privacy or canary"):
+        derived_gates.checked_consumers(ROOT, receipt, manifest, semantics)
+    receipt = _read(derived_gates.INPUTS["consumer_receipt"][0])
+    receipt["consumer_canary"]["evidence"][0]["request_sha256"] = "b" * 64
+    with pytest.raises(ValueError, match="object, privacy or canary"):
+        derived_gates.checked_consumers(ROOT, receipt, manifest, semantics)
+
+
+def test_existing_consumer_check_rejects_unqualified_privacy(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    receipt = _read(derived_gates.INPUTS["consumer_receipt"][0])
+    manifest = _read(derived_gates.INPUTS["consumer_manifest"][0])
+    semantics = _read(derived_gates.INPUTS["consumer_semantic_manifest"][0])
+    original = derived_gates.bounded.read_bound_metadata
+
+    def read_with_unqualified_privacy(
+        root: Path, relative: str, digest: str
+    ) -> dict[str, Any]:
+        result = original(root, relative, digest)
+        if relative.endswith("metadata/contracts/services.json"):
+            result["rights"]["sensitivity"] = "unknown"
+        return result
+
+    monkeypatch.setattr(
+        derived_gates.bounded,
+        "read_bound_metadata",
+        read_with_unqualified_privacy,
+    )
+    with pytest.raises(ValueError, match="object, privacy or canary"):
+        derived_gates.checked_consumers(ROOT, receipt, manifest, semantics)

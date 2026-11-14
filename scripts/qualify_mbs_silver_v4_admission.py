@@ -144,7 +144,9 @@ def normalize_receipt_time(value: str) -> str:
     )
 
 
-def qualify(root: Path, output_dir: Path, commit: str) -> dict[str, Any]:  # ruff: ignore[too-many-branches, too-many-statements, too-many-locals] -- one bounded six-object hosted qualification keeps receipts and payloads scoped to the run.
+def qualify(  # ruff: ignore[too-many-branches, too-many-statements, too-many-locals] -- one bounded six-object hosted qualification keeps receipts and payloads scoped to the run.
+    root: Path, output_dir: Path, commit: str, *, browser: bool = False
+) -> dict[str, Any]:
     if (
         os.environ.get("GITHUB_ACTIONS") != "true"
         or os.environ.get("GITHUB_SHA") != commit
@@ -690,11 +692,11 @@ def qualify(root: Path, output_dir: Path, commit: str) -> dict[str, Any]:  # ruf
         metadata_root,
         root / "contracts/medallion/v4.1/federation.schema.json",
         requests,
-        browser=True,
+        browser=browser,
     )
     if consumer_canary["status"] != "passed":
         raise ValueError(
-            "API, CLI, Atlas, export, or browser consumer canary failed"
+            "API, CLI, Atlas, export, or selected browser consumer canary failed"
         )
 
     result = {

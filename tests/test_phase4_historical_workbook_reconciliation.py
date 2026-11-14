@@ -183,7 +183,11 @@ def test_phase4_outside_m112_outputs_bind_the_exact_attested_scope() -> None:
         ROOT
         / "quality/qualifications/stable-v1-release-readiness-reconciliation.json"
     )
-    contract_path = ROOT / "quality/qualifications/stable-v1-contract.json"
+    # The dated Phase 4 readiness receipt binds the original release contract.
+    contract_path = (
+        ROOT
+        / "quality/qualifications/scoped-software-v1-original-contract-20261114.json"
+    )
     assert readiness["contract"]["sha256"] == _sha256(contract_path)
     assert {
         (row["path"], row["sha256"])

@@ -1435,6 +1435,26 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   authorized Health.gov workbook families and the remaining historical
   denominator. Neither status closes or expands no-new-sources semantic work.
 
+## M-105 chronology amendment review (2026-11-15)
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/australian-federation-evidence-20261115`, base
+`036fd0f998fb3feb8722cff347b4179228b8a21f`. Review the exact post-archive
+donor dossier, previous narrow waiver and later blocked disposition; prepare
+an evidence-bound decision without changing the current gate or fabricating
+pre-archive proof. Participant and cohort-derived data remain private.
+
+- [x] Verify the retained 54 baseline and 10 changed-path dispositions,
+  archive receipts and current donor repository metadata.
+- [x] Present the narrow chronology choice and its trade-offs. The maintainer
+  approved the exception and M-105 acceptance subject to the exact dossier
+  checks, recorded in D-006-14 and a new bound current disposition. D-006-12
+  and the actual historical sequence remain preserved.
+- [x] Reconcile M-105 to verified after the existing dossier and negative
+  controls pass; keep M-106–M-112 and full federation blocked. Protected PR
+  checks and integration remain pending.
+
 ## System completion execution focus (2026-10-25)
 
 Select the next task through the [system completion charter](../../system-completion.md)

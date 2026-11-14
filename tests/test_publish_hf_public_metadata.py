@@ -8,6 +8,7 @@ import hashlib
 import json
 import sys
 from datetime import UTC, datetime
+from pathlib import Path
 from types import ModuleType, SimpleNamespace
 from typing import Any, cast
 
@@ -573,6 +574,26 @@ def test_project_pages_bind_only_reviewed_metadata(
     monkeypatch.setattr(publish_project_pages, "APPROVAL", path)
     with pytest.raises(ValueError, match=r"scope differs|bytes differ"):
         publish_project_pages.approved_files()
+
+
+def test_australian_card_approval_uses_frozen_bytes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The live overview may change without reauthorizing a publication."""
+    frozen = pages.ROOT / pages.AUSTRALIAN_FILES["README.md"]
+    copied = tmp_path / pages.AUSTRALIAN_FILES["README.md"]
+    copied.parent.mkdir(parents=True)
+    copied.write_bytes(frozen.read_bytes())
+    (tmp_path / "docs/publication/huggingface-catalogue-card.md").write_text(
+        "Updated overview awaiting its own approval.\n"
+    )
+    monkeypatch.setattr(pages, "ROOT", tmp_path)
+
+    _, bindings = pages.approved_files(australian_archive=True)
+    assert bindings[0].sha256 == hashlib.sha256(frozen.read_bytes()).hexdigest()
+    copied.write_text("Altered approved card.\n")
+    with pytest.raises(ValueError, match="bytes differ"):
+        pages.approved_files(australian_archive=True)
 
 
 @pytest.mark.parametrize(

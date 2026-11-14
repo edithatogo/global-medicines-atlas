@@ -1,13 +1,13 @@
 {
-  "as_of": "2026-11-03",
+  "as_of": "2026-11-15",
   "inputs": {
     "conductor/tracks.md": "5181ba8214cfaedc28a42e188286b4633549360f9ec43f1864b566f3d4a4e92b",
-    "quality/qualifications/stable-v1-contract.json": "d57f54455a861d80a992a0660d18e391858dcd97cd1762171b9d3251ffae2549"
+    "quality/qualifications/stable-v1-contract.json": "d1dc3c330eb14faedd1782363b9940ce5fd41896a63740a2b3f62b2dc5588c1e"
   },
   "measurement": "unweighted_ledger_counts_not_release_readiness",
   "requirements": {
     "total": 92,
-    "verified": 84
+    "verified": 85
   },
   "stable_release_state": "blocked",
   "tracks": {

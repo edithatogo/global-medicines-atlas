@@ -1211,3 +1211,32 @@ passed on head `11644ac00f77993adc06e1c79ab0dc4f39fb108a`; its squash merge
 `1abd398b97f230ebfdf6729bfb1dd6f4c9f4dfac` has the same checked tree
 `649fe7404027d7c183a138405f8e2f97bbddab09`. No dataset publication or
 acquisition workflow was run as part of that integration.
+
+## Existing derived-output privacy and delivery checks (2026-11-15)
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/australian-federation-evidence-20261115`, base
+`036fd0f998fb3feb8722cff347b4179228b8a21f`. Reconcile the four already-public
+August MBS projections and the previously published reproduced PBS Silver
+output against retained identity, privacy, rights and admission evidence. Reuse
+the existing six-object MBS consumer evidence; check missing gates without
+reading unassessed source payloads or adding or publishing datasets.
+
+- [x] Bind each candidate to exact retained identity, rights, privacy and
+  delivery evidence, including the later PBS publication receipt; preserve
+  incomplete privacy, semantics, replica, admission and consumer gates.
+- [x] Verify the existing six-object MBS consumer receipts and focused
+  fail-closed controls; do not count repeated checks as new admission.
+- [~] Refresh the six existing MBS Silver profiles and run API, CLI, Atlas and
+  export checks in hosted exact-main execution with no external browser. The
+  local replay of the old contracts failed closed because their temporary cache
+  had expired; preserve that failure and do not extend its historical expiry.
+- [~] Integrate only the metadata and test packet after protected checks.
+
+The preceding crosswalk was merged as PR #1438: checked head
+`48cf2df3460c91d3c0a1127438761d955b85c233`, squash merge
+`036fd0f998fb3feb8722cff347b4179228b8a21f`, matching tree
+`42b40a438f934306bc2a601d8ce632d671aa1662`, with 29 required checks passed.
+Post-merge Test-Goblin run `43645937655` succeeded with 29 successful jobs and
+one skipped optional Hudi preview. The acquisition workflow did not run.

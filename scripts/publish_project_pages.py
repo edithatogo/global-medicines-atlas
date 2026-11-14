@@ -36,7 +36,9 @@ AUSTRALIAN_APPROVAL = (
     ROOT / "docs/publication/australian-archive-card-approval.json"
 )
 AUSTRALIAN_FILES = {
-    "README.md": "docs/publication/huggingface-catalogue-card.md",
+    # Preserve the exact card approved on 13 November independently of the
+    # editable, generated overview. A newer card needs its own approval.
+    "README.md": "docs/publication/australian-archive-card-approved-20261113.md",
 }
 
 

@@ -461,7 +461,6 @@ def test_qualification_fails_closed_with_unresolved_gates() -> None:
         if item["state"] != "verified"
     }
     assert blocked_requirements == {
-        "M-105",
         "M-106",
         "M-107",
         "M-108",
@@ -690,7 +689,7 @@ def test_current_august_tree_readback_is_bound_without_v4_promotion() -> None:
     assert "do not complete M-108" in m108_row
 
 
-def test_current_maintainer_disposition_keeps_m105_blocked(
+def test_current_maintainer_decision_accepts_only_m105_with_valid_dossier(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -699,10 +698,12 @@ def test_current_maintainer_disposition_keeps_m105_blocked(
     requirements = {
         row["requirement_id"]: row for row in reconciled["requirements"]
     }
-    assert requirements["M-105"]["state"] == "blocked"
-    assert requirements["M-105"]["blocker_ids"] == [
-        "stable-v1-australian-health-federation"
-    ]
+    assert requirements["M-105"]["state"] == "verified"
+    assert requirements["M-105"]["blocker_ids"] == []
+    assert (
+        "quality/qualifications/australian-donor-m105-current-disposition-20261115.json"
+        in requirements["M-105"]["evidence"]
+    )
     assert (
         "quality/qualifications/australian-donor-m105-current-disposition-20261023.json"
         in requirements["M-105"]["evidence"]
@@ -730,8 +731,8 @@ def test_current_maintainer_disposition_keeps_m105_blocked(
     status_page = (
         ROOT / "docs/qualification/stable-v1-m5-maturity-status.md"
     ).read_text(encoding="utf-8")
-    assert "84 verified and 8 blocked requirements" in status_page
-    assert "M-105 remains blocked" in status_page
+    assert "85 verified and 7 blocked requirements" in status_page
+    assert "M-105 is verified under the later D-006-14" in status_page
 
     invalid_waiver = _load(
         ROOT
@@ -770,6 +771,54 @@ def test_missing_current_m105_disposition_fails_closed(
     )
     assert m105["state"] == "blocked"
     assert "stable-v1-australian-health-federation" in m105["blocker_ids"]
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "non_object",
+        "approval",
+        "scope",
+        "claimed_pre_archive",
+        "matrix_digest",
+        "privacy",
+        "release",
+    ],
+)
+def test_current_m105_acceptance_requires_exact_approval_and_boundaries(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, mutation: str
+) -> None:
+    current = _load(ROOT / reconciliation.M105_CURRENT_DISPOSITION)
+    if mutation == "non_object":
+        path = tmp_path / "invalid-current-m105.json"
+        path.write_text("[]", encoding="utf-8")
+        monkeypatch.setattr(
+            reconciliation, "M105_CURRENT_DISPOSITION", str(path)
+        )
+        assert reconciliation._m105_currently_blocked()  # pyright: ignore[reportPrivateUsage]
+        return
+    if mutation == "approval":
+        current["approval_text"] = "review only"
+    elif mutation == "scope":
+        current["waiver_scope"] = "all_parity"
+    elif mutation == "claimed_pre_archive":
+        current["pre_archive_complete_parity_proof_claimed"] = True
+    elif mutation == "matrix_digest":
+        current["evidence"]["disposition_matrix"]["sha256"] = "0" * 64
+    elif mutation == "privacy":
+        current["boundaries"]["participant_or_cohort_data_accessed"] = True
+    elif mutation == "release":
+        current["boundaries"]["release_authorized"] = True
+    path = tmp_path / "invalid-current-m105.json"
+    path.write_text(json.dumps(current), encoding="utf-8")
+    monkeypatch.setattr(reconciliation, "M105_CURRENT_DISPOSITION", str(path))
+    result = build_contract(_load(QUALIFICATION))
+    item = next(
+        row
+        for row in result["requirements"]
+        if row["requirement_id"] == "M-105"
+    )
+    assert item["state"] == "blocked"
 
 
 @pytest.mark.parametrize("decision_id", ["D-006-12", "D-006-99"])
@@ -871,10 +920,25 @@ def test_m105_waiver_rejects_invalid_dossier_even_with_refreshed_digests(
     waiver_path.write_text(
         json.dumps(waiver, indent=2) + "\n", encoding="utf-8"
     )
+    current = _load(ROOT / reconciliation.M105_CURRENT_DISPOSITION)
+    current["evidence"]["historical_waiver"] = {
+        "path": str(waiver_path),
+        "sha256": hashlib.sha256(waiver_path.read_bytes()).hexdigest(),
+    }
+    current["evidence"]["disposition_matrix"] = {
+        "path": str(matrix_path),
+        "sha256": hashlib.sha256(matrix_path.read_bytes()).hexdigest(),
+    }
+    current_path = tmp_path / "m105-current.json"
+    current_path.write_text(json.dumps(current), encoding="utf-8")
     raw = _load(QUALIFICATION)
     with monkeypatch.context() as patch:
         patch.setattr(reconciliation, "M105_WAIVER", str(waiver_path))
         patch.setattr(reconciliation, "M105_DISPOSITIONS", str(matrix_path))
+        patch.setattr(
+            reconciliation, "M105_CURRENT_DISPOSITION", str(current_path)
+        )
+        assert not reconciliation._m105_currently_blocked()  # pyright: ignore[reportPrivateUsage]
         observed = build_contract(raw)
     invalid_m105 = next(
         row
@@ -946,9 +1010,15 @@ def test_release_readiness_reconciliation_separates_package_from_release() -> (
     contract_path = ROOT / receipt["contract"]["path"]
     assert contract_path.is_relative_to(ROOT)
     assert contract_path == QUALIFICATION
+    # This dated readiness receipt binds the historical software-release bytes.
     assert (
         receipt["contract"]["sha256"]
-        == hashlib.sha256(contract_path.read_bytes()).hexdigest()
+        == hashlib.sha256(
+            (
+                ROOT
+                / "quality/qualifications/scoped-software-v1-original-contract-20261114.json"
+            ).read_bytes()
+        ).hexdigest()
     )
     runtime_receipt_path = ROOT / (
         "quality/qualifications/stable-v1-python-runtime-validation-20261027.md"
@@ -1009,7 +1079,12 @@ def test_release_readiness_reconciliation_separates_package_from_release() -> (
     )
     assert (
         acceptance_receipt["sha256"]
-        == hashlib.sha256(acceptance_path.read_bytes()).hexdigest()
+        == hashlib.sha256(
+            (
+                ROOT
+                / "quality/qualifications/australian-health-federation-acceptance-snapshot-20261028.md"
+            ).read_bytes()
+        ).hexdigest()
     )
     acceptance = acceptance_path.read_text(encoding="utf-8")
     m109_row = next(
