@@ -1,0 +1,59 @@
+{
+  "schema_id": "global-medicines-atlas.scoped-software-v1-approval",
+  "schema_version": 1,
+  "decision_id": "D-006-13",
+  "approval_status": "approved",
+  "approved_by": "sole_maintainer",
+  "approved_at": "2026-11-14",
+  "release": {
+    "tag": "v1.0.0",
+    "release_type": "stable",
+    "artifact_scope": "software-only",
+    "commit_binding": "tag-must-resolve-to-exact-hosted-workflow-commit"
+  },
+  "deferred_gate": "stable-v1-australian-health-federation",
+  "requirement_inventory_sha256": "16c33074ce9c4518df4ea42eaddd81fb48b83a43b1a2e74af5abe3e51322cac5",
+  "deferred_requirements": [
+    "M-105",
+    "M-106",
+    "M-107",
+    "M-108",
+    "M-109",
+    "M-110",
+    "M-111",
+    "M-112"
+  ],
+  "bound_evidence": [
+    {
+      "path": "quality/qualifications/stable-v1-contract.json",
+      "sha256": "d57f54455a861d80a992a0660d18e391858dcd97cd1762171b9d3251ffae2549"
+    },
+    {
+      "path": "quality/qualifications/stable-v1-release-readiness-reconciliation.json",
+      "sha256": "deb57a0023754f575059c9730350e5a52eccb154ce7354e795c739a25b38a581"
+    },
+    {
+      "path": "quality/qualifications/stable-v1-promotion-approval-20261018.json",
+      "sha256": "c042b45dbeef177a7f6e2528d9a7fcc620d468c36ed6bab0d8f0b477b01325ad"
+    }
+  ],
+  "conditions": [
+    "all_nondeferred_stable_v1_gates_pass",
+    "exact_candidate_artifacts_are_reproduced_and_digest_bound",
+    "protected_hosted_checks_and_attestation_verify"
+  ],
+  "approval_evidence": {
+    "source": "direct_maintainer_instruction_in_current_conversation",
+    "maintainer_statement": "Release a scoped software-only v1.0.0 (Recommended): defer those requirements without marking them complete, retain privacy and software security checks, and publish only the software."
+  },
+  "excluded_authorities": [
+    "new_source_acquisition",
+    "dataset_publication",
+    "participant_and_cohort_data_publication",
+    "source_rights_changes",
+    "production_deployment",
+    "production_disaster_recovery",
+    "acceptance_of_deferred_requirements"
+  ],
+  "release_action_performed_at_approval": false
+}

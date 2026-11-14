@@ -10,7 +10,7 @@
     "promote_optional_previews": false,
     "full_local_suite_per_dataset": false
   },
-  "selected_stage": "consumers",
+  "selected_stage": "release",
   "stages": [
     {
       "id": "silver-gold",
@@ -42,7 +42,7 @@
       "current_failure": "The hosted candidate passed on exact main through #1403, but Docker Space creation returned HTTP 402 requiring a paid account plan. The maintainer requires free-only hosting; native Render authentication and free/no-payment-method readback are not yet recorded.",
       "next_action": "Implement the approved free-only route: one Render Free Python 3.15.1 API/Atlas Blueprint, existing locked package and HF archive/cache, no paid resources or automatic deployments. Retire paid Space creation, preserve original acceptance gates, and stop at native account authentication/consent or zero-cost qualification if unavailable.",
       "completion_evidence": "For the current software milestone: locked Python 3.15.1 setup, representative product tests, clean wheel/sdist consumer receipt, supported contributor commands, and protected integration. Later live federation acceptance continues to require its original exact per-output receipts.",
-      "stop_condition": "Stop when the bounded software checklist in system-completion.md passes. Do not start deferred federation work or claim Stable v1 release readiness.",
+      "stop_condition": "The bounded software checklist is complete. Do not start deferred federation work or claim full federation acceptance as part of the scoped software release.",
       "validation": "Use existing focused context and product tests and one clean-consumer package check; reuse unchanged hosted coverage/security evidence and retain all required PR checks."
     },
     {
@@ -60,12 +60,12 @@
       "id": "release",
       "track": "stable_v1_qualification_20260729",
       "release_gate": "stable-v1-australian-health-federation",
-      "capability": "Existing Stable v1 acceptance and promotion close with observable evidence",
-      "current_failure": "The authoritative Stable v1 reconciliation still retains Australian federation as unresolved.",
-      "next_action": "Deferred from the bounded software milestone by the 2026-10-29 maintainer decision. On explicit resumption of federation: Reconcile the existing requirement and release contract after system evidence changes; resolve required M-105/M-107 or other blockers only through their existing decision contracts.",
-      "completion_evidence": "Existing qualification contract and readiness reconciliation pass, followed by exact candidate, protected checks and attestation under the existing conditional promotion approval.",
-      "stop_condition": "Do not claim stable qualification, issue a release or waive a dependent requirement from this scheduling plan; stop at the existing release and authority boundaries.",
-      "validation": "Run affected reconciliation tests and required final integration, package, security and release gates once at the coherent system milestone."
+      "capability": "Release the approved, scoped software-only v1.0.0 with observable evidence",
+      "current_failure": "The full federation contract remains blocked and cannot by itself authorize the narrower software release.",
+      "next_action": "Apply the maintainer's 2026-11-14 scoped software approval, verify all non-deferred gates, and prepare and publish only the exact software release through the protected workflow. Add no data or sources.",
+      "completion_evidence": "The exact approved scope and candidate, protected checks, software assets, tag, checksums and attestations are verified; M-105 through M-112 remain explicitly blocked in the unchanged full federation contract.",
+      "stop_condition": "Stop if any non-deferred software, security, privacy, rights, protected-check, reproducibility or attestation gate fails. Never claim deferred federation acceptance or publish a dataset.",
+      "validation": "Run affected release-authority, package and context tests, protected CI, and the exact hosted software-release qualification and readback."
     }
   ]
 }
