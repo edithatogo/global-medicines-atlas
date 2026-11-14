@@ -1097,9 +1097,10 @@ authorized by this transaction.
 - [x] Reconcile the frozen inventory and exact schedule and utilisation outputs
   against the public Hub revisions. Record archive identity, product
   qualification and remaining gaps in a public discovery record.
-- [~] Link the record from GitHub and the Hugging Face catalogue, using one
+- [x] Link the record from GitHub and the Hugging Face catalogue, using one
   hosted exact-parent card update and anonymous readback. Align the local
-  checkout with protected GitHub main at the terminal checkpoint.
+  checkout with protected GitHub main at the terminal checkpoint. PR #1428 and
+  catalogue workflow run `43420305199` completed these steps.
 
 Owner: Codex chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, checkout
 `/Volumes/PortableSSD/GitHub/global-medicines-atlas`, branch
@@ -1116,6 +1117,14 @@ whose workflow-attempt assumptions caused reproducible failures on a CI rerun.
 - [~] Qualify one exact PBS archive append, retain source rights and attribution,
   then publish from protected main and verify anonymously before local cleanup.
 
-The current chat owns the existing reconciliation checkout and the PBS harvest
-workflow, public-source publisher, focused tests and exact ATC2 contract for this
-batch. The native write scope is one append to the PBS utilisation archive.
+The current chat prepared the exact ATC2 contract in the reconciliation
+checkout. Hosted run `43420355656` could not acquire the reviewed publisher ZIP
+and left the PBS archive unchanged. The workflow returned to its disabled state.
+
+Owner: Codex chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, managed worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/recover-aihw-atc2-draft-transport`. Scope is the PBS workflow
+route, exact ATC2 contract, documentation, and focused tests. The native write
+scope is one append to the PBS archive and temporary unpublished GitHub draft
+`444173498` with asset `743483280`. Next operation is protected integration of
+the reviewed transport and a single dispatch at the checked main commit.

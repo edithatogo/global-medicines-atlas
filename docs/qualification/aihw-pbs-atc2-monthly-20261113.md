@@ -10,11 +10,15 @@ with this digest.
 [Exact publication contract](../../quality/qualifications/aihw-pbs-atc2-monthly-public-20261113.json) ·
 [Publisher data page](https://www.aihw.gov.au/reports/medicines/pbs-monthly-data/data)
 
-The workbook's monthly columns run from **January 2015 to September 2026**.
+Each of the six tables has 141 monthly columns from **January 2015 to September
+2026**. Counting worksheet rows after the title and field headings gives 688
+national rows, 5,504 state and territory rows, and 93,912 rows in each of the
+four LGA tables, for **381,840 data rows**.
 Tables report prescriptions and government benefits per estimated resident
 population for Australia, states and territories, and local government areas.
-The LGA tables cover ages 0–18, 19–64, 65 and over, and all ages. Worksheet
-dimensions recorded in the contract are declared workbook bounds.
+The national and state tables identify the prescription group, age band and
+measure. The LGA tables identify state, LGA code and name, prescription group
+and measure, with one table each for ages 0–18, 19–64, 65 and over, and all ages.
 
 The archived AIHW environmental PBS extract uses **weekly** periods and SA4
 geography, with count and crude-rate fields. It is a different public
@@ -31,8 +35,12 @@ the source, attribution and licence references with the original ZIP.
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 
 The authorised operation appends the ZIP and its source receipt through
-GitHub Actions at the pinned PBS archive parent. It verifies the new objects
-and preserves the previous manifest before removing temporary source copies.
+GitHub Actions at the pinned PBS archive parent. The first hosted acquisition
+failed at the AIHW download server. The reviewed recovery route uses an
+unpublished GitHub draft containing the same public ZIP, with its exact asset
+identity, length and digest checked before staging. The workflow verifies the
+new objects and preserves the previous manifest before temporary source copies
+are removed.
 The local recovery copy remains until the hosted anonymous digest verification
 passes. The source is an AIHW public aggregate, and the contract excludes
 participant and cohort-derived files.
