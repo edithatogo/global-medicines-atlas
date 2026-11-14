@@ -27,7 +27,9 @@ jobs:
   publish:
     name: Publish ${{ inputs.batch }}
     # Dedicated label; every other job in this repository targets ubuntu-24.04.
-    runs-on: [self-hosted, macOS, gma-archive]
+    # Match on the explicit label alone so a platform-label spelling difference
+    # cannot silently leave the job queued forever.
+    runs-on: [self-hosted, gma-archive]
     timeout-minutes: 2880
     steps:
       - name: Check out the dispatched commit
