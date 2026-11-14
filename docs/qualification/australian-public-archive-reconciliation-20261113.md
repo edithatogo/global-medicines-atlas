@@ -1,5 +1,34 @@
 # Australian MBS and PBS public archive reconciliation
 
+## Current existing-archive update — 15 November 2026
+
+The 13 November snapshot below is historical. The annual state/territory
+Medicare workbook is already present in the pinned MBS utilisation archive;
+its [bounded qualification](mbs-annual-public-workbook-20261115.md) binds the
+exact B1/B2 identities and profiles the public aggregate patient table without
+emitting patient observations. Its internal financial-year labels extend to
+2025–26 despite a `2024-25` filename. M-106 remains blocked on semantics and
+admission.
+
+The recovered AIHW monthly ATC2 ZIP was subsequently appended to PBS revision
+`ba60e1d18b81e4af3cae50bc9fbfe719406fa5f3`. Hosted run
+[43565582684](https://github.com/edithatogo/global-medicines-atlas/actions/runs/43565582684)
+verified the one new payload and its B1 receipt anonymously and preserved the
+prior manifest. The [retained hosted receipt](../../quality/qualifications/aihw-atc2-publication-20261114-43565582684.json)
+and the [updated source note](aihw-pbs-atc2-monthly-20261113.md) record the
+exact scope. This is the January 2015–September 2026 edition, not the separately
+unidentified September 2025 edition. It does not establish full M-107 coverage.
+
+The frozen M-112 denominator and its 14 raw admissions/reader checks are not
+changed by either observation. No additional data or dataset was published in
+the 15 November reconciliation.
+
+The [batched evidence and consumer boundary](australian-federation-existing-archive-20261115.md)
+links the exact workbook, hosted publication receipt and retained frozen
+inventory evidence without changing the original acceptance states.
+
+## Reconciliation observed on 13 November 2026
+
 The 13 November 2026 readback matched all **1,759 frozen paths** to the
 approved Hugging Face revisions by Git blob ID and length, and by LFS SHA-256
 where the Hub supplied it. The frozen admission ledger remains at **14 raw
