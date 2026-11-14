@@ -653,9 +653,16 @@ def test_pbs_reader_rechecks_bind_six_prior_admissions() -> None:
         )
         receipt = json.loads(receipt_bytes)
         assert receipt["status"] == row["status"] == "passed"
-        assert tuple(receipt["admission"][k] for k in keys) in admitted
+        assert tuple(receipt["admission"][k] for k in keys) == tuple(
+            row[k] for k in keys
+        )
         canary = receipt["consumer_canary"]
         assert canary["status"] == "passed"
+        assert all(
+            canary["object"][k] == row[k]
+            for k in ("dataset", "revision", "path", "sha256")
+        )
+        assert canary["object"]["bytes"] == row["byte_count"]
         assert canary["hosted_workflow"]["run_id"] == row["run_id"]
         assert (
             canary["hosted_workflow"]["commit"] == manifest["workflow_commit"]
