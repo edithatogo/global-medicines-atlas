@@ -1,0 +1,79 @@
+{
+  "boundaries": {
+    "consumer_check": false,
+    "dataset_published_or_modified": false,
+    "new_admission": false,
+    "output_privacy_qualified": false,
+    "participant_or_cohort_data_accessed": false,
+    "source_payload_read": false
+  },
+  "limitations": [
+    "The retained scope metadata names the source; source classification does not qualify the transformations or derived outputs.",
+    "The source receipts are separate observations of the same source bytes, not independent privacy assessments of the outputs.",
+    "The PBS imported-event privacy status is separate from the output's exact rights attestation and public location."
+  ],
+  "mbs_products": [
+    {
+      "consumer_check": "not_performed",
+      "object_count": 2,
+      "product_id": "d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b",
+      "projection_privacy": "not_qualified_by_source_classification",
+      "source_privacy": "non_sensitive_in_exact_source_receipts",
+      "v4_admission": "not_performed"
+    },
+    {
+      "consumer_check": "not_performed",
+      "object_count": 2,
+      "product_id": "f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63",
+      "projection_privacy": "not_qualified_by_source_classification",
+      "source_privacy": "non_sensitive_in_exact_source_receipts",
+      "v4_admission": "not_performed"
+    }
+  ],
+  "mbs_source": {
+    "byte_count": 8293331,
+    "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+  },
+  "pbs_inputs": {
+    "archive_lineage": {
+      "path": "quality/qualifications/australian-m112-pbs-projected-b1-b2-lineage-20261019.json",
+      "sha256": "aa4a0df6df4ec723e7b65f55379f47ae7912e4777a6b9d3bb3454c1accf3a16f"
+    },
+    "imported_event": {
+      "path": "quality/bronze/imported-acquisitions/au-pbs/712fd306658de6db5ae0aaa2be39d554e5a18c306987cc614152efbed53f30f4.json",
+      "sha256": "dbfab903b4d24feb62fa77c141422a4cb33a85eb08583d3a7d40f0200f6190e3"
+    },
+    "package": {
+      "path": "quality/qualifications/pbs-reproduced-publication-20261102-41395493749/package-manifest.json",
+      "sha256": "21fe6849ed3116254570207fdaf36b5e9f5f6561f18a7068b8a85b0c3b4456ae"
+    }
+  },
+  "pbs_source": {
+    "archive_bytes": 11156706,
+    "archive_sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+    "consumer_check": "not_performed",
+    "member_sha256": "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43",
+    "output_privacy": "not_qualified_by_source_classification",
+    "source_privacy": "unknown_in_imported_acquisition_record",
+    "v4_admission": "not_performed"
+  },
+  "receipt_inputs": [
+    {
+      "acquisition_id": "f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1",
+      "path": "quality/bronze/acquisitions/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1.json",
+      "sha256": "f0539528fff8f48781554e83ff3520579efc9a61daa04c5ca14d75e835bbacba"
+    },
+    {
+      "acquisition_id": "fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd",
+      "path": "quality/bronze/acquisitions/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd.json",
+      "sha256": "0473edd93fe9c2781701116febbd68a0c68262b74be5b4de52409d5c52570d30"
+    }
+  ],
+  "recorded_on": "2026-11-15",
+  "schema_id": "global-medicines-atlas.australian-schedule-source-privacy-check",
+  "schema_version": 1,
+  "scope_input": {
+    "path": "quality/qualifications/australian-mbs-public-august-projection-scope-exception-20261020.json",
+    "sha256": "b8fb9f024cea21f4364db9867c73a44afea61615148b49a7ffd7bfffdf6edac2"
+  }
+}

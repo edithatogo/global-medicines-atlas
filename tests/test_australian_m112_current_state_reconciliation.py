@@ -9,6 +9,7 @@ from typing import Any
 
 import pytest
 import scripts.qualify_australian_existing_derived_gates as derived_gates
+import scripts.qualify_australian_schedule_source_privacy as mbs_source_privacy
 import scripts.qualify_m112_existing_reimbursement_batch as batch_qualification
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -845,6 +846,77 @@ def test_derived_mbs_equal_size_does_not_prove_identity() -> None:
     tree[0]["sha256"] = tree[2]["sha256"]
     with pytest.raises(ValueError, match="object binding differs"):
         derived_gates.mbs_candidates(sources)
+
+
+def test_august_mbs_source_privacy_is_bound_without_output_promotion() -> None:
+    report = mbs_source_privacy.build_report(ROOT)
+    assert report == _read(
+        "quality/qualifications/australian-schedule-source-privacy-check-20261115.json"
+    )
+    assert len(report["mbs_products"]) == 2
+    assert sum(row["object_count"] for row in report["mbs_products"]) == 4
+    assert all(
+        row["projection_privacy"] == "not_qualified_by_source_classification"
+        and row["v4_admission"] == "not_performed"
+        for row in report["mbs_products"]
+    )
+    assert all(value is False for value in report["boundaries"].values())
+    assert report["pbs_source"]["source_privacy"] == (
+        "unknown_in_imported_acquisition_record"
+    )
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    ["personal_data", "source_digest", "product_source", "duplicate_object"],
+)
+def test_august_mbs_source_privacy_rejects_unbound_or_sensitive_evidence(
+    mutation: str,
+) -> None:
+    scope = _read(derived_gates.INPUTS["mbs_scope"][0])
+    receipts = {
+        identity: _read(binding[0])
+        for identity, binding in mbs_source_privacy.SOURCE_RECEIPTS.items()
+    }
+    first = next(iter(receipts.values()))
+    if mutation == "personal_data":
+        first["sensitivity"]["personal_data"] = "unknown"
+    elif mutation == "source_digest":
+        first["payload_sha256"] = "a" * 64
+    elif mutation == "product_source":
+        scope["products"][0]["source"]["sha256"] = "b" * 64
+    else:
+        scope["objects"][0]["path"] = scope["objects"][1]["path"]
+    with pytest.raises(
+        ValueError,
+        match=r"source privacy receipt|source binding|product identities",
+    ):
+        mbs_source_privacy.qualify_documents(scope, receipts)
+
+
+@pytest.mark.parametrize(
+    "mutation", ["event_privacy", "member_source", "lineage"]
+)
+def test_pbs_source_privacy_rejects_mismatched_source_evidence(
+    mutation: str,
+) -> None:
+    event = _read(mbs_source_privacy.PBS_EVENT[0])
+    lineage = _read(mbs_source_privacy.PBS_LINEAGE[0])
+    package = _read(derived_gates.INPUTS["pbs_package"][0])
+    if mutation == "event_privacy":
+        event["sensitivity"]["data_sensitivity"] = "non_sensitive"
+    elif mutation == "member_source":
+        package["member_binding"]["archive_payload"]["sha256"] = "a" * 64
+    else:
+        for row in lineage["objects"]:
+            if (
+                row["dataset"] == "edithatogo/australian-pbs-source-archive"
+                and row["path"] == mbs_source_privacy.PBS_SOURCE_PATH
+            ):
+                row["local_records"]["acquisition_event_path"] = "wrong.json"
+                break
+    with pytest.raises(ValueError, match=r"PBS .* binding differs"):
+        mbs_source_privacy.qualify_pbs_source(event, lineage, package)
 
 
 def test_derived_pbs_rejects_misbound_verified_revision() -> None:

@@ -1575,3 +1575,17 @@ Owner, native scope and stop condition: [remaining archive work](../../../docs/q
 - [ ] Remove verified owned temporary copies and restore disabled workflow state.
 
 Owner and native scope: remaining-public-archives qualification report.
+
+### Existing schedule-source privacy check — 15 November 2026
+
+- [x] Bind the two existing August MBS source classifications to the exact
+  schedule XML named by the two products and four outside-inventory outputs.
+- [x] Bind the reproduced PBS Silver candidate to its existing source archive
+  and imported acquisition record, which still records privacy as unknown.
+- [~] Qualify privacy and admission for each derived output separately. The
+  source classifications, public location and existing rights attestations do
+  not themselves establish output privacy, consumer permission or federation.
+
+The [value-free metadata report](../../../quality/qualifications/australian-schedule-source-privacy-check-20261115.json)
+records the exact identities and limits. No source payload, participant data or
+cohort-derived data was inspected or published for this check.
