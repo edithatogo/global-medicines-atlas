@@ -164,13 +164,10 @@ def write_publication_metadata(
         for path in inventory_publication_files(root)
         if path != MANIFEST_NAME
     )
+    sizes = [(root / path).stat().st_size for path in body_paths]
     artifacts = [
-        {
-            "path": path,
-            "size": (root / path).stat().st_size,
-            "sha256": digest(root / path),
-        }
-        for path in body_paths
+        {"path": path, "size": size, "sha256": digest(root / path)}
+        for path, size in zip(body_paths, sizes, strict=True)
     ]
     (root / MANIFEST_NAME).write_text(
         json.dumps(
@@ -187,7 +184,7 @@ def write_publication_metadata(
                 "retrieval_date": manifest["retrieval_date"],
                 "rights": manifest["rights"],
                 "artifact_count": len(artifacts),
-                "artifact_bytes": sum(item["size"] for item in artifacts),
+                "artifact_bytes": sum(sizes),
                 "artifacts": artifacts,
             },
             indent=1,
