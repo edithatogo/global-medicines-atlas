@@ -3247,6 +3247,36 @@
 - [~] M-109 remains blocked on the complete approved source-era denominator,
   field semantics, lineage and source-specific rights/admission evidence.
 
+## M-107 existing PBS archive crosswalk (2026-11-15)
+
+The maintainer requested a bounded metadata-only reconciliation of the existing
+official-link inventory, retained archive identities, the four unmatched links,
+and existing privacy, admission and consumer evidence. No new source payloads,
+participant data or cohort-derived data may be acquired or published as part of
+this increment. Previously admitted non-sensitive public aggregate objects may
+be streamed by the existing reader for digest checks. Public metadata-only HEAD
+and pinned archive-tree observations
+may be used; absence from a checked inventory is not evidence of source absence.
+
+Owner: Codex chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/pbs-federation-metadata-20261115`, based on main
+`1abd398b97f230ebfdf6729bfb1dd6f4c9f4dfac`. The data-plane track owns the
+separate admitted-object consumer receipts. Do not change rights, admission or
+the frozen denominator merely because metadata identities match.
+
+- [x] Preserve all 316 link occurrences in the metadata crosswalk. The new
+  exact-source and bound B1/B2/landed join resolves 311 formerly unresolved
+  occurrences to 310 distinct archive paths; four occurrences remain open.
+  The earlier one-object source-archive binding and its separate reimbursement
+  mirror retain their distinct rights and privacy states.
+- [x] Investigate the four unmatched links with publisher HEAD and the three
+  pinned public tree inventories. All returned HTTP 200; none had an exact
+  filename or declared-size match in those trees. The tree responses were not
+  retained and neither this search nor a HEAD establishes bytes or absence.
+- [x] Add targeted identity, privacy and consumer boundary tests and retain
+  the value-free evidence packet. Integration remains subject to protected CI.
+
 ## M-107 PBS official schedule-link crosswalk (2026-10-18)
 
 - [x] Enumerate all 316 schedule-data links across the 197 periods exposed by

@@ -40,6 +40,22 @@ are separate from those raw counts. The April 2026 PBS Silver output is not
 v4-admitted. Archive presence, reader tests and role checks do not themselves
 grant admission or establish complete coverage.
 
+The later [PBS link crosswalk](../../quality/qualifications/australian-pbs-m107-existing-archive-crosswalk-20261115.json)
+joins 311 previously unresolved link occurrences to 310 existing reimbursement
+objects using exact source URLs and digest-bound B1/B2/landed metadata. All 311
+distinct matched reimbursement B1 records, including the previously known
+April mirror, retain unknown sensitivity and remain blocked from payload
+reading and v4 admission. The four unjoined links remain unresolved; see the
+[M-107 snapshot note](australian-mbs-pbs-m107-snapshots.md).
+
+The [eight-object MBS reader recheck](../../quality/qualifications/australian-m112-mbs-reader-recheck-20261115/manifest.json)
+binds each existing admission to its exact non-sensitive contract and hosted
+consumer receipt. All eight passed remote and streamed digest checks, including
+the 1993–2015 aggregate tranche, without emitting source values. One first
+attempt received a GitHub receipt rate limit before the reader ran; one bounded
+retry passed and both attempts remain recorded. These are repeat checks, so
+the 14-admitted, 14-checked and 1,745-deferred ledger is unchanged.
+
 Hosted read-only run [43608538996](https://github.com/edithatogo/global-medicines-atlas/actions/runs/43608538996)
 subsequently replayed the six existing July MBS Silver tables on base main
 `946757ccdf5b21130811233f285807f5307ea209`. All six passed source-value,

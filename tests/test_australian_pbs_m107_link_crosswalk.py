@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+import scripts.reconcile_pbs_m107_existing_archive as existing_archive
 from scripts.build_pbs_m107_link_crosswalk import validate_public_tree_readback
 from scripts.pbs_m107_receipt_binding import validate_pbs_receipt_binding
 
@@ -30,6 +31,157 @@ READBACK = Path(
 PUBLIC_TREE = Path(
     "quality/qualifications/australian-pbs-m107-public-tree-readback-20261018.json"
 )
+EXISTING_ARCHIVE_REPORT = Path(
+    "quality/qualifications/australian-pbs-m107-existing-archive-crosswalk-20261115.json"
+)
+
+
+def test_existing_pbs_archive_crosswalk_preserves_identity_and_privacy() -> (
+    None
+):
+    report = existing_archive.build_report()
+    assert report == json.loads(
+        EXISTING_ARCHIVE_REPORT.read_text(encoding="utf-8")
+    )
+    assert report["result"] == {
+        "official_link_occurrences": 316,
+        "previously_unresolved_occurrences": 315,
+        "newly_matched_occurrences": 311,
+        "newly_matched_distinct_urls": 310,
+        "newly_matched_distinct_archive_paths": 310,
+        "matched_occurrences": 312,
+        "matched_distinct_urls": 311,
+        "matched_distinct_archive_paths": 312,
+        "matched_reimbursement_b1_records": 311,
+        "unmatched_occurrences": 4,
+        "new_unique_admissions": 0,
+    }
+    assert all(value is False for value in report["boundaries"].values())
+    links = report["links"]
+    unresolved = [
+        row for row in links if row["identity_status"] == "unresolved"
+    ]
+    assert len(unresolved) == 4
+    assert all(not row["candidates"] for row in unresolved)
+    assert all(
+        row["publisher_head_observation"]["status"] == 200 for row in unresolved
+    )
+    candidates = [candidate for row in links for candidate in row["candidates"]]
+    assert all(
+        candidate["payload_read_qualified"] is False for candidate in candidates
+    )
+    assert all(
+        candidate["v4_admission"] == "not_performed" for candidate in candidates
+    )
+    reimbursement = [
+        candidate
+        for candidate in candidates
+        if candidate["dataset"] == existing_archive.prior.DATASET
+    ]
+    assert all(
+        candidate["observed_sensitivity"]
+        == existing_archive.UNKNOWN_SENSITIVITY
+        for candidate in reimbursement
+    )
+    assert all(
+        candidate["consumer_check"] == "not_performed_privacy_gate_blocked"
+        for candidate in reimbursement
+    )
+    mirrors = next(
+        row["candidates"] for row in links if len(row["candidates"]) == 2
+    )
+    assert {candidate["dataset"] for candidate in mirrors} == {
+        existing_archive.SOURCE_ARCHIVE,
+        existing_archive.prior.DATASET,
+    }
+    assert (
+        len({
+            (candidate["sha256"], candidate["byte_count"])
+            for candidate in mirrors
+        })
+        == 1
+    )
+    source = next(
+        candidate
+        for candidate in mirrors
+        if candidate["dataset"] == existing_archive.SOURCE_ARCHIVE
+    )
+    assert (
+        source["rights_conflict"]
+        == "receipt_permitted_claim_source_ledger_unknown"
+    )
+    assert source["privacy_gate"] == "not_qualified_in_selected_evidence"
+
+
+def test_existing_pbs_crosswalk_requires_exact_url_and_unique_identity() -> (
+    None
+):
+    source = {
+        "source_locator": "https://www.pbs.gov.au/publication/schedule/a.zip?variant=3",
+        "dataset": "example",
+        "path": "raw/a.zip",
+        "sha256": "a" * 64,
+        "byte_count": 50,
+    }
+    indexed = existing_archive._candidate_index([source])
+    assert (
+        indexed.get(source["source_locator"].replace("variant=3", "variant=2"))
+        is None
+    )
+    with pytest.raises(ValueError, match="duplicate archive identity"):
+        existing_archive._candidate_index([source, source.copy()])
+
+
+def test_existing_pbs_crosswalk_rejects_wrong_b1_url_or_digest() -> None:
+    url = "https://www.pbs.gov.au/publication/schedule/a.zip?variant=3"
+    event = {
+        "retrieval": {"uri": url, "status": "succeeded"},
+        "payload_sha256": "a" * 64,
+    }
+    existing_archive._validate_b1_event(event, url=url, digest="a" * 64)
+    with pytest.raises(ValueError, match="identity differs"):
+        existing_archive._validate_b1_event(
+            event, url=url.replace("variant=3", "variant=2"), digest="a" * 64
+        )
+    with pytest.raises(ValueError, match="identity differs"):
+        existing_archive._validate_b1_event(event, url=url, digest="b" * 64)
+
+
+def test_existing_pbs_crosswalk_rejects_privacy_promotion() -> None:
+    batch = json.loads(
+        Path(existing_archive.INPUTS["batch"][0]).read_text(encoding="utf-8")
+    )
+    row = next(
+        item
+        for item in batch["objects"]
+        if item["representation"] == "raw_source_payload"
+    )
+    rights = json.loads(
+        Path(existing_archive.INPUTS["rights"][0]).read_text(encoding="utf-8")
+    )
+    source = next(
+        item
+        for item in rights["pbs_raw_redistribution_permission"]["objects"]
+        if item["path"] == row["path"]
+    )
+    row["ready_for_payload_read"] = True
+    with pytest.raises(ValueError, match="privacy gate differs"):
+        existing_archive._reimbursement_candidate(
+            Path.cwd(), source, row, url=source["source_locator"]
+        )
+
+
+def test_four_link_observation_is_not_an_identity_or_absence_claim() -> None:
+    observation = json.loads(
+        Path(existing_archive.INPUTS["observation"][0]).read_text(
+            encoding="utf-8"
+        )
+    )
+    assert len(existing_archive._probe_index(observation)) == 4
+    assert observation["boundaries"]["missing_objects_declared_absent"] is False
+    observation["publisher_probe"]["response_bodies_read"] = True
+    with pytest.raises(ValueError, match="boundary differs"):
+        existing_archive._probe_index(observation)
 
 
 def _binding_inputs() -> tuple[dict, dict, dict, dict, dict]:
