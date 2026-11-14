@@ -40,17 +40,20 @@ take precedence over checklist summaries.
 
 Read `conductor/system-completion.md` and its scheduling JSON before selecting
 work. The maintainer selected bounded software completion on 29 October 2026;
-unfinished Australian federation is a later roadmap milestone. Complete the
-finite software checklist and stop; do not automatically resume deferred tracks.
-Preserve every original federation and Stable v1 acceptance state.
+unfinished Australian federation remains a later roadmap milestone. On 14
+November 2026 the maintainer approved the exact scoped software-only v1.0.0
+release in D-006-13 without adding data. Preserve every original federation
+acceptance state; M-105 through M-112 remain blocked and are not claimed by the
+software release. Do not automatically resume deferred federation tracks.
 Choose the next task by shared capability and existing acceptance gate, with
 a concrete blocking failure, bounded scope, expected evidence and stop condition.
 Dataset-specific work must resolve that named system prerequisite; batch common
 profiles through existing machinery. Preserve explicit unresolved fields and
 all mandatory per-object evidence. New sources, inventory expansion, universal
 interpretation of every value, and optional preview promotion are outside this
-execution focus. The scheduling plan grants no qualification or release and
-does not waive M-105, M-107, rights, admission, recovery or conditional approval.
+execution focus. The scheduling plan grants no qualification or release; the
+separate D-006-13 authority permits only the exact scoped software release and
+does not waive M-105, M-107, rights, admission or recovery.
 
 The pinned Conductor agent plugin is the Git submodule at
 `.agents/plugins/conductor`. Cursor loads those protocols through

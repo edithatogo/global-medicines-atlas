@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 import shutil
 import subprocess  # ruff: ignore[suspicious-subprocess-import]
@@ -207,6 +208,7 @@ def test_software_only_release_excludes_dataset_archive(tmp_path: Path) -> None:
     root, commit = _repository(tmp_path)
     stage = _stage(root)
     next(stage.glob("global-medicines-atlas-dataset-*.tar.gz")).unlink()
+    _add_software_sdist(stage)
 
     receipt = qualify_release_assets(
         root=root,
@@ -221,6 +223,75 @@ def test_software_only_release_excludes_dataset_archive(tmp_path: Path) -> None:
     assert "dataset" not in (stage / "qualified-assets.json").read_text(
         encoding="utf-8"
     )
+
+
+def _add_software_sdist(stage: Path, metadata_version: str = VERSION) -> None:
+    path = stage / f"global_medicines_atlas-{VERSION}.tar.gz"
+    metadata = (
+        "Metadata-Version: 2.4\nName: global-medicines-atlas\n"
+        f"Version: {metadata_version}\n"
+    ).encode()
+    with tarfile.open(path, "w:gz") as archive:
+        item = tarfile.TarInfo(f"global_medicines_atlas-{VERSION}/PKG-INFO")
+        item.size = len(metadata)
+        archive.addfile(item, io.BytesIO(metadata))
+
+
+@pytest.mark.parametrize(
+    "extra", ["private.csv", "source.zip", "data/table.parquet"]
+)
+def test_software_only_release_rejects_any_extra_payload(
+    tmp_path: Path, extra: str
+) -> None:
+    root, commit = _repository(tmp_path)
+    stage = _stage(root)
+    next(stage.glob("global-medicines-atlas-dataset-*.tar.gz")).unlink()
+    _add_software_sdist(stage)
+    unapproved = stage / extra
+    unapproved.parent.mkdir(parents=True, exist_ok=True)
+    unapproved.write_bytes(b"not software release metadata")
+
+    with pytest.raises(QualificationError, match="unexpected"):
+        qualify_release_assets(
+            root=root,
+            stage=stage,
+            release_tag=TAG,
+            commit=commit,
+            dynamic_version=VERSION,
+            include_dataset=False,
+        )
+
+
+@pytest.mark.parametrize(
+    "mutation", ["missing", "corrupt", "wrong_version", "symlink"]
+)
+def test_software_only_release_requires_exact_valid_source_distribution(
+    tmp_path: Path, mutation: str
+) -> None:
+    root, commit = _repository(tmp_path)
+    stage = _stage(root)
+    next(stage.glob("global-medicines-atlas-dataset-*.tar.gz")).unlink()
+    _add_software_sdist(
+        stage, "9.9.9" if mutation == "wrong_version" else VERSION
+    )
+    sdist = stage / f"global_medicines_atlas-{VERSION}.tar.gz"
+    if mutation == "missing":
+        sdist.unlink()
+    elif mutation == "corrupt":
+        sdist.write_bytes(b"invalid archive")
+    elif mutation == "symlink":
+        sdist.unlink()
+        sdist.symlink_to(stage / "uv.lock")
+
+    with pytest.raises(QualificationError):
+        qualify_release_assets(
+            root=root,
+            stage=stage,
+            release_tag=TAG,
+            commit=commit,
+            dynamic_version=VERSION,
+            include_dataset=False,
+        )
 
 
 def test_software_only_release_rejects_dataset_archive(tmp_path: Path) -> None:

@@ -84,7 +84,7 @@ historical snapshots and must not be read as today's totals.
 - [x] **Track: Harden source operations, security, performance and recovery**
   *Archived: [archive/operational_hardening_20260729/index.md](./archive/operational_hardening_20260729/index.md); production disaster recovery and Renovate activation remain authority-gated.*
 - [~] **Track: Qualify the v0.9 candidate and stable v1 release**
-  *Link: [tracks/stable_v1_qualification_20260729/index.md](./tracks/stable_v1_qualification_20260729/index.md); the approved bounded Bronze qualification and M5 gates pass. Stable v1 remains blocked by Australian federation acceptance; final stable-release approval is a separate maintainer decision. Production disaster-recovery authority is a separate non-acceptance gate.*
+  *Link: [tracks/stable_v1_qualification_20260729/index.md](./tracks/stable_v1_qualification_20260729/index.md); the approved bounded Bronze qualification and M5 gates pass. Full Australian federation remains blocked; D-006-13 separately authorizes a scoped software-only v1.0.0 release after exact artifact, security, CI and attestation checks. Production disaster-recovery authority remains separate.*
 - [x] **Track: Develop the academic protocol and preregistration**
   *Link: [tracks/academic_protocol_preregistration_20260729/index.md](./tracks/academic_protocol_preregistration_20260729/index.md); GitHub parent [#66](https://github.com/edithatogo/global-medicines-atlas/issues/66). OSF is deprecated; persistent protocol identity is the in-repo artefacts plus Zenodo `10.5281/zenodo.21734811`.*
 - [~] **Track: Complete bronze medallion landing for current public scope**

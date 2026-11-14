@@ -1,16 +1,28 @@
 # Stable-v1 release approval handoff
 
+## Scoped software-only v1.0.0 decision — 14 November 2026
+
+The maintainer approved the separately scoped software release in D-006-13.
+M-105 through M-112 and full Australian federation remain blocked; their
+original acceptance evidence is not changed. The exact release still requires
+all non-deferred gates, protected checks, reproduced software artifacts,
+clean consumers and attestation. No new data or dataset publication is
+authorized. The earlier conditional approval described below is retained as
+historical context.
+
+## Earlier full-federation decision
+
 The accountable maintainer's approval of `v1.0.0rc1` was limited to the
 software-only prerelease. On 2026-10-18, the maintainer separately approved a
 conditional software-only `v1.0.0` promotion. The approval is recorded in
 `quality/qualifications/stable-v1-promotion-approval-20261018.json`. It applies
 only after every qualification gate passes and the exact candidate artifacts,
 hosted checks, and attestation are verified. The Australian health federation
-gate remains blocked, so the stable tag, signing, attestation, GitHub Release,
-and external publication remain unperformed. The prerelease authority record
-must remain unchanged.
+gate was blocked at that checkpoint, so the stable tag, signing, attestation,
+GitHub Release, and external publication had not been performed. The prerelease
+authority record remains unchanged.
 
-## Readiness before the decision
+## Full-federation readiness under the earlier decision
 
 When the dependent gates have independently passed, prepare a candidate bound
 to one exact commit. Reconcile the requirement and maturity matrices, source

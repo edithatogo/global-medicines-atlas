@@ -498,6 +498,63 @@ def _stage_files(stage: Path) -> tuple[Path, ...]:
     )
 
 
+def _read_sdist_metadata(sdist: Path, version: str) -> str:
+    with tarfile.open(sdist, "r:gz") as archive:
+        matches = [
+            item
+            for item in archive.getmembers()
+            if item.name.endswith("/PKG-INFO")
+        ]
+        if (
+            len(matches) != 1
+            or matches[0].name != f"global_medicines_atlas-{version}/PKG-INFO"
+            or not matches[0].isfile()
+            or matches[0].size > 1024 * 1024
+        ):
+            raise QualificationError("software sdist metadata is invalid")
+        member = archive.extractfile(matches[0])
+        if member is None:
+            raise QualificationError("software sdist metadata is unavailable")
+        return member.read().decode("utf-8")
+
+
+def _verify_software_only_stage(stage: Path, wheel: Path, version: str) -> None:
+    """Allow only the two software distributions and their lock and SBOM."""
+    if tuple(stage.glob(f"{PROJECT}-dataset-*.tar.gz")):
+        raise QualificationError(
+            "software-only stage must not contain a dataset archive"
+        )
+    sdist = stage / f"global_medicines_atlas-{version}.tar.gz"
+    allowed = {wheel, sdist, stage / "uv.lock", stage / "sbom.cdx.json"}
+    members = tuple(stage.rglob("*"))
+    if (
+        any(item.is_symlink() for item in members)
+        or {item for item in members if item.is_file()} != allowed
+    ):
+        raise QualificationError(
+            "software-only stage contains unexpected assets"
+        )
+    try:
+        metadata = _read_sdist_metadata(sdist, version)
+    except (OSError, tarfile.TarError, UnicodeError) as error:
+        raise QualificationError(
+            "software sdist is not a valid archive"
+        ) from error
+    pairs = [
+        line.split(": ", 1)
+        for line in metadata.splitlines()
+        if line.startswith(("Name: ", "Version: "))
+    ]
+    fields = dict(pairs)
+    if (
+        set(fields) != {"Name", "Version"}
+        or len(pairs) != len(fields)
+        or fields.get("Name", "").casefold().replace("_", "-") != PROJECT
+        or fields.get("Version") != version
+    ):
+        raise QualificationError("software sdist and release versions disagree")
+
+
 def _write_asset_manifest(
     *,
     root: Path,
@@ -569,10 +626,8 @@ def qualify_release_assets(
     )
     if include_dataset:
         _verify_dataset_archive(stage, version)
-    elif tuple(stage.glob(f"{PROJECT}-dataset-*.tar.gz")):
-        raise QualificationError(
-            "software-only stage must not contain a dataset archive"
-        )
+    else:
+        _verify_software_only_stage(stage, wheels[0], version)
 
     payloads = _stage_files(stage)
     manifest_path, artifacts = _write_asset_manifest(

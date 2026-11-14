@@ -1,5 +1,16 @@
 # System completion execution charter
 
+## Scoped software release — 14 November 2026
+
+The maintainer selected a software-only `v1.0.0` release using the existing
+code and archives, without adding or publishing data. The original Australian
+federation requirements M-105 through M-112 remain blocked and are deferred
+from this software release; they are not marked complete or reinterpreted.
+Decision D-006-13 authorizes only this exact software scope after every other
+release gate, exact-artifact reproduction, protected checks and attestation
+pass. Production deployment, dataset publication, rights changes and
+independent production disaster recovery remain separate.
+
 ## Accessibility testing excluded — 3 November 2026
 
 The maintainer explicitly removed accessibility testing from project scope.
@@ -20,11 +31,11 @@ federation later**. Complete the existing software candidate using its current
 qualified inputs and representative fixtures. Add no sources, object cohorts,
 semantic interpretations or infrastructure merely to finish the software.
 
-This supersedes the earlier scheduling requirement to work through all five
-federation stages before stopping. It does not amend their acceptance contracts,
-mark blocked requirements complete, or permit a Stable v1 release. The
-Australian federation stages below remain the later milestone, with their
-receipts and limitations intact. The bounded candidate is not a new release tag.
+That decision superseded the earlier scheduling requirement to work through
+all five federation stages before stopping. It did not amend their acceptance
+contracts or authorize a release. The later 14 November decision above permits
+only the separately scoped software release; the full federation criteria,
+receipts and limitations remain unchanged.
 
 ## Bounded software finish line
 
@@ -42,8 +53,9 @@ Use one coherent completion packet, with this finite checklist:
 
 Once this checklist passes, stop software-completion work. Do not fill every
 remaining checkbox in historical plans. Report the tested candidate, commands,
-artifact paths and limitations once. Stable v1 remains blocked by the existing
-federation contract; dataset publication, deployment and expanded claims retain
+artifact paths and limitations once. Full federation remains blocked by its
+existing contract; the separately approved software release does not qualify
+that federation. Dataset publication, deployment and expanded claims retain
 their separate authority requirements.
 
 ## Later federation milestone

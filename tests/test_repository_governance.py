@@ -220,8 +220,9 @@ def test_licence_decision_is_explicit_and_data_rights_remain_bounded() -> None:
 
     assert '\nlicense = "Apache-2.0"' in pyproject
     assert "\nlicense: Apache-2.0" in citation
-    assert '\nversion: "1.0.0rc1"' in citation
-    assert '\ndate-released: "2026-08-01"' in citation
+    assert '\nversion: "1.0.0"' in citation
+    assert '\ndate-released: "2026-11-14"' in citation
+    assert 'doi: "10.5281/zenodo.21734811"' not in citation
     assert "third-party" in data_licence.lower()
     assert "cc-by-4.0" in decision.lower()
     assert "licence detection" in follow_ups.lower()

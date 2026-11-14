@@ -1402,7 +1402,7 @@ branch `codex/opentelemetry-security`, based on main `f5897746a346`.
 Native scope is this repository and its existing CI. Next operation is a
 scoped technical pull request and protected integration.
 
-- [~] Resolve Dependabot alert #17 and the main dependency-audit failure for
+- [x] Resolve Dependabot alert #17 and the main dependency-audit failure for
   OpenTelemetry API 1.45.1. Carry the patched 1.45.2 update from PR #1431,
   regenerate the PEP 751 export and current lock-bound metadata, preserve prior
   experiment results and dated receipts, run focused tests and the security
@@ -1413,5 +1413,26 @@ Local qualification: Python 3.15.1 and uv 0.13.6; the two failing PR checks were
 reproduced before the lock-bound metadata was refreshed. The 71 affected tests,
 674 outbound-message policy tests, strict audit of all 138 third-party locked
 versions, lock/export reproducibility, context, receipt, and Ruff checks pass.
-The prior experiment outcomes and dated evidence remain unchanged. Hosted
-checks and the main-branch audit are still pending.
+The prior experiment outcomes and dated evidence remain unchanged. PR #1433
+passed its protected checks and merged as `99c8dbbbeeccd1e343f46ba56bcdad1557fbd89f`;
+main security run `43568425430` and Test-Goblin run `43568425485` passed.
+Dependabot alert #17 is fixed.
+
+## Scoped software-only v1.0.0 release — 14 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, managed worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/scoped-software-v1`, based on main `99c8dbbbeecc`.
+Native scope is this repository, its protected release workflow, and the exact
+software-only GitHub release. No data acquisition or data publication is in
+scope. The scoped authority and fail-closed validation retain the original
+federation gate and its blocked requirements as unfinished. Next operation:
+submit this packet for protected checks, then qualify the exact release through
+the hosted workflow if those checks pass.
+
+- [~] Qualify and publish software-only `v1.0.0` using existing data and
+  representative fixtures. Defer M-105 through M-112 from this release without
+  marking them passed; retain all source, rights, privacy, security, protected
+  CI, exact-artifact and release-attestation boundaries. Make the release
+  limitations visible to users. Verify the tag, assets, attestations, and clean
+  consumers before claiming the release complete.
