@@ -337,6 +337,12 @@ def _inventory_regular_files(root: Path) -> tuple[str, ...]:
     return tuple(sorted(relative_paths))
 
 
+def inventory_publication_files(root: Path) -> tuple[str, ...]:
+    """List every regular file in a publication root in canonical order."""
+
+    return _inventory_regular_files(root)
+
+
 def prepare_publication(
     *,
     root: Path,
