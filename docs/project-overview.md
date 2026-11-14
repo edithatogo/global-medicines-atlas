@@ -38,8 +38,10 @@ coverage or release readiness. An in-progress track receives no partial credit.
 Closing a software track can transfer an external follow-up to an open issue;
 therefore track closure does not imply every external gate is met. The
 [release reconciliation](../quality/qualifications/stable-v1-release-readiness-reconciliation.json)
-still blocks Stable v1 on Australian federation and records independent recovery
-authority separately. The [roadmap](../conductor/roadmap.md) retains the full scope.
+still blocks full Australian federation and records independent recovery
+authority separately. The maintainer separately approved the software-only
+v1.0.0 scope; it does not complete the eight federation requirements. The
+[roadmap](../conductor/roadmap.md) retains the full scope.
 
 The [snapshot](project-status.json) binds the two input digests. Regenerate or
 check the diagrams using the governed interpreter:

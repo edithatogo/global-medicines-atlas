@@ -221,6 +221,33 @@ def test_release_creation_names_repository_without_checkout() -> None:
     )
 
 
+def test_stable_release_notes_disclose_the_deferred_federation_scope() -> None:
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+    draft = workflow[workflow.index("  draft-release:") :]
+    assert "Software-only release" in draft
+    assert "M-105 through M-112 remain incomplete" in draft
+    assert "No new datasets" in draft
+    assert '--notes "$release_notes"' in draft
+
+
+def test_published_software_uses_the_reproduced_candidate() -> None:
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+    build = workflow.index(
+        "  - name: Reproduce and stage the exact software release"
+    )
+    qualify = workflow.index("  - name: Qualify exact staged bytes")
+    assert build < qualify
+    section = workflow[build:qualify]
+    assert "if: inputs.publish" in section
+    assert "scripts.build_stable_v1_release_candidate build" in section
+    assert "scripts.build_stable_v1_release_candidate consume" in section
+    assert "for artifact in wheel sdist" in section
+    assert "build/reproducible-candidate/dist" in section
+    assert "build/reproducible-candidate/sbom.cdx.json" in section
+    assert "build/reproducible-candidate/uv.lock" in section
+    assert "Persist reproducible software candidate receipt" in workflow
+
+
 def test_release_jobs_have_least_permissions() -> None:
     workflow = WORKFLOW.read_text(encoding="utf-8")
     qualify = workflow[

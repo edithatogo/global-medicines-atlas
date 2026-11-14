@@ -4,7 +4,7 @@
 [![Security and Context](https://github.com/edithatogo/global-medicines-atlas/actions/workflows/security-context.yml/badge.svg?branch=main)](https://github.com/edithatogo/global-medicines-atlas/actions/workflows/security-context.yml)
 [![Codecov](https://codecov.io/gh/edithatogo/global-medicines-atlas/branch/main/graph/badge.svg)](https://app.codecov.io/gh/edithatogo/global-medicines-atlas)
 [![Public data](https://img.shields.io/badge/Hugging_Face-public_archives-FFD21E?logo=huggingface)](https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21734811.svg)](https://doi.org/10.5281/zenodo.21734811)
+[![Prerelease archive DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21734811.svg)](https://doi.org/10.5281/zenodo.21734811)
 [![Python 3.15](https://img.shields.io/badge/Python-3.15-3776AB?logo=python&logoColor=white)](https://www.python.org/downloads/)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-D22128.svg)](LICENSE)
 
@@ -16,10 +16,10 @@ The project keeps those dimensions independent. A terminology match, product
 listing, price, or formulary entry is never treated as regulatory approval
 without source-specific evidence.
 
-> **Status · 3 November 2026:** hardened research software candidate with
-> public, revision-pinned source archives. Live global coverage, a production
-> service and Stable v1 acceptance remain open. The published `v1.0.0rc1` is a
-> historical prerelease, not approval of the current candidate or data estate.
+> **v1.0.0 scope · 14 November 2026:** research software using existing,
+> revision-pinned public archives. Australian federation requirements M-105
+> through M-112, complete historical coverage and a production service remain
+> unqualified. The `v1.0.0rc1` Zenodo DOI identifies that earlier prerelease.
 
 [Use the software](#use-the-atlas) ·
 [Browse public data](https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue) ·
@@ -35,7 +35,7 @@ without source-specific evidence.
 | MBS/PBS typed and linked evidence | Selected MBS cohort qualified; broader semantics and derived delivery incomplete |
 | Testing and hardening | Protected CI, mutation/performance tests, CodeQL, dependency audit, SBOM and coverage gates |
 | Production API/Atlas and current global coverage | External qualification required; no hosted service claimed |
-| Stable v1 | Blocked by remaining federation and release acceptance |
+| Software v1.0.0 | Scoped software release; Australian federation remains incomplete |
 
 ## Medallion architecture
 
