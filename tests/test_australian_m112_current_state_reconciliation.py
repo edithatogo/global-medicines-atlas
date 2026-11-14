@@ -942,6 +942,55 @@ def test_existing_consumer_check_rejects_wrong_object_and_request() -> None:
         derived_gates.checked_consumers(ROOT, receipt, manifest, semantics)
 
 
+def test_fresh_mbs_consumers_match_prior_objects_without_browser() -> None:
+    rows = derived_gates.check_fresh_consumers(ROOT)
+    assert {row["table"] for row in rows} == derived_gates.CONSUMER_TABLES
+    assert all(
+        row["consumer_check"]
+        == "fresh_hosted_browser_free_four_surface_canary_passed"
+        and row["privacy"]
+        == "non_sensitive_in_exact_previously_admitted_contract"
+        for row in rows
+    )
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    ["commit", "object", "browser_claim", "unexpected_browser_evidence"],
+)
+def test_fresh_mbs_consumer_evidence_rejects_mismatches(mutation: str) -> None:
+    receipt = _read(
+        derived_gates.FRESH_SILVER_DIR + "admission-remote-read.json"
+    )
+    manifest = _read(derived_gates.FRESH_SILVER_DIR + "artifact-manifest.json")
+    semantics = _read(derived_gates.INPUTS["consumer_semantic_manifest"][0])
+    if mutation == "commit":
+        receipt["contract_commit"] = "a" * 40
+    elif mutation == "object":
+        receipt["remote_reads"][0]["object_sha256"] = "b" * 64
+    elif mutation == "browser_claim":
+        receipt["consumer_canary"]["browser_qualification"] = "passed"
+    else:
+        receipt["consumer_canary"]["evidence"][0]["browser"] = {
+            "http_status": 200,
+            "row_count": 2,
+        }
+    with pytest.raises(
+        ValueError,
+        match=r"boundary differs|object, privacy or canary|canary summary differs",
+    ):
+        derived_gates.checked_consumers(
+            ROOT,
+            receipt,
+            manifest,
+            semantics,
+            evidence_directory=derived_gates.FRESH_SILVER_DIR,
+            workflow_run=derived_gates.FRESH_RUN,
+            browser_expected=False,
+            expected_commit=derived_gates.FRESH_COMMIT,
+        )
+
+
 def test_existing_consumer_check_rejects_unqualified_privacy(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

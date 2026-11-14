@@ -1589,3 +1589,12 @@ Owner and native scope: remaining-public-archives qualification report.
 The [value-free metadata report](../../../quality/qualifications/australian-schedule-source-privacy-check-20261115.json)
 records the exact identities and limits. No source payload, participant data or
 cohort-derived data was inspected or published for this check.
+
+- [x] Recheck the six previously admitted July 2025 MBS schedule tables with
+  fresh short-lived contracts in [hosted run 43651971792](https://github.com/edithatogo/global-medicines-atlas/actions/runs/43651971792).
+  The six remote digest reads and 24 API, CLI, Atlas and JSONL export checks
+  passed; browser qualification was not performed. The
+  [value-free receipt manifest](../../../quality/qualifications/australian-mbs-silver-consumer-recheck-20261115/hosted-43651971792/artifact-manifest.json)
+  binds the exact main commit and retained metadata. The previously expired
+  local attempt remains recorded; no new unique admission or dataset
+  publication resulted.
