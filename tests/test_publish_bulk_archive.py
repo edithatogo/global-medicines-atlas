@@ -3,7 +3,10 @@
 from __future__ import annotations
 
 import json
+import sys
+import types
 from pathlib import Path
+from typing import Any, cast
 
 import pytest
 from scripts import publish_bulk_archive as publisher
@@ -13,6 +16,7 @@ from global_medicines_atlas.federation_metadata_hosted import (
 )
 
 COMMIT = "a" * 40
+SYNTHETIC_HF_TOKEN = "synthetic-token"  # ruff: ignore[hardcoded-password-string] -- synthetic fixture, not a credential.
 
 
 def write_contract(tmp_path: Path, **overrides: object) -> Path:
@@ -172,4 +176,89 @@ def test_publish_refuses_without_external_write_gates(
             tmp_path / "out",
             COMMIT,
             publish=True,
+        )
+
+
+class _CommitInfo:
+    oid = "b" * 40
+
+
+class _RecordingApi:
+    """Record exactly how the hub is called by the uploader."""
+
+    def __init__(self) -> None:
+        self.token = ""
+        self.created: list[dict[str, object]] = []
+        self.uploaded: list[dict[str, object]] = []
+
+    def create_repo(self, **kwargs: object) -> None:
+        self.created.append(kwargs)
+
+    def upload_folder(self, **kwargs: object) -> _CommitInfo:
+        self.uploaded.append(kwargs)
+        return _CommitInfo()
+
+
+class _HfApiFactory:
+    """Stand in for ``HfApi`` and hand every instance to the recorder."""
+
+    def __init__(self, api: _RecordingApi) -> None:
+        self._api = api
+
+    def __call__(self, *, token: str) -> _RecordingApi:
+        self._api.token = token
+        return self._api
+
+
+def test_uploader_calls_only_supported_hub_keywords(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Guard the hub call shape: an unsupported keyword fails only at runtime."""
+
+    api = _RecordingApi()
+    module = types.ModuleType("huggingface_hub")
+    cast("Any", module).HfApi = _HfApiFactory(api)
+    monkeypatch.setitem(sys.modules, "huggingface_hub", module)
+    monkeypatch.setenv("HF_TOKEN", SYNTHETIC_HF_TOKEN)
+    folder = write_archive(tmp_path)
+
+    revision = publisher.HuggingFaceFolderUploader(
+        repository="owner/synthetic"
+    ).upload_folder(
+        repository="owner/synthetic",
+        folder=folder,
+        commit_message="Archive synthetic",
+    )
+
+    assert revision == "b" * 40
+    assert api.token == SYNTHETIC_HF_TOKEN
+    assert api.created == [
+        {
+            "repo_id": "owner/synthetic",
+            "repo_type": "dataset",
+            "private": False,
+            "exist_ok": True,
+        }
+    ]
+    assert api.uploaded == [
+        {
+            "repo_id": "owner/synthetic",
+            "repo_type": "dataset",
+            "folder_path": folder,
+            "commit_message": "Archive synthetic",
+        }
+    ]
+
+
+def test_uploader_refuses_a_different_repository(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("HF_TOKEN", SYNTHETIC_HF_TOKEN)
+    with pytest.raises(ValueError, match="target differs"):
+        publisher.HuggingFaceFolderUploader(
+            repository="owner/synthetic"
+        ).upload_folder(
+            repository="owner/other",
+            folder=write_archive(tmp_path),
+            commit_message="Archive other",
         )

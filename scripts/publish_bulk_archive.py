@@ -223,8 +223,6 @@ class HuggingFaceFolderUploader:
             repo_type="dataset",
             folder_path=folder,
             commit_message=commit_message,
-            multi_commits=True,
-            multi_commits_verbose=True,
         )
         return str(result.oid)
 
