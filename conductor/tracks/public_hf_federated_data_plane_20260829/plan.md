@@ -1126,5 +1126,59 @@ Owner: Codex chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, managed worktree
 branch `codex/recover-aihw-atc2-draft-transport`. Scope is the PBS workflow
 route, exact ATC2 contract, documentation, and focused tests. The native write
 scope is one append to the PBS archive and temporary unpublished GitHub draft
-`444173498` with asset `743483280`. Next operation is protected integration of
-the reviewed transport and a single dispatch at the checked main commit.
+`444173498` with asset `743483280`. The subsequent hosted publication completed
+and is recorded by
+`quality/qualifications/aihw-atc2-publication-20261114-43565582684.json`;
+the preceding text is the historical pending state.
+
+## Existing-archive per-object qualification (2026-11-15)
+
+The maintainer explicitly resumed a bounded M-112 increment: batch per-object
+qualification and consumer checks for already archived data, without adding
+sources or publishing datasets. Individual participant and cohort-derived data
+remain private. The frozen 1,759-object inventory, its original requirement
+states and all rights, sensitivity, admission and recovery gates are unchanged.
+
+Owner: Codex chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, managed worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/federation-batch-existing-20261115`, based on merged main
+`ab69da47d7c338e3a3aecb8bcaec9757989403b6`. The scope is exact frozen-object
+metadata qualification, sensitivity and remaining-role gap accounting,
+focused synthetic negative controls, and read-only reruns of six previously
+admitted, source-profiled non-sensitive PBS objects. No publication workflow,
+shared authentication change or private dataset access is authorized.
+
+- [x] Bind 1,719 reimbursement-archive candidates to frozen identities and
+  retained rights/lineage metadata. Verify each of 1,707 raw objects' B1, B2 and
+  landed records against their pinned digests. All 1,707 have unknown source
+  sensitivity and all 12 projections lack an object-specific sensitivity
+  assessment in this evidence. Their payload reads, consumer checks and new
+  admissions therefore remain blocked. Nine projection relationships are
+  byte-identical and three are recorded layer partitions.
+- [x] Reconcile the other 26 raw-ledger-deferred frozen paths against the
+  retained overlay. Six also have earlier, separately scoped MBS Silver
+  admission and API, CLI, Atlas and export evidence at a distinct immutable
+  revision; they do not add six raw admissions. No new payload read is claimed
+  for these 26 paths.
+- [x] Rerun the existing hosted reader once for each of six already admitted,
+  source-profiled PBS aggregate/reference objects. All six runs passed on
+  exact main; metadata-only receipts establish digest and cache cleanup. The
+  repeat checks did not create additional unique admissions.
+- [~] Focused failure-closed, federation reader, admission, consumer and
+  context tests passed: 170 tests on Python 3.15.1. Integrate after exact-head
+  protected checks. Stop at unqualified privacy and per-object gates; do not
+  infer independent recovery or acceptance.
+
+The reproducible [per-object metadata report](../../../quality/qualifications/australian-m112-reimbursement-batch-readiness-20261115.json)
+has SHA-256 `0969afcd6152cd73f5ff53f28ccb6fb9315090a71ba302ebbee74efaf32db4f5`.
+The [PBS reader manifest](../../../quality/qualifications/australian-m112-pbs-reader-recheck-20261115/manifest.json)
+binds all six hosted receipts. No source rows, individual participant data,
+cohort-derived data, new source or dataset publication were added.
+
+PR #1435 passed 29 reported required checks on head
+`24404455b9abe2987c00b1c697f22931098e9bc4` and merged as
+`ab69da47d7c338e3a3aecb8bcaec9757989403b6`, tree
+`f94c78f72f84d7fb0b7fc06806b523cfa0b032c1`. The automatically triggered
+unrelated data-layer run `43613625929` was canceled with no runner, executed
+step or artifact. The regular workflow remains enabled; no data was acquired
+or published by that run.

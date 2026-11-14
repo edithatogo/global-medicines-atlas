@@ -7,6 +7,9 @@ import json
 from pathlib import Path
 from typing import Any
 
+import pytest
+import scripts.qualify_m112_existing_reimbursement_batch as batch_qualification
+
 ROOT = Path(__file__).resolve().parents[1]
 RECONCILIATION = (
     ROOT / "quality/qualifications/"
@@ -470,3 +473,196 @@ def test_release_field_contract_is_requirements_not_gate_clearance():
         "historical_comparison",
     }
     assert not any(contract["non_claims"].values())
+
+
+def test_existing_reimbursement_batch_retains_per_object_privacy_gates() -> (
+    None
+):
+    report = batch_qualification.build_report()
+    saved = _read(
+        "quality/qualifications/"
+        "australian-m112-reimbursement-batch-readiness-20261115.json"
+    )
+    assert report == saved
+    assert report["result"] == {
+        "metadata_identity_rights_lineage_joined": 1719,
+        "raw_source_sensitivity_unknown": 1707,
+        "projection_sensitivity_not_qualified": 12,
+        "ready_for_payload_read": 0,
+        "new_admissions": 0,
+        "consumer_checks_on_selected_objects": 0,
+        "other_metadata_rows_reconciled": 26,
+        "other_prior_separate_mbs_silver_consumer_receipts": 6,
+    }
+    objects = report["objects"]
+    assert len({row["path"] for row in objects}) == 1719
+    assert all(row["ready_for_payload_read"] is False for row in objects)
+    assert all(row["v4_admission"] == "not_performed" for row in objects)
+    assert all(
+        row["consumer_check"] == "not_performed_privacy_gate_blocked"
+        for row in objects
+    )
+    assert (
+        sum(
+            row["lineage_evidence"] == "exact_layer_partition_metadata_linked"
+            for row in objects
+        )
+        == 3
+    )
+    assert (
+        sum(
+            row["lineage_evidence"]
+            == "byte_identical_producer_projection_metadata_linked"
+            for row in objects
+        )
+        == 9
+    )
+    assert all(value is False for value in report["boundaries"].values())
+    other = report["other_frozen_objects"]
+    assert len(other) == 26
+    assert len({(row["dataset"], row["path"]) for row in other}) == 26
+    previous_silver = [
+        row
+        for row in other
+        if row["prior_separate_silver_consumer"] is not None
+    ]
+    assert len(previous_silver) == 6
+    assert all(
+        row["prior_separate_silver_consumer"]["qualified_revision"]
+        != row["frozen_revision"]
+        for row in previous_silver
+    )
+    assert all(row["current_payload_read"] == "not_performed" for row in other)
+    assert all(
+        row["current_raw_v4_admission"] == "not_performed" for row in other
+    )
+
+
+def test_existing_projection_partition_requires_its_recorded_relation() -> None:
+    docs = {
+        key: batch_qualification._read_bound(
+            ROOT, *batch_qualification.INPUTS[key]
+        )
+        for key in (
+            "frozen",
+            "overlay",
+            "projection_attestation",
+            "projection_lineage",
+        )
+    }
+    path = "data/medallion/silver/data.jsonl"
+    dataset = batch_qualification.DATASET
+    frozen = next(
+        x
+        for x in docs["frozen"]["members"]
+        if x["dataset"] == dataset and x["path"] == path
+    )
+    overlay = next(
+        x
+        for x in docs["overlay"]["objects"]
+        if x["dataset"] == dataset and x["path"] == path
+    )
+    rights = next(
+        x
+        for x in docs["projection_attestation"]["authorized_objects"]
+        if x["path"] == path
+    )
+    lineage = next(
+        x
+        for x in docs["projection_lineage"]["objects"]
+        if x["dataset_path"] == path
+    )
+    args = {
+        "path": path,
+        "frozen": frozen,
+        "overlay": overlay,
+        "rights": rights,
+    }
+    assert lineage["producer_source_sha256"] != lineage["dataset_sha256"]
+    record = batch_qualification._projection_record(**args, lineage=lineage)
+    assert record["lineage_evidence"] == "exact_layer_partition_metadata_linked"
+    assert record["ready_for_payload_read"] is False
+    with pytest.raises(ValueError, match="byte-identical"):
+        batch_qualification._projection_record(
+            **args,
+            lineage={
+                **lineage,
+                "projection_relation": "byte_identical_to_exact_producer_source_path",
+            },
+        )
+    with pytest.raises(ValueError, match="partition"):
+        batch_qualification._projection_record(
+            **args, lineage={**lineage, "producer_source_sha256": "0" * 64}
+        )
+    with pytest.raises(ValueError, match="unsupported"):
+        batch_qualification._projection_record(
+            **args, lineage={**lineage, "projection_relation": "unverified"}
+        )
+
+
+def test_batch_metadata_reader_rejects_unbound_paths(tmp_path: Path) -> None:
+    parent = tmp_path / "quality" / "qualifications"
+    parent.mkdir(parents=True)
+    body = b'{"schema_id":"test"}'
+    (parent / "record.json").write_bytes(body)
+    digest = hashlib.sha256(body).hexdigest()
+    assert batch_qualification._read_bound(
+        tmp_path, "quality/qualifications/record.json", digest
+    ) == {"schema_id": "test"}
+    with pytest.raises(ValueError, match="digest"):
+        batch_qualification._read_bound(
+            tmp_path, "quality/qualifications/record.json", "0" * 64
+        )
+    with pytest.raises(ValueError, match="invalid"):
+        batch_qualification._read_bound(
+            tmp_path, "quality/qualifications/../record.json", digest
+        )
+    (parent / "link.json").symlink_to(parent / "record.json")
+    with pytest.raises(ValueError, match="symlink"):
+        batch_qualification._read_bound(
+            tmp_path, "quality/qualifications/link.json", digest
+        )
+
+
+def test_pbs_reader_rechecks_bind_six_prior_admissions() -> None:
+    manifest = _read(
+        "quality/qualifications/"
+        "australian-m112-pbs-reader-recheck-20261115/manifest.json"
+    )
+    ledger_ref = manifest["prior_ledger"]
+    ledger_bytes = (ROOT / ledger_ref["path"]).read_bytes()
+    assert hashlib.sha256(ledger_bytes).hexdigest() == ledger_ref["sha256"]
+    ledger = json.loads(ledger_bytes)
+    keys = ("dataset", "revision", "path", "sha256", "byte_count")
+    admitted = {
+        tuple(row[k] for k in keys) for row in ledger["new_admitted_identities"]
+    }
+    assert len(admitted) == manifest["rechecked_existing_objects"] == 6
+    assert {
+        tuple(row[k] for k in keys) for row in manifest["objects"]
+    } == admitted
+    assert manifest["new_unique_admissions"] == 0
+    assert manifest["raw_admissions_before_and_after"] == 14
+    assert manifest["raw_canaries_before_and_after"] == 14
+    assert manifest["deferred_before_and_after"] == 1745
+    assert all(value is False for value in manifest["boundaries"].values())
+    for row in manifest["objects"]:
+        receipt_bytes = (ROOT / row["receipt_path"]).read_bytes()
+        assert (
+            hashlib.sha256(receipt_bytes).hexdigest() == row["receipt_sha256"]
+        )
+        receipt = json.loads(receipt_bytes)
+        assert receipt["status"] == row["status"] == "passed"
+        assert tuple(receipt["admission"][k] for k in keys) in admitted
+        canary = receipt["consumer_canary"]
+        assert canary["status"] == "passed"
+        assert canary["hosted_workflow"]["run_id"] == row["run_id"]
+        assert (
+            canary["hosted_workflow"]["commit"] == manifest["workflow_commit"]
+        )
+        assert canary["verification"]["remote_digest_match"] is True
+        assert canary["verification"]["consumer_stream_digest_match"] is True
+        assert canary["verification"]["reader_cache_bytes_after_close"] == 0
+        assert canary["boundaries"]["source_values_or_rows_included"] is False
+        assert canary["boundaries"]["source_payload_bytes_retained"] is False
+        assert canary["boundaries"]["public_dataset_mutated"] is False

@@ -37,6 +37,18 @@ contracts or authorize a release. The later 14 November decision above permits
 only the separately scoped software release; the full federation criteria,
 receipts and limitations remain unchanged.
 
+## Scoped existing-archive batch — 15 November 2026
+
+The maintainer explicitly resumed per-object qualification and consumer
+checks for the existing Australian archive. This increment uses the frozen
+inventory and retained evidence; it does not authorize adding or publishing
+datasets, changing rights, accessing participant or cohort-derived data, or
+accepting the full federation. Unknown sensitivity and incomplete per-object
+admission evidence remain blockers. Already admitted non-sensitive public
+aggregate and reference objects may be rechecked read-only; repeat checks do
+not create additional admissions. The owning data-plane track records the
+scope, evidence and stop conditions.
+
 ## Bounded software finish line
 
 Use one coherent completion packet, with this finite checklist:
