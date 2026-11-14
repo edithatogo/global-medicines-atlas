@@ -30,7 +30,7 @@ Approval, funding, formulary and terminology assertions stay independent.
 | Measure | Complete | Denominator | Proportion |
 |---|---:|---:|---:|
 | Closed delivery tracks | 14 | 20 | 70% |
-| Verified tracked Stable v1 requirements | 84 | 92 | 91.3% |
+| Verified tracked Stable v1 requirements | 85 | 92 | 92.4% |
 <!-- gma-progress:end -->
 
 These are **unweighted counts**, not estimates of effort, source-population

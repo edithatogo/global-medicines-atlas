@@ -807,7 +807,7 @@
     },
     {
       "requirement_id": "M-105",
-      "state": "blocked",
+      "state": "verified",
       "evidence": [
         "conductor/requirements.md",
         "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md",
@@ -816,11 +816,10 @@
         "quality/qualifications/australian-donor-m105-chronology-waiver-20261018.json",
         "quality/qualifications/australian-donor-m105-dispositions.json",
         "docs/qualification/australian-donor-parity-gap.md",
-        "quality/qualifications/australian-donor-m105-current-disposition-20261023.json"
+        "quality/qualifications/australian-donor-m105-current-disposition-20261023.json",
+        "quality/qualifications/australian-donor-m105-current-disposition-20261115.json"
       ],
-      "blocker_ids": [
-        "stable-v1-australian-health-federation"
-      ]
+      "blocker_ids": []
     },
     {
       "requirement_id": "M-106",

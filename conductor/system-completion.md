@@ -3,13 +3,18 @@
 ## Scoped software release — 14 November 2026
 
 The maintainer selected a software-only `v1.0.0` release using the existing
-code and archives, without adding or publishing data. The original Australian
-federation requirements M-105 through M-112 remain blocked and are deferred
+code and archives, without adding or publishing data. At that decision, the
+original Australian federation requirements M-105 through M-112 were blocked and deferred
 from this software release; they are not marked complete or reinterpreted.
 Decision D-006-13 authorizes only this exact software scope after every other
 release gate, exact-artifact reproduction, protected checks and attestation
 pass. Production deployment, dataset publication, rights changes and
 independent production disaster recovery remain separate.
+
+On 15 November the maintainer separately approved D-006-14: M-105 is accepted
+under a chronology-only exception after its exact dossier checks pass. M-106
+through M-112 and the full federation gate remain blocked. This later decision
+does not change the scope of the earlier software release.
 
 ## Accessibility testing excluded — 3 November 2026
 

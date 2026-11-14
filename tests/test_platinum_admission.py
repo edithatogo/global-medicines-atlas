@@ -1,6 +1,7 @@
 """Product provisioning preserves independently configured receipt authority."""
 
 import hashlib
+import inspect
 import json
 from contextlib import contextmanager
 from datetime import UTC, datetime, timedelta
@@ -44,8 +45,25 @@ def test_hosted_mbs_receipt_times_are_normalized_to_utc_z():
     )
 
 
+def test_hosted_mbs_consumer_check_defaults_to_no_external_browser():
+    assert (
+        inspect
+        .signature(mbs_v4_qualification.qualify)
+        .parameters["browser"]
+        .default
+        is False
+    )
+    workflow = (
+        Path(__file__).resolve().parents[1]
+        / ".github/workflows/australian-mbs-silver-v4-admission-qualification.yml"
+    ).read_text(encoding="utf-8")
+    assert "scripts/qualify_mbs_silver_v4_admission.py" in workflow
+    assert "playwright install" not in workflow
+
+
+@pytest.mark.parametrize("browser", [False, True])
 def test_exact_six_mbs_profiles_close_receipts_and_prepare_consumer_canaries(
-    monkeypatch, tmp_path
+    monkeypatch, tmp_path, browser
 ):
     commit = "a" * 40
     publication_objects = [
@@ -107,7 +125,7 @@ def test_exact_six_mbs_profiles_close_receipts_and_prepare_consumer_canaries(
     consumer_calls = []
 
     def consumer_canary(_trust, _metadata, _schema, requests, *, browser=False):
-        assert browser is True
+        assert browser is browser_mode
         consumer_calls.extend(requests)
         return {
             "status": "passed",
@@ -120,6 +138,7 @@ def test_exact_six_mbs_profiles_close_receipts_and_prepare_consumer_canaries(
             },
         }
 
+    browser_mode = browser
     monkeypatch.setattr(mbs_v4_qualification, "StorageNeutralResolver", Reader)
     monkeypatch.setattr(
         mbs_v4_qualification,
@@ -127,7 +146,7 @@ def test_exact_six_mbs_profiles_close_receipts_and_prepare_consumer_canaries(
         consumer_canary,
     )
     result = mbs_v4_qualification.qualify(
-        Path(__file__).resolve().parents[1], tmp_path, commit
+        Path(__file__).resolve().parents[1], tmp_path, commit, browser=browser
     )
 
     assert result["status"] == "passed"

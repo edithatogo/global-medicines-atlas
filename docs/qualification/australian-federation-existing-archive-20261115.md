@@ -56,6 +56,24 @@ attempt received a GitHub receipt rate limit before the reader ran; one bounded
 retry passed and both attempts remain recorded. These are repeat checks, so
 the 14-admitted, 14-checked and 1,745-deferred ledger is unchanged.
 
+The later [derived-gate packet](../../quality/qualifications/australian-existing-derived-gates-20261115.json)
+binds four existing August MBS projections outside the frozen M-112 inventory
+and the reproduced April PBS Silver output to their retained receipts. The
+previous PBS readiness note's missing-public-location issue is resolved for
+that exact output by its later publication and anonymous verification receipts.
+Its prior field-state report names a different output, and the selected evidence
+does not establish an object-specific privacy assessment or v4 admission. The
+four MBS outputs likewise retain their individual privacy and admission gates.
+None of the five candidates is sent to a consumer by this check.
+
+The same packet checks each of the six previously admitted July 2025 MBS Silver
+contracts, their exact non-sensitive rights states, remote-reader receipts and
+historical five-surface consumer evidence. A later local attempt to repeat the
+consumer checks with those old contracts stopped when their temporary caches
+had expired. That failure is [retained](../../quality/qualifications/australian-mbs-silver-consumer-recheck-20261115/local-expired-cache-failure.json);
+the planned hosted recheck creates fresh short-lived profiles and does not
+extend the old contracts' expiry.
+
 Hosted read-only run [43608538996](https://github.com/edithatogo/global-medicines-atlas/actions/runs/43608538996)
 subsequently replayed the six existing July MBS Silver tables on base main
 `946757ccdf5b21130811233f285807f5307ea209`. All six passed source-value,
@@ -66,8 +84,9 @@ exercise was in memory and the objects were restored from the primary archive;
 this is not evidence of independent backup recovery. The run did not publish
 or admit an object.
 
-All original M-105 to M-112 requirement states remain blocked. In particular,
-the workbook source note does not close M-106, and the preserved identity and
-consumer evidence does not close M-112's per-object, independent recovery and
-remaining role requirements. Participant and cohort-derived data were not
-accessed or published in this tranche.
+M-105 was subsequently accepted under the separately approved narrow chronology
+exception in D-006-14. M-106 through M-112 remain blocked. The workbook source
+note does not close M-106, and the preserved identity and consumer evidence does
+not close M-112's per-object, independent recovery and remaining role
+requirements. Participant and cohort-derived data were not accessed or
+published in this tranche.

@@ -14,6 +14,11 @@ from scripts.validate_release_authority import (
     validate_release_authority,
 )
 
+ORIGINAL_SOFTWARE_CONTRACT = (
+    Path(__file__).resolve().parents[1]
+    / "quality/qualifications/scoped-software-v1-original-contract-20261114.json"
+)
+
 
 def test_exact_release_candidate_is_authorized() -> None:
     authority = validate_release_authority(
@@ -77,9 +82,13 @@ def test_stable_promotion_fails_closed_while_any_gate_is_blocked() -> None:
         )
 
 
-def test_exact_scoped_software_v1_is_authorized_without_qualifying_federation() -> (
-    None
-):
+def test_exact_scoped_software_v1_is_authorized_without_qualifying_federation(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # The release approval bound the exact historical contract, not later M-105 acceptance.
+    monkeypatch.setattr(
+        authority_module, "STABLE_CONTRACT", ORIGINAL_SOFTWARE_CONTRACT
+    )
     authority = validate_release_authority(
         authority_path=DEFAULT_AUTHORITY,
         tag="v1.0.0",
@@ -90,11 +99,36 @@ def test_exact_scoped_software_v1_is_authorized_without_qualifying_federation() 
     assert authority["deferred_requirements"] == [
         f"M-{number}" for number in range(105, 113)
     ]
-    contract = json.loads(STABLE_CONTRACT.read_text(encoding="utf-8"))
+    contract = json.loads(
+        ORIGINAL_SOFTWARE_CONTRACT.read_text(encoding="utf-8")
+    )
     assert contract["qualification_state"] == "blocked"
     assert contract["unresolved_gate_ids"] == [
         "stable-v1-australian-health-federation"
     ]
+
+
+def test_old_scoped_software_approval_does_not_reauthorize_changed_contract() -> (
+    None
+):
+    approval = json.loads(
+        authority_module.SCOPED_SOFTWARE_APPROVAL.read_text(encoding="utf-8")
+    )
+    historical_digest = hashlib.sha256(
+        ORIGINAL_SOFTWARE_CONTRACT.read_bytes()
+    ).hexdigest()
+    assert approval["bound_evidence"][0]["sha256"] == historical_digest
+    assert (
+        hashlib.sha256(STABLE_CONTRACT.read_bytes()).hexdigest()
+        != historical_digest
+    )
+    with pytest.raises(ValueError, match="approval or evidence mismatch"):
+        validate_release_authority(
+            authority_path=DEFAULT_AUTHORITY,
+            tag="v1.0.0",
+            release_type="stable",
+            artifact_scope="software-only",
+        )
 
 
 def test_scoped_software_v1_requires_the_explicit_new_authority(
@@ -132,7 +166,9 @@ def test_scoped_software_v1_requires_the_explicit_new_authority(
 def test_scoped_software_v1_rejects_other_changes_even_if_rebound(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, mutation: str
 ) -> None:
-    contract = json.loads(STABLE_CONTRACT.read_text(encoding="utf-8"))
+    contract = json.loads(
+        ORIGINAL_SOFTWARE_CONTRACT.read_text(encoding="utf-8")
+    )
     readiness = json.loads(authority_module.STABLE_READINESS.read_text())
     approval = json.loads(authority_module.SCOPED_SOFTWARE_APPROVAL.read_text())
     if mutation == "other_gate_blocked":

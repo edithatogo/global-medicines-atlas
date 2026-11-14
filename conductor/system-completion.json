@@ -63,7 +63,7 @@
       "capability": "Release the approved, scoped software-only v1.0.0 with observable evidence",
       "current_failure": "The full federation contract remains blocked and cannot by itself authorize the narrower software release.",
       "next_action": "Apply the maintainer's 2026-11-14 scoped software approval, verify all non-deferred gates, and prepare and publish only the exact software release through the protected workflow. Add no data or sources.",
-      "completion_evidence": "The exact approved scope and candidate, protected checks, software assets, tag, checksums and attestations are verified; M-105 through M-112 remain explicitly blocked in the unchanged full federation contract.",
+      "completion_evidence": "The exact approved software scope and candidate, protected checks, assets, tag, checksums and attestations are verified. M-105 was separately accepted under D-006-14; M-106 through M-112 and the full federation gate remain blocked.",
       "stop_condition": "Stop if any non-deferred software, security, privacy, rights, protected-check, reproducibility or attestation gate fails. Never claim deferred federation acceptance or publish a dataset.",
       "validation": "Run affected release-authority, package and context tests, protected CI, and the exact hosted software-release qualification and readback."
     }

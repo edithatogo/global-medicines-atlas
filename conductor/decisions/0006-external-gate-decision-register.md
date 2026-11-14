@@ -223,6 +223,26 @@ dataset publication, source-rights change, production deployment, or
 production disaster-recovery authority follows. The scoped, digest-bound
 approval is `quality/qualifications/scoped-software-v1-approval-20261114.json`.
 
+## D-006-14 — M-105 acceptance
+
+**Status:** maintainer instruction recorded 2026-11-15. The maintainer selected
+“Approve narrow exception and accept if checks pass (Recommended)” after the
+54 baseline and 10 later donor dispositions, exact archive receipts and current
+archived heads were reviewed. M-105 is accepted under this decision.
+
+Waive only the requirement that complete parity evidence predate either donor
+archive. The actual archival and evidence dates remain unchanged; no complete
+pre-archive parity receipt is claimed. Acceptance is conditional on the existing
+exact-dossier, artifact identity, disposition and archived-history checks. All
+legacy-only and excluded behavior remains expressly limited.
+
+This later decision supersedes D-006-12 only for the M-105 disposition. It does
+not waive source rights, authorize new or published datasets, access participant
+or cohort-derived data, accept M-106–M-112, establish independent recovery, or
+authorize a release, deployment or outbound communication. The approval and
+evidence binding are recorded in
+`quality/qualifications/australian-donor-m105-current-disposition-20261115.json`.
+
 ## Autonomous continuation
 
 While decisions remain open, the agent may validate schemas, run tests, prepare receipts, reconcile documentation, and review hosted state. It must not install Apps, redistribute restricted data, sign or promote the approved scoped software release before its non-deferred qualification conditions and exact-candidate verification pass, or claim production or deferred federation qualification without durable evidence. OSF is deprecated and must not be treated as an open submission gate.

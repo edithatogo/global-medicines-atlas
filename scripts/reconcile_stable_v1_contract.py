@@ -7,7 +7,7 @@ import importlib
 import json
 from copy import deepcopy
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "quality/qualifications/stable-v1-contract.json"
@@ -55,7 +55,8 @@ AUSTRALIAN_HEALTH_REQUIREMENTS = {
     "M-113",
 }
 M105_WAIVER = "quality/qualifications/australian-donor-m105-chronology-waiver-20261018.json"
-M105_CURRENT_DISPOSITION = "quality/qualifications/australian-donor-m105-current-disposition-20261023.json"
+M105_PREVIOUS_DISPOSITION = "quality/qualifications/australian-donor-m105-current-disposition-20261023.json"
+M105_CURRENT_DISPOSITION = "quality/qualifications/australian-donor-m105-current-disposition-20261115.json"
 M105_CURRENT_DECISION_NUMBER = 12
 M105_DISPOSITIONS = (
     "quality/qualifications/australian-donor-m105-dispositions.json"
@@ -426,8 +427,8 @@ def _m105_qualification_with_approved_waiver() -> bool:
     )
 
 
-def _m105_currently_blocked() -> bool:
-    """Keep M-105 blocked under the latest explicit maintainer disposition."""
+def _m105_currently_blocked() -> bool:  # ruff: ignore[too-many-return-statements] -- Each independent authority check fails closed.
+    """Fail closed unless the latest decision binds its exact supporting dossier."""
     try:
         disposition = json.loads(
             (ROOT / M105_CURRENT_DISPOSITION).read_text(encoding="utf-8")
@@ -437,13 +438,65 @@ def _m105_currently_blocked() -> bool:
         )
     except OSError, json.JSONDecodeError:
         return True
+    if not isinstance(disposition, dict):
+        return True
+    disposition = cast("dict[str, Any]", disposition)
     decision_id = disposition.get("decision_id")
-    if (
+    if not all((
         disposition.get("schema_id")
-        != "global-medicines-atlas.australian-donor-m105-current-disposition"
-        or disposition.get("schema_version") != 1
-        or disposition.get("requirement") != "M-105"
-        or disposition.get("status") != "accepted_after_new_maintainer_decision"
+        == "global-medicines-atlas.australian-donor-m105-current-disposition",
+        type(disposition.get("schema_version")) is int,
+        disposition.get("schema_version") == 1,
+        disposition.get("requirement") == "M-105",
+        disposition.get("status") == "accepted_after_new_maintainer_decision",
+        disposition.get("approval_text")
+        == "Approve narrow exception and accept if checks pass (Recommended)",
+        disposition.get("waiver_scope")
+        == "complete_parity_evidence_predates_donor_archival_only",
+        disposition.get("pre_archive_complete_parity_proof_claimed") is False,
+    )):
+        return True
+    references_value = disposition.get("evidence")
+    if not isinstance(references_value, dict):
+        return True
+    references = cast("dict[str, object]", references_value)
+    for key, expected_path in (
+        ("previous_disposition", M105_PREVIOUS_DISPOSITION),
+        ("historical_waiver", M105_WAIVER),
+        ("disposition_matrix", M105_DISPOSITIONS),
+        ("scraper_archive", SCRAPER_ARCHIVE),
+        ("graph_archive", GRAPH_ARCHIVE),
+    ):
+        reference_value = references.get(key)
+        try:
+            if not isinstance(reference_value, dict):
+                return True
+            reference = cast("dict[str, object]", reference_value)
+            if (
+                reference.get("path") != expected_path
+                or reference.get("sha256")
+                != hashlib.sha256(
+                    (ROOT / expected_path).read_bytes()
+                ).hexdigest()
+            ):
+                return True
+        except OSError:
+            return True
+    boundary_value = disposition.get("boundaries")
+    if not isinstance(boundary_value, dict):
+        return True
+    boundaries = cast("dict[str, object]", boundary_value)
+    if any(
+        boundaries.get(key) is not False
+        for key in (
+            "source_rights_changed",
+            "new_sources_added",
+            "dataset_publication",
+            "participant_or_cohort_data_accessed",
+            "federation_accepted",
+            "release_authorized",
+            "outbound_communication_performed",
+        )
     ):
         return True
     if not isinstance(decision_id, str) or not decision_id.startswith("D-006-"):
@@ -549,6 +602,7 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
                 requirement["evidence"],
                 [
                     M105_CURRENT_DISPOSITION,
+                    M105_PREVIOUS_DISPOSITION,
                     M105_WAIVER,
                     M105_DISPOSITIONS,
                     M105_PARITY_GAP,

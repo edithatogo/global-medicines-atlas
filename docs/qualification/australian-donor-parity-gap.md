@@ -1,6 +1,13 @@
-# Australian donor parity review, updated 2026-10-23
+# Australian donor parity review, updated 2026-11-15
 
-M-105 remains **blocked**. The required pre-archive donor parity evidence
+M-105 is **verified under the narrow chronology exception** approved in
+[D-006-14](../../conductor/decisions/0006-external-gate-decision-register.md#d-006-14--m-105-acceptance).
+The [decision review](australian-m105-chronology-review-20261115.md) records the
+exact retained dossier and limits. No complete pre-archive parity receipt is
+claimed; live participant coverage, source rights and broader federation remain
+separate. The paragraphs below preserve the 2026-10-23 historical disposition.
+
+As of 2026-10-23, M-105 remained **blocked**. The required pre-archive donor parity evidence
 cannot be established retroactively. The 2026-10-18 narrow chronology waiver
 ([D-006-10](../../conductor/decisions/0006-external-gate-decision-register.md#d-006-10--m-105-narrow-chronology-waiver))
 is preserved as a historical decision, but the maintainer's later
