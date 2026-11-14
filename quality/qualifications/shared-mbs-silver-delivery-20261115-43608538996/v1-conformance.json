@@ -1,0 +1,404 @@
+{
+  "artifacts": [
+    {
+      "artifact_id": "silver/mbs/v4/2025-07-v3/services.parquet",
+      "layer": "silver",
+      "lineage": {
+        "input_artifact_ids": [
+          "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML"
+        ],
+        "input_sha256": [
+          "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556"
+        ]
+      },
+      "promotion_status": "approved_within_scope",
+      "rights_decision": {
+        "decision_id": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
+        "reason_codes": [
+          "exact_six_maintainer_attestation_instrument_not_independently_reviewed"
+        ],
+        "scope": "Exact July 2025 source-native Silver fields; no current-status, payable-benefit, clinical, cross-era, or Gold relationship assertion.",
+        "status": "approved"
+      },
+      "sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535"
+    },
+    {
+      "artifact_id": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+      "layer": "silver",
+      "lineage": {
+        "input_artifact_ids": [
+          "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML"
+        ],
+        "input_sha256": [
+          "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556"
+        ]
+      },
+      "promotion_status": "approved_within_scope",
+      "rights_decision": {
+        "decision_id": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
+        "reason_codes": [
+          "exact_six_maintainer_attestation_instrument_not_independently_reviewed"
+        ],
+        "scope": "Exact July 2025 source-native Silver fields; no current-status, payable-benefit, clinical, cross-era, or Gold relationship assertion.",
+        "status": "approved"
+      },
+      "sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756"
+    },
+    {
+      "artifact_id": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+      "layer": "silver",
+      "lineage": {
+        "input_artifact_ids": [
+          "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML"
+        ],
+        "input_sha256": [
+          "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556"
+        ]
+      },
+      "promotion_status": "approved_within_scope",
+      "rights_decision": {
+        "decision_id": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
+        "reason_codes": [
+          "exact_six_maintainer_attestation_instrument_not_independently_reviewed"
+        ],
+        "scope": "Exact July 2025 source-native Silver fields; no current-status, payable-benefit, clinical, cross-era, or Gold relationship assertion.",
+        "status": "approved"
+      },
+      "sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733"
+    },
+    {
+      "artifact_id": "silver/mbs/v4/2025-07-v3/fees.parquet",
+      "layer": "silver",
+      "lineage": {
+        "input_artifact_ids": [
+          "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML"
+        ],
+        "input_sha256": [
+          "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556"
+        ]
+      },
+      "promotion_status": "approved_within_scope",
+      "rights_decision": {
+        "decision_id": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
+        "reason_codes": [
+          "exact_six_maintainer_attestation_instrument_not_independently_reviewed"
+        ],
+        "scope": "Exact July 2025 source-native Silver fields; no current-status, payable-benefit, clinical, cross-era, or Gold relationship assertion.",
+        "status": "approved"
+      },
+      "sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420"
+    },
+    {
+      "artifact_id": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+      "layer": "silver",
+      "lineage": {
+        "input_artifact_ids": [
+          "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML"
+        ],
+        "input_sha256": [
+          "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556"
+        ]
+      },
+      "promotion_status": "approved_within_scope",
+      "rights_decision": {
+        "decision_id": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
+        "reason_codes": [
+          "exact_six_maintainer_attestation_instrument_not_independently_reviewed"
+        ],
+        "scope": "Exact July 2025 source-native Silver fields; no current-status, payable-benefit, clinical, cross-era, or Gold relationship assertion.",
+        "status": "approved"
+      },
+      "sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f"
+    },
+    {
+      "artifact_id": "silver/mbs/v4/2025-07-v3/caps.parquet",
+      "layer": "silver",
+      "lineage": {
+        "input_artifact_ids": [
+          "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML"
+        ],
+        "input_sha256": [
+          "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556"
+        ]
+      },
+      "promotion_status": "approved_within_scope",
+      "rights_decision": {
+        "decision_id": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
+        "reason_codes": [
+          "exact_six_maintainer_attestation_instrument_not_independently_reviewed"
+        ],
+        "scope": "Exact July 2025 source-native Silver fields; no current-status, payable-benefit, clinical, cross-era, or Gold relationship assertion.",
+        "status": "approved"
+      },
+      "sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb"
+    }
+  ],
+  "promotion_decisions": [
+    {
+      "decision_id": "mbs-july-silver:services",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556"
+      ],
+      "passed_gate_ids": [
+        "exact_identity",
+        "reviewed_lineage",
+        "exact_output_rights",
+        "qualified_source_era",
+        "native_preservation",
+        "deterministic_replay",
+        "published_value_parity",
+        "primary_restore",
+        "memory_cache_eviction"
+      ],
+      "reason_codes": [
+        "all_required_gates_passed"
+      ],
+      "required_gate_ids": [
+        "exact_identity",
+        "reviewed_lineage",
+        "exact_output_rights",
+        "qualified_source_era",
+        "native_preservation",
+        "deterministic_replay",
+        "published_value_parity",
+        "primary_restore",
+        "memory_cache_eviction"
+      ],
+      "rights_decision": {
+        "decision_id": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
+        "reason_codes": [
+          "exact_six_maintainer_attestation_instrument_not_independently_reviewed"
+        ],
+        "scope": "Exact July 2025 source-native Silver fields; no current-status, payable-benefit, clinical, cross-era, or Gold relationship assertion.",
+        "status": "approved"
+      },
+      "status": "approved",
+      "subject_artifact_id": "silver/mbs/v4/2025-07-v3/services.parquet",
+      "to_layer": "silver"
+    },
+    {
+      "decision_id": "mbs-july-silver:hierarchy",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556"
+      ],
+      "passed_gate_ids": [
+        "exact_identity",
+        "reviewed_lineage",
+        "exact_output_rights",
+        "qualified_source_era",
+        "native_preservation",
+        "deterministic_replay",
+        "published_value_parity",
+        "primary_restore",
+        "memory_cache_eviction"
+      ],
+      "reason_codes": [
+        "all_required_gates_passed"
+      ],
+      "required_gate_ids": [
+        "exact_identity",
+        "reviewed_lineage",
+        "exact_output_rights",
+        "qualified_source_era",
+        "native_preservation",
+        "deterministic_replay",
+        "published_value_parity",
+        "primary_restore",
+        "memory_cache_eviction"
+      ],
+      "rights_decision": {
+        "decision_id": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
+        "reason_codes": [
+          "exact_six_maintainer_attestation_instrument_not_independently_reviewed"
+        ],
+        "scope": "Exact July 2025 source-native Silver fields; no current-status, payable-benefit, clinical, cross-era, or Gold relationship assertion.",
+        "status": "approved"
+      },
+      "status": "approved",
+      "subject_artifact_id": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+      "to_layer": "silver"
+    },
+    {
+      "decision_id": "mbs-july-silver:descriptions",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556"
+      ],
+      "passed_gate_ids": [
+        "exact_identity",
+        "reviewed_lineage",
+        "exact_output_rights",
+        "qualified_source_era",
+        "native_preservation",
+        "deterministic_replay",
+        "published_value_parity",
+        "primary_restore",
+        "memory_cache_eviction"
+      ],
+      "reason_codes": [
+        "all_required_gates_passed"
+      ],
+      "required_gate_ids": [
+        "exact_identity",
+        "reviewed_lineage",
+        "exact_output_rights",
+        "qualified_source_era",
+        "native_preservation",
+        "deterministic_replay",
+        "published_value_parity",
+        "primary_restore",
+        "memory_cache_eviction"
+      ],
+      "rights_decision": {
+        "decision_id": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
+        "reason_codes": [
+          "exact_six_maintainer_attestation_instrument_not_independently_reviewed"
+        ],
+        "scope": "Exact July 2025 source-native Silver fields; no current-status, payable-benefit, clinical, cross-era, or Gold relationship assertion.",
+        "status": "approved"
+      },
+      "status": "approved",
+      "subject_artifact_id": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+      "to_layer": "silver"
+    },
+    {
+      "decision_id": "mbs-july-silver:fees",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556"
+      ],
+      "passed_gate_ids": [
+        "exact_identity",
+        "reviewed_lineage",
+        "exact_output_rights",
+        "qualified_source_era",
+        "native_preservation",
+        "deterministic_replay",
+        "published_value_parity",
+        "primary_restore",
+        "memory_cache_eviction"
+      ],
+      "reason_codes": [
+        "all_required_gates_passed"
+      ],
+      "required_gate_ids": [
+        "exact_identity",
+        "reviewed_lineage",
+        "exact_output_rights",
+        "qualified_source_era",
+        "native_preservation",
+        "deterministic_replay",
+        "published_value_parity",
+        "primary_restore",
+        "memory_cache_eviction"
+      ],
+      "rights_decision": {
+        "decision_id": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
+        "reason_codes": [
+          "exact_six_maintainer_attestation_instrument_not_independently_reviewed"
+        ],
+        "scope": "Exact July 2025 source-native Silver fields; no current-status, payable-benefit, clinical, cross-era, or Gold relationship assertion.",
+        "status": "approved"
+      },
+      "status": "approved",
+      "subject_artifact_id": "silver/mbs/v4/2025-07-v3/fees.parquet",
+      "to_layer": "silver"
+    },
+    {
+      "decision_id": "mbs-july-silver:benefits",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556"
+      ],
+      "passed_gate_ids": [
+        "exact_identity",
+        "reviewed_lineage",
+        "exact_output_rights",
+        "qualified_source_era",
+        "native_preservation",
+        "deterministic_replay",
+        "published_value_parity",
+        "primary_restore",
+        "memory_cache_eviction"
+      ],
+      "reason_codes": [
+        "all_required_gates_passed"
+      ],
+      "required_gate_ids": [
+        "exact_identity",
+        "reviewed_lineage",
+        "exact_output_rights",
+        "qualified_source_era",
+        "native_preservation",
+        "deterministic_replay",
+        "published_value_parity",
+        "primary_restore",
+        "memory_cache_eviction"
+      ],
+      "rights_decision": {
+        "decision_id": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
+        "reason_codes": [
+          "exact_six_maintainer_attestation_instrument_not_independently_reviewed"
+        ],
+        "scope": "Exact July 2025 source-native Silver fields; no current-status, payable-benefit, clinical, cross-era, or Gold relationship assertion.",
+        "status": "approved"
+      },
+      "status": "approved",
+      "subject_artifact_id": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+      "to_layer": "silver"
+    },
+    {
+      "decision_id": "mbs-july-silver:caps",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556"
+      ],
+      "passed_gate_ids": [
+        "exact_identity",
+        "reviewed_lineage",
+        "exact_output_rights",
+        "qualified_source_era",
+        "native_preservation",
+        "deterministic_replay",
+        "published_value_parity",
+        "primary_restore",
+        "memory_cache_eviction"
+      ],
+      "reason_codes": [
+        "all_required_gates_passed"
+      ],
+      "required_gate_ids": [
+        "exact_identity",
+        "reviewed_lineage",
+        "exact_output_rights",
+        "qualified_source_era",
+        "native_preservation",
+        "deterministic_replay",
+        "published_value_parity",
+        "primary_restore",
+        "memory_cache_eviction"
+      ],
+      "rights_decision": {
+        "decision_id": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
+        "reason_codes": [
+          "exact_six_maintainer_attestation_instrument_not_independently_reviewed"
+        ],
+        "scope": "Exact July 2025 source-native Silver fields; no current-status, payable-benefit, clinical, cross-era, or Gold relationship assertion.",
+        "status": "approved"
+      },
+      "status": "approved",
+      "subject_artifact_id": "silver/mbs/v4/2025-07-v3/caps.parquet",
+      "to_layer": "silver"
+    }
+  ],
+  "repository": "global-medicines-atlas",
+  "vocabulary_version": "1.0.0"
+}

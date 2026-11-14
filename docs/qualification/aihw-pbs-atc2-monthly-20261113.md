@@ -1,5 +1,17 @@
 # AIHW PBS ATC2 monthly data
 
+## Published archive readback — 14 November 2026
+
+Hosted run [43565582684](https://github.com/edithatogo/global-medicines-atlas/actions/runs/43565582684)
+appended the exact ZIP and its B1 receipt to PBS revision
+`ba60e1d18b81e4af3cae50bc9fbfe719406fa5f3`, verified both new objects
+anonymously, preserved 1,076 previous manifest objects and removed temporary
+hosted source material. The [retained native receipt](../../quality/qualifications/aihw-atc2-publication-20261114-43565582684.json)
+records one new payload, two verified objects and zero participant files.
+The original temporary-copy language below describes the earlier pending state.
+
+## Recovered source and historical preparation
+
 The publisher's previously unavailable monthly ATC2 ZIP was recovered on
 13 November 2026. The original public ZIP is 88,904,070 bytes and has SHA-256
 `30552d9f7e49e35787b2ac2719cf2177352fb1c38fe9e100127ce790b7ab1a0a`.

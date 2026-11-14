@@ -1,0 +1,93 @@
+{
+  "profile": {
+    "archive_crc_check": "passed",
+    "archive_member_count": 29,
+    "data_rows": 2202,
+    "dimension": "A1:V2212",
+    "duplicate_year_state_group_keys": 0,
+    "empty_rows_after_header": 1,
+    "financial_year_labels": [
+      "2009-10",
+      "2010-11",
+      "2011-12",
+      "2012-13",
+      "2013-14",
+      "2014-15",
+      "2015-16",
+      "2016-17",
+      "2017-18",
+      "2018-19",
+      "2019-20",
+      "2020-21",
+      "2021-22",
+      "2022-23",
+      "2023-24",
+      "2024-25",
+      "2025-26"
+    ],
+    "native_header_labels": [
+      "Financial Year",
+      "State",
+      "Column1",
+      "Broad Type of Service",
+      "Patients",
+      "Patients as percent of Population",
+      "Services",
+      "Services per Patient",
+      "Services per capita",
+      "Benefits",
+      "Benefits per Patient",
+      "Benefits per capita",
+      "Estimated Resident Population"
+    ],
+    "native_title": "Table 3: Financial Year Patient* Statistics by Broad Type of Service and State",
+    "patient_definition": "* A patient is defined as a person who claimed at least one MBS service.",
+    "patient_sheet_part": "xl/worksheets/sheet4.xml",
+    "patient_sheet_sha256": "8832262f60ea80a30a8d806918f7fba88ec296a7eefd28ad90a39116a21408d5",
+    "patient_value_shape_scope": "classified_rows_only",
+    "patient_value_shapes": {
+      "numeric_nonnegative_integer": 2202
+    },
+    "service_group_label_count": 13,
+    "sheet_name": "Patients",
+    "sheet_names": [
+      "Contents",
+      "All Services",
+      "Out of Hospital Services",
+      "Patients",
+      "Broad Type of Service"
+    ],
+    "state_label_count": 10,
+    "unclassified_rows_after_header": 0
+  },
+  "qualification": {
+    "cross_group_deduplication_qualified": false,
+    "federation_v4_admission_performed": false,
+    "geography_or_service_group_labels_emitted": false,
+    "individual_participant_or_cohort_data_accessed": false,
+    "item_level_patient_counts_qualified": false,
+    "m106_accepted": false,
+    "new_dataset_published": false,
+    "patient_definition": "literal source note, not a cross-group deduplication rule",
+    "patient_denominator_admitted": false,
+    "patient_observation_values_emitted": false,
+    "rights_or_publication_decision_changed": false,
+    "status": "bounded_source_native_structure_and_definition_only",
+    "temporal_completeness_claimed": false,
+    "time_basis_and_suppression_semantics_qualified": false
+  },
+  "recorded_on": "2026-11-15",
+  "schema_id": "global-medicines-atlas.mbs-annual-public-workbook-qualification",
+  "schema_version": 1,
+  "source": {
+    "byte_count": 1058479,
+    "dataset": "edithatogo/australian-mbs-utilisation-archive",
+    "raw_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/ace9d6e72dcfca3c9fd779b4c476788ea1d465ceaafd465f97cea712dad44598/medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx",
+    "receipt_path": "bronze/mbs/public-backfill/medicare_statistics_collection_attachment/ace9d6e72dcfca3c9fd779b4c476788ea1d465ceaafd465f97cea712dad44598/medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx.receipt.json",
+    "receipt_sha256": "4328cf80841e3f766041efc0537ecfd31ef1bfab1e728a629081995cf24f066c",
+    "revision": "05342df7dd2f92fe6e85e28e8add9bf3f43d0389",
+    "sha256": "ace9d6e72dcfca3c9fd779b4c476788ea1d465ceaafd465f97cea712dad44598",
+    "source_url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx",
+    "transport": "previously archived public-copy transport; exact anonymous readback"
+  }
+}

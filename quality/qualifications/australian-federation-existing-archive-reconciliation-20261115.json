@@ -1,0 +1,95 @@
+{
+  "aihw_monthly_atc2": {
+    "anonymous_new_pair_digest_verification": "passed",
+    "dataset": "edithatogo/australian-pbs-utilisation-archive",
+    "hosted_workflow_run": "43565582684",
+    "manifest_canonical_sorted_compact_json_sha256": "05008c9edf470c86411542cdb5564449b30092d2775814ab983618ffa1d7adb9",
+    "manifest_file_count": 1078,
+    "manifest_path": "manifest.json",
+    "manifest_raw_bytes_sha256": "8f989d09e6914e463e9bde6d3343439bd1ec5dfd5c4b6ee2ba7ce02b23cc32a4",
+    "participant_files_published": 0,
+    "prior_manifest_objects_preserved": 1076,
+    "raw_path": "raw/pbs/public-backfill/aihw_pbs_monthly_aggregate/30552d9f7e49e35787b2ac2719cf2177352fb1c38fe9e100127ce790b7ab1a0a/AIHW-HWE-098-PBS-ATC2-prescriptions-monthly-data_keep.zip",
+    "raw_sha256": "30552d9f7e49e35787b2ac2719cf2177352fb1c38fe9e100127ce790b7ab1a0a",
+    "receipt_path": "bronze/pbs/public-backfill/aihw_pbs_monthly_aggregate/30552d9f7e49e35787b2ac2719cf2177352fb1c38fe9e100127ce790b7ab1a0a/AIHW-HWE-098-PBS-ATC2-prescriptions-monthly-data_keep.zip.receipt.json",
+    "receipt_sha256": "0addda493b789394703b178b34ad6cbea161eaada010724ed89eacfbf3bee9ba",
+    "revision": "ba60e1d18b81e4af3cae50bc9fbfe719406fa5f3",
+    "september_2025_edition_identified": false
+  },
+  "boundaries": {
+    "full_federation_accepted": false,
+    "individual_participant_or_cohort_data_accessed": false,
+    "new_licensing_conclusion": false,
+    "new_source_or_dataset_publication": false,
+    "new_v4_admission": false,
+    "patient_observation_values_emitted": false
+  },
+  "evidence_inputs": {
+    "aihw_publication_contract": {
+      "path": "quality/qualifications/aihw-pbs-atc2-monthly-public-20261113.json",
+      "sha256": "60212130806bd5d75481fcc94635ad78fc05d11379140f58166509175140fcf2"
+    },
+    "aihw_publication_receipt": {
+      "path": "quality/qualifications/aihw-atc2-publication-20261114-43565582684.json",
+      "sha256": "52629a8adfe4bd73dfb63b535ca9f81774245735a843d676aebec24a19926f10"
+    },
+    "annual_workbook_profile": {
+      "path": "quality/qualifications/mbs-annual-public-workbook-qualification-20261115.json",
+      "sha256": "0e1ee83e51cddd913a6b8955b5149738024f7a7de27e82eb495e2b8e113a1194"
+    },
+    "frozen_comparison": {
+      "path": "quality/qualifications/australian-public-archive-reconciliation-20261113.json",
+      "sha256": "f7883925fe095e46b184690e966101b10b8dcec2326e03d93cb5b18c1e3b5fcf"
+    },
+    "raw_admission_ledger": {
+      "path": "quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261028.json",
+      "sha256": "c556cf596514d7cb69bce0a188f87460ad2746c3afacc559cec8ebd56cd7a3a3"
+    },
+    "stable_contract": {
+      "path": "quality/qualifications/stable-v1-contract.json",
+      "sha256": "d57f54455a861d80a992a0660d18e391858dcd97cd1762171b9d3251ffae2549"
+    }
+  },
+  "existing_derived_evidence": {
+    "consumer_receipt": "quality/qualifications/platinum-actual-consumer-reconciliation-20261028.json",
+    "mbs_july_2025_silver_admitted": true,
+    "mbs_july_2025_silver_tables": 6,
+    "pbs_april_2026_silver_v4_admitted": false
+  },
+  "federation_requirement_states": {
+    "M-105": "blocked",
+    "M-106": "blocked",
+    "M-107": "blocked",
+    "M-108": "blocked",
+    "M-109": "blocked",
+    "M-110": "blocked",
+    "M-111": "blocked",
+    "M-112": "blocked"
+  },
+  "frozen_inventory": {
+    "deferred_admission": 1745,
+    "fresh_full_inventory_readback_performed": false,
+    "matching_observed_on": "2026-11-13",
+    "matching_paths": 1759,
+    "raw_reader_canaries": 14,
+    "raw_v4_admissions": 14,
+    "six_mbs_silver_tables_included_in_raw_count": false
+  },
+  "mbs_annual_workbook": {
+    "dataset": "edithatogo/australian-mbs-utilisation-archive",
+    "m106_accepted": false,
+    "manifest_file_count": 443,
+    "manifest_path": "manifest.json",
+    "manifest_raw_bytes_sha256": "f35a41005d96f2bb2c91437db789baf69428f2e96a151b416f54bc33b4c0f851",
+    "patient_values_emitted": false,
+    "patients_sheet_classified_rows": 2202,
+    "raw_path": "raw/mbs/public-backfill/medicare_statistics_collection_attachment/ace9d6e72dcfca3c9fd779b4c476788ea1d465ceaafd465f97cea712dad44598/medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx",
+    "raw_sha256": "ace9d6e72dcfca3c9fd779b4c476788ea1d465ceaafd465f97cea712dad44598",
+    "receipt_path": "bronze/mbs/public-backfill/medicare_statistics_collection_attachment/ace9d6e72dcfca3c9fd779b4c476788ea1d465ceaafd465f97cea712dad44598/medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx.receipt.json",
+    "receipt_sha256": "4328cf80841e3f766041efc0537ecfd31ef1bfab1e728a629081995cf24f066c",
+    "revision": "05342df7dd2f92fe6e85e28e8add9bf3f43d0389"
+  },
+  "observed_on": "2026-11-15",
+  "schema_id": "global-medicines-atlas.australian-federation-existing-archive-reconciliation",
+  "schema_version": 1
+}

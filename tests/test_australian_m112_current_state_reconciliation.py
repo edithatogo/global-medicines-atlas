@@ -30,6 +30,139 @@ def _read(path: str) -> dict[str, Any]:
     return json.loads((ROOT / path).read_text(encoding="utf-8"))
 
 
+def test_existing_mbs_silver_role_receipt_binds_value_free_reports() -> None:
+    reports = (
+        ROOT / "quality/qualifications/"
+        "shared-mbs-silver-delivery-20261115-43608538996"
+    )
+    qualification = json.loads((reports / "qualification.json").read_bytes())
+    assert qualification["producer_commit"] == (
+        "946757ccdf5b21130811233f285807f5307ea209"
+    )
+    assert qualification["status"] == "passed"
+    assert qualification["source_values_included"] is False
+    assert qualification["publication_performed"] is False
+    assert qualification["admission_performed"] is False
+    assert len(qualification["tables"]) == 6
+    for table in qualification["tables"]:
+        for key in (
+            "passed",
+            "schema_equal",
+            "row_values_equal",
+            "native_values_preserved",
+            "deterministic_replay",
+        ):
+            assert table[key] is True
+    assert set(qualification["role_report_sha256"]) == {
+        "cache-cleanup",
+        "primary-restore",
+        "silver-promotion",
+        "v1-conformance",
+        "v2-field-lineage",
+        "v3-backfill-replay",
+    }
+    for name, expected in qualification["role_report_sha256"].items():
+        report = json.loads((reports / f"{name}.json").read_bytes())
+        canonical = json.dumps(
+            report, sort_keys=True, separators=(",", ":"), default=str
+        ).encode()
+        assert hashlib.sha256(canonical).hexdigest() == expected
+    cleanup = json.loads((reports / "cache-cleanup.json").read_bytes())
+    restore = json.loads((reports / "primary-restore.json").read_bytes())
+    assert cleanup["source_payload_written_to_disk"] is False
+    assert cleanup["disk_cache_exercised"] is False
+    assert cleanup["remaining_entries"] == 0
+    assert restore["object_count"] == 6
+    assert restore["status"] == "passed"
+
+
+def test_existing_archive_batch_binds_evidence_without_promoting_gates() -> (
+    None
+):
+    batch = _read(
+        "quality/qualifications/"
+        "australian-federation-existing-archive-reconciliation-20261115.json"
+    )
+    for reference in batch["evidence_inputs"].values():
+        assert (
+            hashlib.sha256((ROOT / reference["path"]).read_bytes()).hexdigest()
+            == reference["sha256"]
+        )
+
+    historical = _read(batch["evidence_inputs"]["frozen_comparison"]["path"])
+    ledger = _read(batch["evidence_inputs"]["raw_admission_ledger"]["path"])
+    frozen = batch["frozen_inventory"]
+    assert (
+        frozen["matching_paths"]
+        == historical["frozen_inventory"]["matching_objects"]
+        == 1759
+    )
+    assert frozen["matching_observed_on"] == historical["observed_on"]
+    assert frozen["fresh_full_inventory_readback_performed"] is False
+    assert (
+        frozen["raw_v4_admissions"]
+        == ledger["effective_counts"]["raw_v4_admissions"]
+        == 14
+    )
+    assert (
+        frozen["raw_reader_canaries"]
+        == ledger["effective_counts"]["raw_admitted_object_reader_canaries"]
+        == 14
+    )
+    assert (
+        frozen["deferred_admission"]
+        == ledger["effective_counts"]["deferred_objects"]
+        == 1745
+    )
+    assert frozen["six_mbs_silver_tables_included_in_raw_count"] is False
+
+    annual = _read(batch["evidence_inputs"]["annual_workbook_profile"]["path"])
+    mbs = batch["mbs_annual_workbook"]
+    assert mbs["raw_sha256"] == annual["source"]["sha256"]
+    assert mbs["receipt_sha256"] == annual["source"]["receipt_sha256"]
+    assert (
+        mbs["patients_sheet_classified_rows"]
+        == annual["profile"]["data_rows"]
+        == 2202
+    )
+    assert mbs["m106_accepted"] is False
+    assert mbs["patient_values_emitted"] is False
+
+    receipt = _read(
+        batch["evidence_inputs"]["aihw_publication_receipt"]["path"]
+    )
+    aihw = batch["aihw_monthly_atc2"]
+    assert aihw["revision"] == receipt["revision"]
+    assert (
+        aihw["manifest_canonical_sorted_compact_json_sha256"]
+        == receipt["manifest_sha256"]
+    )
+    assert aihw["manifest_raw_bytes_sha256"] != receipt["manifest_sha256"]
+    assert aihw["manifest_file_count"] == receipt["archive_file_count"] == 1078
+    assert (
+        aihw["participant_files_published"]
+        == receipt["participant_files_published"]
+        == 0
+    )
+    assert (
+        aihw["anonymous_new_pair_digest_verification"]
+        == receipt["anonymous_digest_verification"]
+        == "passed"
+    )
+    assert aihw["september_2025_edition_identified"] is False
+    assert (
+        batch["existing_derived_evidence"]["mbs_july_2025_silver_tables"] == 6
+    )
+    assert (
+        batch["existing_derived_evidence"]["pbs_april_2026_silver_v4_admitted"]
+        is False
+    )
+    assert batch["federation_requirement_states"] == {
+        f"M-{number}": "blocked" for number in range(105, 113)
+    }
+    assert all(value is False for value in batch["boundaries"].values())
+
+
 def test_m112_reconciliation_uses_approved_denominator_and_latest_readback() -> (
     None
 ):
