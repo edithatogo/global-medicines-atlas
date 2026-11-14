@@ -1393,3 +1393,25 @@ Native scope is the repository and its existing CI. The isolated Python
 companion pull request and protected CI. Codecov pull-request comments are
 disabled to enforce the existing outbound-message prohibition; coverage
 uploads, status checks and thresholds remain unchanged.
+
+## OpenTelemetry security maintenance — 14 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, managed worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/opentelemetry-security`, based on main `f5897746a346`.
+Native scope is this repository and its existing CI. Next operation is a
+scoped technical pull request and protected integration.
+
+- [~] Resolve Dependabot alert #17 and the main dependency-audit failure for
+  OpenTelemetry API 1.45.1. Carry the patched 1.45.2 update from PR #1431,
+  regenerate the PEP 751 export and current lock-bound metadata, preserve prior
+  experiment results and dated receipts, run focused tests and the security
+  audit, and integrate only after protected checks pass. Do not change the
+  federation, source, release, privacy, or outbound-message boundaries.
+
+Local qualification: Python 3.15.1 and uv 0.13.6; the two failing PR checks were
+reproduced before the lock-bound metadata was refreshed. The 71 affected tests,
+674 outbound-message policy tests, strict audit of all 138 third-party locked
+versions, lock/export reproducibility, context, receipt, and Ruff checks pass.
+The prior experiment outcomes and dated evidence remain unchanged. Hosted
+checks and the main-branch audit are still pending.
