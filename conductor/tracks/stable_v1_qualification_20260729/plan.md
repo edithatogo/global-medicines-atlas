@@ -1467,8 +1467,8 @@ tests, and this shared coordination record. Native scope is read-only access to
 the existing public archive and previously verified receipts. No shared
 authentication or other native writer is assigned. The exact workbook and
 existing archive metadata have been checked without exporting patient values;
-the next operation is protected PR validation and read-only consumer
-qualification, then merge if the required checks pass.
+the next operation is protected PR validation, then merge if the required
+checks pass.
 
 - [x] Record the exact annual workbook's source-native public aggregate fields,
   period/shape evidence and unresolved patient-count semantics, without storing
@@ -1484,5 +1484,11 @@ frozen-inventory scan as historical evidence. The workbook's 2,202 classified
 aggregate rows cover native financial-year labels 2009–10 through 2025–26; its
 definition and value shapes do not establish cross-group deduplication,
 suppression or item-level patient counts. The 357 selected local tests passed.
-The shared role, hosted CI and merge results remain pending; none is an M-105
-through M-112 acceptance decision.
+Read-only hosted run [43608538996](https://github.com/edithatogo/global-medicines-atlas/actions/runs/43608538996)
+qualified all six existing July 2025 MBS Silver tables against their source
+replay at base main `946757ccdf5b21130811233f285807f5307ea209`; its
+[value-free reports](../../../quality/qualifications/shared-mbs-silver-delivery-20261115-43608538996/qualification.json)
+retain the six role hashes, in-memory cache eviction and primary-object restore.
+The run did not perform a new admission or publication, and its primary restore
+is not an independent-backup recovery rehearsal. Hosted PR CI and merge remain
+pending; none is an M-105 through M-112 acceptance decision.

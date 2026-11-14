@@ -1,0 +1,89 @@
+{
+  "contracts": [
+    {
+      "contract_id": "au-mbs:2025-07:exact-silver-replay:v1",
+      "correction_rule": "new_snapshot_never_overwrite",
+      "deterministic_output_rule": "canonical_json_sha256",
+      "idempotency_rule": "partition_and_snapshot_sha256",
+      "late_arrival_rule": "append_then_replay_partition",
+      "missing_payload_rule": "metadata_only_fail_closed",
+      "partition_identity": [
+        "source_id",
+        "archive_period",
+        "logical_asset_id"
+      ],
+      "replay_order": [
+        "partition_id",
+        "correction_sequence",
+        "snapshot_id"
+      ],
+      "snapshot_identity": [
+        "partition_id",
+        "payload_sha256",
+        "metadata_sha256"
+      ],
+      "source_id": "au-mbs",
+      "supersession_rule": "explicit_acyclic_predecessor"
+    }
+  ],
+  "replay_plan": {
+    "deterministic": true,
+    "eligible_snapshot_count": 1,
+    "plan_sha256": "2b6672ea9b63d1250cfe735abcbde78ba3b45687371304552d105257d5cc5efd",
+    "schema_version": "historical-replay-plan-v1",
+    "steps": [
+      {
+        "published_value_parity": true,
+        "replay_sha256": "279b66271a2004befc0b6355932402af2bf3c829d2f5be88578636c4bdf4e27d",
+        "table": "services"
+      },
+      {
+        "published_value_parity": true,
+        "replay_sha256": "9125882d086992a6bfa9a4840e089022ce35b413baea86479389261c79a0b0ec",
+        "table": "hierarchy"
+      },
+      {
+        "published_value_parity": true,
+        "replay_sha256": "081ac9fd8f135376c170793a3a330ba8d50abc917b18cbe2c032d948786f3967",
+        "table": "descriptions"
+      },
+      {
+        "published_value_parity": true,
+        "replay_sha256": "47ce64c8031fcd8de48718d008db9d08b86925d58f975057ffe355b4731ab2e7",
+        "table": "fees"
+      },
+      {
+        "published_value_parity": true,
+        "replay_sha256": "ea8ad1a4d04c4c82c11fecb2c07728cbc7529532ce4f634ee8cfaa4a3ef8ce9b",
+        "table": "benefits"
+      },
+      {
+        "published_value_parity": true,
+        "replay_sha256": "5d9b08e5c24c0ded2676345e742a4dc5a146421c3130afff4296c755dfc92d61",
+        "table": "caps"
+      }
+    ]
+  },
+  "snapshots": [
+    {
+      "archive_period": "2025-07",
+      "correction_sequence": 0,
+      "idempotency_key": "1482fa5d9ccd9937027f13be70530fe7b22d52cb20957ea9216dbde81e207381",
+      "late_arriving": false,
+      "logical_asset_id": "8abc58cc2d1ebc0e324d45e1f7439ee815a68bec069c0bfb3d71daf4e45e2429",
+      "metadata_sha256": "5db1b8adf08bd4ce80228d67c48d47301a7cd479796668b10bf34f3737affc9f",
+      "observation_status": "acquired",
+      "partition_id": "391e77b4ee5ee17d78e483ee6e1d354425a11de422055f70e36f1ce72b1a513c",
+      "partition_value": "au-mbs/2025-07/exact-six-silver",
+      "payload_sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+      "replay_eligible": true,
+      "rights_state": "permitted",
+      "snapshot_id": "9db5767756ab3aadc8bc58ce745b63994d5508b6a711f1861b52279e2406e99a",
+      "source_id": "au-mbs",
+      "source_url": "https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/4d1dae488ac43522f20e8320a8b2a56bf9138341/raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+      "source_version_id": "2025-07-version-3",
+      "supersedes_snapshot_id": null
+    }
+  ],
+  "vocabulary_version": "3.0.0"
+}

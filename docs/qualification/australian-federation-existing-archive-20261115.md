@@ -40,6 +40,16 @@ are separate from those raw counts. The April 2026 PBS Silver output is not
 v4-admitted. Archive presence, reader tests and role checks do not themselves
 grant admission or establish complete coverage.
 
+Hosted read-only run [43608538996](https://github.com/edithatogo/global-medicines-atlas/actions/runs/43608538996)
+subsequently replayed the six existing July MBS Silver tables on base main
+`946757ccdf5b21130811233f285807f5307ea209`. All six passed source-value,
+schema, native-field and deterministic-replay comparisons. Its
+[retained qualification](../../quality/qualifications/shared-mbs-silver-delivery-20261115-43608538996/qualification.json)
+hash-binds the six value-free role reports in the same directory. The cache
+exercise was in memory and the objects were restored from the primary archive;
+this is not evidence of independent backup recovery. The run did not publish
+or admit an object.
+
 All original M-105 to M-112 requirement states remain blocked. In particular,
 the workbook source note does not close M-106, and the preserved identity and
 consumer evidence does not close M-112's per-object, independent recovery and

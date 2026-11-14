@@ -30,6 +30,52 @@ def _read(path: str) -> dict[str, Any]:
     return json.loads((ROOT / path).read_text(encoding="utf-8"))
 
 
+def test_existing_mbs_silver_role_receipt_binds_value_free_reports() -> None:
+    reports = (
+        ROOT / "quality/qualifications/"
+        "shared-mbs-silver-delivery-20261115-43608538996"
+    )
+    qualification = json.loads((reports / "qualification.json").read_bytes())
+    assert qualification["producer_commit"] == (
+        "946757ccdf5b21130811233f285807f5307ea209"
+    )
+    assert qualification["status"] == "passed"
+    assert qualification["source_values_included"] is False
+    assert qualification["publication_performed"] is False
+    assert qualification["admission_performed"] is False
+    assert len(qualification["tables"]) == 6
+    for table in qualification["tables"]:
+        for key in (
+            "passed",
+            "schema_equal",
+            "row_values_equal",
+            "native_values_preserved",
+            "deterministic_replay",
+        ):
+            assert table[key] is True
+    assert set(qualification["role_report_sha256"]) == {
+        "cache-cleanup",
+        "primary-restore",
+        "silver-promotion",
+        "v1-conformance",
+        "v2-field-lineage",
+        "v3-backfill-replay",
+    }
+    for name, expected in qualification["role_report_sha256"].items():
+        report = json.loads((reports / f"{name}.json").read_bytes())
+        canonical = json.dumps(
+            report, sort_keys=True, separators=(",", ":"), default=str
+        ).encode()
+        assert hashlib.sha256(canonical).hexdigest() == expected
+    cleanup = json.loads((reports / "cache-cleanup.json").read_bytes())
+    restore = json.loads((reports / "primary-restore.json").read_bytes())
+    assert cleanup["source_payload_written_to_disk"] is False
+    assert cleanup["disk_cache_exercised"] is False
+    assert cleanup["remaining_entries"] == 0
+    assert restore["object_count"] == 6
+    assert restore["status"] == "passed"
+
+
 def test_existing_archive_batch_binds_evidence_without_promoting_gates() -> (
     None
 ):
