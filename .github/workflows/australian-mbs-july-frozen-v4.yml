@@ -1,0 +1,47 @@
+name: Qualify existing frozen July MBS v4 reader
+
+on:
+  workflow_dispatch:
+    inputs:
+      exact_commit:
+        description: Exact merged main commit to qualify
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: australian-mbs-july-frozen-v4
+  cancel-in-progress: false
+
+jobs:
+  qualify:
+    name: Close exact July MBS receipt roles and exercise the reader
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Require exact default-branch identity
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = 'refs/heads/main'
+          test "$GITHUB_SHA" = "$REQUESTED_COMMIT"
+      - name: Admit exact pin and check bounded reader
+        run: |
+          set -euo pipefail
+          uv run --locked --python 3.15.1 python -m scripts.qualify_mbs_july_frozen_v4 \
+            --verify --workflow-commit "$GITHUB_SHA" \
+            --report "$RUNNER_TEMP/mbs-july-frozen-v4.json"
+      - name: Retain value-free qualification receipt
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: mbs-july-frozen-v4-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/mbs-july-frozen-v4.json
+          if-no-files-found: error
+          retention-days: 90
