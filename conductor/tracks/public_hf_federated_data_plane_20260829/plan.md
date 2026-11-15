@@ -1491,3 +1491,18 @@ the read scope. No dataset addition or publication is authorized.
 - [~] Validate and integrate the metadata-only result after protected checks.
   Keep the wider PBS archive and any unassessed payload blocked; do not infer a
   privacy clearance from absent lexical markers or a public URL.
+
+### Frozen MBS replay receipt binding — 15 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/mbs-frozen-replay-receipts-20261115`, base
+`0c34250f931bc457193eb59da04e9e20107c6600`. This lane owns the three hosted
+value-free replay receipts, their native artifact bindings, focused tests and
+this handoff. It does not add or publish dataset objects.
+
+- [~] Bind each exact-main replay run, job, artifact digest, receipt and
+  registration to its corresponding frozen plan. Verify no source payloads or
+  participant or cohort-derived data were retained or emitted.
+- [~] Preserve the separate v4 contract, admission, consumer and independent
+  recovery gates; merge only after the exact-head protected checks pass.

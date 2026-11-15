@@ -1,0 +1,57 @@
+{
+  "boundaries": {
+    "m112_consumer_canary_performed": false,
+    "public_dataset_mutation": false,
+    "source_values_or_rows_included": false,
+    "v4_admission_performed": false
+  },
+  "candidate_only": true,
+  "hosted_workflow": {
+    "commit": "0c34250f931bc457193eb59da04e9e20107c6600",
+    "repository": "edithatogo/global-medicines-atlas",
+    "run_attempt": 1,
+    "run_id": 43695688398,
+    "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/43695688398"
+  },
+  "replay": {
+    "partition_id": "0915743ca43db011c7dd422a4e7ba0192908fafeaaec89c54bef8de278068f83",
+    "plan_sha256": "7ac51c210cd5e63ee7de29c6517cd158ae814fc37b900a6b3d9e2ec5accab8f9",
+    "registration": {
+      "archive_period": "filename-derived:c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+      "byte_count": 8293331,
+      "idempotency_key": "f0ab2932946b05ce0168de284a2eb048b6cd200e427b3047ae678af53c22329c",
+      "logical_asset_id": "e7a75e6bbec362b7dd25d80492e6d6a16d7d2639f35fb5a4b37d65951f7977ae",
+      "metadata_sha256": "4df5f2e98aa4334693ff6d5bb27d94cd5ed2912c0be817616d9a16542d7e773d",
+      "operation": "append_only_idempotent_raw_b2_registration",
+      "partition_id": "0915743ca43db011c7dd422a4e7ba0192908fafeaaec89c54bef8de278068f83",
+      "payload_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+      "payload_values_read": false,
+      "rights_state": "existing_exact_source_release_authorization",
+      "schema_version": "m112-raw-b2-replay-registration-v1",
+      "snapshot_id": "a33ef0601142e055f2946b2616ef49866fe84757b9294ca0ee0890a91ffb928d",
+      "source_id": "au-mbs",
+      "source_version_id": "2026-08-01"
+    },
+    "registration_sha256": "aca4067a26c46946bb295681b55843b1119f522a1b0078ca176c38d2888e4791",
+    "snapshot_id": "a33ef0601142e055f2946b2616ef49866fe84757b9294ca0ee0890a91ffb928d",
+    "vocabulary_version": "3.0.0"
+  },
+  "schema_id": "global-medicines-atlas.m112-v3-replay-execution-receipt",
+  "schema_version": 1,
+  "scope": {
+    "byte_count": 8293331,
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+    "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+    "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+  },
+  "status": "passed",
+  "verification": {
+    "anonymous": true,
+    "digest_method": "bounded_anonymous_stream",
+    "payload_storage": "never_materialized",
+    "payload_values_read": false,
+    "temporary_source_bytes_removed": true,
+    "token_free": true
+  }
+}

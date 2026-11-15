@@ -1,0 +1,57 @@
+{
+  "boundaries": {
+    "m112_consumer_canary_performed": false,
+    "public_dataset_mutation": false,
+    "source_values_or_rows_included": false,
+    "v4_admission_performed": false
+  },
+  "candidate_only": true,
+  "hosted_workflow": {
+    "commit": "0c34250f931bc457193eb59da04e9e20107c6600",
+    "repository": "edithatogo/global-medicines-atlas",
+    "run_attempt": 1,
+    "run_id": 43695553608,
+    "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/43695553608"
+  },
+  "replay": {
+    "partition_id": "0a87b8b75f61ac764a328140ee72a0c41e2abc6c39863b7a8809ba1f87186a7b",
+    "plan_sha256": "ba8a72f820db531a04352ff05b175218b953d904e1c473482e977ba1bdf70d60",
+    "registration": {
+      "archive_period": "filename-derived:MBS-XML-20250701-Version-3.XML",
+      "byte_count": 8194522,
+      "idempotency_key": "7907a0ff0ee6aea1c30c47f3b30ed55158335ca8173c4ff38a0a46a53a694d03",
+      "logical_asset_id": "d186f0f5e86ac414adeda6c036bed49324b103abc92b249aefb24e5c76e0666d",
+      "metadata_sha256": "31eaef922fdd98858fd518e8d04766dc97b9d8785fa474f7843bdc74e8531c8b",
+      "operation": "append_only_idempotent_raw_b2_registration",
+      "partition_id": "0a87b8b75f61ac764a328140ee72a0c41e2abc6c39863b7a8809ba1f87186a7b",
+      "payload_sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+      "payload_values_read": false,
+      "rights_state": "maintainer_attested_exact_scope_permission_not_independently_reviewed",
+      "schema_version": "m112-raw-b2-replay-registration-v1",
+      "snapshot_id": "cd01ffdef46196c53aae470372dcc5f470750417ec8c3f5aae344963ae6ad785",
+      "source_id": "au-mbs",
+      "source_version_id": "2025-07-version-3"
+    },
+    "registration_sha256": "87504f5491c0352f3a6004fd621770082b0873567e4bb106121478e26f2572a6",
+    "snapshot_id": "cd01ffdef46196c53aae470372dcc5f470750417ec8c3f5aae344963ae6ad785",
+    "vocabulary_version": "3.0.0"
+  },
+  "schema_id": "global-medicines-atlas.m112-v3-replay-execution-receipt",
+  "schema_version": 1,
+  "scope": {
+    "byte_count": 8194522,
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+    "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+    "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556"
+  },
+  "status": "passed",
+  "verification": {
+    "anonymous": true,
+    "digest_method": "bounded_anonymous_stream",
+    "payload_storage": "never_materialized",
+    "payload_values_read": false,
+    "temporary_source_bytes_removed": true,
+    "token_free": true
+  }
+}
