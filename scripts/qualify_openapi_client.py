@@ -100,12 +100,21 @@ def _default_baseline_ref() -> str:
     configured = os.environ.get("GMA_OPENAPI_BASE_REF", "").strip()
     if configured and set(configured) != {"0"}:
         return configured
-    for candidate in ("origin/main", "HEAD^"):
-        if (
-            _git("rev-parse", "--verify", candidate, check=False).returncode
-            == 0
-        ):
-            return candidate
+    if (
+        _git("rev-parse", "--verify", "origin/main", check=False).returncode
+        == 0
+    ):
+        bases = _git(
+            "merge-base", "--all", "HEAD", "origin/main"
+        ).stdout.splitlines()
+        if len(bases) != 1:
+            raise HistoricalBaselineError(
+                "the OpenAPI baseline has multiple common ancestors; "
+                "pass --baseline-ref"
+            )
+        return bases[0]
+    if _git("rev-parse", "--verify", "HEAD^", check=False).returncode == 0:
+        return "HEAD^"
     raise HistoricalBaselineError(
         "no immutable OpenAPI baseline ref is available; pass --baseline-ref"
     )
@@ -145,7 +154,8 @@ def main() -> int:
         "--baseline-ref",
         help=(
             "ancestor Git ref containing the immutable compatibility baseline; "
-            "defaults to GMA_OPENAPI_BASE_REF, origin/main, then HEAD^"
+            "defaults to GMA_OPENAPI_BASE_REF, the unique merge base with "
+            "origin/main, then HEAD^ if origin/main is unavailable"
         ),
     )
     arguments = parser.parse_args()
