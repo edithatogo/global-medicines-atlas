@@ -1515,3 +1515,20 @@ PBS metadata PR #1449 passed required checks including Codecov on head
 `31faa2521676d61f6c5075bac4db0814c08f6a06`; merge
 `e644c8804980df92ad85e594eaf534c60d71d5dd` retained the tested tree
 `9fb03dc3d4bfdc8e3c11b4a369daacdced9d4c79`. No PBS payload was cleared.
+
+### Frozen MBS primary restore reconciliation — 15 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/mbs-frozen-primary-history-20261115`. This lane owns only
+public workflow and inventory metadata, exact primary-restore receipts,
+focused tests and this handoff. It adds or publishes no dataset.
+
+- [x] Reconcile historical run `36532129354` to all seven frozen exact
+  objects, preserving the prior publication and acquisition chronology. The
+  four outside projections do not match this receipt's exact scope.
+- [x] Verify new run `43697888963` and its metadata artifact for the same three
+  raw objects. It reconstructs only the primary in memory and retains no
+  source payload files or values. Independent recovery remains open.
+- [~] Preserve the separate v4 admission, consumer and independent-replica
+  gates; integrate after the exact-head checks pass.

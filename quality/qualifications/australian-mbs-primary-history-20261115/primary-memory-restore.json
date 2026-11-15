@@ -1,0 +1,52 @@
+{
+  "boundaries": {
+    "dataset_added_or_published": false,
+    "independent_recovery_established": false,
+    "participant_or_cohort_data_accessed": false,
+    "primary_copy_only": true,
+    "v4_admission_or_consumer_canary": false
+  },
+  "objects": [
+    {
+      "byte_count": 8194522,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "memory_buffer_closed": true,
+      "path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+      "restore_medium": "memory",
+      "restored_at": "2026-11-15T09:10:07.016889+00:00",
+      "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+      "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+      "source_payload_files_written": false,
+      "source_values_interpreted_or_emitted": false
+    },
+    {
+      "byte_count": 8293331,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "memory_buffer_closed": true,
+      "path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+      "restore_medium": "memory",
+      "restored_at": "2026-11-15T09:10:07.226292+00:00",
+      "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+      "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+      "source_payload_files_written": false,
+      "source_values_interpreted_or_emitted": false
+    },
+    {
+      "byte_count": 8293331,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "memory_buffer_closed": true,
+      "path": "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
+      "restore_medium": "memory",
+      "restored_at": "2026-11-15T09:10:07.474542+00:00",
+      "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+      "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+      "source_payload_files_written": false,
+      "source_values_interpreted_or_emitted": false
+    }
+  ],
+  "schema_id": "global-medicines-atlas.mbs-frozen-primary-memory-restore",
+  "schema_version": 1,
+  "workflow_attempt": "1",
+  "workflow_commit": "c427dc839fa92b238a12739d7f3615573868efb3",
+  "workflow_run": "43697888963"
+}

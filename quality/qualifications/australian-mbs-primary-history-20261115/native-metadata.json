@@ -1,0 +1,39 @@
+{
+  "comment": {
+    "actor": "github-actions[bot]",
+    "body_bytes": 19139,
+    "body_sha256": "460189523f9bac2a544b0d420e6bcf1126cca30664f0739019604500afd44c06",
+    "created_at": "2026-09-29T06:40:57Z",
+    "html_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5885067299",
+    "id": 5885067299,
+    "issue_url": "https://api.github.com/repos/edithatogo/global-medicines-atlas/issues/340",
+    "updated_at": "2026-09-29T06:40:57Z"
+  },
+  "job": {
+    "completed_at": "2026-09-29T06:41:01Z",
+    "conclusion": "success",
+    "id": 109287941955,
+    "name": "Append and anonymously verify source metadata",
+    "started_at": "2026-09-29T06:38:40Z",
+    "status": "completed",
+    "verification_step": {
+      "conclusion": "success",
+      "name": "Append only to the pinned source parent and verify anonymously",
+      "status": "completed"
+    }
+  },
+  "run": {
+    "conclusion": "success",
+    "created_at": "2026-09-29T06:38:33Z",
+    "event": "workflow_dispatch",
+    "head_branch": "main",
+    "head_sha": "85ad454850dd43814530f4340fa6247776cb4cfc",
+    "html_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36532129354",
+    "id": 36532129354,
+    "path": ".github/workflows/australian-source-metadata.yml",
+    "run_attempt": 1,
+    "run_started_at": "2026-09-29T06:38:33Z",
+    "status": "completed",
+    "updated_at": "2026-09-29T06:41:02Z"
+  }
+}

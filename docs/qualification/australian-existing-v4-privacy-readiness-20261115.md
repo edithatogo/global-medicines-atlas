@@ -26,7 +26,11 @@ admission or a consumer canary.
 The existing primary restore for the raw utilisation archive concerns a
 different dataset. The other selected primary-restore receipt covers six
 July 2025 Silver paths, none of the eleven paths in this cohort. Neither
-receipt establishes independent recovery. The previously recorded source
+receipt establishes independent recovery. A subsequent search found an earlier
+exact-revision primary restore covering the seven frozen objects; see the
+[primary restore reconciliation](australian-mbs-frozen-primary-history-20261115.md).
+That later finding does not change the four outside projections or establish
+an independent replica. The previously recorded source
 privacy, rights and lineage evidence remains separate; the four outside
 projections retain their footer-adjusted replay limitation.
 
