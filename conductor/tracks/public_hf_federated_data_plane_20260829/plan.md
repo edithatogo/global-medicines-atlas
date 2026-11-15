@@ -1267,4 +1267,42 @@ bytes, change the frozen inventory or access participant or cohort data.
 - [~] All four output privacy assessments, v4 contracts and separate
   admission decisions, authorized consumer checks and independent recovery
   remain open. The dossiers do not change the M-112 denominator or admit data.
-- [~] Integrate the evidence packet after exact-head protected checks.
+- [x] Integrate PR #1441 after all 29 reported required checks passed on
+  head `27faa31495877d403b66ebc7d5394f0d54440450`. Squash merge
+  `83be6caa502e37081bdc09e578a6d9e37b6f1568` has the checked tree
+  `d82c990b65498eb41ae0682304c6a8dfe979d0e0`. The acquisition workflow
+  remained enabled afterward and did not run for the merge; the ordinary
+  post-merge test and security workflows were queued at this checkpoint.
+
+## Batched Australian privacy assessments (2026-11-15)
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/australian-privacy-batch-20261115`, started from the exact
+dossier head `27faa31495877d403b66ebc7d5394f0d54440450`, now merged with the
+same tree as `83be6caa502e37081bdc09e578a6d9e37b6f1568`. Group existing
+frozen objects and four separately scoped MBS outputs by exact
+source and transformation evidence, then record an individual, fail-closed
+privacy disposition for each. A bounded in-memory replay may read only the
+already-classified public August MBS schedule at its exact archived digest;
+source rows and reconstructed output bytes are not retained or emitted.
+Stop at missing evidence. Do not read unclassified payloads or participant or
+cohort-derived data, add sources, publish datasets, change rights or admission,
+or alter the frozen inventory.
+
+- [x] Assess 11 exact MBS source and projection identities as non-sensitive
+  source profiles: seven frozen objects and the four separately scoped outputs.
+  The latter match their prior digests after one explicitly recorded,
+  equal-length writer-version substitution in the regenerated Parquet footer;
+  the historical PyArrow 25 writer was not run.
+- [x] Preserve the six prior separate Silver profiles and retain 1,732 frozen
+  objects and one outside output as unassessed. Group the 1,707 historical PBS
+  schedule files by exact source metadata and type without promoting them.
+  Bind five historical MBS ZIPs and one workbook to their existing structural
+  profiles while retaining their unassessed privacy states.
+- [x] Check the value-free [per-object privacy report](../../../quality/qualifications/australian-existing-archive-privacy-batch-20261115.json),
+  the [footer-adjusted replay receipt](../../../quality/qualifications/australian-privacy-batch-20261115/mbs-outside-frozen-replay.json)
+  and 61 focused tests on Python 3.15.1. Ruff, both type checkers and the
+  context validator pass. No archived unclassified payload was read.
+- [~] Keep rights, v4 admissions, consumer checks and independent recovery
+  separate. Integrate this packet after its own exact-head protected checks.

@@ -1,0 +1,100 @@
+{
+  "boundaries": {
+    "classified_source_read_in_memory": true,
+    "consumer_check": false,
+    "dataset_published": false,
+    "new_source_added": false,
+    "participant_or_cohort_data_accessed": false,
+    "rights_changed": false,
+    "source_or_output_bytes_written": false,
+    "source_values_emitted": false,
+    "v4_admission": false
+  },
+  "implementation_sha256": {
+    "scripts/reconcile_mbs_privacy_replay.py": "b3be935822e3be33bf6961d4c4898bad10da75cd827641d65c01c4180fcfc90b",
+    "src/global_medicines_atlas/adapters/_receipt.py": "afa94ba955c4723b275addb0b55200636aaf82eeaabcd5ac0b23aefcf2684020",
+    "src/global_medicines_atlas/adapters/au_mbs.py": "73098a1f6b6fcb1c4c26c75e4c8f6a80f397e697046e4dcc2d23ea39b96069f3",
+    "src/global_medicines_atlas/mbs_compatibility.py": "3d7a4263a020a7f9569968b3007f5d10a8a52b067154eed67281bd5a52eae111",
+    "src/global_medicines_atlas/mbs_release.py": "d59e04b58783912b557dff53ee536a3cbf7d39725ebb2e77d11bedfc29417828"
+  },
+  "objects": [
+    {
+      "byte_count": 24367,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "exact_digest_after_footer_substitution": true,
+      "footer_adjusted_sha256": "c4aa29f9d4bdc683e4720649c551f59c21d6c72c40db732795f9a27a060609f7",
+      "footer_start": 21808,
+      "marker_offset": 24312,
+      "path": "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b/p7.parquet",
+      "producer": "d781",
+      "revision": "b925a8a80b0f90db09513e7ce1378045461b05c0",
+      "sha256": "c4aa29f9d4bdc683e4720649c551f59c21d6c72c40db732795f9a27a060609f7",
+      "unadjusted_sha256": "38751aadd9cb6bde8d323314a12853814a7ba9d8b1ae2997ddde5003cf81fd63",
+      "writer_marker_occurrences": 1
+    },
+    {
+      "byte_count": 454247,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "exact_digest_after_footer_substitution": true,
+      "footer_adjusted_sha256": "02693aaa7d1aea9fc66f13061e8081ffbeea486f057e2f716caa4906ac6dda96",
+      "footer_start": 451455,
+      "marker_offset": 454192,
+      "path": "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b/source.parquet",
+      "producer": "d781",
+      "revision": "b925a8a80b0f90db09513e7ce1378045461b05c0",
+      "sha256": "02693aaa7d1aea9fc66f13061e8081ffbeea486f057e2f716caa4906ac6dda96",
+      "unadjusted_sha256": "97e7f9b5925e6d34915eb2409f3eac0bf18007f2cf4582801bbd1b51550a0fb7",
+      "writer_marker_occurrences": 1
+    },
+    {
+      "byte_count": 24367,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "exact_digest_after_footer_substitution": true,
+      "footer_adjusted_sha256": "50ce02b896984a4065a9f132890f38f19ec430c3f435dc589b1cbd978111dd69",
+      "footer_start": 21808,
+      "marker_offset": 24312,
+      "path": "bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/p7.parquet",
+      "producer": "f9f9",
+      "revision": "b925a8a80b0f90db09513e7ce1378045461b05c0",
+      "sha256": "50ce02b896984a4065a9f132890f38f19ec430c3f435dc589b1cbd978111dd69",
+      "unadjusted_sha256": "ce494ec63828782ba356e08c85c21f6c86f3380459855c2cbb22ac09c11e4268",
+      "writer_marker_occurrences": 1
+    },
+    {
+      "byte_count": 454247,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "exact_digest_after_footer_substitution": true,
+      "footer_adjusted_sha256": "553399aa06830708a1dfb74351b5b49b6a799d7bd7b7584ab86aad168227369c",
+      "footer_start": 451455,
+      "marker_offset": 454192,
+      "path": "bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/source.parquet",
+      "producer": "f9f9",
+      "revision": "b925a8a80b0f90db09513e7ce1378045461b05c0",
+      "sha256": "553399aa06830708a1dfb74351b5b49b6a799d7bd7b7584ab86aad168227369c",
+      "unadjusted_sha256": "ea4af4f5a3bf67eff6080870e84efd726a04478841790b1b528a8bf6988ade68",
+      "writer_marker_occurrences": 1
+    }
+  ],
+  "observed_at": "2026-11-15T01:42:41.698711+00:00",
+  "schema_id": "global-medicines-atlas.mbs-classified-schedule-in-memory-replay",
+  "schema_version": 1,
+  "source": {
+    "byte_count": 8293331,
+    "classification_event": "f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1",
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+    "revision": "b925a8a80b0f90db09513e7ce1378045461b05c0",
+    "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+  },
+  "writer": {
+    "current_pyarrow": "26.0.0",
+    "historical_commits": {
+      "d781": "12e5ca4678e077f8e6bf954aaa780aac83040994",
+      "f9f9": "644f3f6cfd2b76b0866d5ecb90dde397d67a51eb"
+    },
+    "historical_lock_sha256": "fda3136b32e7409561a2c532cd978d840d146779b6fed1b4b1d9b18ae39950cb",
+    "historical_pyarrow": "25.0.0",
+    "method": "one equal-length writer-version marker changed in generated Parquet footer; no historical writer executed",
+    "python": "3.15.1"
+  }
+}
