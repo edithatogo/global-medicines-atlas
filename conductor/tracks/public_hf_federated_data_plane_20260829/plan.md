@@ -1635,3 +1635,22 @@ inventory. Their cases were moved into the already registered MBS and PBS test
 files, preserving the separate workstream's ownership of `scripts/test_goblin.py`.
 The corrected local inventory and 35 focused cases pass; final-head hosted
 checks remain required.
+
+### August frozen MBS hosted ledger — 15 November 2026
+
+The same chat owns the temporary recovery clone at
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas/build/no-data-recovery-repo`,
+branch `codex/mbs-august-frozen-v4-ledger-20261115`. It owns the hosted
+metadata receipt, frozen-ledger reconciliation, focused tests and this
+handoff. No dataset mutation is authorized.
+
+- [x] Merge PR #1455 after all exact-head required checks pass. Its post-merge
+  Test-Goblin and Security and Context workflows pass. The automatic archive
+  workflow ran only the synthetic checks and skipped both live retrieval and
+  the synthetic artifact upload.
+- [x] Verify run `43705630353`: the native artifact digest, ZIP CRC and exact
+  metadata member match; both distinct paths pass independently configured
+  admission and remote reader checks with an empty cache after close.
+- [~] Integrate the 17-admitted, 17-reader, 1,742-deferred frozen ledger after
+  its final-head checks. Preserve the separate projection, independent recovery
+  and federation acceptance gates.

@@ -33,10 +33,10 @@ covers January 2015 to September 2026.
 The 13 November identity comparison matched all 1,759 frozen paths against
 the then-pinned public metadata. It is retained as historical evidence, not
 represented as a fresh 15 November scan. The effective raw delivery ledger
-now records 15 admitted objects and 15 corresponding reader checks, with 1,744
-objects deferred. The [latest reconciliation](../../quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261115.json)
-adds the July 2025 MBS XML at its approved frozen revision after a successful
-[hosted admission and reader check](https://github.com/edithatogo/global-medicines-atlas/actions/runs/43699976886). The six previously admitted July 2025 MBS Silver tables and
+now records 17 admitted objects and 17 corresponding reader checks, with 1,742
+objects deferred. The [latest reconciliation](../../quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261115-august.json)
+adds both August 2026 MBS XML paths at their approved frozen revision after a
+successful [hosted admission and reader check](https://github.com/edithatogo/global-medicines-atlas/actions/runs/43705630353). The July 2025 MBS XML remains admitted at its approved frozen revision. The six previously admitted July 2025 MBS Silver tables and
 their [consumer evidence](../../quality/qualifications/platinum-actual-consumer-reconciliation-20261028.json)
 are separate from those raw counts. The April 2026 PBS Silver output is not
 v4-admitted. Archive presence, reader tests and role checks do not themselves

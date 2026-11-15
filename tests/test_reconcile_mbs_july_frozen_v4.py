@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+import scripts.reconcile_mbs_august_frozen_v4 as august_ledger
 import scripts.reconcile_mbs_july_frozen_v4 as ledger
 
 
@@ -105,3 +106,100 @@ def test_cli_writes_and_detects_stale_report(
     path.write_text("{}")
     with pytest.raises(ValueError, match="ledger is stale"):
         ledger.main()
+
+
+def _august_inputs() -> list[dict[str, Any]]:
+    return [
+        json.loads((august_ledger.ROOT / path).read_bytes())
+        for path in (
+            ledger.PRIOR,
+            ledger.FROZEN,
+            ledger.OUTPUT,
+            august_ledger.RECEIPT,
+            august_ledger.ARTIFACT,
+        )
+    ]
+
+
+def test_august_hosted_readers_add_two_distinct_frozen_paths() -> None:
+    result = august_ledger.reconcile(*_august_inputs())
+    assert result == august_ledger.build()
+    assert result["effective_counts"] == {
+        "frozen_objects": 1759,
+        "raw_v4_admissions": 17,
+        "raw_admitted_object_reader_canaries": 17,
+        "deferred_objects": 1742,
+        "frozen_denominator_changed": False,
+    }
+    rows = result["new_admissions"]
+    assert len(rows) == 2
+    assert rows[0]["path"] != rows[1]["path"]
+    assert rows[0]["sha256"] == rows[1]["sha256"]
+    assert all(
+        row["approved_dataset_revision"] == ledger.july.lineage.REVISION
+        for row in rows
+    )
+    assert result["boundaries"]["independent_recovery_established"] is False
+
+
+def test_august_rejects_duplicate_paths() -> None:
+    older, frozen, previous, receipt, artifact = _august_inputs()
+    receipt["objects"][1] = receipt["objects"][0]
+    with pytest.raises(
+        ValueError, match="hosted qualification boundary differs"
+    ):
+        august_ledger.reconcile(older, frozen, previous, receipt, artifact)
+
+
+def test_august_rejects_different_frozen_revision() -> None:
+    older, frozen, previous, receipt, artifact = _august_inputs()
+    member = next(
+        x for x in frozen["members"] if x["path"] == ledger.july.lineage.ALIAS
+    )
+    member["approved_dataset_revision"] = member[
+        "current_reconciliation_revision"
+    ]
+    with pytest.raises(
+        ValueError, match="frozen membership or prior ledger differs"
+    ):
+        august_ledger.reconcile(older, frozen, previous, receipt, artifact)
+
+
+def test_august_rejects_consumer_digest_mismatch() -> None:
+    older, frozen, previous, receipt, artifact = _august_inputs()
+    receipt["objects"][1]["consumer_canary"]["verification"][
+        "consumer_stream_digest_match"
+    ] = False
+    with pytest.raises(
+        ValueError, match="hosted consumer or privacy boundary differs"
+    ):
+        august_ledger.reconcile(older, frozen, previous, receipt, artifact)
+
+
+def test_august_rejects_artifact_or_semantic_boundary_drift() -> None:
+    older, frozen, previous, receipt, artifact = _august_inputs()
+    artifact["workflow"]["commit"] = "0" * 40
+    with pytest.raises(ValueError, match="hosted artifact identity differs"):
+        august_ledger.reconcile(older, frozen, previous, receipt, artifact)
+    older, frozen, previous, receipt, artifact = _august_inputs()
+    receipt["source_profile"]["field_semantics_accepted"] = True
+    with pytest.raises(
+        ValueError, match="hosted qualification boundary differs"
+    ):
+        august_ledger.reconcile(older, frozen, previous, receipt, artifact)
+
+
+def test_august_cli_detects_stale_ledger(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setattr(august_ledger, "ROOT", tmp_path)
+    monkeypatch.setattr(august_ledger, "build", lambda: {"status": "synthetic"})
+    path = tmp_path / august_ledger.OUTPUT
+    path.parent.mkdir(parents=True)
+    monkeypatch.setattr(sys, "argv", ["ledger"])
+    assert august_ledger.main() == 0
+    monkeypatch.setattr(sys, "argv", ["ledger", "--check"])
+    assert august_ledger.main() == 0
+    path.write_text("{}")
+    with pytest.raises(ValueError, match="August ledger is stale"):
+        august_ledger.main()

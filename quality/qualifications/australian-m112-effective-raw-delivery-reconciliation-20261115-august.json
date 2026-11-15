@@ -1,0 +1,70 @@
+{
+  "boundaries": {
+    "dataset_added_or_published": false,
+    "federation_gate_closed": false,
+    "independent_recovery_established": false,
+    "participant_or_cohort_data_accessed": false,
+    "source_values_retained_or_interpreted": false
+  },
+  "effective_counts": {
+    "deferred_objects": 1742,
+    "frozen_denominator_changed": false,
+    "frozen_objects": 1759,
+    "raw_admitted_object_reader_canaries": 17,
+    "raw_v4_admissions": 17
+  },
+  "increment": {
+    "raw_admitted_object_reader_canaries": 2,
+    "raw_v4_admissions": 2
+  },
+  "inputs": {
+    "quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261028.json": {
+      "path": "quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261028.json",
+      "sha256": "c556cf596514d7cb69bce0a188f87460ad2746c3afacc559cec8ebd56cd7a3a3"
+    },
+    "quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261115.json": {
+      "path": "quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261115.json",
+      "sha256": "1578dfe8dd32ab769ec56dc702dc05bdf88e5b41cfa0eec8ef573c1b77539b13"
+    },
+    "quality/qualifications/australian-m112-frozen-object-inventory-20261018.json": {
+      "path": "quality/qualifications/australian-m112-frozen-object-inventory-20261018.json",
+      "sha256": "eaa1d84325c7672100398acf8116f0312369ca336d42ed21eee110452d3fefa4"
+    },
+    "quality/qualifications/australian-mbs-august-frozen-v4-20261115/hosted-43705630353/artifact-manifest.json": {
+      "path": "quality/qualifications/australian-mbs-august-frozen-v4-20261115/hosted-43705630353/artifact-manifest.json",
+      "sha256": "1ab584f262d9ca1b35fdf640da2f14bf0b4b7b9f7fd77c42fb64913a251246c2"
+    },
+    "quality/qualifications/australian-mbs-august-frozen-v4-20261115/hosted-43705630353/qualification.json": {
+      "path": "quality/qualifications/australian-mbs-august-frozen-v4-20261115/hosted-43705630353/qualification.json",
+      "sha256": "42b38094fe116f9aaaadf1a88264a95a3ca8c0b3102dacb10d333897adf9ff29"
+    }
+  },
+  "new_admissions": [
+    {
+      "approved_dataset_revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+      "artifact": 14158262195,
+      "byte_count": 8293331,
+      "contract_sha256": "426eacd374a60cdff95e05047d5498ce80e5f0420e93df905ebb90f23b8299cc",
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "job": 132785965334,
+      "later_reconciliation_revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+      "path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+      "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+      "workflow_run": 43705630353
+    },
+    {
+      "approved_dataset_revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+      "artifact": 14158262195,
+      "byte_count": 8293331,
+      "contract_sha256": "b8ae53887358559f41526c2f01aa10a7c346e99e5c177a8d4aa6c8900b140266",
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "job": 132785965334,
+      "later_reconciliation_revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+      "path": "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
+      "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+      "workflow_run": 43705630353
+    }
+  ],
+  "schema_id": "global-medicines-atlas.m112-august-frozen-raw-delivery-reconciliation",
+  "schema_version": 1
+}
