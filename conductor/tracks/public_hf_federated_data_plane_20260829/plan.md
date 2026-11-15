@@ -1335,6 +1335,13 @@ handoff. Prior assignments remain history; no native mutation is in scope.
   preserve the frozen denominator and independent-recovery gate. The 103
   focused tests, report regeneration, Ruff, ty, basedpyright and context
   validator passed on Python 3.15.1; exact-head protected CI remains required.
+- [~] Repair the synthetic installed-consumer readiness-file race exposed by
+  the first PR head's Windows check. The readiness JSON is now published by
+  atomic replacement; 33 consumer tests, the deterministic partial-write
+  regression and a browser-free synthetic service probe pass locally. The
+  full local medallion test stopped before this path because the separate
+  Playwright browser was unavailable. The exact final head still needs the
+  protected Windows and other required checks.
 
 Prior PR #1443 passed 29 reported required checks on head
 `28a52abde16fbdcd112e2bd1b19782bde8bd4c86` and merged as

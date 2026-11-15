@@ -5,6 +5,8 @@ from __future__ import annotations
 import copy
 import json
 import sys
+import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import pytest
@@ -164,6 +166,75 @@ def test_clean_consumer_uses_and_checks_the_governed_runtime() -> None:
     probe = qualify_clean_consumer._consumer_probe()
     assert expected == "3.15.1"
     assert f"platform.python_version() == '{expected}'" in probe
+
+
+def test_installed_serving_readiness_file_is_published_complete(
+    tmp_path: Path,
+) -> None:
+    """A reader must not see a readiness file while its JSON is being written."""
+    from scripts import qualify_clean_consumer
+
+    ready = tmp_path / "ready.json"
+    writing = tmp_path / "writing"
+    release = tmp_path / "release"
+    bootstrap = """
+import sys, time, types
+from pathlib import Path
+
+uvicorn = types.ModuleType("uvicorn")
+class Config:
+    def __init__(self, *args, **kwargs):
+        pass
+class Server:
+    def __init__(self, config):
+        pass
+    async def serve(self, *, sockets):
+        pass
+uvicorn.Config = Config
+uvicorn.Server = Server
+sys.modules["uvicorn"] = uvicorn
+serving = types.ModuleType("global_medicines_atlas.serving")
+serving.create_app = lambda: None
+sys.modules["global_medicines_atlas.serving"] = serving
+
+def delayed_write(path, content, **kwargs):
+    with path.open("w", encoding="utf-8") as stream:
+        Path(sys.argv[2]).touch()
+        deadline = time.monotonic() + 10
+        while not Path(sys.argv[3]).exists():
+            if time.monotonic() > deadline:
+                raise RuntimeError("readiness test was not released")
+            time.sleep(0.01)
+        return stream.write(content)
+Path.write_text = delayed_write
+"""
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        future = executor.submit(
+            qualify_clean_consumer._run,
+            [
+                sys.executable,
+                "-c",
+                bootstrap + qualify_clean_consumer._serving_server(),
+                str(ready),
+                str(writing),
+                str(release),
+            ],
+        )
+        try:
+            deadline = time.monotonic() + 10
+            while not writing.exists():
+                assert not future.done(), "serving probe exited before writing"
+                assert time.monotonic() < deadline, (
+                    "serving probe did not write"
+                )
+                time.sleep(0.01)
+            assert not ready.exists(), "partial readiness JSON became visible"
+        finally:
+            release.touch()
+        future.result(timeout=10)
+    assert json.loads(ready.read_text(encoding="utf-8"))["url"].startswith(
+        "http://127.0.0.1:"
+    )
 
 
 def _baseline() -> dict[str, object]:
