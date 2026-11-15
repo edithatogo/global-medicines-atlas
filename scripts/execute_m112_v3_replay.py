@@ -8,23 +8,37 @@ import argparse
 import hashlib
 import importlib
 import json
+import os
 import shutil
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any, cast
+from urllib.parse import quote
 
+import httpx
 from jsonschema import Draft202012Validator
 
 if __package__:
     from . import m112_pbs_utilisation_replay as pbs_replay
+    from . import mbs_frozen_raw_identity as mbs_identity
     from . import qualify_m112_v3_replay as qualification
     from .qualify_m112_v3_replay import OUTPUT as PLAN_PATH
     from .qualify_m112_v3_replay import ROOT, V3_SCHEMA
 else:
     import m112_pbs_utilisation_replay as pbs_replay
+    import mbs_frozen_raw_identity as mbs_identity
     import qualify_m112_v3_replay as qualification
     from qualify_m112_v3_replay import OUTPUT as PLAN_PATH
     from qualify_m112_v3_replay import ROOT, V3_SCHEMA
+
+from global_medicines_atlas.acquisition import (
+    AcquisitionPolicy,
+    BoundIPAddressTransport,
+)
+from global_medicines_atlas.federation_metadata_hosted import (
+    require_hosted_main,
+)
+from global_medicines_atlas.federation_reader import HOSTS
 
 REPOSITORY = "edithatogo/global-medicines-atlas"
 DATASET = "edithatogo/australian-mbs-utilisation-archive"
@@ -68,6 +82,16 @@ def _target_identity(snapshot: dict[str, Any]) -> tuple[str, str, str]:
     """Parse the pinned MBS locator or exact-six PBS candidate locator."""
     prefix = f"{DATASET}@{REVISION}:"
     partition_value = snapshot.get("partition_value")
+    schedule_prefix = f"{mbs_identity.DATASET}@{mbs_identity.REVISION}:"
+    if isinstance(partition_value, str) and partition_value.startswith(
+        schedule_prefix
+    ):
+        path = partition_value[len(schedule_prefix) :]
+        if path not in mbs_identity.PATHS:
+            raise ValueError(
+                "replay target is not an exact frozen MBS schedule"
+            )
+        return mbs_identity.DATASET, mbs_identity.REVISION, path
     pbs_prefix = f"{pbs_replay.DATASET}@{pbs_replay.REVISION}:"
     if isinstance(partition_value, str) and partition_value.startswith(
         pbs_prefix
@@ -94,6 +118,48 @@ def _target_identity(snapshot: dict[str, Any]) -> tuple[str, str, str]:
     return DATASET, REVISION, target_path
 
 
+def _stream_frozen_schedule(
+    dataset: str, revision: str, path: str, sha256: str, byte_count: int
+) -> tuple[str, int]:
+    """Verify only an approved public schedule without persisting its bytes."""
+    if (
+        dataset != mbs_identity.DATASET
+        or revision != mbs_identity.REVISION
+        or path not in mbs_identity.PATHS
+    ):
+        raise ValueError("unapproved MBS schedule stream target")
+    if not __package__:
+        raise ValueError("invoke the frozen MBS replay executor as a module")
+    mbs_stream = importlib.import_module(
+        ".qualify_australian_v4_privacy_readiness", package=__package__
+    )
+
+    policy = AcquisitionPolicy(
+        allowed_hosts=HOSTS,
+        timeout_seconds=mbs_stream.READ_TIMEOUT,
+        max_attempts=1,
+        max_redirects=mbs_stream.MAX_REDIRECTS,
+    )
+    url = (
+        f"https://huggingface.co/datasets/{dataset}/resolve/"
+        f"{revision}/{quote(path, safe='/')}"
+    )
+    with httpx.Client(
+        transport=BoundIPAddressTransport(policy=policy),
+        trust_env=False,
+        follow_redirects=False,
+        timeout=mbs_stream.READ_TIMEOUT,
+        headers={"Accept-Encoding": "identity"},
+    ) as client:
+        try:
+            observed = mbs_stream.stream_digest(
+                client, url, expected_sha256=sha256, expected_bytes=byte_count
+            )
+        except httpx.HTTPError:
+            raise ValueError("MBS replay transport failed") from None
+    return observed["sha256"], observed["byte_count"]
+
+
 def execute(
     plan: dict[str, Any],
     *,
@@ -103,6 +169,8 @@ def execute(
     workflow_run_id: str,
     workflow_run_attempt: str,
     download: Callable[..., str] | None = None,
+    stream_verify: Callable[[str, str, str, str, int], tuple[str, int]]
+    | None = None,
 ) -> dict[str, Any]:
     """Verify one public B2 payload and rebuild a deterministic registration."""
     if work_dir.exists() and any(work_dir.iterdir()):
@@ -113,10 +181,6 @@ def execute(
         raise ValueError(
             "replay receipt must be outside the temporary payload directory"
         )
-    if download is None:
-        hub = importlib.import_module("huggingface_hub")
-        download = cast("Callable[..., str]", hub.hf_hub_download)
-
     snapshots_value = plan.get("snapshots")
     replay_plan_value = plan.get("replay_plan")
     if not isinstance(replay_plan_value, dict):
@@ -145,6 +209,10 @@ def execute(
         target_path=target_path
     ):
         raise ValueError("plan differs from bound PBS replay evidence")
+    if dataset == mbs_identity.DATASET and plan != qualification.qualify(
+        target_path=target_path
+    ):
+        raise ValueError("plan differs from bound frozen MBS schedule evidence")
     validator = cast("Any", Draft202012Validator(_read_json(ROOT / V3_SCHEMA)))
     validator.validate({
         key: value for key, value in plan.items() if key != "scope"
@@ -172,11 +240,12 @@ def execute(
         raise TypeError("replay contract must be an object")
     contract = cast("dict[str, Any]", contract_value)
     source_id = snapshot.get("source_id")
-    supported_sources = (
-        pbs_replay.SOURCE_IDS
-        if dataset == pbs_replay.DATASET
-        else SUPPORTED_SOURCE_IDS
-    )
+    if dataset == pbs_replay.DATASET:
+        supported_sources = pbs_replay.SOURCE_IDS
+    elif dataset == mbs_identity.DATASET:
+        supported_sources = frozenset({"au-mbs"})
+    else:
+        supported_sources = SUPPORTED_SOURCE_IDS
     replay_identity_is_valid = all((
         source_id in supported_sources,
         contract.get("source_id") == source_id,
@@ -226,38 +295,44 @@ def execute(
     if not workflow_run_attempt.isdecimal() or int(workflow_run_attempt) < 1:
         raise ValueError("hosted workflow identity is invalid")
 
-    work_dir.mkdir(parents=True, exist_ok=True)
-    try:
-        retrieved = download(
-            repo_id=dataset,
-            repo_type="dataset",
-            filename=target_path,
-            revision=revision,
-            token=False,
-            local_dir=str(work_dir),
-            force_download=True,
+    if dataset == mbs_identity.DATASET:
+        verify = stream_verify or _stream_frozen_schedule
+        observed_digest, observed_bytes = verify(
+            dataset, revision, target_path, expected_digest, expected_bytes
         )
-        payload_path = Path(retrieved).resolve()
+    else:
+        if download is None:
+            hub = importlib.import_module("huggingface_hub")
+            download = cast("Callable[..., str]", hub.hf_hub_download)
+        work_dir.mkdir(parents=True, exist_ok=True)
         try:
-            payload_path.relative_to(work_dir.resolve())
-        except ValueError as error:
-            raise ValueError(
-                "anonymous download escaped the temporary work directory"
-            ) from error
-        if not payload_path.is_file():
-            raise ValueError(
-                "anonymous download did not materialize the expected object"
+            retrieved = download(
+                repo_id=dataset,
+                repo_type="dataset",
+                filename=target_path,
+                revision=revision,
+                token=False,
+                local_dir=str(work_dir),
+                force_download=True,
             )
-        observed_digest, observed_bytes = _file_identity(payload_path)
-        if (
-            observed_digest != expected_digest
-            or observed_bytes != expected_bytes
-        ):
-            raise ValueError(
-                "anonymous replay payload digest or byte count differs"
-            )
-    finally:
-        shutil.rmtree(work_dir, ignore_errors=True)
+            payload_path = Path(retrieved).resolve()
+            try:
+                payload_path.relative_to(work_dir.resolve())
+            except ValueError as error:
+                raise ValueError(
+                    "anonymous download escaped the temporary work directory"
+                ) from error
+            if not payload_path.is_file():
+                raise ValueError(
+                    "anonymous download did not materialize the expected object"
+                )
+            observed_digest, observed_bytes = _file_identity(payload_path)
+        finally:
+            shutil.rmtree(work_dir, ignore_errors=True)
+    if observed_digest != expected_digest or observed_bytes != expected_bytes:
+        raise ValueError(
+            "anonymous replay payload digest or byte count differs"
+        )
 
     registration = {
         "schema_version": "m112-raw-b2-replay-registration-v1",
@@ -280,7 +355,16 @@ def execute(
     if not temporary_bytes_removed:
         raise RuntimeError("temporary source bytes remain after replay")
 
-    receipt = {
+    verification: dict[str, Any] = {
+        "anonymous": True,
+        "token_free": True,
+        "payload_values_read": False,
+        "temporary_source_bytes_removed": temporary_bytes_removed,
+    }
+    if dataset == mbs_identity.DATASET:
+        verification["payload_storage"] = "never_materialized"
+        verification["digest_method"] = "bounded_anonymous_stream"
+    receipt: dict[str, Any] = {
         "schema_id": "global-medicines-atlas.m112-v3-replay-execution-receipt",
         "schema_version": 1,
         "status": "passed",
@@ -300,12 +384,7 @@ def execute(
             "registration_sha256": registration_sha256,
             "registration": registration,
         },
-        "verification": {
-            "anonymous": True,
-            "token_free": True,
-            "payload_values_read": False,
-            "temporary_source_bytes_removed": temporary_bytes_removed,
-        },
+        "verification": verification,
         "hosted_workflow": {
             "repository": REPOSITORY,
             "commit": workflow_commit,
@@ -344,6 +423,22 @@ def main(argv: list[str] | None = None) -> int:
     plan_value: Any = json.loads(args.plan.read_text(encoding="utf-8"))
     if not isinstance(plan_value, dict):
         raise TypeError("v3 replay plan must be a JSON object")
+    document = cast("dict[str, Any]", plan_value)
+    snapshots_value: object = document.get("snapshots")
+    if not isinstance(snapshots_value, list):
+        raise TypeError("v3 replay plan snapshots must be an array")
+    snapshots = cast("list[Any]", snapshots_value)
+    if len(snapshots) != 1 or not isinstance(snapshots[0], dict):
+        raise ValueError("v3 replay plan must have one snapshot")
+    target, _, _ = _target_identity(cast("dict[str, Any]", snapshots[0]))
+    if target == mbs_identity.DATASET:
+        require_hosted_main(args.workflow_commit)
+        if args.workflow_run_id != os.environ.get(
+            "GITHUB_RUN_ID"
+        ) or args.workflow_run_attempt != os.environ.get("GITHUB_RUN_ATTEMPT"):
+            raise ValueError(
+                "MBS replay run identity differs from hosted environment"
+            )
     receipt = execute(
         cast("dict[str, Any]", plan_value),
         work_dir=args.work_dir,

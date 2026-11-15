@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib
 import json
 from pathlib import Path
 from typing import Any, cast
@@ -16,8 +17,10 @@ from jsonschema import Draft202012Validator
 
 if __package__:
     from . import m112_pbs_utilisation_replay as pbs_replay
+    from . import mbs_frozen_raw_identity as mbs_identity
 else:
     import m112_pbs_utilisation_replay as pbs_replay
+    import mbs_frozen_raw_identity as mbs_identity
 
 ROOT = Path(__file__).resolve().parents[1]
 ROLE_REPORT = (
@@ -366,6 +369,21 @@ def qualify(
     allow_existing: bool = False,
 ) -> dict[str, Any]:
     """Build and validate the one-object metadata replay contract."""
+    if target_path in mbs_identity.PATHS:
+        if not __package__:
+            raise ValueError("invoke the frozen MBS replay plan as a module")
+        mbs_schedule = importlib.import_module(
+            ".qualify_mbs_frozen_raw_replay", package=__package__
+        )
+        identity = {
+            "dataset": mbs_identity.DATASET,
+            "revision": mbs_identity.REVISION,
+            "path": target_path,
+        }
+        if not allow_existing and _already_admitted(root, identity):
+            raise ValueError("M-112 replay target already has a v4 contract")
+        _, _, plans = mbs_schedule.build(root)
+        return plans[target_path]
     if target_path.startswith("raw/pbs/"):
         snapshot, byte_count = pbs_replay.build_snapshot(
             root,

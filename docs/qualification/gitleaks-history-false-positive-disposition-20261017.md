@@ -126,3 +126,19 @@ five are added as exact field/value exceptions. The harness recomputes every
 value from the canonical partition and snapshot IDs and continues to reject
 changed values or credential-field substitutions. A native synthetic API-key
 control remains detected. No rule, path, filename or value class is excluded.
+
+## Frozen MBS replay plans, 15 November 2026
+
+The redacted history scan for PR #1448, run `43693715181`, job
+`132749569909`, reported three `generic-api-key` findings at the
+`idempotency_key` field of the three frozen MBS v3 plans. Each value
+independently recomputes as SHA-256 of the canonical partition and snapshot
+IDs; none is used for authentication. The redacted artifact was
+`14154205401` with SHA-256
+`76b1a322bd7e307f551d298748da13f2d76fd5a2c391fe2717913aca5a531a99`.
+
+The separate exception requires both one of the three exact candidate paths
+and one of the three exact computed field/value pairs. The harness checks the
+derivation and rejects a changed value, another field name or an unrelated
+path. All default scanner rules and the complete-history scan remain active.
+The failure is preserved; the corrected final head requires fresh hosted CI.

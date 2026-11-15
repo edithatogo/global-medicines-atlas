@@ -706,7 +706,7 @@ def test_gitleaks_allowlist_is_limited_to_verified_public_evidence() -> None:
     )
     assert config["extend"] == {"useDefault": True}
     allowlists = config["allowlists"]
-    assert len(allowlists) == 1
+    assert len(allowlists) == 2
     allowlist = allowlists[0]
     assert allowlist["targetRules"] == ["generic-api-key"]
     assert allowlist["regexTarget"] == "match"
@@ -838,6 +838,51 @@ def test_pbs_replay_gitleaks_allowlist_binds_the_computed_key() -> None:
             re.fullmatch(pattern, f'idempotency_key": "{expected_key}"')
             for pattern in config["allowlists"][0]["regexes"]
         )
+
+
+def test_frozen_mbs_gitleaks_exception_is_path_and_digest_bound() -> None:
+    """Only the three computed identities in their exact plans are excepted."""
+    config = tomllib.loads((ROOT / ".gitleaks.toml").read_text())
+    allowlist = config["allowlists"][1]
+    assert allowlist["targetRules"] == ["generic-api-key"]
+    assert allowlist["condition"] == "AND"
+    assert allowlist["regexTarget"] == "match"
+    assert len(allowlist["paths"]) == 1
+    assert len(allowlist["regexes"]) == 3
+    directory = (
+        ROOT
+        / "quality/qualifications/australian-mbs-frozen-raw-lineage-20261115"
+    )
+    plans = sorted(directory.glob("v3-plan-*.json"))
+    assert len(plans) == 3
+    for path in plans:
+        snapshot = json.loads(path.read_text())["snapshots"][0]
+        expected = hashlib.sha256(
+            json.dumps(
+                [snapshot["partition_id"], snapshot["snapshot_id"]],
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode()
+        ).hexdigest()
+        assert snapshot["idempotency_key"] == expected
+        assert re.fullmatch(
+            allowlist["paths"][0], path.relative_to(ROOT).as_posix()
+        )
+        assert (
+            sum(
+                bool(re.fullmatch(pattern, f'idempotency_key": "{expected}"'))
+                for pattern in allowlist["regexes"]
+            )
+            == 1
+        )
+        changed = expected[:-1] + ("0" if expected[-1] != "0" else "1")
+        assert not any(
+            re.fullmatch(pattern, f'idempotency_key": "{changed}"')
+            or re.fullmatch(pattern, f'api_key": "{expected}"')
+            for pattern in allowlist["regexes"]
+        )
+    assert not re.fullmatch(allowlist["paths"][0], "unrelated.json")
 
 
 def test_gitleaks_rejects_publisher_checksum_mismatch(monkeypatch) -> None:

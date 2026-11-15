@@ -1,0 +1,211 @@
+{
+  "boundaries": {
+    "dataset_added_or_published": false,
+    "historical_acquisition_rewritten": false,
+    "replay_executed": false,
+    "source_values_read": false,
+    "v4_admission_or_consumer_canary": false
+  },
+  "inputs": {
+    "august_b2": {
+      "path": "quality/bronze/raw-evidence/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd/manifest.json",
+      "sha256": "4104bc85b891dd489e94378c40129870ef98f087c0e28862feb759a3723501fb"
+    },
+    "august_event": {
+      "path": "quality/bronze/acquisitions/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd.json",
+      "sha256": "0473edd93fe9c2781701116febbd68a0c68262b74be5b4de52409d5c52570d30"
+    },
+    "august_lineage": {
+      "path": "quality/qualifications/australian-m112-mbs-lifecycle-crosswalk-20261004.json",
+      "sha256": "7a4c9d171b5fe82ab71e90ec7a80578d569f2645951dadf79689d364f71cf7ef"
+    },
+    "august_receipt": {
+      "path": "quality/bronze/receipts/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd.json",
+      "sha256": "14fb98f49eb4e92dc467c0781a1cbd8a3409994b28059922783558235e97b21a"
+    },
+    "august_rights": {
+      "path": "quality/qualifications/australian-mbs-harvest-publication-authorization.json",
+      "sha256": "0fdc4d147d637c679ba0cc3eb165642974e533bb3ba044c99ee01f86127eb41b"
+    },
+    "august_roles": {
+      "path": "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json",
+      "sha256": "9ae96773ed19b1ec0795340aef1d341dbeeb0f8961ca7f231af633618ca21781"
+    },
+    "digest": {
+      "path": "quality/qualifications/australian-existing-mbs-digest-binding-20261115.json",
+      "sha256": "9f1211574b46c18bbb37cf47399c68a8c4197c2bb08f9aaccac96930566ed02f"
+    },
+    "gates": {
+      "path": "quality/qualifications/australian-existing-mbs-pbs-object-gates-20261115.json",
+      "sha256": "3e30aed422ec437db9f199939ba2ee5863cccaa684ebdaf06641fbcc9895342e"
+    },
+    "july_b2": {
+      "path": "quality/bronze/raw-evidence/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d/manifest.json",
+      "sha256": "f691e810787291ed00135d2d5ebf85124510cbd59862d2fffa627d53458dc6a4"
+    },
+    "july_event": {
+      "path": "quality/bronze/acquisitions/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d.json",
+      "sha256": "e99c0153a57e0b46cf9dfd2c03520aa9ca9aa97415b5d20920c5e8191aa086f9"
+    },
+    "july_lineage": {
+      "path": "quality/qualifications/australian-m112-july-mbs-source-lineage-20261019.json",
+      "sha256": "c8c90ff24235725bf9733f099f9ace7a5163a1ce6bf9abd409a0313fba5bf525"
+    },
+    "july_receipt": {
+      "path": "quality/bronze/receipts/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d.json",
+      "sha256": "cbb89dde7e24e790440b7aa3ec70ff8a580801d49b5f0b8839290f63bd64819c"
+    },
+    "july_rights": {
+      "path": "quality/qualifications/australian-mbs-six-raw-object-rights-attestation-20261020.json",
+      "sha256": "79f3cd76786fbb13ef5607085ee97a69a21bb361b52025f886256093dd5e4f3d"
+    }
+  },
+  "objects": [
+    {
+      "consumer_canary": "not_performed",
+      "path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+      "provenance": {
+        "alias_of_historical_b2_path": false,
+        "exact_digest_evidence": {
+          "path": "quality/qualifications/australian-existing-mbs-digest-binding-20261115.json",
+          "sha256": "9f1211574b46c18bbb37cf47399c68a8c4197c2bb08f9aaccac96930566ed02f"
+        },
+        "historical_b1_b2": {
+          "acquisition_event": {
+            "path": "quality/bronze/acquisitions/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d.json",
+            "sha256": "e99c0153a57e0b46cf9dfd2c03520aa9ca9aa97415b5d20920c5e8191aa086f9"
+          },
+          "acquisition_id": "bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d",
+          "b2_manifest": {
+            "path": "quality/bronze/raw-evidence/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d/manifest.json",
+            "sha256": "f691e810787291ed00135d2d5ebf85124510cbd59862d2fffa627d53458dc6a4"
+          },
+          "original_b2_reference": "https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/4d1dae488ac43522f20e8320a8b2a56bf9138341/raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+          "source_receipt": {
+            "path": "quality/bronze/receipts/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d.json",
+            "sha256": "cbb89dde7e24e790440b7aa3ec70ff8a580801d49b5f0b8839290f63bd64819c"
+          },
+          "source_url": "https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/4d1dae488ac43522f20e8320a8b2a56bf9138341/raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+          "source_version": "2025-07-version-3"
+        },
+        "lineage_evidence": {
+          "path": "quality/qualifications/australian-m112-july-mbs-source-lineage-20261019.json",
+          "sha256": "c8c90ff24235725bf9733f099f9ace7a5163a1ce6bf9abd409a0313fba5bf525"
+        },
+        "reference_join": "same_source_digest_and_byte_count_not_rewritten_history",
+        "rights_evidence": {
+          "path": "quality/qualifications/australian-mbs-six-raw-object-rights-attestation-20261020.json",
+          "sha256": "79f3cd76786fbb13ef5607085ee97a69a21bb361b52025f886256093dd5e4f3d"
+        },
+        "target": {
+          "byte_count": 8194522,
+          "dataset": "edithatogo/australian-mbs-source-archive",
+          "path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+          "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+          "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556"
+        }
+      },
+      "provenance_sha256": "31eaef922fdd98858fd518e8d04766dc97b9d8785fa474f7843bdc74e8531c8b",
+      "rights_basis": "maintainer_attested_exact_scope_permission_not_independently_reviewed",
+      "v4_admission": "not_performed"
+    },
+    {
+      "consumer_canary": "not_performed",
+      "path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+      "provenance": {
+        "alias_of_historical_b2_path": false,
+        "exact_digest_evidence": {
+          "path": "quality/qualifications/australian-existing-mbs-digest-binding-20261115.json",
+          "sha256": "9f1211574b46c18bbb37cf47399c68a8c4197c2bb08f9aaccac96930566ed02f"
+        },
+        "historical_b1_b2": {
+          "acquisition_event": {
+            "path": "quality/bronze/acquisitions/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd.json",
+            "sha256": "0473edd93fe9c2781701116febbd68a0c68262b74be5b4de52409d5c52570d30"
+          },
+          "acquisition_id": "fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd",
+          "b2_manifest": {
+            "path": "quality/bronze/raw-evidence/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd/manifest.json",
+            "sha256": "4104bc85b891dd489e94378c40129870ef98f087c0e28862feb759a3723501fb"
+          },
+          "original_b2_reference": "https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/abdf414cdea0127d3edda6f8af402d1a01139623/raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+          "source_receipt": {
+            "path": "quality/bronze/receipts/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd.json",
+            "sha256": "14fb98f49eb4e92dc467c0781a1cbd8a3409994b28059922783558235e97b21a"
+          },
+          "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/81efb2067580a870ca258e28007f588c/$FILE/MBS-XML-20260801.XML",
+          "source_version": "2026-08-01"
+        },
+        "lineage_evidence": {
+          "path": "quality/qualifications/australian-m112-mbs-lifecycle-crosswalk-20261004.json",
+          "sha256": "7a4c9d171b5fe82ab71e90ec7a80578d569f2645951dadf79689d364f71cf7ef"
+        },
+        "reference_join": "same_source_digest_and_byte_count_not_rewritten_history",
+        "rights_evidence": {
+          "path": "quality/qualifications/australian-mbs-harvest-publication-authorization.json",
+          "sha256": "0fdc4d147d637c679ba0cc3eb165642974e533bb3ba044c99ee01f86127eb41b"
+        },
+        "target": {
+          "byte_count": 8293331,
+          "dataset": "edithatogo/australian-mbs-source-archive",
+          "path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+          "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+          "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+        }
+      },
+      "provenance_sha256": "4df5f2e98aa4334693ff6d5bb27d94cd5ed2912c0be817616d9a16542d7e773d",
+      "rights_basis": "existing_exact_source_release_authorization",
+      "v4_admission": "not_performed"
+    },
+    {
+      "consumer_canary": "not_performed",
+      "path": "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
+      "provenance": {
+        "alias_of_historical_b2_path": true,
+        "exact_digest_evidence": {
+          "path": "quality/qualifications/australian-existing-mbs-digest-binding-20261115.json",
+          "sha256": "9f1211574b46c18bbb37cf47399c68a8c4197c2bb08f9aaccac96930566ed02f"
+        },
+        "historical_b1_b2": {
+          "acquisition_event": {
+            "path": "quality/bronze/acquisitions/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd.json",
+            "sha256": "0473edd93fe9c2781701116febbd68a0c68262b74be5b4de52409d5c52570d30"
+          },
+          "acquisition_id": "fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd",
+          "b2_manifest": {
+            "path": "quality/bronze/raw-evidence/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd/manifest.json",
+            "sha256": "4104bc85b891dd489e94378c40129870ef98f087c0e28862feb759a3723501fb"
+          },
+          "original_b2_reference": "https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/abdf414cdea0127d3edda6f8af402d1a01139623/raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+          "source_receipt": {
+            "path": "quality/bronze/receipts/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd.json",
+            "sha256": "14fb98f49eb4e92dc467c0781a1cbd8a3409994b28059922783558235e97b21a"
+          },
+          "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/81efb2067580a870ca258e28007f588c/$FILE/MBS-XML-20260801.XML",
+          "source_version": "2026-08-01"
+        },
+        "lineage_evidence": {
+          "path": "quality/qualifications/australian-m112-mbs-lifecycle-crosswalk-20261004.json",
+          "sha256": "7a4c9d171b5fe82ab71e90ec7a80578d569f2645951dadf79689d364f71cf7ef"
+        },
+        "reference_join": "same_source_digest_and_byte_count_not_rewritten_history",
+        "rights_evidence": {
+          "path": "quality/qualifications/australian-mbs-harvest-publication-authorization.json",
+          "sha256": "0fdc4d147d637c679ba0cc3eb165642974e533bb3ba044c99ee01f86127eb41b"
+        },
+        "target": {
+          "byte_count": 8293331,
+          "dataset": "edithatogo/australian-mbs-source-archive",
+          "path": "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
+          "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+          "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+        }
+      },
+      "provenance_sha256": "f4d2889f99e418f4c451b3c0df83d121bb71418f3c859a0ac40fbf5d097e3742",
+      "rights_basis": "existing_exact_source_release_authorization",
+      "v4_admission": "not_performed"
+    }
+  ],
+  "schema_id": "global-medicines-atlas.mbs-frozen-raw-lineage-crosswalk",
+  "schema_version": 1
+}
