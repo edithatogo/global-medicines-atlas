@@ -1,0 +1,17 @@
+{
+  "artifact": 14155347435,
+  "artifact_bytes": 877,
+  "artifact_member": "mbs-frozen-primary-restore.json",
+  "artifact_sha256": "68cc660868a954e2e8be614f047c7a09ebe4d5c60dd5bbd898f57834d5cb3a6f",
+  "exact_member_set_verified": true,
+  "exact_object_and_boundaries_verified": true,
+  "job": 132762367301,
+  "native_artifact_digest_verified": true,
+  "receipt_bytes": 2153,
+  "receipt_sha256": "b3986cf9598c3ff98a7f6a801b7d5a2745b58419e89808e983e8fcc772548958",
+  "run": 43697888963,
+  "schema_id": "global-medicines-atlas.mbs-frozen-primary-memory-artifact",
+  "schema_version": 1,
+  "workflow_commit": "c427dc839fa92b238a12739d7f3615573868efb3",
+  "zip_crc_verified": true
+}
