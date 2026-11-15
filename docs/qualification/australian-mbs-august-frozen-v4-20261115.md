@@ -31,13 +31,15 @@ snapshot was recorded before the later B1 event; the later digest verification
 is retained separately and does not rewrite that chronology. The primary copy
 is not an independent replica.
 
-On the local Python 3.15.1 interpreter, each candidate closed 14 receipt roles
-and passed independently configured offline trusted-profile admission. Local
-consumer binding tests preserve both exact paths, and a negative reader test
-confirms that live raw bytes cannot be read locally. These are local checks;
-the hosted exact-main reader workflow is prepared but has not run. No source
-values, participant data or cohort-derived data were read or emitted for this
-packet. No dataset was acquired or published.
+Each candidate closed 14 receipt roles at 11 distinct locations and passed
+independently configured trusted-profile admission. The [exact-main hosted
+workflow](https://github.com/edithatogo/global-medicines-atlas/actions/runs/43705630353)
+then passed the remote reader and streamed digest checks for both paths; the
+reader cache was empty after close. Its value-free receipt and native artifact
+digest were independently verified. The [frozen ledger](../../quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261115-august.json)
+counts both paths separately. No source values were interpreted or emitted, no
+participant or cohort-derived data was accessed, and no dataset was acquired
+or published.
 
 The four frozen and four outside-inventory August Parquet projections retain
 their separate lineage, semantics, product-admission and consumer gates. These

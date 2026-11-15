@@ -26,10 +26,10 @@ outside the frozen inventory. Another 1,732 frozen objects and one additional
 output remain unassessed. The six earlier MBS Silver profiles are neither new
 assessments nor additional raw-ledger admissions.
 
-A subsequent exact July MBS admission reduced the deferred total to 1,744;
-the [current ledger](../../quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261115.json)
+Subsequent exact July and August MBS admissions reduced the deferred total
+to 1,742; the [current ledger](../../quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261115-august.json)
 preserves this batch as a historical assessment. PBS privacy dispositions are
-unchanged by that MBS admission.
+unchanged by those MBS admissions.
 
 ## Basis of the MBS assessments
 
