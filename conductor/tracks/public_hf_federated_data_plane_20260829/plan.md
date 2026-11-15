@@ -1439,6 +1439,12 @@ PR #1446 passed all 28 configured required contexts on head
 `43687693342` and Security and Context `43687693319` passed. The acquisition
 workflow remained active and did not run for the PR or merge.
 
+PR #1447 passed all 28 required contexts on head
+`53b320311c4006f0d5ee9cb0012930015bc3d2da`; squash merge
+`d052c5e087eb8f00220e89e88a36f92ad7dd3d32` has the same tree
+`6a8e775e1d9d1f66a44d66d729117d312ec0623e`. Post-merge Test-Goblin
+`43689047538` and Security and Context `43689047467` passed.
+
 ### Frozen MBS raw lineage and replay — 15 November 2026
 
 Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
@@ -1460,3 +1466,28 @@ existing archive. No dataset addition or publication is authorized.
   exact roles are supported. Keep unsupported roles and independent recovery
   open. Continue PBS privacy work without reading unassessed payloads or
   exposing participant or cohort-derived material.
+
+PR #1448 passed all 28 required contexts on head
+`5fabc5fcd1fe84d2c9cb442f1e4624bdcb750304`; squash merge
+`0c34250f931bc457193eb59da04e9e20107c6600` has the same tree
+`85c69ed44ca7a94b16528c64135604736522f241`. Codecov patch coverage and the
+full-history security scan passed. The automatic data archive was disabled
+for the PR and merge to prevent acquisition, and no archive run was triggered.
+
+### PBS privacy metadata context — 15 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/pbs-schema-privacy-context-20261115`, started from
+`d052c5e087eb8f00220e89e88a36f92ad7dd3d32` and rebased onto PR #1448's merge.
+This lane owns a bounded PBS
+schema-context report, its tests and this handoff. It uses retained metadata;
+unassessed PBS payloads and participant or cohort-derived material are outside
+the read scope. No dataset addition or publication is authorized.
+
+- [x] Reconcile the already recorded April 2026 member schema paths to their
+  structural contexts and the exact existing archive aliases. Preserve the
+  distinction between schema labels, source values and privacy decisions.
+- [~] Validate and integrate the metadata-only result after protected checks.
+  Keep the wider PBS archive and any unassessed payload blocked; do not infer a
+  privacy clearance from absent lexical markers or a public URL.
