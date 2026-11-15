@@ -1,0 +1,72 @@
+{
+  "contracts": [
+    {
+      "contract_id": "au-mbs:historical-backfill-replay:v1",
+      "correction_rule": "new_snapshot_never_overwrite",
+      "deterministic_output_rule": "canonical_json_sha256",
+      "idempotency_rule": "partition_and_snapshot_sha256",
+      "late_arrival_rule": "append_then_replay_partition",
+      "missing_payload_rule": "metadata_only_fail_closed",
+      "partition_identity": [
+        "source_id",
+        "archive_period",
+        "logical_asset_id"
+      ],
+      "replay_order": [
+        "partition_id",
+        "correction_sequence",
+        "snapshot_id"
+      ],
+      "snapshot_identity": [
+        "partition_id",
+        "payload_sha256",
+        "metadata_sha256"
+      ],
+      "source_id": "au-mbs",
+      "supersession_rule": "explicit_acyclic_predecessor"
+    }
+  ],
+  "replay_plan": {
+    "deterministic": true,
+    "eligible_snapshot_count": 1,
+    "plan_sha256": "d7d46d75f2315bdc27bbf9c9c901b62306a1820f8dd466ba2e1dc87c6f0aa431",
+    "schema_version": "historical-replay-plan-v1",
+    "steps": [
+      {
+        "action": "rebuild_projection_snapshot_registration_from_retained_metadata",
+        "candidate_only": true,
+        "expected_byte_count": 454247,
+        "expected_payload_sha256": "5219094d2ec7f4386380b356cc17f071c97751db43ed367746a6d07ca4ff3eaf",
+        "hosted_replay_status": "not_requested_local_metadata_only",
+        "m112_consumer_canary_performed": false,
+        "partition_id": "7f9916d72c42c07e46beff9ccf2a69bdce9eebaf0191a5786b623585b6d5fe6e",
+        "registration_semantics": "append_only_idempotent",
+        "snapshot_id": "07c0f76d38aa0c022f7663a41a90afd52040bab3c3f577d655577e0da07c9f81",
+        "source_payload_values": "not_read",
+        "v4_admission_performed": false
+      }
+    ]
+  },
+  "snapshots": [
+    {
+      "archive_period": "schedule-release:2026-08-01",
+      "correction_sequence": 0,
+      "idempotency_key": "ee24b3ff7d38d98a2b60cc9d3ba90d92a39d525cef634b80ba18f8d27640c00c",
+      "late_arriving": false,
+      "logical_asset_id": "39b7f25e1735d8ad3ec13b553bfcf7ba5cad9751b848800e9bc2ae2362e5d1b4",
+      "metadata_sha256": "051831c32f65b349030384b7138e32944ecc5f45a7bda7a049d9b83036d0d242",
+      "observation_status": "acquired",
+      "partition_id": "7f9916d72c42c07e46beff9ccf2a69bdce9eebaf0191a5786b623585b6d5fe6e",
+      "partition_value": "edithatogo/australian-mbs-source-archive@243f9ff5498816af6e4d9ae4db60528728f01834:bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/source.parquet",
+      "payload_sha256": "5219094d2ec7f4386380b356cc17f071c97751db43ed367746a6d07ca4ff3eaf",
+      "replay_eligible": true,
+      "rights_state": "maintainer_attested_exact_scope_not_independently_reviewed",
+      "snapshot_id": "07c0f76d38aa0c022f7663a41a90afd52040bab3c3f577d655577e0da07c9f81",
+      "source_id": "au-mbs",
+      "source_url": "https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/243f9ff5498816af6e4d9ae4db60528728f01834/bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/source.parquet",
+      "source_version_id": "2026-08-01",
+      "supersedes_snapshot_id": null
+    }
+  ],
+  "vocabulary_version": "3.0.0"
+}

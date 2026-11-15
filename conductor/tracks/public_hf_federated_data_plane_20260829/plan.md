@@ -1675,3 +1675,23 @@ unassessed PBS, participant or cohort-derived payloads.
   objects blocked when source-specific evidence remains insufficient.
 - [ ] Verify focused tests and protected CI, then merge the bounded technical
   changes without acquiring or publishing data.
+
+### August projection replay and PBS acquisition metadata — 15 November 2026
+
+The same chat continues in branch `codex/mbs-august-projection-v4-20261115`
+in the worktree above. It owns only retrospective source metadata, projection
+registration plans, scoped admission and consumer checks, PBS privacy metadata,
+their tests and this handoff. The existing parallel publication-workflow lane
+retains its own files and checkout.
+
+- [x] Reconstruct two missing source-event and external-reference pairs from
+  retained receipts, preserving the later reconstruction chronology.
+- [x] Replay all eight exact projection registrations twice using metadata;
+  retain the four later outputs' writer-footer qualification and the two
+  `f9f9` independent-replica prerequisites.
+- [x] Join the unassessed PBS paths to the 1,702 retained acquisition events;
+  preserve all unknown privacy dispositions and the 19 unmatched paths.
+- [~] Prepare and check v4 admissions and consumers only where their exact
+  prerequisites can be closed. Metadata replay is not an admission or reader.
+- [ ] Merge after focused checks and protected CI, without dataset acquisition
+  or publication.
