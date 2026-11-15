@@ -1879,6 +1879,11 @@ handoff. Other assignments remain history; no native mutation is in scope.
   path; the supported `python -m scripts.qualify_australian_existing_derived_gates`
   invocation passed both stored-report and fresh-receipt checks. Protected CI
   remains required on the final PR head.
+- [x] Review follow-up: reject malformed, empty, non-object and non-finite CLI
+  exports and a missing Atlas interpretation notice. A focused branch-coverage
+  diagnostic exercises all changed executable lines in the qualification
+  module; it does not replace the protected project-wide coverage gate. The
+  final focused selection passes 145 tests with scoped static checks.
 
 Prior privacy batch PR #1442 passed 29 required checks on head
 `04a08346d157a77d6cb5acc30f3afebae9b25038` and merged as

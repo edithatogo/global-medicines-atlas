@@ -84,7 +84,7 @@
             <pre><code>{{ page.query_receipt_json }}</code></pre>
           </details>
           {% endif %}
-          <p class="notice">These observations record source structure only. Semantic field interpretation has not been applied; a native state describes the source observation, not its interpreted meaning. These rows do not establish medicine equivalence or funding, formulary, regulatory, or terminology conclusions. Missing coverage is not negative evidence.</p>
+          <p class="notice" data-semantic-overlay-state="not_applied">These observations record source structure only. Semantic field interpretation has not been applied; a native state describes the source observation, not its interpreted meaning. These rows do not establish medicine equivalence or funding, formulary, regulatory, or terminology conclusions. Missing coverage is not negative evidence.</p>
         </section>
         {% if page.status == "unavailable" %}
           <section class="notice" role="status" aria-labelledby="unavailable-heading">

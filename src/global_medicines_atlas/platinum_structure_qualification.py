@@ -235,7 +235,8 @@ def qualify_structure_consumers(
         if rendered.status_code != HTTPStatus.OK:
             raise ValueError("source-structure Atlas canary failed")
         if (
-            "Semantic field interpretation has not been applied"
+            'data-semantic-overlay-state="not_applied"' not in rendered.text
+            or "Semantic field interpretation has not been applied"
             not in rendered.text
         ):
             raise ValueError(

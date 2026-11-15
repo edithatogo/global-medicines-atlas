@@ -41,14 +41,17 @@ interpretation. The canary compares the API with CLI JSON and the JSONL
 records and safety summary, repeats the bounded export for byte stability, and
 checks the Atlas rows and warning. Cache-specific receipts may differ between
 independent verified resolvers, so they are not equated. The canary continues to
-bind the object, contract, semantic manifest and query identities.
+bind the object, contract, semantic manifest and query identities. The Atlas
+warning has a dedicated marker, so matching words in a source row cannot stand
+in for the warning itself.
 
 Focused synthetic tests check native null and presence values, offline
 unavailability, source identity, pagination, and mismatched status, view,
 offset, row count, comparison validity and semantic-overlay declarations.
 Before the fix, the canary accepted six altered JSONL summaries and did not
 compare CLI JSON; the altered record type was already rejected. The synthetic
-checks do not demonstrate actual PBS or workbook consumer delivery.
+checks also reject malformed, empty, non-object and non-finite export output.
+They do not demonstrate actual PBS or workbook consumer delivery.
 
 ## Remaining limits
 

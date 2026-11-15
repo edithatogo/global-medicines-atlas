@@ -16,6 +16,8 @@ import httpx
 import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
+from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 from fastapi.testclient import TestClient
 from test_pbs_value_package import inputs
 from test_support.federation import admission_record
@@ -1410,6 +1412,97 @@ def test_structure_qualification_rejects_a_changed_repeat_export(
     trust_file.write_text("{}")
     schema_file.write_text("{}")
     with pytest.raises(ValueError, match="export is not deterministic"):
+        qualification.qualify_structure_consumers(
+            trust_file=trust_file,
+            metadata_root=tmp_path,
+            schema_file=schema_file,
+            resource_id="au.mbs.service-items",
+            columns=("source_field_id", "value", "state"),
+            view="fields",
+            limit=2,
+        )
+
+
+@pytest.mark.parametrize(
+    ("mutation", "message"),
+    [
+        ("cli_failure", "CLI JSON canary failed"),
+        ("malformed", "export evidence differs"),
+        ("empty", "export evidence differs"),
+        ("non_object", "export evidence differs"),
+        ("non_finite", "export evidence differs"),
+    ],
+)
+def test_structure_qualification_rejects_failed_or_malformed_cli_output(
+    monkeypatch, tmp_path, mutation, message
+):
+    def loader(**_kwargs):
+        return resolver(
+            native_field_collection_payload(),
+            semantic_dimension="source_structure",
+        )
+
+    class InvalidOutputRunner(CliRunner):
+        def invoke(self, *args, **kwargs):
+            if mutation == "cli_failure" and "--format" not in args[1]:
+                return SimpleNamespace(exit_code=1, stdout="")
+            result = super().invoke(*args, **kwargs)
+            if "--format" not in args[1] or result.exit_code:
+                return result
+            output = {
+                "malformed": "{\n",
+                "empty": "",
+                "non_object": "[]\n",
+                "non_finite": '{"value":NaN}\n',
+            }[mutation]
+            return SimpleNamespace(exit_code=0, stdout=output)
+
+    monkeypatch.setattr(qualification, "load_benefits_resolver", loader)
+    monkeypatch.setattr(cli, "_dataset_resolver_loader", lambda: loader)
+    monkeypatch.setattr(qualification, "CliRunner", InvalidOutputRunner)
+    trust_file = tmp_path / "trust.json"
+    schema_file = tmp_path / "schema.json"
+    trust_file.write_text("{}")
+    schema_file.write_text("{}")
+    with pytest.raises(ValueError, match=message):
+        qualification.qualify_structure_consumers(
+            trust_file=trust_file,
+            metadata_root=tmp_path,
+            schema_file=schema_file,
+            resource_id="au.mbs.service-items",
+            columns=("source_field_id", "value", "state"),
+            view="fields",
+            limit=2,
+        )
+
+
+def test_structure_qualification_requires_the_atlas_interpretation_notice(
+    monkeypatch, tmp_path
+):
+    def loader(**_kwargs):
+        return resolver(
+            native_field_collection_payload(),
+            semantic_dimension="source_structure",
+        )
+
+    fake_atlas = FastAPI()
+
+    @fake_atlas.get("/federated/source-structure")
+    def source_row():
+        return HTMLResponse(
+            "<p>Semantic field interpretation has not been applied</p>"
+        )
+
+    monkeypatch.setattr(qualification, "load_benefits_resolver", loader)
+    monkeypatch.setattr(cli, "_dataset_resolver_loader", lambda: loader)
+    monkeypatch.setattr(
+        qualification, "create_atlas_app", lambda *_a, **_k: fake_atlas
+    )
+    trust_file = tmp_path / "trust.json"
+    schema_file = tmp_path / "schema.json"
+    trust_file.write_text("{}")
+    schema_file.write_text("{}")
+    with pytest.raises(ValueError, match="Atlas interpretation limit missing"):
         qualification.qualify_structure_consumers(
             trust_file=trust_file,
             metadata_root=tmp_path,
