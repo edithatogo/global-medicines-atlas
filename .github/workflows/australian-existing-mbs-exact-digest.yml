@@ -38,7 +38,7 @@ jobs:
           HF_HUB_DISABLE_IMPLICIT_TOKEN: '1'
         run: |
           set -euo pipefail
-          uv run --locked --python 3.15.1 python scripts/qualify_australian_v4_privacy_readiness.py \
+          uv run --locked --python 3.15.1 python -m scripts.qualify_australian_v4_privacy_readiness \
             --verify \
             --workflow-commit "$GITHUB_SHA" \
             --output "$RUNNER_TEMP/australian-existing-mbs-exact-digest.json"

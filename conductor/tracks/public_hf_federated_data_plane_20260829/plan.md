@@ -1388,3 +1388,22 @@ PR #1444 passed all 28 configured required contexts on head
 `eba2ecaebd822f0efa8e314d5ca5ab35c8c94efa` has matching tree
 `34c86c187eef72f8e6fe70075378ac751d06313a`. Both post-merge workflows
 `43681149885` and `43681149888` passed, and the acquisition workflow did not run.
+
+### Exact-digest workflow entry point
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/australian-v4-hosted-entrypoint-20261115`, base
+`f3e30e31b39213d23aa75d454bafcc5fedfe5372`.
+
+- [~] Correct the hosted command to invoke the qualified module entry point.
+  First run `43686413520` failed during imports before any source read and
+  produced no artifact. Verify the module command and workflow configuration,
+  merge after required CI, then dispatch exactly once on the corrected main.
+
+PR #1445 passed all 28 configured required contexts on head
+`f34f27049728373589a1ee558f53b87af464dbf0`; squash merge
+`f3e30e31b39213d23aa75d454bafcc5fedfe5372` has matching tree
+`cf5274914fece907a289a615cd1ad8c2dbf1cd7f`. The acquisition workflow did not
+run for the PR or merge; the repository's automatic post-merge checks were in
+progress at the first hosted-digest failure.
