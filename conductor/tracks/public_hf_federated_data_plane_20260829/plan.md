@@ -1654,3 +1654,24 @@ handoff. No dataset mutation is authorized.
 - [~] Integrate the 17-admitted, 17-reader, 1,742-deferred frozen ledger after
   its final-head checks. Preserve the separate projection, independent recovery
   and federation acceptance gates.
+
+### August projection field lineage and delivery — 15 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/mbs-august-projection-lineage-20261115`. This lane owns only
+the eight already-archived August MBS projection identities, their retained
+lineage and v4 evidence, bounded consumer checks, PBS privacy metadata, tests
+and this handoff. It acquires and publishes no dataset and must not read
+unassessed PBS, participant or cohort-derived payloads.
+
+- [x] Bind each exact projection and producer code to source-native field
+  lineage; preserve frozen versus outside-frozen revisions and the adjusted
+  writer limitation of the later four projections.
+- [~] Check product-specific admission and consumers only where all existing
+  prerequisites are met. The two `f9f9` outputs retain their separately
+  recorded independent-replica prerequisite; do not waive it.
+- [~] Continue PBS privacy assessments using retained metadata; keep unknown
+  objects blocked when source-specific evidence remains insufficient.
+- [ ] Verify focused tests and protected CI, then merge the bounded technical
+  changes without acquiring or publishing data.
