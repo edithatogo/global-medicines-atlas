@@ -1459,9 +1459,10 @@ existing archive. No dataset addition or publication is authorized.
 - [x] Bind each frozen revision to its historical source, B1/B2 reference,
   exact observed digest and scoped rights. Preserve the earlier reference
   revisions and the August alias; do not rewrite acquisition history.
-- [~] Prepared and validated candidate v1 conformance and v3 replay plans for
-  the three identities. Run an exact-main, metadata-only hosted replay only
-  after its fixed candidate and privacy gates pass; retain native receipts.
+- [x] Prepared candidate v1 conformance and v3 plans for the three identities,
+  then ran each once on exact main. Runs `43695553608`, `43695688398` and
+  `43695816820` passed; their metadata-only receipts and artifact digests are
+  bound in the replay manifest without claiming admission or recovery.
 - [~] Advance trusted v4 admission and reader checks only where their remaining
   exact roles are supported. Keep unsupported roles and independent recovery
   open. Continue PBS privacy work without reading unassessed payloads or
@@ -1491,3 +1492,26 @@ the read scope. No dataset addition or publication is authorized.
 - [~] Validate and integrate the metadata-only result after protected checks.
   Keep the wider PBS archive and any unassessed payload blocked; do not infer a
   privacy clearance from absent lexical markers or a public URL.
+
+### Frozen MBS replay receipt binding — 15 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/mbs-frozen-replay-receipts-20261115`, base
+`0c34250f931bc457193eb59da04e9e20107c6600`. This lane owns the three hosted
+value-free replay receipts, their native artifact bindings, focused tests and
+this handoff. It does not add or publish dataset objects.
+
+- [x] Bind each exact-main replay run, job, artifact digest, receipt and
+  registration to its corresponding frozen plan. Verify no source payloads or
+  participant or cohort-derived data were retained or emitted.
+- [~] Preserve the separate v4 contract, admission, consumer and independent
+  recovery gates; merge only after the exact-head protected checks pass.
+- [~] Prepare a bounded exact-revision primary restore into memory for the
+  same three assessed objects. Verify digest, size and buffer closure and
+  retain metadata only. A primary read does not establish an independent copy.
+
+PBS metadata PR #1449 passed required checks including Codecov on head
+`31faa2521676d61f6c5075bac4db0814c08f6a06`; merge
+`e644c8804980df92ad85e594eaf534c60d71d5dd` retained the tested tree
+`9fb03dc3d4bfdc8e3c11b4a369daacdced9d4c79`. No PBS payload was cleared.

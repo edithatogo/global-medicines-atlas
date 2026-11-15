@@ -30,12 +30,15 @@ regexes = [
 ]
 
 [[allowlists]]
-description = "Three independently recomputed frozen MBS replay-plan idempotency digests in their exact candidate paths are not credentials."
+description = "Three independently recomputed frozen MBS replay idempotency digests in their exact plan and receipt paths are not credentials."
 targetRules = ["generic-api-key"]
 condition = "AND"
 regexTarget = "match"
 paths = [
   '''^quality/qualifications/australian-mbs-frozen-raw-lineage-20261115/v3-plan-(?:july|august|august-alias)\.json$''',
+  '''^quality/qualifications/australian-mbs-frozen-raw-v3-replays-20261115/hosted-43695553608/replay-receipt\.json$''',
+  '''^quality/qualifications/australian-mbs-frozen-raw-v3-replays-20261115/hosted-43695688398/replay-receipt\.json$''',
+  '''^quality/qualifications/australian-mbs-frozen-raw-v3-replays-20261115/hosted-43695816820/replay-receipt\.json$''',
 ]
 regexes = [
   '''^idempotency_key"\s*:\s*"f8c1d5f30006fb10d9d2eed6aeffdd349affe852961f6c2e408af26a406d6f77"\s*$''',

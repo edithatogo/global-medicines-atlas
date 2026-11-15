@@ -1,0 +1,134 @@
+{
+  "boundaries": {
+    "dataset_added_or_published": false,
+    "frozen_inventory_changed": false,
+    "participant_or_cohort_data_accessed": false,
+    "source_payload_bytes_persisted": false,
+    "source_values_or_rows_emitted": false
+  },
+  "objects": [
+    {
+      "byte_count": 8194522,
+      "consumer_canary": "not_performed",
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "hosted_workflow": {
+        "attempt": 1,
+        "commit": "0c34250f931bc457193eb59da04e9e20107c6600",
+        "completed_at": "2026-11-15T08:40:13Z",
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "job": 132755170167,
+        "run": 43695553608,
+        "started_at": "2026-11-15T08:39:53Z"
+      },
+      "independent_recovery": "not_established",
+      "native_artifact": {
+        "archive_digest_verified": true,
+        "byte_count": 1375,
+        "exact_metadata_member_set_verified": true,
+        "id": 14154158840,
+        "member": "gma-m112-v3-replay-receipt-43695553608-1.json",
+        "name": "australian-m112-v3-replay-43695553608-1",
+        "sha256": "09c28fd9546cf7e7e91c42ad4ba7cbb34c98b48cacc7c71bff92df3cdc32f6e0",
+        "zip_crc_verified": true
+      },
+      "path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+      "plan_sha256": "ba8a72f820db531a04352ff05b175218b953d904e1c473482e977ba1bdf70d60",
+      "receipt": {
+        "byte_count": 2598,
+        "path": "quality/qualifications/australian-mbs-frozen-raw-v3-replays-20261115/hosted-43695553608/replay-receipt.json",
+        "sha256": "fd53bcf5d068e3483fd5ff9e482d3664a71c1b1f474aa0c36183030c4eebb0f6"
+      },
+      "registration_sha256": "87504f5491c0352f3a6004fd621770082b0873567e4bb106121478e26f2572a6",
+      "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+      "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+      "status": "passed",
+      "v4_admission": "not_performed"
+    },
+    {
+      "byte_count": 8293331,
+      "consumer_canary": "not_performed",
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "hosted_workflow": {
+        "attempt": 1,
+        "commit": "0c34250f931bc457193eb59da04e9e20107c6600",
+        "completed_at": "2026-11-15T08:41:57Z",
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "job": 132755583096,
+        "run": 43695688398,
+        "started_at": "2026-11-15T08:41:37Z"
+      },
+      "independent_recovery": "not_established",
+      "native_artifact": {
+        "archive_digest_verified": true,
+        "byte_count": 1337,
+        "exact_metadata_member_set_verified": true,
+        "id": 14154545295,
+        "member": "gma-m112-v3-replay-receipt-43695688398-1.json",
+        "name": "australian-m112-v3-replay-43695688398-1",
+        "sha256": "5252a752c7e6c37eb8c48ccb32922a16a1dbcace63919d65a5565ebc5a27a7dd",
+        "zip_crc_verified": true
+      },
+      "path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+      "plan_sha256": "7ac51c210cd5e63ee7de29c6517cd158ae814fc37b900a6b3d9e2ec5accab8f9",
+      "receipt": {
+        "byte_count": 2653,
+        "path": "quality/qualifications/australian-mbs-frozen-raw-v3-replays-20261115/hosted-43695688398/replay-receipt.json",
+        "sha256": "275e45b077a9d798df5483ecbf81b1a1a180c5b550715e4981f327fe5f45b287"
+      },
+      "registration_sha256": "aca4067a26c46946bb295681b55843b1119f522a1b0078ca176c38d2888e4791",
+      "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+      "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+      "status": "passed",
+      "v4_admission": "not_performed"
+    },
+    {
+      "byte_count": 8293331,
+      "consumer_canary": "not_performed",
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "hosted_workflow": {
+        "attempt": 1,
+        "commit": "0c34250f931bc457193eb59da04e9e20107c6600",
+        "completed_at": "2026-11-15T08:43:39Z",
+        "conclusion": "success",
+        "event": "workflow_dispatch",
+        "job": 132755980958,
+        "run": 43695816820,
+        "started_at": "2026-11-15T08:43:19Z"
+      },
+      "independent_recovery": "not_established",
+      "native_artifact": {
+        "archive_digest_verified": true,
+        "byte_count": 1365,
+        "exact_metadata_member_set_verified": true,
+        "id": 14154520708,
+        "member": "gma-m112-v3-replay-receipt-43695816820-1.json",
+        "name": "australian-m112-v3-replay-43695816820-1",
+        "sha256": "3b13223feb02bcf078dc87b0fec9786df27f967e7330ae82b8350b4e304d2863",
+        "zip_crc_verified": true
+      },
+      "path": "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
+      "plan_sha256": "34f2994843af52841926dd76daa226748db7738d8e65e6af1f92938193886d64",
+      "receipt": {
+        "byte_count": 2565,
+        "path": "quality/qualifications/australian-mbs-frozen-raw-v3-replays-20261115/hosted-43695816820/replay-receipt.json",
+        "sha256": "d7b238272b1846f3bc497dc58e0fa7f01ba886061f9d0a10c76b5d9eaa18875d"
+      },
+      "registration_sha256": "0fdfab87323c8c7589fd62e04921256919c42a5588a933465d017f758534e3f0",
+      "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+      "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+      "status": "passed",
+      "v4_admission": "not_performed"
+    }
+  ],
+  "recorded_on": "2026-11-15",
+  "schema_id": "global-medicines-atlas.mbs-frozen-v3-replay-manifest",
+  "schema_version": 1,
+  "summary": {
+    "exact_replays_passed": 3,
+    "independent_recovery_established": false,
+    "new_consumer_canaries": 0,
+    "new_v4_admissions": 0
+  }
+}
