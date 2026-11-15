@@ -1,0 +1,277 @@
+{
+  "boundaries": {
+    "dataset_added_or_published": false,
+    "digest_size_grouping_is_a_privacy_decision": false,
+    "filename_labels_are_privacy_decisions": false,
+    "participant_or_cohort_data_accessed": false,
+    "unassessed_payload_read": false,
+    "unlabelled_members_are_cleared": false
+  },
+  "inputs": {
+    "api": {
+      "path": "quality/qualifications/australian-public-archive-reconciliation-20261113.json",
+      "sha256": "f7883925fe095e46b184690e966101b10b8dcec2326e03d93cb5b18c1e3b5fcf"
+    },
+    "prior_context": {
+      "path": "quality/qualifications/australian-pbs-schema-privacy-context-20261115.json",
+      "sha256": "4a629204fc3810ea8e3d3de5e29f304e8cdecaf9ecbb4889ece6ca43db360209"
+    },
+    "privacy": {
+      "path": "quality/qualifications/australian-existing-archive-privacy-batch-20261115.json",
+      "sha256": "7ab592f48583def8fb05b814d442b394463b3703caf978e885a1d96961029ec8"
+    }
+  },
+  "recorded_on": "2026-11-15",
+  "schema_id": "global-medicines-atlas.pbs-member-privacy-triage",
+  "schema_version": 1,
+  "september_2025_archive": {
+    "filename_label_counts": {
+      "copayment": 1,
+      "organisation": 3,
+      "prescribing": 4
+    },
+    "identity": {
+      "byte_count": 5827162,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "path": "raw/pbs/payloads/au_pbs_structured_28ef7f6eefc6309f/60ade25f04a6451239587ac546c34390099b231036349b3a4eaf28409eefdf59.zip",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+      "sha256": "60ade25f04a6451239587ac546c34390099b231036349b3a4eaf28409eefdf59"
+    },
+    "members": [
+      {
+        "filename_review_labels": [],
+        "member_digest_available": false,
+        "name": "tables_as_csv/amt-items.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [],
+        "member_digest_available": false,
+        "name": "tables_as_csv/atc-codes.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [
+          "organisation"
+        ],
+        "member_digest_available": false,
+        "name": "tables_as_csv/container-organisation-relationships.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [],
+        "member_digest_available": false,
+        "name": "tables_as_csv/containers.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [
+          "copayment"
+        ],
+        "member_digest_available": false,
+        "name": "tables_as_csv/copayments.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [],
+        "member_digest_available": false,
+        "name": "tables_as_csv/criteria-parameter-relationships.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [],
+        "member_digest_available": false,
+        "name": "tables_as_csv/criteria.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [],
+        "member_digest_available": false,
+        "name": "tables_as_csv/dispensing-rules.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [],
+        "member_digest_available": false,
+        "name": "tables_as_csv/extemporaneous-ingredients.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [],
+        "member_digest_available": false,
+        "name": "tables_as_csv/extemporaneous-prep-sfp-relationships.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [],
+        "member_digest_available": false,
+        "name": "tables_as_csv/extemporaneous-preparations.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [],
+        "member_digest_available": false,
+        "name": "tables_as_csv/extemporaneous-tariffs.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [],
+        "member_digest_available": false,
+        "name": "tables_as_csv/fees.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [],
+        "member_digest_available": false,
+        "name": "tables_as_csv/indications.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [],
+        "member_digest_available": false,
+        "name": "tables_as_csv/item-atc-relationships.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [],
+        "member_digest_available": false,
+        "name": "tables_as_csv/item-dispensing-rule-relationships.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [
+          "organisation"
+        ],
+        "member_digest_available": false,
+        "name": "tables_as_csv/item-organisation-relationships.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [
+          "prescribing"
+        ],
+        "member_digest_available": false,
+        "name": "tables_as_csv/item-prescribing-text-relationships.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [],
+        "member_digest_available": false,
+        "name": "tables_as_csv/item-pricing-events.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [],
+        "member_digest_available": false,
+        "name": "tables_as_csv/item-restriction-relationships.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [],
+        "member_digest_available": false,
+        "name": "tables_as_csv/items.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [],
+        "member_digest_available": false,
+        "name": "tables_as_csv/markup-bands.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [
+          "organisation"
+        ],
+        "member_digest_available": false,
+        "name": "tables_as_csv/organisations.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [],
+        "member_digest_available": false,
+        "name": "tables_as_csv/parameters.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [
+          "prescribing"
+        ],
+        "member_digest_available": false,
+        "name": "tables_as_csv/prescribers.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [
+          "prescribing"
+        ],
+        "member_digest_available": false,
+        "name": "tables_as_csv/prescribing-texts.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [],
+        "member_digest_available": false,
+        "name": "tables_as_csv/program-dispensing-rules.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [],
+        "member_digest_available": false,
+        "name": "tables_as_csv/programs.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [
+          "prescribing"
+        ],
+        "member_digest_available": false,
+        "name": "tables_as_csv/restriction-prescribing-text-relationships.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [],
+        "member_digest_available": false,
+        "name": "tables_as_csv/restrictions.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [],
+        "member_digest_available": false,
+        "name": "tables_as_csv/schedules.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [],
+        "member_digest_available": false,
+        "name": "tables_as_csv/standard-formula-preparations.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      },
+      {
+        "filename_review_labels": [],
+        "member_digest_available": false,
+        "name": "tables_as_csv/summary-of-changes.csv",
+        "privacy": "blocked_unknown_or_unqualified_privacy"
+      }
+    ],
+    "members_with_review_labels": 8,
+    "privacy": "blocked_unknown_or_unqualified_privacy"
+  },
+  "unassessed_inventory": {
+    "batches": {
+      "pbs_frozen_projection_unassessed": 1,
+      "pbs_frozen_raw_unassessed": 1,
+      "pbs_reproduced_silver_unassessed": 1,
+      "pbs_schedule_archived_pdf_unassessed": 5,
+      "pbs_schedule_csv_unassessed": 3,
+      "pbs_schedule_pdf_unassessed": 1047,
+      "pbs_schedule_zip_unassessed": 652,
+      "reimbursement_projection_byte_identical_unassessed": 9,
+      "reimbursement_projection_layer_partition_unassessed": 3
+    },
+    "distinct_digest_and_size_pairs": 1721,
+    "objects": 1722,
+    "paths_in_duplicate_group": 2,
+    "privacy_clearances": 0,
+    "same_digest_size_groups_with_multiple_paths": 1
+  }
+}

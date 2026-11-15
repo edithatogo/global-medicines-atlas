@@ -12,7 +12,7 @@ import json
 import os
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import scripts.qualify_m112_existing_reimbursement_batch as bounded
 import scripts.qualify_m112_pbs_v4_admission as shared
@@ -43,6 +43,11 @@ OUTPUT = "quality/qualifications/australian-mbs-july-frozen-v4-20261115/contract
 SILVER_PROFILE = "quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261028-40664169948/metadata/contracts/services.json"
 DISCOVERY = "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json"
 DIGEST = "quality/qualifications/australian-existing-mbs-digest-20261115/hosted-43687742836/digest-receipt.json"
+AUGUST_COMPARISON = "quality/qualifications/australian-m109-july-august-predecessor-comparison-20261018.json"
+AUGUST_COMPARISON_SHA = (
+    "73ef383cd36ca2703ddd70344b572f8904b67b8d85a1f6420036fa76e4d4954b"
+)
+AUGUST_COMPARISON_RELEASES = 2
 INPUTS = {
     SILVER_PROFILE: "6d33e261a8480edac398a863c1bbbb05630c5921651967b3994f9d4ebcd84423",
     DISCOVERY: "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556",
@@ -66,12 +71,58 @@ def _reference(path: str, sha256: str) -> dict[str, str]:
 
 def _one(rows: list[dict[str, Any]], path: str) -> dict[str, Any]:
     matches = [row for row in rows if row["path"] == path]
-    _require(len(matches) == 1, "exact July object is not unique")
+    _require(len(matches) == 1, "exact MBS object is not unique")
     return matches[0]
 
 
-def candidate(root: Path = ROOT) -> tuple[bytes, TrustedAdmissionProfile]:  # ruff: ignore[too-many-locals] -- independently bind each receipt role
+def _august_profile(
+    root: Path,
+    target: dict[str, Any],
+    life: dict[str, Any],
+    event: dict[str, Any],
+) -> dict[str, str]:
+    """Declare the later side of one documented pair, not present currency."""
+    comparison = bounded.read_bound_metadata(
+        root, AUGUST_COMPARISON, AUGUST_COMPARISON_SHA
+    )
+    releases = comparison["releases"]
+    _require(
+        comparison["status"] == "aggregate_comparison_complete"
+        and comparison["semantics_accepted"] is False
+        and comparison["silver_generated"] is False
+        and comparison["source_values_retained"] is False
+        and len(releases) == AUGUST_COMPARISON_RELEASES
+        and releases[0]["source_era"] == "2026-07-01"
+        and releases[1]["source_era"] == life["source_version"] == "2026-08-01"
+        and releases[1]["archive_official_identity_match"] is True
+        and releases[1]["archive_path"] == lineage.AUGUST
+        and releases[1]["harvest_receipt_archive_path"] == lineage.ALIAS
+        and releases[1]["sha256"] == target["sha256"]
+        and releases[1]["byte_count"] == target["byte_count"]
+        and target["path"] in {lineage.AUGUST, lineage.ALIAS}
+        and event["acquisition_id"] == life["acquisition_id"],
+        "August comparison source profile differs",
+    )
+    return {
+        "source_id": "au-mbs",
+        "acquisition_id": life["acquisition_id"],
+        # In this v4 source field the label is the release revision. It is not
+        # a qualified comparison schema or a field-semantics conclusion.
+        "schema_era": life["source_version"],
+        "comparison_cohort": "current",
+        "effective_date": "2026-08-01",
+        "retrieved_at": event["retrieved_at"],
+    }
+
+
+def candidate(  # ruff: ignore[too-many-locals] -- independently bind receipt roles
+    root: Path = ROOT, *, path: str = lineage.JULY
+) -> tuple[bytes, TrustedAdmissionProfile]:
     """Construct the exact contract and independent trust from retained evidence."""
+    _require(
+        path in {lineage.JULY, lineage.AUGUST, lineage.ALIAS},
+        "unsupported MBS path",
+    )
     values = {
         path: bounded.read_bound_metadata(root, path, digest)
         for path, digest in INPUTS.items()
@@ -82,8 +133,8 @@ def candidate(root: Path = ROOT) -> tuple[bytes, TrustedAdmissionProfile]:  # ru
     )
     history = primary.build(root)
     crosswalk, v1, _plans = lineage.build(root)
-    replay = _one(replays.build(root)["objects"], lineage.JULY)
-    provenance = _one(crosswalk["objects"], lineage.JULY)["provenance"]
+    replay = _one(replays.build(root)["objects"], path)
+    provenance = _one(crosswalk["objects"], path)["provenance"]
     target = provenance["target"]
     life = provenance["historical_b1_b2"]
     source_receipt = bounded.read_bound_metadata(
@@ -95,10 +146,17 @@ def candidate(root: Path = ROOT) -> tuple[bytes, TrustedAdmissionProfile]:  # ru
         life["acquisition_event"]["sha256"],
     )
     silver = values[SILVER_PROFILE]
-    silver_source = silver["source"]
+    silver_source = (
+        silver["source"]
+        if path == lineage.JULY
+        else _august_profile(root, target, life, event)
+    )
+    comparison_cohort: Literal["legacy", "current"] = (
+        "legacy" if path == lineage.JULY else "current"
+    )
     digest_receipt = values[DIGEST]
-    verified = _one(digest_receipt["objects"], lineage.JULY)
-    history_row = _one(history["objects"], lineage.JULY)
+    verified = _one(digest_receipt["objects"], path)
+    history_row = _one(history["objects"], path)
     _require(
         values[lineage.LINEAGE_PATH] == crosswalk
         and values[lineage.V1_PATH] == v1
@@ -117,15 +175,19 @@ def candidate(root: Path = ROOT) -> tuple[bytes, TrustedAdmissionProfile]:  # ru
         == life["acquisition_id"]
         and silver_source["source_id"] == "au-mbs"
         and silver_source["schema_era"] == life["source_version"]
-        and silver_source["comparison_cohort"] == "legacy"
-        and silver_source["effective_date"] == "2025-07-01"
+        and silver_source["comparison_cohort"] == comparison_cohort
+        and silver_source["effective_date"]
+        == ("2025-07-01" if path == lineage.JULY else "2026-08-01")
         and silver_source["retrieved_at"] == event["retrieved_at"]
-        and silver["lineage"]["inputs"][0]["sha256"]
-        == life["source_receipt"]["sha256"]
+        and (
+            path != lineage.JULY
+            or silver["lineage"]["inputs"][0]["sha256"]
+            == life["source_receipt"]["sha256"]
+        )
         and digest_receipt["workflow_run"] == "43687742836"
         and digest_receipt["boundaries"]["payload_bytes_persisted_or_emitted"]
         is False,
-        "July evidence identity, privacy or source profile differs",
+        "MBS evidence identity, privacy or source profile differs",
     )
     collection = values[DISCOVERY]["collection"]
     estate = values[DISCOVERY]["estate_registry"]
@@ -148,6 +210,8 @@ def candidate(root: Path = ROOT) -> tuple[bytes, TrustedAdmissionProfile]:  # ru
     inputs.append(
         _reference(lineage.LINEAGE_PATH, INPUTS[lineage.LINEAGE_PATH])
     )
+    if path != lineage.JULY:
+        inputs.append(_reference(AUGUST_COMPARISON, AUGUST_COMPARISON_SHA))
     v1_ref = _reference(lineage.V1_PATH, INPUTS[lineage.V1_PATH])
     v3_ref = _reference(replay["receipt"]["path"], replay["receipt"]["sha256"])
     verification = _reference(DIGEST, INPUTS[DIGEST])
@@ -293,7 +357,7 @@ def candidate(root: Path = ROOT) -> tuple[bytes, TrustedAdmissionProfile]:  # ru
         bronze_stratum="B2",
         representation="raw",
         schema_era=silver_source["schema_era"],
-        comparison_cohort=silver_source["comparison_cohort"],
+        comparison_cohort=comparison_cohort,
         effective_date=silver_source["effective_date"],
         retrieved_at=event["retrieved_at"],
         evidence_kind="live",

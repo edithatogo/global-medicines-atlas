@@ -1590,5 +1590,42 @@ acquire or publish datasets.
 - [x] Keep the synthetic Bronze exercise and checksum on PR and main events,
   but restrict its artifact upload to manual events. Focused structural
   checks and actionlint pass.
-- [~] Temporarily guard the old default workflow while integrating this change;
-  verify required hosted checks and the automatic job's actual skipped state.
+- [x] Temporarily guard the old default workflow while integrating this change.
+  PR #1454 and both post-merge workflows passed; no archive run was triggered
+  for the PR head or merge. The workflow was restored active.
+- [~] Verify an automatic PR or push run skips the live job and fixture upload
+  when a subsequent substantive change triggers it; do not dispatch it.
+
+### August frozen MBS profiles and PBS member triage — 15 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/mbs-august-v4-profiles-20261115`. This lane owns only the two
+August raw profiles, their bounded reader workflow and tests, PBS metadata-only
+triage, and this handoff. No data acquisition or publication is authorized.
+
+- [x] Validate two distinct frozen-path v4 candidates and close 14 receipt
+  roles per object in local offline trusted-profile admission. Preserve the
+  July–August comparison scope and the unresolved field semantics.
+- [x] Check exact consumer bindings and local refusal of live raw reads; the
+  protected hosted remote-reader canaries have not yet run.
+- [x] Reconcile the 1,722 unassessed PBS/reimbursement paths and triage the 33
+  recorded API member names without reading unassessed bytes or clearing any
+  privacy disposition.
+- [~] Integrate and run the exact-main hosted reader workflow after Git storage
+  returns. `/Volumes/PortableSSD` is not currently detected, so the worktree's
+  shared Git directory is unavailable; preserve these owned local edits.
+
+### Storage recovery handoff — 15 November 2026
+
+The same chat remains the sole integrator. A separate temporary **Git clone**,
+not an app-managed worktree, is at
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas/build/no-data-recovery-repo`,
+branch `codex/mbs-august-pbs-no-data-recovery-20261115`, based on main merge
+`9839417e3b61ecbe521a035341ddc6dda4c9aaa0`. The managed-worktree attempt could
+not resolve the disconnected Git store. Only the explicitly owned source,
+tests, metadata reports and handoff were copied, with byte comparisons; the
+original worktree was preserved. This clone owns the next PR and hosted check.
+When storage returns, reconcile the original owned changes against the merged
+commit before cleaning either checkout. No native dataset object is owned or
+mutated by this lane.
