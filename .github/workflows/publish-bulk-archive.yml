@@ -27,9 +27,10 @@ jobs:
   publish:
     name: Publish ${{ inputs.batch }}
     # Dedicated label; every other job in this repository targets ubuntu-24.04.
-    # Match on the explicit label alone so a platform-label spelling difference
-    # cannot silently leave the job queued forever.
-    runs-on: [self-hosted, gma-archive]
+    # The archive lives on one workstation's disk, so this job needs that
+    # machine's runner. Match on the explicit label alone so a platform-label
+    # spelling difference cannot silently leave the job queued forever.
+    runs-on: gma-archive
     timeout-minutes: 2880
     steps:
       - name: Check out the dispatched commit
