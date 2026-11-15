@@ -1460,3 +1460,20 @@ existing archive. No dataset addition or publication is authorized.
   exact roles are supported. Keep unsupported roles and independent recovery
   open. Continue PBS privacy work without reading unassessed payloads or
   exposing participant or cohort-derived material.
+
+### PBS privacy metadata context — 15 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/pbs-schema-privacy-context-20261115`, base
+`d052c5e087eb8f00220e89e88a36f92ad7dd3d32`. This lane owns a bounded PBS
+schema-context report, its tests and this handoff. It uses retained metadata;
+unassessed PBS payloads and participant or cohort-derived material are outside
+the read scope. No dataset addition or publication is authorized.
+
+- [x] Reconcile the already recorded April 2026 member schema paths to their
+  structural contexts and the exact existing archive aliases. Preserve the
+  distinction between schema labels, source values and privacy decisions.
+- [~] Validate and integrate the metadata-only result after protected checks.
+  Keep the wider PBS archive and any unassessed payload blocked; do not infer a
+  privacy clearance from absent lexical markers or a public URL.
