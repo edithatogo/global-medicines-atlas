@@ -1306,3 +1306,45 @@ or alter the frozen inventory.
   context validator pass. No archived unclassified payload was read.
 - [~] Keep rights, v4 admissions, consumer checks and independent recovery
   separate. Integrate this packet after its own exact-head protected checks.
+
+## Existing MBS object gates and PBS privacy metadata — 15 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/australian-existing-object-gates-20261115`, base
+`6bcd02a850837ea73acb4b84734754bf0f352199`. This lane owns the exact-object
+readiness reconciliation, privacy-metadata crosswalk, affected tests and this
+handoff. Prior assignments remain history; no native mutation is in scope.
+
+- [x] Bind the seven newly source-profile-assessed frozen MBS objects and four
+  outside projections to their exact existing rights, lineage, privacy and v4
+  evidence. Record distinct role and admission gaps without inferring an
+  authorization, admitting an object or running an unapproved consumer. All
+  11 have retained scoped rights and lineage evidence; two August raw aliases
+  have candidate v4 roles at a different revision. Four outside projections
+  retain the footer-adjusted replay and historical-writer limitation.
+- [x] Compare the unassessed PBS schedule objects and projections against
+  retained source-specific privacy metadata and the six separately qualified
+  PBS utilisation objects. Do not propagate an assessment across a different
+  digest, source scope or transformation; do not read unassessed payloads. The
+  1,722 PBS-related and reimbursement candidates include 1,707 schedule B1
+  records with unknown sensitivity; none matches the six screened utilisation
+  objects by both digest and size. Zero new privacy assessments were made.
+- [~] Test and review the bounded value-free packet, then integrate it without
+  adding or publishing data. Stop at genuinely missing evidence or authority;
+  preserve the frozen denominator and independent-recovery gate. The 103
+  focused tests, report regeneration, Ruff, ty, basedpyright and context
+  validator passed on Python 3.15.1; exact-head protected CI remains required.
+- [~] Repair the synthetic installed-consumer readiness-file race exposed by
+  the first PR head's Windows check. The readiness JSON is now published by
+  atomic replacement; 33 consumer tests, the deterministic partial-write
+  regression and a browser-free synthetic service probe pass locally. The
+  full local medallion test stopped before this path because the separate
+  Playwright browser was unavailable. The exact final head still needs the
+  protected Windows and other required checks.
+
+Prior PR #1443 passed 29 reported required checks on head
+`28a52abde16fbdcd112e2bd1b19782bde8bd4c86` and merged as
+`6bcd02a850837ea73acb4b84734754bf0f352199` with identical tree
+`c251f16927bdbeec224893be1816d12cc6f87ed4`. Both post-merge workflows
+`43670986718` and `43670986774` passed; no acquisition workflow ran.

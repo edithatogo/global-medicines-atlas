@@ -4,11 +4,13 @@ from __future__ import annotations
 
 import hashlib
 import json
+from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
 import pytest
 import scripts.qualify_australian_existing_derived_gates as derived_gates
+import scripts.qualify_australian_existing_object_gates as object_gates
 import scripts.qualify_australian_privacy_batch as privacy_batch
 import scripts.qualify_australian_schedule_source_privacy as mbs_source_privacy
 import scripts.qualify_m112_existing_reimbursement_batch as batch_qualification
@@ -1386,3 +1388,142 @@ def test_existing_consumer_check_rejects_unqualified_privacy(
     )
     with pytest.raises(ValueError, match="object, privacy or canary"):
         derived_gates.checked_consumers(ROOT, receipt, manifest, semantics)
+
+
+@pytest.fixture(scope="module")
+def retained_object_gate_evidence() -> dict[str, dict[str, Any]]:
+    return {
+        name: batch_qualification.read_bound_metadata(ROOT, *binding)
+        for name, binding in object_gates.INPUTS.items()
+    }
+
+
+def test_existing_object_gates_reconcile_without_promoting_data() -> None:
+    report = object_gates.build_report(ROOT)
+    assert report == _read(
+        "quality/qualifications/australian-existing-mbs-pbs-object-gates-20261115.json"
+    )
+    assert len(report["mbs_objects"]) == 11
+    assert sum(row["frozen_member"] for row in report["mbs_objects"]) == 7
+    assert all(
+        row["v4_admission"] == "not_established_by_selected_evidence"
+        and row["privacy"] == privacy_batch.ASSESSED
+        for row in report["mbs_objects"]
+    )
+    candidates = [
+        row for row in report["mbs_objects"] if row["candidate_v4_roles"]
+    ]
+    assert len(candidates) == 2
+    assert all(
+        row["candidate_v4_roles"]["revision"] != row["revision"]
+        and row["candidate_v4_roles"]["state"]
+        == "candidate_unbound_at_different_revision"
+        for row in candidates
+    )
+    pbs = report["pbs_metadata"]
+    assert pbs["unassessed_objects"] == 1722
+    assert pbs["schedule_b1_records_unknown"] == 1707
+    assert pbs["schedule_distinct_digest_size_pairs"] == 1707
+    assert pbs["same_digest_and_size_candidates"] == 0
+    assert pbs["newly_assessed_non_sensitive"] == 0
+    assert all(value is False for value in report["boundaries"].values())
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    ["frozen_rights", "outside_revision", "authorization", "candidate"],
+)
+def test_existing_mbs_gates_reject_misbound_evidence(
+    retained_object_gate_evidence: dict[str, dict[str, Any]], mutation: str
+) -> None:
+    evidence = deepcopy(retained_object_gate_evidence)
+    if mutation == "frozen_rights":
+        evidence["frozen_rights"]["authorized_objects"][0]["sha256"] = "0" * 64
+    elif mutation == "outside_revision":
+        evidence["outside_rights"]["authorized_objects"][0]["revision"] = (
+            "0" * 40
+        )
+    elif mutation == "authorization":
+        evidence["frozen_rights"]["boundaries"][
+            "v4_admission_or_promotion_authorized"
+        ] = True
+    else:
+        target = next(
+            row
+            for row in evidence["august_roles"]["objects"]
+            if row["dataset"] == object_gates.DATASET
+            and row["sha256"] == object_gates.AUGUST_DIGEST
+        )
+        target["v4_admission_eligible"] = True
+    with pytest.raises(ValueError, match=r"rights|authorization|v4 candidate"):
+        object_gates.reconcile_mbs(evidence)
+
+
+@pytest.mark.parametrize(
+    "mutation", ["screen_email", "context_digest", "projection_revision"]
+)
+def test_existing_pbs_privacy_rejects_unsupported_transfer(
+    retained_object_gate_evidence: dict[str, dict[str, Any]], mutation: str
+) -> None:
+    evidence = deepcopy(retained_object_gate_evidence)
+    if mutation == "screen_email":
+        evidence["pbs_screen"]["objects"][0]["email_like_cell_values"] = 1
+    elif mutation == "context_digest":
+        evidence["csv_header_context"]["objects"][0]["sha256"] = "0" * 64
+    else:
+        projection = next(
+            row
+            for row in evidence["privacy"]["objects"]
+            if row["batch"].startswith("reimbursement_projection_")
+        )
+        projection["revision"] = "0" * 40
+    with pytest.raises(
+        ValueError, match=r"PBS prior screened|projection privacy identity"
+    ):
+        object_gates.reconcile_pbs(evidence)
+
+
+def test_pbs_content_match_does_not_automatically_clear_privacy(
+    retained_object_gate_evidence: dict[str, dict[str, Any]],
+) -> None:
+    evidence = deepcopy(retained_object_gate_evidence)
+    row = next(
+        row
+        for row in evidence["privacy"]["objects"]
+        if row["batch"].startswith("pbs_schedule_")
+    )
+    source = next(
+        item
+        for item in evidence["reimbursement"]["objects"]
+        if item["dataset"] == row["dataset"] and item["path"] == row["path"]
+    )
+    screened = evidence["pbs_qualified"]["objects"][0]
+    for target in (row, source):
+        target["sha256"] = screened["sha256"]
+        target["byte_count"] = screened["byte_count"]
+    result = object_gates.reconcile_pbs(evidence)
+    assert result["same_digest_and_size_candidates"] == 1
+    assert result["matching_candidates_gain_privacy_clearance"] is False
+    assert result["newly_assessed_non_sensitive"] == 0
+    assert result["unassessed_payload_reads_permitted"] is False
+
+
+def test_existing_object_gate_check_never_opens_payload_files(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    original = Path.open
+
+    def metadata_only(path: Path, *args: Any, **kwargs: Any) -> Any:
+        if path.suffix.lower() in {
+            ".xml",
+            ".parquet",
+            ".zip",
+            ".csv",
+            ".pdf",
+            ".xlsx",
+        }:
+            raise AssertionError("object gate check must not open payloads")
+        return original(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", metadata_only)
+    assert len(object_gates.build_report(ROOT)["mbs_objects"]) == 11
