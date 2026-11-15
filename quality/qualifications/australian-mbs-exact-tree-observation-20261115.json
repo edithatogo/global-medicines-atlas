@@ -1,0 +1,122 @@
+{
+  "boundaries": {
+    "dataset_mutated": false,
+    "participant_or_cohort_data_accessed": false,
+    "source_or_projection_payload_read": false
+  },
+  "objects": [
+    {
+      "byte_count": 24367,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "expected_sha256": "2da8606d3e408294bcfdc914906de4814d33c1a72acf5a2ba40f91473267516a",
+      "git_blob_oid": "82a21620eda34069201b1d21f9cdfe97599ddb1c",
+      "lfs_sha256": "2da8606d3e408294bcfdc914906de4814d33c1a72acf5a2ba40f91473267516a",
+      "metadata_endpoint": "https://huggingface.co/api/datasets/edithatogo/australian-mbs-source-archive/tree/243f9ff5498816af6e4d9ae4db60528728f01834/bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64?limit=100&expand=true",
+      "path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/p7.parquet",
+      "revision": "243f9ff5498816af6e4d9ae4db60528728f01834"
+    },
+    {
+      "byte_count": 454247,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "expected_sha256": "80f8e0d3cc67f6f3a22f23cc3bfb0db5da4d44d79741da3ce1c31ee92836627a",
+      "git_blob_oid": "f5e7cae061195071d11bae16a3492303ebfdd450",
+      "lfs_sha256": "80f8e0d3cc67f6f3a22f23cc3bfb0db5da4d44d79741da3ce1c31ee92836627a",
+      "metadata_endpoint": "https://huggingface.co/api/datasets/edithatogo/australian-mbs-source-archive/tree/243f9ff5498816af6e4d9ae4db60528728f01834/bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64?limit=100&expand=true",
+      "path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/source.parquet",
+      "revision": "243f9ff5498816af6e4d9ae4db60528728f01834"
+    },
+    {
+      "byte_count": 24367,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "expected_sha256": "6362f7f3a5d9870545cc074450b81a82475d68fdb062f38083713f56bd88d2fe",
+      "git_blob_oid": "a290c0e35a9c53a094923c563b30ee00a1594b28",
+      "lfs_sha256": "6362f7f3a5d9870545cc074450b81a82475d68fdb062f38083713f56bd88d2fe",
+      "metadata_endpoint": "https://huggingface.co/api/datasets/edithatogo/australian-mbs-source-archive/tree/243f9ff5498816af6e4d9ae4db60528728f01834/bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc?limit=100&expand=true",
+      "path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/p7.parquet",
+      "revision": "243f9ff5498816af6e4d9ae4db60528728f01834"
+    },
+    {
+      "byte_count": 454247,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "expected_sha256": "5219094d2ec7f4386380b356cc17f071c97751db43ed367746a6d07ca4ff3eaf",
+      "git_blob_oid": "8bc093ee4776353adb21d5c044c0059eff1e9b39",
+      "lfs_sha256": "5219094d2ec7f4386380b356cc17f071c97751db43ed367746a6d07ca4ff3eaf",
+      "metadata_endpoint": "https://huggingface.co/api/datasets/edithatogo/australian-mbs-source-archive/tree/243f9ff5498816af6e4d9ae4db60528728f01834/bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc?limit=100&expand=true",
+      "path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/source.parquet",
+      "revision": "243f9ff5498816af6e4d9ae4db60528728f01834"
+    },
+    {
+      "byte_count": 24367,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "expected_sha256": "c4aa29f9d4bdc683e4720649c551f59c21d6c72c40db732795f9a27a060609f7",
+      "git_blob_oid": "24b17174681a588b90a7f73b204ab7d104b762ed",
+      "lfs_sha256": "c4aa29f9d4bdc683e4720649c551f59c21d6c72c40db732795f9a27a060609f7",
+      "metadata_endpoint": "https://huggingface.co/api/datasets/edithatogo/australian-mbs-source-archive/tree/b925a8a80b0f90db09513e7ce1378045461b05c0/bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b?limit=100&expand=true",
+      "path": "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b/p7.parquet",
+      "revision": "b925a8a80b0f90db09513e7ce1378045461b05c0"
+    },
+    {
+      "byte_count": 454247,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "expected_sha256": "02693aaa7d1aea9fc66f13061e8081ffbeea486f057e2f716caa4906ac6dda96",
+      "git_blob_oid": "e8ee0cfd11ffcf29a1851c844da0ada779a9d521",
+      "lfs_sha256": "02693aaa7d1aea9fc66f13061e8081ffbeea486f057e2f716caa4906ac6dda96",
+      "metadata_endpoint": "https://huggingface.co/api/datasets/edithatogo/australian-mbs-source-archive/tree/b925a8a80b0f90db09513e7ce1378045461b05c0/bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b?limit=100&expand=true",
+      "path": "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b/source.parquet",
+      "revision": "b925a8a80b0f90db09513e7ce1378045461b05c0"
+    },
+    {
+      "byte_count": 24367,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "expected_sha256": "50ce02b896984a4065a9f132890f38f19ec430c3f435dc589b1cbd978111dd69",
+      "git_blob_oid": "3b5cfa9de5c1232ac89e67a97d902faa7416b044",
+      "lfs_sha256": "50ce02b896984a4065a9f132890f38f19ec430c3f435dc589b1cbd978111dd69",
+      "metadata_endpoint": "https://huggingface.co/api/datasets/edithatogo/australian-mbs-source-archive/tree/b925a8a80b0f90db09513e7ce1378045461b05c0/bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63?limit=100&expand=true",
+      "path": "bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/p7.parquet",
+      "revision": "b925a8a80b0f90db09513e7ce1378045461b05c0"
+    },
+    {
+      "byte_count": 454247,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "expected_sha256": "553399aa06830708a1dfb74351b5b49b6a799d7bd7b7584ab86aad168227369c",
+      "git_blob_oid": "cda54a7f88a7753177264ba5b73dbdaa73c9c14e",
+      "lfs_sha256": "553399aa06830708a1dfb74351b5b49b6a799d7bd7b7584ab86aad168227369c",
+      "metadata_endpoint": "https://huggingface.co/api/datasets/edithatogo/australian-mbs-source-archive/tree/b925a8a80b0f90db09513e7ce1378045461b05c0/bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63?limit=100&expand=true",
+      "path": "bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/source.parquet",
+      "revision": "b925a8a80b0f90db09513e7ce1378045461b05c0"
+    },
+    {
+      "byte_count": 8194522,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "expected_sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+      "git_blob_oid": "33b9ac313ff4a0f55168ae47556626fb0610a0bb",
+      "lfs_sha256": null,
+      "metadata_endpoint": "https://huggingface.co/api/datasets/edithatogo/australian-mbs-source-archive/tree/243f9ff5498816af6e4d9ae4db60528728f01834/raw/mbs/2025-07?limit=100&expand=true",
+      "path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+      "revision": "243f9ff5498816af6e4d9ae4db60528728f01834"
+    },
+    {
+      "byte_count": 8293331,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "expected_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+      "git_blob_oid": "025c714ecd1fa69f91fdb4de002d285d47272e40",
+      "lfs_sha256": null,
+      "metadata_endpoint": "https://huggingface.co/api/datasets/edithatogo/australian-mbs-source-archive/tree/243f9ff5498816af6e4d9ae4db60528728f01834/raw/mbs/releases/2026-08-01?limit=100&expand=true",
+      "path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+      "revision": "243f9ff5498816af6e4d9ae4db60528728f01834"
+    },
+    {
+      "byte_count": 8293331,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "expected_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+      "git_blob_oid": "025c714ecd1fa69f91fdb4de002d285d47272e40",
+      "lfs_sha256": null,
+      "metadata_endpoint": "https://huggingface.co/api/datasets/edithatogo/australian-mbs-source-archive/tree/243f9ff5498816af6e4d9ae4db60528728f01834/raw/mbs/releases/Downloads-20260801?limit=100&expand=true",
+      "path": "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
+      "revision": "243f9ff5498816af6e4d9ae4db60528728f01834"
+    }
+  ],
+  "observed_at": "2026-11-15T06:00:35.485348+00:00",
+  "schema_id": "global-medicines-atlas.mbs-exact-revision-tree-metadata-observation",
+  "schema_version": 1
+}
