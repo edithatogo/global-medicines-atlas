@@ -801,7 +801,7 @@ def _validate_setup_versions(
 
 
 ARCHIVE_RUNNER = "gma-archive"
-ARCHIVE_WORKFLOW = "publish-bulk-archive.yml"
+ARCHIVE_WORKFLOW = WORKFLOWS_PATH / "publish-bulk-archive.yml"
 
 
 def _validate_runners(
@@ -823,7 +823,7 @@ def _validate_runners(
         if not isinstance(value, str)
         or (
             value not in allowed
-            and not (path.name == ARCHIVE_WORKFLOW and value == ARCHIVE_RUNNER)
+            and not (path == ARCHIVE_WORKFLOW and value == ARCHIVE_RUNNER)
         )
     ]
     if not occurrences or drift:
