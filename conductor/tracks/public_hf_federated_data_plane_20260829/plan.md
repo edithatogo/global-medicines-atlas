@@ -1532,3 +1532,21 @@ focused tests and this handoff. It adds or publishes no dataset.
   source payload files or values. Independent recovery remains open.
 - [~] Preserve the separate v4 admission, consumer and independent-replica
   gates; integrate after the exact-head checks pass.
+
+### Frozen July MBS v4 admission and reader check — 15 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/mbs-july-frozen-v4-check-20261115`. This lane owns only the
+existing July raw object's v4 candidate, bounded admission and reader workflow,
+focused tests and this handoff. No dataset mutation is authorized.
+
+- [x] Bind the July exact identity, previously assessed non-sensitive source,
+  scoped rights and existing source profile to its immutable v4 role evidence.
+  The metadata-only local closure verified 13 roles at 10 distinct locations
+  and the independently configured candidate admission passed locally.
+- [~] Run the guarded exact-main workflow after required checks and retain its
+  value-free hosted admission and consumer receipt. No hosted reader result
+  is claimed by local closure or synthetic tests.
+- [~] Keep August and projection contracts, independent recovery and overall
+  federation acceptance separate and open until their own evidence is qualified.
