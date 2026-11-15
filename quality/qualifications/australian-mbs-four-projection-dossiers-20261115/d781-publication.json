@@ -1,0 +1,17 @@
+{
+  "admission_state": "accepted",
+  "anonymous_digest_verification": "passed",
+  "data_acquired": true,
+  "dataset": "edithatogo/australian-mbs-source-archive",
+  "legacy_paths_preserved": 52,
+  "manifest_path": "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b/manifest.json",
+  "manifest_sha256": "92eda66dcdc34902ec88f3d13faeb61c13d09fb4c944ad7a1ef0be8c2ac1a93c",
+  "parent_revision": "d9c3605b7ed70047539eefc6b803b6b0800b4de8",
+  "record_count": 6046,
+  "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+  "schema_id": "global-medicines-atlas.mbs-hosted-publication",
+  "temporary_source_bytes_removed": true,
+  "verified_objects": 8,
+  "workflow_commit": "12e5ca4678e077f8e6bf954aaa780aac83040994",
+  "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37066153375"
+}

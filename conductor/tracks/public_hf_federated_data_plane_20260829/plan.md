@@ -1240,3 +1240,31 @@ The preceding crosswalk was merged as PR #1438: checked head
 `42b40a438f934306bc2a601d8ce632d671aa1662`, with 29 required checks passed.
 Post-merge Test-Goblin run `43645937655` succeeded with 29 successful jobs and
 one skipped optional Hudi preview. The acquisition workflow did not run.
+
+## Four existing MBS projection dossiers (2026-11-15)
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/mbs-projection-dossiers-20261115`, base
+`d86cd8eb1268a15c912ce36f7017b5ad22ca6316`. Reconcile the four exact public
+August MBS projection identities, their retained producer metadata and code,
+rights, source privacy and existing admission states. Stop at a documented,
+reproducible disposition for each object. Do not inspect source or projection
+payloads, admit outputs, run consumer canaries, add datasets, publish dataset
+bytes, change the frozen inventory or access participant or cohort data.
+
+- [x] Bind four separate objects to their exact producer manifests, source
+  receipts, published-byte verification and pinned tree metadata. Check the
+  twelve relevant historical workflow and code blobs against their commits.
+- [x] Reconcile the legacy accepted-unreviewed sidecar and the later accepted
+  raw lifecycle without mistaking either for projection-v4 admission. Record
+  the source sensitivity and the distinct unqualified output privacy state.
+- [x] Verify the metadata-only report with 46 focused tests, fail-closed
+  controls, Ruff, both type checkers and the context validator on Python
+  3.15.1. The [dossiers](../../../quality/qualifications/australian-mbs-four-projection-dossiers-20261115.json)
+  and [explanation](../../../docs/qualification/australian-mbs-four-projection-dossiers-20261115.md)
+  preserve the provenance and remaining gates.
+- [~] All four output privacy assessments, v4 contracts and separate
+  admission decisions, authorized consumer checks and independent recovery
+  remain open. The dossiers do not change the M-112 denominator or admit data.
+- [~] Integrate the evidence packet after exact-head protected checks.

@@ -1,0 +1,275 @@
+{
+  "boundaries": {
+    "consumer_canary_performed": false,
+    "dataset_added_or_published": false,
+    "federation_accepted": false,
+    "frozen_inventory_changed": false,
+    "participant_or_cohort_data_accessed": false,
+    "rights_conclusion_changed": false,
+    "source_or_projection_payload_read": false,
+    "v4_admission_performed": false
+  },
+  "dossiers": [
+    {
+      "bronze_state": "accepted_unreviewed_predecessor_not_recorded_not_v4",
+      "bronze_state_at_pinned_revision": "accepted_unreviewed_not_v4",
+      "byte_count": 24367,
+      "consumer_check": "not_performed",
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "frozen_m112_member": false,
+      "historical_primary_digest_verification": "passed_for_manifest_and_its_objects",
+      "independent_recovery": "not_qualified",
+      "manifest": "d781_manifest",
+      "output_privacy": "not_qualified_without_output_specific_evidence",
+      "path": "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b/p7.parquet",
+      "payload_read_permitted_by_this_report": false,
+      "privacy": "not_qualified_in_selected_evidence",
+      "producer": "d781",
+      "producer_lineage": "manifest_and_historical_producer_code_bound_independent_reproduction_not_performed",
+      "producer_reported_records": 165,
+      "product_id": "d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b",
+      "publication_receipt": "d781_publication",
+      "raw_lifecycle": "no_landed_predecessor_in_legacy_producer_receipt",
+      "remaining": [
+        "Qualify exact output-specific privacy and source-to-output lineage without exposing participant or cohort data.",
+        "Complete product-specific federation-v4 contract and separate admission decision.",
+        "Qualify independent recovery and authorized consumer checks."
+      ],
+      "revision": "b925a8a80b0f90db09513e7ce1378045461b05c0",
+      "rights": "maintainer_attested_exact_path_digest_at_prior_revision",
+      "rights_attestation_revision": "42d73b6facac016f14a335d36d83f1a3b630add8",
+      "role": "p7_parquet",
+      "sha256": "c4aa29f9d4bdc683e4720649c551f59c21d6c72c40db732795f9a27a060609f7",
+      "source_privacy": "non_sensitive_in_exact_producer_source_receipt",
+      "source_receipt": "d781_receipt",
+      "source_receipt_acquisition_id": "caa6da91b9a87a5094fc803b378321430bdd9c609b36298c8205747bc7651e81",
+      "source_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+      "status": "dossier_completed_output_gates_blocked",
+      "v4_admission": "not_performed"
+    },
+    {
+      "bronze_state": "accepted_unreviewed_predecessor_not_recorded_not_v4",
+      "bronze_state_at_pinned_revision": "accepted_unreviewed_not_v4",
+      "byte_count": 454247,
+      "consumer_check": "not_performed",
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "frozen_m112_member": false,
+      "historical_primary_digest_verification": "passed_for_manifest_and_its_objects",
+      "independent_recovery": "not_qualified",
+      "manifest": "d781_manifest",
+      "output_privacy": "not_qualified_without_output_specific_evidence",
+      "path": "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b/source.parquet",
+      "payload_read_permitted_by_this_report": false,
+      "privacy": "not_qualified_in_selected_evidence",
+      "producer": "d781",
+      "producer_lineage": "manifest_and_historical_producer_code_bound_independent_reproduction_not_performed",
+      "producer_reported_records": 6046,
+      "product_id": "d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b",
+      "publication_receipt": "d781_publication",
+      "raw_lifecycle": "no_landed_predecessor_in_legacy_producer_receipt",
+      "remaining": [
+        "Qualify exact output-specific privacy and source-to-output lineage without exposing participant or cohort data.",
+        "Complete product-specific federation-v4 contract and separate admission decision.",
+        "Qualify independent recovery and authorized consumer checks."
+      ],
+      "revision": "b925a8a80b0f90db09513e7ce1378045461b05c0",
+      "rights": "maintainer_attested_exact_path_digest_at_prior_revision",
+      "rights_attestation_revision": "42d73b6facac016f14a335d36d83f1a3b630add8",
+      "role": "source_parquet",
+      "sha256": "02693aaa7d1aea9fc66f13061e8081ffbeea486f057e2f716caa4906ac6dda96",
+      "source_privacy": "non_sensitive_in_exact_producer_source_receipt",
+      "source_receipt": "d781_receipt",
+      "source_receipt_acquisition_id": "caa6da91b9a87a5094fc803b378321430bdd9c609b36298c8205747bc7651e81",
+      "source_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+      "status": "dossier_completed_output_gates_blocked",
+      "v4_admission": "not_performed"
+    },
+    {
+      "bronze_state": "product_sidecar_not_observed_at_pinned_revision",
+      "bronze_state_at_pinned_revision": "sidecar_not_observed_at_pinned_revision",
+      "byte_count": 24367,
+      "consumer_check": "not_performed",
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "frozen_m112_member": false,
+      "historical_primary_digest_verification": "passed_for_manifest_and_its_objects",
+      "independent_recovery": "not_qualified",
+      "manifest": "f9f9_manifest",
+      "output_privacy": "not_qualified_without_output_specific_evidence",
+      "path": "bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/p7.parquet",
+      "payload_read_permitted_by_this_report": false,
+      "privacy": "not_qualified_in_selected_evidence",
+      "producer": "f9f9",
+      "producer_lineage": "manifest_and_historical_producer_code_bound_independent_reproduction_not_performed",
+      "producer_reported_records": 165,
+      "product_id": "f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63",
+      "publication_receipt": "f9f9_publication",
+      "raw_lifecycle": "separately_accepted_raw_b1_b2_not_projection_admission",
+      "remaining": [
+        "Qualify exact output-specific privacy and source-to-output lineage without exposing participant or cohort data.",
+        "Complete product-specific federation-v4 contract and separate admission decision.",
+        "Qualify independent recovery and authorized consumer checks."
+      ],
+      "revision": "b925a8a80b0f90db09513e7ce1378045461b05c0",
+      "rights": "maintainer_attested_exact_path_digest_at_prior_revision",
+      "rights_attestation_revision": "42d73b6facac016f14a335d36d83f1a3b630add8",
+      "role": "p7_parquet",
+      "sha256": "50ce02b896984a4065a9f132890f38f19ec430c3f435dc589b1cbd978111dd69",
+      "source_privacy": "non_sensitive_in_exact_producer_source_receipt",
+      "source_receipt": "f9f9_receipt",
+      "source_receipt_acquisition_id": "fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd",
+      "source_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+      "status": "dossier_completed_output_gates_blocked",
+      "v4_admission": "not_performed"
+    },
+    {
+      "bronze_state": "product_sidecar_not_observed_at_pinned_revision",
+      "bronze_state_at_pinned_revision": "sidecar_not_observed_at_pinned_revision",
+      "byte_count": 454247,
+      "consumer_check": "not_performed",
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "frozen_m112_member": false,
+      "historical_primary_digest_verification": "passed_for_manifest_and_its_objects",
+      "independent_recovery": "not_qualified",
+      "manifest": "f9f9_manifest",
+      "output_privacy": "not_qualified_without_output_specific_evidence",
+      "path": "bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/source.parquet",
+      "payload_read_permitted_by_this_report": false,
+      "privacy": "not_qualified_in_selected_evidence",
+      "producer": "f9f9",
+      "producer_lineage": "manifest_and_historical_producer_code_bound_independent_reproduction_not_performed",
+      "producer_reported_records": 6046,
+      "product_id": "f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63",
+      "publication_receipt": "f9f9_publication",
+      "raw_lifecycle": "separately_accepted_raw_b1_b2_not_projection_admission",
+      "remaining": [
+        "Qualify exact output-specific privacy and source-to-output lineage without exposing participant or cohort data.",
+        "Complete product-specific federation-v4 contract and separate admission decision.",
+        "Qualify independent recovery and authorized consumer checks."
+      ],
+      "revision": "b925a8a80b0f90db09513e7ce1378045461b05c0",
+      "rights": "maintainer_attested_exact_path_digest_at_prior_revision",
+      "rights_attestation_revision": "42d73b6facac016f14a335d36d83f1a3b630add8",
+      "role": "source_parquet",
+      "sha256": "553399aa06830708a1dfb74351b5b49b6a799d7bd7b7584ab86aad168227369c",
+      "source_privacy": "non_sensitive_in_exact_producer_source_receipt",
+      "source_receipt": "f9f9_receipt",
+      "source_receipt_acquisition_id": "fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd",
+      "source_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+      "status": "dossier_completed_output_gates_blocked",
+      "v4_admission": "not_performed"
+    }
+  ],
+  "inputs": {
+    "d781_admission": {
+      "path": "quality/qualifications/australian-mbs-four-projection-dossiers-20261115/d781-admission.json",
+      "sha256": "0b03029faa0f5abcbf245bfea4b3064074d3a665ee464d99e83e5fc9f33b2a4a"
+    },
+    "d781_hosted": {
+      "path": "quality/qualifications/australian-m112-mbs-hosted-receipt-20261003.json",
+      "sha256": "64dcd866c212f422c188462c49f0e19fc7e0802e7c2e31c6dad360fa2a958918"
+    },
+    "d781_manifest": {
+      "path": "quality/qualifications/australian-mbs-four-projection-dossiers-20261115/d781-manifest.json",
+      "sha256": "92eda66dcdc34902ec88f3d13faeb61c13d09fb4c944ad7a1ef0be8c2ac1a93c"
+    },
+    "d781_publication": {
+      "path": "quality/qualifications/australian-mbs-four-projection-dossiers-20261115/d781-publication.json",
+      "sha256": "bf814073f3d3bd4a1ee82d4d066145a827554b7c054244b4cc11eb9e47abb42e"
+    },
+    "d781_receipt": {
+      "path": "quality/qualifications/australian-mbs-four-projection-dossiers-20261115/d781-source-receipt.json",
+      "sha256": "24703e52245ac5605618c4d19be1cea4adc71f067e77a411b274be3b21d60bf7"
+    },
+    "f9f9_lifecycle": {
+      "path": "quality/qualifications/australian-mbs-bronze-source-receipt-20261004.json",
+      "sha256": "de64938e8ae5b6c0f91c959e7b2eba6b157f1d50fba41cf1705430b861b6a7f4"
+    },
+    "f9f9_manifest": {
+      "path": "quality/qualifications/australian-mbs-four-projection-dossiers-20261115/f9f9-manifest.json",
+      "sha256": "feea0cb0f8179568e99230afc830571293d99aa4f4de04800b6b43fc0e40115f"
+    },
+    "f9f9_publication": {
+      "path": "quality/qualifications/australian-mbs-four-projection-dossiers-20261115/f9f9-publication.json",
+      "sha256": "b11cde21c5b4bd8595cb9204b3a9bac24efc9065c6d43ae06c300e3217328d24"
+    },
+    "f9f9_receipt": {
+      "path": "quality/qualifications/australian-mbs-four-projection-dossiers-20261115/f9f9-source-receipt.json",
+      "sha256": "e741e662dcdf1d64a187af46d8069effe6323b8664cdc90398c4adcb04cad90d"
+    },
+    "mbs_f9_disposition": {
+      "path": "quality/qualifications/australian-mbs-august-f9f9-prefix-disposition-20261028.json",
+      "sha256": "30f04f37de72252648fe1a4c07c6488024f56c10cec35d810f3e91534155aaf4"
+    },
+    "mbs_rights": {
+      "path": "quality/qualifications/australian-mbs-august-outside-m112-projection-rights-attestation-20261020.json",
+      "sha256": "dc5a53ffaed82e758bbe918f0615b5158bdbdf65ad41da2193c6c84ba41841c5"
+    },
+    "mbs_scope": {
+      "path": "quality/qualifications/australian-mbs-public-august-projection-scope-exception-20261020.json",
+      "sha256": "b8fb9f024cea21f4364db9867c73a44afea61615148b49a7ffd7bfffdf6edac2"
+    },
+    "mbs_tree": {
+      "path": "quality/qualifications/australian-mbs-august-projection-current-tree-readback-20261028.json",
+      "sha256": "941d85a576523bdf0bfa5a137ebbddac503c939b0fe6f75abe57c6828a6c4c03"
+    },
+    "workflow": {
+      "path": "quality/qualifications/australian-mbs-four-projection-dossiers-20261115/workflow-readback.json",
+      "sha256": "aa3c3c8114957cd33bb18264e80dc9d3a7d4d4f585de9faff9abcb9b176831a4"
+    }
+  },
+  "limitations": [
+    "Producer manifests, historical code and anonymous digest receipts support declared lineage; they do not replace a source-to-output replay or output-specific privacy assessment.",
+    "The source-receipt transformation describes raw acquisition, not the Parquet transformation.",
+    "Manifest row counts are producer-reported, not measured by this metadata-only check.",
+    "The recorded public-release attestation does not authorize v4 admission or consumer canaries; the primary archive is not an independent replica.",
+    "The four outputs are outside the frozen M-112 inventory and do not change its admission denominator."
+  ],
+  "producers": {
+    "d781": {
+      "acquisition_id": "caa6da91b9a87a5094fc803b378321430bdd9c609b36298c8205747bc7651e81",
+      "code_sha256": {
+        ".github/workflows/australian-mbs-release.yml": "256ab37f805550b761f04866d5765f12cd3c104eca338e9cc5a4b62f98b333ab",
+        "src/global_medicines_atlas/adapters/_receipt.py": "afa94ba955c4723b275addb0b55200636aaf82eeaabcd5ac0b23aefcf2684020",
+        "src/global_medicines_atlas/adapters/au_mbs.py": "f874882bb7e0d3675b791e6cc10393595c705f7b2a977dcff1388a0c27862363",
+        "src/global_medicines_atlas/mbs_compatibility.py": "3d7a4263a020a7f9569968b3007f5d10a8a52b067154eed67281bd5a52eae111",
+        "src/global_medicines_atlas/mbs_publication.py": "8c3c3cee1fdbd57535d44ede632a6d3cd0cfe9d5ae4ebb797d00e4c89ac918b8",
+        "src/global_medicines_atlas/mbs_release.py": "41b344750a8612f97b3f49f19505523335e2eb4b8808be35a1a8aaaa70814fad"
+      },
+      "commit": "12e5ca4678e077f8e6bf954aaa780aac83040994",
+      "event": "schedule",
+      "product_id": "d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b",
+      "publication_comment": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5961659754",
+      "receipt_id": "mbs-release:7dc24e0ef99669f379678b9fa8d25eaf8700c659b7576984d2c41a582f96fcd8",
+      "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+      "run_id": 37066153375
+    },
+    "f9f9": {
+      "acquisition_id": "fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd",
+      "code_sha256": {
+        ".github/workflows/australian-mbs-release.yml": "7dbf28bfac50b05fa993b8bb939121983d479978b419518405f2742034529ec8",
+        "src/global_medicines_atlas/adapters/_receipt.py": "afa94ba955c4723b275addb0b55200636aaf82eeaabcd5ac0b23aefcf2684020",
+        "src/global_medicines_atlas/adapters/au_mbs.py": "f874882bb7e0d3675b791e6cc10393595c705f7b2a977dcff1388a0c27862363",
+        "src/global_medicines_atlas/mbs_compatibility.py": "3d7a4263a020a7f9569968b3007f5d10a8a52b067154eed67281bd5a52eae111",
+        "src/global_medicines_atlas/mbs_publication.py": "c59d04968a0bc47d4641779e3c9f9a2718d7af9a1ddba6947eec6650c8c5c2cf",
+        "src/global_medicines_atlas/mbs_release.py": "d59e04b58783912b557dff53ee536a3cbf7d39725ebb2e77d11bedfc29417828"
+      },
+      "commit": "644f3f6cfd2b76b0866d5ecb90dde397d67a51eb",
+      "event": "workflow_dispatch",
+      "product_id": "f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63",
+      "publication_comment": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5974855613",
+      "receipt_id": "mbs-release:dab6a3a2793596b485fb6b1825837a13ade8bce04a897b65002c7794a6832cfb",
+      "revision": "abdf414cdea0127d3edda6f8af402d1a01139623",
+      "run_id": 37163925043
+    }
+  },
+  "recorded_on": "2026-11-15",
+  "schema_id": "global-medicines-atlas.australian-mbs-four-projection-dossiers",
+  "schema_version": 1,
+  "summary": {
+    "dossiers_completed": 4,
+    "independent_recoveries_qualified": 0,
+    "new_consumer_canaries": 0,
+    "new_v4_admissions": 0,
+    "output_privacy_qualified": 0
+  }
+}
