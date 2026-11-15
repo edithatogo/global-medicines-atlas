@@ -39,8 +39,18 @@ Source-structure results also declare `view=records` or `view=fields`.
 The 100-row source-structure limit and existing admission, digest, cache and
 source-structure identity checks remain in force. The view exposes native
 presence/value observations; a native `state` is not a semantic interpretation
-state. Qualified semantic overlays remain independently bound. It establishes
+state. API and CLI JSON pages and the CLI JSONL summary declare
+`semantic_overlay_state=not_applied`; Atlas explains this limit alongside the
+rows. This describes the query view, not a finding that no separately qualified
+semantic evidence exists. Qualified semantic overlays remain independently bound. It establishes
 no current status, payable benefit, patient rate, vocabulary meaning or link.
+
+The source-structure canary compares API and CLI JSON state and identity, checks
+the JSONL records and safety-relevant summary against the API, repeats the
+bounded export to check byte stability, and checks the Atlas wording and rows.
+Cache-specific query receipts may differ between independently opened resolvers;
+the comparison retains the pinned identity and query digest rather than treating
+those different cache observations as the same receipt.
 
 Synthetic fixture tests establish implementation behavior only. Real derived
 consumer qualification still requires an exact admitted output and bounded

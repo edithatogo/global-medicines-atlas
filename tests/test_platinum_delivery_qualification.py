@@ -290,10 +290,17 @@ def test_source_structure_qualification_checks_bounds_and_consumer_agreement(
     class FailedExport:
         exit_code = 1
 
+    original_invoke = qualification.CliRunner.invoke
+
+    def fail_export(self, app, arguments, **kwargs):
+        if "--format" in arguments:
+            return FailedExport()
+        return original_invoke(self, app, arguments, **kwargs)
+
     monkeypatch.setattr(
         qualification.CliRunner,
         "invoke",
-        lambda *_args, **_kwargs: FailedExport(),
+        fail_export,
     )
     with pytest.raises(ValueError, match="CLI export failed"):
         qualification.qualify_structure_consumers(**options)
@@ -302,10 +309,15 @@ def test_source_structure_qualification_checks_bounds_and_consumer_agreement(
         exit_code = 0
         stdout = "{}\n"
 
+    def invalid_export(self, app, arguments, **kwargs):
+        if "--format" in arguments:
+            return InvalidExport()
+        return original_invoke(self, app, arguments, **kwargs)
+
     monkeypatch.setattr(
         qualification.CliRunner,
         "invoke",
-        lambda *_args, **_kwargs: InvalidExport(),
+        invalid_export,
     )
     with pytest.raises(ValueError, match="export evidence differs"):
         qualification.qualify_structure_consumers(**options)

@@ -1851,3 +1851,42 @@ Local evidence: `quality/qualifications/platinum-local-export-installed-20261103
 binds the exact `db1eb4a7` commit/tree and installed artifact identities. Both
 local and public forms pass in each core-only environment. Review preserved
 the original public-form installed checks; no existing gate was relaxed.
+
+## Bounded semantic and consumer safety — 15 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/australian-semantic-consumer-safety-20261115`, base
+`d26837a5fc21756f274fd510fd6d1f055714ef78`. This lane owns bounded
+source-structure consumer qualification, its focused tests and this track
+handoff. Other assignments remain history; no native mutation is in scope.
+
+- [x] Add an explicit `semantic_overlay_state=not_applied` to structure pages
+  and JSONL summaries and explain native state versus interpretation in Atlas.
+  The qualifier compares API, CLI JSON and the JSONL safety summary, checks a
+  repeated export, and validates the Atlas rows and interpretation notice.
+- [x] Reconcile the PBS field-state partition, MBS workbook header and value
+  boundaries, and retained six-object MBS consumer receipts. Record the result
+  in `docs/qualification/australian-semantic-consumer-safety-20261115.md`.
+  Only existing metadata and synthetic objects were used. Candidate-only PBS
+  and workbook reads, datasets, publication, admissions and federation
+  acceptance remain outside this bounded check.
+- [x] Review the change against the source-structure contract and negative
+  controls. The first focused red run had eight expected failures and one
+  already-passing record-type guard. After correction, 139 focused tests pass;
+  Ruff, format, `ty`, BasedPyright and context validation pass. Python is
+  3.15.1. The initial direct script invocation lacked the repository module
+  path; the supported `python -m scripts.qualify_australian_existing_derived_gates`
+  invocation passed both stored-report and fresh-receipt checks. Protected CI
+  remains required on the final PR head.
+- [x] Review follow-up: reject malformed, empty, non-object and non-finite CLI
+  exports and a missing Atlas interpretation notice. A focused branch-coverage
+  diagnostic exercises all changed executable lines in the qualification
+  module; it does not replace the protected project-wide coverage gate. The
+  final focused selection passes 145 tests with scoped static checks.
+
+Prior privacy batch PR #1442 passed 29 required checks on head
+`04a08346d157a77d6cb5acc30f3afebae9b25038` and merged as
+`d26837a5fc21756f274fd510fd6d1f055714ef78`, with checked tree
+`66f80b40eccb657f19a652186cc5c173575aa1c5`. It assessed exact source
+profiles without publishing data or claiming overall privacy clearance.
