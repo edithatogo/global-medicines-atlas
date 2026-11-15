@@ -1,0 +1,77 @@
+{
+  "boundaries": {
+    "b2_reference_existed_at_original_retrieval": "not_established",
+    "bronze_processing_or_v4_admission": false,
+    "dataset_acquired_or_published": false,
+    "events_and_b2_references_are_original_historical_files": false,
+    "participant_or_cohort_data_accessed": false,
+    "source_payload_read_or_written": false
+  },
+  "recorded_on": "2026-11-15",
+  "records": [
+    {
+      "acquisition_id": "783bd12fab14dc8f93cb34b1d87e9c3f7c95543d261b008f4e0da018a3d11e57",
+      "archive_identity": {
+        "byte_count": 8293331,
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+        "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+        "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+      },
+      "existing_archive_verified_at": "2026-11-15T06:57:38.446300+00:00",
+      "later_b2_reference": {
+        "path": "quality/qualifications/australian-mbs-august-source-reconstruction-20261115/99fa-b2-reference.json",
+        "sha256": "483133cc323e077bc2df6e1ac1da709616d76d782c6a32046bc94c40f8199f43"
+      },
+      "original_receipt": {
+        "path": "quality/qualifications/australian-privacy-batch-20261115/frozen-99-source-receipt.json",
+        "sha256": "4f694fd7364061cd05fee33ea52e6dbeef17d1067b8437f72e726ab168fc2fc7"
+      },
+      "original_retrieved_at": "2026-08-30T06:29:11.031891+00:00",
+      "producer": "99fa",
+      "projection_paths": [
+        "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/p7.parquet",
+        "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/source.parquet"
+      ],
+      "reconstructed_event": {
+        "path": "quality/qualifications/australian-mbs-august-source-reconstruction-20261115/99fa-acquisition.json",
+        "sha256": "1aebb8fc0bb044b20aadfa36992fe7e39977c8118adc5b9530fe5c368129ddf4"
+      }
+    },
+    {
+      "acquisition_id": "caa6da91b9a87a5094fc803b378321430bdd9c609b36298c8205747bc7651e81",
+      "archive_identity": {
+        "byte_count": 8293331,
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+        "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+        "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+      },
+      "existing_archive_verified_at": "2026-11-15T06:57:38.446300+00:00",
+      "later_b2_reference": {
+        "path": "quality/qualifications/australian-mbs-august-source-reconstruction-20261115/d781-b2-reference.json",
+        "sha256": "fd253bf409441345eea5d812761de72b5b669674c25d57aab94b9f816d8a4ba2"
+      },
+      "original_receipt": {
+        "path": "quality/qualifications/australian-mbs-four-projection-dossiers-20261115/d781-source-receipt.json",
+        "sha256": "24703e52245ac5605618c4d19be1cea4adc71f067e77a411b274be3b21d60bf7"
+      },
+      "original_retrieved_at": "2026-10-02T21:20:13.009835+00:00",
+      "producer": "d781",
+      "projection_paths": [
+        "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b/p7.parquet",
+        "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b/source.parquet"
+      ],
+      "reconstructed_event": {
+        "path": "quality/qualifications/australian-mbs-august-source-reconstruction-20261115/d781-acquisition.json",
+        "sha256": "a559bda1849a66325bae34f054b79103ea53b1b412eb793639e077ca097968b7"
+      }
+    }
+  ],
+  "schema_id": "global-medicines-atlas.mbs-august-reconstructed-source-metadata",
+  "schema_version": 1,
+  "source_digest_evidence": {
+    "path": "quality/qualifications/australian-existing-mbs-digest-20261115/hosted-43687742836/digest-receipt.json",
+    "sha256": "bbfd25983a89d7aba244a71bd2372b6c23f7d05cc2065a3506bf49e618f08191"
+  }
+}

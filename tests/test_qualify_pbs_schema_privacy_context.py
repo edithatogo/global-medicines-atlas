@@ -3,9 +3,12 @@
 from __future__ import annotations
 
 import copy
+import json
+from pathlib import Path
 from typing import Any
 
 import pytest
+import scripts.qualify_pbs_acquisition_privacy_coverage as coverage
 import scripts.qualify_pbs_member_privacy_triage as triage
 import scripts.qualify_pbs_schema_privacy_context as qualification
 from scripts.qualify_m112_existing_reimbursement_batch import (
@@ -162,3 +165,29 @@ def test_wrong_identity_or_unsafe_privacy_change_fails_closed(
         ValueError, match="PBS member or privacy inventory differs"
     ):
         triage.reconcile(privacy, api, previous)
+
+
+def test_acquisition_events_are_unknown_and_do_not_clear_any_path() -> None:
+    result = coverage.build()
+    assert result["event_manifest"]["file_count"] == 1702
+    assert result["matched"]["paths"] == 1703
+    assert result["matched"]["distinct_sha256_values"] == 1702
+    assert result["matched"]["event_sensitivity"] == "unknown"
+    assert result["matched"]["event_personal_data"] == "unknown"
+    assert result["unmatched_in_scoped_event_directory"]["paths"] == 19
+    assert result["boundaries"]["privacy_clearances_added"] == 0
+    assert not any(result["boundaries"].values())
+
+
+def test_acquisition_event_privacy_change_requires_review(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(coverage, "EXPECTED_EVENTS", 1)
+    event_dir = tmp_path / coverage.EVENT_DIRECTORY
+    event_dir.mkdir(parents=True)
+    original = next((coverage.ROOT / coverage.EVENT_DIRECTORY).glob("*.json"))
+    event = json.loads(original.read_bytes())
+    event["sensitivity"]["personal_data"] = "none"
+    (event_dir / original.name).write_text(json.dumps(event))
+    with pytest.raises(ValueError, match="recorded privacy state differs"):
+        coverage._events(tmp_path)  # pyright: ignore[reportPrivateUsage]

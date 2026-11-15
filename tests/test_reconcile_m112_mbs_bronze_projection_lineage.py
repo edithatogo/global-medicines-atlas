@@ -5,18 +5,24 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+from dataclasses import replace
 from datetime import UTC, datetime
 from io import BytesIO
 from pathlib import Path
 
 import pyarrow.parquet as pq
 import pytest
+import scripts.check_mbs_august_projection_consumers as consumer_preflight
 import scripts.qualify_mbs_august_projection_field_lineage as field_lineage
+import scripts.qualify_mbs_august_projection_replay as projection_replay
+import scripts.reconcile_mbs_august_projection_sources as source_reconstruction
 from pydantic import AnyUrl
 from scripts.reconcile_m112_mbs_bronze_projection_lineage import (
     rebuild_projection_bytes,
 )
 
+from global_medicines_atlas.bronze_raw_evidence import RawEvidenceManifest
+from global_medicines_atlas.federation_consumer import ConsumerBinding
 from global_medicines_atlas.receipts import (
     AcquisitionMethod,
     AcquisitionStatus,
@@ -203,3 +209,142 @@ def test_synthetic_projection_preserves_native_fields_and_filters_p7() -> None:
         "SubItemNum"
     ] is None
     assert all_rows[1] == p7_rows[0]
+
+
+def test_reconstructed_source_metadata_preserves_original_acquisition() -> None:
+    outputs = source_reconstruction.build()
+    report = json.loads(outputs[source_reconstruction.REPORT])
+    assert len(report["records"]) == 2
+    assert (
+        report["boundaries"]["b2_reference_existed_at_original_retrieval"]
+        == "not_established"
+    )
+    for row in report["records"]:
+        event = outputs[row["reconstructed_event"]["path"]]
+        b2 = RawEvidenceManifest.model_validate_json(
+            outputs[row["later_b2_reference"]["path"]]
+        )
+        assert (
+            hashlib.sha256(event).hexdigest()
+            == row["reconstructed_event"]["sha256"]
+        )
+        assert b2.rows[0].acquisition_id == row["acquisition_id"]
+        assert b2.rows[0].content_id == field_lineage.SOURCE_SHA
+        assert field_lineage.FROZEN_REVISION in str(
+            b2.rows[0].external_reference
+        )
+        assert len(row["projection_paths"]) == 2
+
+
+def test_reconstructed_event_rejects_changed_source_identity() -> None:
+    name = "99fa"
+    receipt_path, _ = field_lineage.INPUTS[f"receipt_{name}"]
+    receipt = SourceReceipt.model_validate_json(
+        (field_lineage.ROOT / receipt_path).read_bytes()
+    )
+    with pytest.raises(ValueError, match="identity or classification"):
+        source_reconstruction._event(receipt, "0" * 64)  # pyright: ignore[reportPrivateUsage]
+
+
+def test_projection_metadata_replays_keep_each_output_identity() -> None:
+    outputs = projection_replay.build()
+    report = json.loads(outputs[projection_replay.REPORT])
+    assert len(report["objects"]) == 8
+    assert (
+        len({
+            (r["dataset"], r["revision"], r["path"]) for r in report["objects"]
+        })
+        == 8
+    )
+    assert (
+        sum(
+            r["independent_replica_required_before_admission"]
+            for r in report["objects"]
+        )
+        == 2
+    )
+    assert sum(r["source"]["reconstructed_now"] for r in report["objects"]) == 4
+    assert (
+        report["historical_projection_reproduction_performed_by_this_replay"]
+        is False
+    )
+    assert not any(report["boundaries"].values())
+    _, fields = field_lineage.build()
+    by_path = {row["path"]: row for row in fields["objects"]}
+    sources = projection_replay._sources(projection_replay.ROOT)  # pyright: ignore[reportPrivateUsage]
+    for row in report["objects"]:
+        packet = projection_replay._plan(  # pyright: ignore[reportPrivateUsage]
+            projection_replay.ROOT,
+            by_path[row["path"]],
+            sources[row["producer"]],
+            fields["v2_lineage"]["sha256"],
+        )
+        plan = packet["plan"]
+        assert plan["snapshots"][0]["payload_sha256"] == row["sha256"]
+        assert (
+            plan["replay_plan"]["steps"][0]["expected_byte_count"]
+            == row["byte_count"]
+        )
+        assert (
+            hashlib.sha256(
+                (json.dumps(plan, indent=2, sort_keys=True) + "\n").encode()
+            ).hexdigest()
+            == row["plan"]["sha256"]
+        )
+        assert row["plan"]["generated_and_validated_in_memory"] is True
+
+
+def test_projection_registration_rejects_changed_output_metadata() -> None:
+    _, report = field_lineage.build()
+    row = report["objects"][0]
+    source = projection_replay._sources(projection_replay.ROOT)["6bc9"]  # pyright: ignore[reportPrivateUsage]
+    packet = projection_replay._plan(  # pyright: ignore[reportPrivateUsage]
+        projection_replay.ROOT, row, source, report["v2_lineage"]["sha256"]
+    )
+    packet["metadata"]["projection"]["byte_count"] += 1
+    with pytest.raises(ValueError, match="registration identity"):
+        projection_replay._register(packet["plan"], packet["metadata"])  # pyright: ignore[reportPrivateUsage]
+
+
+def test_all_august_consumer_probes_refuse_unadmitted_reads() -> None:
+    report = consumer_preflight.build()
+    assert len(report["objects"]) == 8
+    assert all(
+        row["synthetic_v4_shape_and_consumer_identity"] == "passed"
+        and row["reader_refuses_without_admission"] == "passed"
+        and row["actual_v4_admission"] == "not_performed"
+        and row["actual_payload_consumer_canary"] == "not_performed"
+        for row in report["objects"]
+    )
+    assert (
+        sum(
+            row["independent_replica_required_before_admission"]
+            for row in report["objects"]
+        )
+        == 2
+    )
+    assert not any(report["boundaries"].values())
+
+
+def test_consumer_probe_rejects_an_identity_mismatch(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    bind = consumer_preflight.bind_consumer_contract
+
+    def wrong_digest(
+        raw: bytes, *, consumer_repository: str, consumer_commit: str
+    ) -> ConsumerBinding:
+        return replace(
+            bind(
+                raw,
+                consumer_repository=consumer_repository,
+                consumer_commit=consumer_commit,
+            ),
+            object_sha256="0" * 64,
+        )
+
+    monkeypatch.setattr(
+        consumer_preflight, "bind_consumer_contract", wrong_digest
+    )
+    with pytest.raises(ValueError, match="consumer identity binding differs"):
+        consumer_preflight.build()
