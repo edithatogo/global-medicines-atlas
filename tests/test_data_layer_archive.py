@@ -12,6 +12,7 @@ from types import SimpleNamespace
 import httpx
 import pyarrow.parquet as pq
 import pytest
+import yaml
 from pydantic import ValidationError
 from scripts import archive_data_layer as archive_script
 
@@ -1142,6 +1143,35 @@ def test_archive_workflow_is_sha_pinned_and_covers_four_authorities() -> None:
     assert "--upload" not in package_block
     assert "vendor/nzmedicines" not in workflow
     assert "nz-nzulm-bulk" not in workflow or "skip" in workflow.casefold()
+
+
+def test_automatic_archive_events_cannot_retrieve_or_publish() -> None:
+    workflow = yaml.safe_load(WORKFLOW.read_text(encoding="utf-8"))
+    retrieval_jobs = []
+    for job in workflow["jobs"].values():
+        for step in job.get("steps", []):
+            command = step.get("run", "")
+            if (
+                "scripts/archive_data_layer.py" in command
+                and "--retrieve" in command
+            ):
+                retrieval_jobs.append(job)
+    assert len(retrieval_jobs) == 1
+    assert (
+        workflow[True]["workflow_dispatch"]["inputs"]["acquire"]["default"]
+        is False
+    )
+    assert retrieval_jobs[0]["if"] == (
+        "github.event_name == 'workflow_dispatch' && inputs.acquire"
+    )
+    publisher = next(
+        step
+        for step in retrieval_jobs[0]["steps"]
+        if step.get("name") == "Publish to Hugging Face"
+    )
+    assert publisher["if"] == (
+        "github.event_name == 'workflow_dispatch' && inputs.publish"
+    )
 
 
 def test_data_layer_cli_rejects_local_dataset_upload(

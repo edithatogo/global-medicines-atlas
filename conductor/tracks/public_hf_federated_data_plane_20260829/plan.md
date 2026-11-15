@@ -1576,3 +1576,19 @@ artifact was removed. Its first unit lane also exposed a stale 14/1,745
 acceptance-note assertion; the updated 15/1,744 assertion passes locally. Hold
 the archive workflow disabled until the next head's CI events are observed,
 then restore it and check for unintended runs.
+
+### No-acquisition CI guard — 15 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/archive-ci-no-acquisition-20261115`. This lane owns the
+data-layer archive workflow guard, focused tests and this handoff. It does not
+acquire or publish datasets.
+
+- [x] Require a manual event and an explicit, default-off acquisition input for
+  the live retrieval job. Preserve the separate publication condition.
+- [x] Keep the synthetic Bronze exercise and checksum on PR and main events,
+  but restrict its artifact upload to manual events. Focused structural
+  checks and actionlint pass.
+- [~] Temporarily guard the old default workflow while integrating this change;
+  verify required hosted checks and the automatic job's actual skipped state.
