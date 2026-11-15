@@ -1,0 +1,52 @@
+{
+  "boundaries": {
+    "dataset_added_or_published": false,
+    "federation_gate_closed": false,
+    "independent_recovery_established": false,
+    "participant_or_cohort_data_accessed": false,
+    "source_values_retained_or_interpreted": false
+  },
+  "effective_counts": {
+    "deferred_objects": 1744,
+    "frozen_denominator_changed": false,
+    "frozen_objects": 1759,
+    "raw_admitted_object_reader_canaries": 15,
+    "raw_v4_admissions": 15
+  },
+  "increment": {
+    "raw_admitted_object_reader_canaries": 1,
+    "raw_v4_admissions": 1
+  },
+  "inputs": {
+    "quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261028.json": {
+      "path": "quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261028.json",
+      "sha256": "c556cf596514d7cb69bce0a188f87460ad2746c3afacc559cec8ebd56cd7a3a3"
+    },
+    "quality/qualifications/australian-m112-frozen-object-inventory-20261018.json": {
+      "path": "quality/qualifications/australian-m112-frozen-object-inventory-20261018.json",
+      "sha256": "eaa1d84325c7672100398acf8116f0312369ca336d42ed21eee110452d3fefa4"
+    },
+    "quality/qualifications/australian-mbs-july-frozen-v4-20261115/hosted-43699976886/artifact-manifest.json": {
+      "path": "quality/qualifications/australian-mbs-july-frozen-v4-20261115/hosted-43699976886/artifact-manifest.json",
+      "sha256": "76d1b0434a7d8f27edb79e66db2d0f6e975d96d1a1cd9f9aa65bee79f6e4cdd9"
+    },
+    "quality/qualifications/australian-mbs-july-frozen-v4-20261115/hosted-43699976886/qualification.json": {
+      "path": "quality/qualifications/australian-mbs-july-frozen-v4-20261115/hosted-43699976886/qualification.json",
+      "sha256": "ebdbb16158ba7e92a765c7e2468b4b60a43774d1e4566db4e1d17792469026c0"
+    }
+  },
+  "new_admission": {
+    "approved_dataset_revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+    "artifact": 14156300585,
+    "byte_count": 8194522,
+    "contract_sha256": "8c2032a7831b263f2792a9283759a96b9b91875cef8a685f4e010d84051664b9",
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "job": 132768761227,
+    "later_reconciliation_revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+    "path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+    "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+    "workflow_run": 43699976886
+  },
+  "schema_id": "global-medicines-atlas.m112-july-frozen-raw-delivery-reconciliation",
+  "schema_version": 1
+}

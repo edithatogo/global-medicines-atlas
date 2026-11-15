@@ -1545,8 +1545,34 @@ focused tests and this handoff. No dataset mutation is authorized.
   scoped rights and existing source profile to its immutable v4 role evidence.
   The metadata-only local closure verified 13 roles at 10 distinct locations
   and the independently configured candidate admission passed locally.
-- [~] Run the guarded exact-main workflow after required checks and retain its
-  value-free hosted admission and consumer receipt. No hosted reader result
-  is claimed by local closure or synthetic tests.
+- [x] Run the guarded exact-main workflow and verify its value-free artifact.
+  Run `43699976886` passed trusted admission and the remote reader against the
+  approved frozen revision; its 13 receipt roles and cache cleanup were checked.
 - [~] Keep August and projection contracts, independent recovery and overall
   federation acceptance separate and open until their own evidence is qualified.
+
+### Frozen July MBS hosted admission ledger — 15 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/mbs-july-frozen-v4-ledger-20261115`. This lane owns the hosted
+metadata receipt, exact-member delivery reconciliation, focused tests and
+this handoff. No dataset mutation is authorized.
+
+- [x] Verify native artifact digest, ZIP CRC, exact member, v4 closure, trusted
+  admission, remote reader digest and zero cache after close.
+- [x] Confirm the approved frozen dataset revision is `243f9ff5498816af6e4d9ae4db60528728f01834`;
+  the later `40891976f77ee5e7688edceed25c9ac98a77547e` is a separate
+  reconciliation revision. The approved membership key is dataset plus path.
+- [~] Integrate the 15-admitted, 15-reader, 1,744-deferred ledger only after
+  required exact-head CI. Preserve independent recovery and broader federation
+  acceptance as open.
+
+The first ledger PR head triggered an unintended automatic archive run after
+the workflow was restored. Run `43700614570` was cancelled after its retrieval
+step started; per-file retrieval cannot be determined from its log. Packaged
+archive and Hugging Face uploads were skipped, and its synthetic-fixture CI
+artifact was removed. Its first unit lane also exposed a stale 14/1,745
+acceptance-note assertion; the updated 15/1,744 assertion passes locally. Hold
+the archive workflow disabled until the next head's CI events are observed,
+then restore it and check for unintended runs.

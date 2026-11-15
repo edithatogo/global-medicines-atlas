@@ -6,6 +6,10 @@ data, change a rights decision, admit an object, run a consumer or add or
 publish a dataset. The [machine-readable report](../../quality/qualifications/australian-existing-mbs-pbs-object-gates-20261115.json)
 records all eleven MBS identities and the exact evidence bindings.
 
+This is a point-in-time assessment. A subsequent [hosted qualification](australian-mbs-july-frozen-v4-20261115.md)
+admitted and reader-checked the July raw object at its approved frozen revision;
+the other ten objects retain the boundaries described below.
+
 ## Eleven MBS objects
 
 | Objects | Retained rights and lineage evidence | Remaining v4 boundary |

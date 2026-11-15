@@ -48,6 +48,10 @@ candidate plan, registration hash, run identity and privacy boundaries. The
 source bytes were streamed without materialization; these are not independent
 replica or primary-restore receipts. No v4 admission or reader canary is claimed.
 
+After those replay receipts were retained, the July object separately passed
+[hosted v4 admission and a reader check](australian-mbs-july-frozen-v4-20261115.md).
+The two August raw objects still require their own v4 admission and reader evidence.
+
 ## Primary restore preparation
 
 The dispatch-only `australian-mbs-frozen-primary-restore.yml` workflow is

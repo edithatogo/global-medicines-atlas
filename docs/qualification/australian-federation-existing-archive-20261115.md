@@ -33,8 +33,10 @@ covers January 2015 to September 2026.
 The 13 November identity comparison matched all 1,759 frozen paths against
 the then-pinned public metadata. It is retained as historical evidence, not
 represented as a fresh 15 November scan. The effective raw delivery ledger
-records 14 admitted objects and 14 corresponding reader checks, with 1,745
-objects deferred. The six previously admitted July 2025 MBS Silver tables and
+now records 15 admitted objects and 15 corresponding reader checks, with 1,744
+objects deferred. The [latest reconciliation](../../quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261115.json)
+adds the July 2025 MBS XML at its approved frozen revision after a successful
+[hosted admission and reader check](https://github.com/edithatogo/global-medicines-atlas/actions/runs/43699976886). The six previously admitted July 2025 MBS Silver tables and
 their [consumer evidence](../../quality/qualifications/platinum-actual-consumer-reconciliation-20261028.json)
 are separate from those raw counts. The April 2026 PBS Silver output is not
 v4-admitted. Archive presence, reader tests and role checks do not themselves
@@ -53,8 +55,8 @@ binds each existing admission to its exact non-sensitive contract and hosted
 consumer receipt. All eight passed remote and streamed digest checks, including
 the 1993–2015 aggregate tranche, without emitting source values. One first
 attempt received a GitHub receipt rate limit before the reader ran; one bounded
-retry passed and both attempts remain recorded. These are repeat checks, so
-the 14-admitted, 14-checked and 1,745-deferred ledger is unchanged.
+retry passed and both attempts remain recorded. These are repeat checks and did not themselves change the ledger. The later
+July XML check above is a separate new admission.
 
 The later [derived-gate packet](../../quality/qualifications/australian-existing-derived-gates-20261115.json)
 binds four existing August MBS projections outside the frozen M-112 inventory

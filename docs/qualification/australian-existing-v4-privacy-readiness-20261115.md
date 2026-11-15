@@ -6,6 +6,11 @@ participant or cohort-derived data, change rights, perform an admission, or
 claim independent recovery. The [machine-readable report](../../quality/qualifications/australian-existing-v4-privacy-readiness-20261115.json)
 retains the exact inputs and the eleven individual MBS identities.
 
+A subsequent [July raw v4 qualification](australian-mbs-july-frozen-v4-20261115.md)
+passed hosted admission and a reader check at the approved frozen revision.
+That later result does not change the other ten identities or the historical
+status recorded in this readiness report.
+
 ## MBS exact-revision identity and recovery
 
 Hosted run [43687742836](https://github.com/edithatogo/global-medicines-atlas/actions/runs/43687742836)
