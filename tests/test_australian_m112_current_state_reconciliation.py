@@ -9,9 +9,11 @@ from typing import Any
 
 import pytest
 import scripts.qualify_australian_existing_derived_gates as derived_gates
+import scripts.qualify_australian_privacy_batch as privacy_batch
 import scripts.qualify_australian_schedule_source_privacy as mbs_source_privacy
 import scripts.qualify_m112_existing_reimbursement_batch as batch_qualification
 import scripts.qualify_mbs_four_projection_dossiers as mbs_dossiers
+import scripts.reconcile_mbs_privacy_replay as privacy_replay
 
 ROOT = Path(__file__).resolve().parents[1]
 RECONCILIATION = (
@@ -1029,6 +1031,211 @@ def test_mbs_projection_dossiers_reject_changed_consumer_authority(
     )
     with pytest.raises(ValueError, match="consumer authorization boundary"):
         mbs_dossiers.build_report(ROOT)
+
+
+def test_existing_archive_privacy_batch_preserves_per_object_dispositions() -> (
+    None
+):
+    report = privacy_batch.build_report(ROOT)
+    assert report == _read(
+        "quality/qualifications/australian-existing-archive-privacy-batch-20261115.json"
+    )
+    assert report["summary"] == {
+        "newly_assessed_non_sensitive_frozen": 7,
+        "newly_assessed_non_sensitive_outside_frozen": 4,
+        "prior_separate_silver_profiles": 6,
+        "frozen_unassessed": 1732,
+        "outside_unassessed": 1,
+        "new_admissions": 0,
+        "new_consumer_checks": 0,
+    }
+    assert len(report["objects"]) == 1750
+    assert (
+        len({
+            (row["dataset"], row["path"], row["sha256"])
+            for row in report["objects"]
+        })
+        == 1750
+    )
+    assert all(value is False for value in report["boundaries"].values())
+    assert report["batches"]["pbs_schedule_pdf_unassessed"] == 1047
+    assert report["batches"]["pbs_schedule_archived_pdf_unassessed"] == 5
+    assert report["batches"]["pbs_schedule_zip_unassessed"] == 652
+    assert report["batches"]["pbs_schedule_csv_unassessed"] == 3
+    assert (
+        report["batches"]["mbs_historical_zip_structurally_profiled_unassessed"]
+        == 5
+    )
+    assert (
+        report["batches"]["mbs_demographic_workbook_profiled_unassessed"] == 1
+    )
+    assert report["batches"]["other_mbs_schedule_raw_unassessed"] == 5
+    assert report["batches"]["pbs_frozen_raw_unassessed"] == 1
+    assert report["batches"]["pbs_frozen_projection_unassessed"] == 1
+    assert all(
+        row["privacy"] == privacy_batch.UNKNOWN
+        for row in report["objects"]
+        if row["batch"].startswith("pbs_schedule_")
+    )
+
+
+def _synthetic_parquet_footer(prefix: bytes, marker: bytes) -> bytes:
+    footer = b"synthetic-footer:" + marker + b":end"
+    return (
+        b"PAR1" + prefix + footer + len(footer).to_bytes(4, "little") + b"PAR1"
+    )
+
+
+def test_mbs_replay_changes_only_writer_marker_in_footer() -> None:
+    original = _synthetic_parquet_footer(
+        b"synthetic-body", privacy_replay.NEW_MARKER
+    )
+    adjusted, positions = privacy_replay.adjusted_writer_footer(original)
+    assert len(adjusted) == len(original)
+    assert adjusted == original.replace(
+        privacy_replay.NEW_MARKER, privacy_replay.OLD_MARKER
+    )
+    assert positions["footer_start"] <= positions["marker_offset"]
+    assert original[-8:] == adjusted[-8:]
+
+
+@pytest.mark.parametrize("case", ["wrong_magic", "outside_footer", "duplicate"])
+def test_mbs_replay_rejects_unsafe_writer_marker(case: str) -> None:
+    if case == "wrong_magic":
+        value = b"not-parquet"
+    elif case == "outside_footer":
+        value = _synthetic_parquet_footer(
+            privacy_replay.NEW_MARKER, b"no-marker"
+        )
+    else:
+        value = _synthetic_parquet_footer(b"", privacy_replay.NEW_MARKER * 2)
+    with pytest.raises(ValueError, match=r"Parquet boundaries|writer marker"):
+        privacy_replay.adjusted_writer_footer(value)
+
+
+@pytest.mark.parametrize("mutation", ["source", "digest", "footer", "boundary"])
+def test_mbs_outside_privacy_rejects_misbound_replay(mutation: str) -> None:
+    observation = _read(privacy_batch.EVIDENCE["outside_replay"][0])
+    prior = _read(privacy_batch.EVIDENCE["outside_dossiers"][0])
+    if mutation == "source":
+        observation["source"]["sha256"] = "0" * 64
+    elif mutation == "digest":
+        observation["objects"][0]["footer_adjusted_sha256"] = "0" * 64
+    elif mutation == "footer":
+        observation["objects"][0]["marker_offset"] = 0
+    else:
+        observation["boundaries"]["participant_or_cohort_data_accessed"] = True
+    with pytest.raises(ValueError, match="Outside MBS replay"):
+        privacy_batch._check_outside_replay(observation, prior)
+
+
+def test_mbs_replay_rejects_unknown_source_before_reading(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    original = batch_qualification.read_bound_metadata
+    event_path = mbs_source_privacy.SOURCE_RECEIPTS[privacy_replay.EVENT_ID][0]
+
+    def unknown_source(root: Path, path: str, digest: str) -> dict[str, Any]:
+        value = original(root, path, digest)
+        if path == event_path:
+            value["sensitivity"]["data_sensitivity"] = "unknown"
+        return value
+
+    def forbidden_read(_root: Path = ROOT) -> bytes:
+        raise AssertionError("unclassified source must not be read")
+
+    monkeypatch.setattr(
+        batch_qualification, "read_bound_metadata", unknown_source
+    )
+    monkeypatch.setattr(
+        privacy_replay, "read_classified_source", forbidden_read
+    )
+    with pytest.raises(ValueError, match="source classification is not exact"):
+        privacy_replay.replay(ROOT)
+
+
+def test_direct_mbs_source_read_rechecks_privacy_before_network(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    original = batch_qualification.read_bound_metadata
+    event_path = mbs_source_privacy.SOURCE_RECEIPTS[privacy_replay.EVENT_ID][0]
+
+    def unknown_source(root: Path, path: str, digest: str) -> dict[str, Any]:
+        value = original(root, path, digest)
+        if path == event_path:
+            value["sensitivity"]["personal_data"] = "unknown"
+        return value
+
+    def forbidden_network(*_args: Any, **_kwargs: Any) -> Any:
+        raise AssertionError("unclassified source must not reach the network")
+
+    monkeypatch.setattr(
+        batch_qualification, "read_bound_metadata", unknown_source
+    )
+    monkeypatch.setattr(privacy_replay.httpx, "Client", forbidden_network)
+    with pytest.raises(ValueError, match="source classification is not exact"):
+        privacy_replay.read_classified_source(ROOT)
+
+
+def test_pbs_public_location_does_not_promote_privacy() -> None:
+    report = _read(privacy_batch.EVIDENCE["reimbursement"][0])
+    row = next(
+        r
+        for r in report["objects"]
+        if r["representation"] == "raw_source_payload"
+    )
+    event = _read(row["metadata_references"]["acquisition_event_path"])
+    assert privacy_batch._pbs_group(row, event).startswith("pbs_schedule_")
+    event["sensitivity"]["personal_data"] = "none"
+    with pytest.raises(
+        ValueError, match="PBS source privacy or provenance differs"
+    ):
+        privacy_batch._pbs_group(row, event)
+
+
+def test_mbs_frozen_privacy_rejects_receipt_with_query_data() -> None:
+    lineage = _read(privacy_batch.EVIDENCE["frozen_replay"][0])
+    receipts = {
+        name: _read(privacy_batch.EVIDENCE[name][0])
+        for name in ("frozen_6bc_receipt", "frozen_99_receipt")
+    }
+    receipts["frozen_99_receipt"]["retrieval"]["uri"] += "?unexpected=1"
+    with pytest.raises(ValueError, match="projection source receipt differs"):
+        privacy_batch._check_frozen_replay(lineage, receipts)
+
+
+def test_historical_structural_profiles_cannot_clear_privacy() -> None:
+    documents = {
+        name: _read(path)
+        for name, (path, _digest) in privacy_batch.EVIDENCE.items()
+        if name.startswith("historical_")
+    }
+    profiles = privacy_batch._historical_mbs_profiles(documents)
+    assert len(profiles) == 6
+    assert all(
+        profile["batch"].endswith("unassessed") for profile in profiles.values()
+    )
+    documents["historical_zip_0"]["result"]["members_held"] = 1
+    with pytest.raises(
+        ValueError, match="Historical MBS ZIP structural evidence differs"
+    ):
+        privacy_batch._historical_mbs_profiles(documents)
+
+
+def test_privacy_batch_does_not_read_archived_payloads(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    original = Path.open
+
+    def metadata_only(path: Path, *args: Any, **kwargs: Any) -> Any:
+        if path.suffix.lower() in {".xml", ".parquet", ".zip", ".csv", ".pdf"}:
+            raise AssertionError(
+                "privacy batch must not open archived payloads"
+            )
+        return original(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", metadata_only)
+    assert len(privacy_batch.build_report(ROOT)["objects"]) == 1750
 
 
 @pytest.mark.parametrize(
