@@ -9,6 +9,7 @@ import math
 from datetime import UTC, date, datetime
 from decimal import Decimal
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any, Literal, cast
 
 import httpx
@@ -946,21 +947,22 @@ def test_field_view_flows_through_real_service_api_atlas_and_cli(
             f"/api/v2/source-structure/{resource_id}",
             params={
                 "view": "fields",
-                "columns": ["source_field_id", "value"],
+                "columns": ["source_field_id", "value", "state"],
                 "limit": 2,
             },
         )
         assert response.status_code == 200
         body = response.json()
+        assert body["semantic_overlay_state"] == "not_applied"
         assert body["rows"] == [
-            {"source_field_id": "a/text", "value": "001"},
-            {"source_field_id": "a/attribute", "value": None},
+            {"source_field_id": "a/text", "value": "001", "state": "present"},
+            {"source_field_id": "a/attribute", "value": None, "state": "null"},
         ]
         later = api.get(
             f"/api/v2/source-structure/{resource_id}",
             params={
                 "view": "fields",
-                "columns": ["source_field_id", "value"],
+                "columns": ["source_field_id", "value", "state"],
                 "limit": 2,
                 "offset": 2,
             },
@@ -968,7 +970,11 @@ def test_field_view_flows_through_real_service_api_atlas_and_cli(
         assert later.status_code == 200
         later_body = later.json()
         assert later_body["rows"] == [
-            {"source_field_id": "d/text", "value": "source only"}
+            {
+                "source_field_id": "d/text",
+                "value": "source only",
+                "state": "present",
+            }
         ]
         assert later_body["offset"] == 2
         assert later_body["query_sha256"] != body["query_sha256"]
@@ -983,7 +989,7 @@ def test_field_view_flows_through_real_service_api_atlas_and_cli(
             params={
                 "resource_id": resource_id,
                 "view": "fields",
-                "columns": "source_field_id,value",
+                "columns": "source_field_id,value,state",
                 "limit": 2,
                 "offset": 2,
             },
@@ -991,6 +997,7 @@ def test_field_view_flows_through_real_service_api_atlas_and_cli(
         assert page.status_code == 200
         assert "d/text" in page.text
         assert "a/text" not in page.text
+        assert "Semantic field interpretation has not been applied" in page.text
         assert body["identity"]["object_sha256"] in page.text
         trust, schema = tmp_path / "trust.json", tmp_path / "schema.json"
         trust.write_text("{}")
@@ -1015,6 +1022,8 @@ def test_field_view_flows_through_real_service_api_atlas_and_cli(
                 "source_field_id",
                 "--column",
                 "value",
+                "--column",
+                "state",
                 "--limit",
                 "2",
                 "--offset",
@@ -1023,12 +1032,92 @@ def test_field_view_flows_through_real_service_api_atlas_and_cli(
         )
         assert result.exit_code == 0, result.stderr
         cli_page = json.loads(result.stdout)
+        assert cli_page["semantic_overlay_state"] == "not_applied"
         assert cli_page["rows"] == later_body["rows"]
         assert cli_page["query_sha256"] == later_body["query_sha256"]
         assert (
             cli_page["identity"]["object_sha256"]
             == body["identity"]["object_sha256"]
         )
+
+
+def test_unavailable_structure_remains_unavailable_across_surfaces(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    resource_id = "au.mbs.service-items"
+
+    def loader(**_kwargs):
+        return resolver(
+            native_field_collection_payload(),
+            semantic_dimension="source_structure",
+        )
+
+    with loader() as client:
+        service = SourceStructureService(
+            client, jurisdictions={resource_id: "AU"}
+        )
+        api = TestClient(
+            create_v2_app(cast("Any", object()), source_structure=service)
+        )
+        response = api.get(
+            f"/api/v2/source-structure/{resource_id}",
+            params={"view": "fields", "columns": "value", "offline": "true"},
+        )
+        body = response.json()
+        assert response.status_code == 200
+        assert body["status"] == "unavailable"
+        assert body["rows"] == []
+        assert body["semantic_overlay_state"] == "not_applied"
+        atlas = TestClient(
+            create_atlas_app(
+                cast("AtlasQueryService", object()),
+                federated_source_structure=service,
+            )
+        )
+        page = atlas.get(
+            "/federated/source-structure",
+            params={
+                "resource_id": resource_id,
+                "view": "fields",
+                "columns": "value",
+                "offline": "true",
+            },
+        )
+        assert "No verified cached copy is available" in page.text
+        assert "Semantic field interpretation has not been applied" in page.text
+
+    trust, schema = tmp_path / "trust.json", tmp_path / "schema.json"
+    trust.write_text("{}")
+    schema.write_text("{}")
+    monkeypatch.setattr(cli, "_dataset_resolver_loader", lambda: loader)
+    result = CliRunner().invoke(
+        cli.app,
+        [
+            "source-structure",
+            resource_id,
+            "--trust-file",
+            str(trust),
+            "--metadata-root",
+            str(tmp_path),
+            "--schema-file",
+            str(schema),
+            "--view",
+            "fields",
+            "--column",
+            "value",
+            "--offline",
+            "--format",
+            "jsonl",
+        ],
+    )
+    assert result.exit_code == 3
+    summary = json.loads(result.stdout)
+    assert summary["type"] == "summary"
+    assert summary["status"] == "unavailable"
+    assert summary["row_count"] == 0
+    assert summary["coverage_state"] == "not_declared"
+    assert summary["source_completeness"] == "not_established"
+    assert summary["semantic_overlay_state"] == "not_applied"
 
 
 @pytest.mark.parametrize("engine", ["duckdb", "polars"])
@@ -1174,3 +1263,159 @@ def test_source_structure_qualification_exercises_actual_consumers(
     )
     assert seen == [{"source_structure_view": "fields"}]
     assert browser_report["browser_qualification"] == "passed"
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("type", "record"),
+        ("status", "unavailable"),
+        ("view", "records"),
+        ("offset", 1),
+        ("offset", False),
+        ("row_count", 0),
+        ("comparison_validity", "valid"),
+        ("semantic_overlay_state", "applied"),
+    ],
+)
+def test_structure_qualification_rejects_inconsistent_export_summary(
+    monkeypatch, tmp_path, field, value
+):
+    def loader(**_kwargs):
+        return resolver(
+            native_field_collection_payload(),
+            semantic_dimension="source_structure",
+        )
+
+    class ChangedSummaryRunner(CliRunner):
+        def invoke(self, *args, **kwargs):
+            result = super().invoke(*args, **kwargs)
+            if args[1][-1] != "jsonl" or result.exit_code:
+                return result
+            records = [json.loads(line) for line in result.stdout.splitlines()]
+            records[-1][field] = value
+            output = "".join(
+                json.dumps(
+                    record,
+                    ensure_ascii=False,
+                    sort_keys=True,
+                    separators=(",", ":"),
+                )
+                + "\n"
+                for record in records
+            )
+            return SimpleNamespace(exit_code=0, stdout=output)
+
+    monkeypatch.setattr(qualification, "load_benefits_resolver", loader)
+    monkeypatch.setattr(cli, "_dataset_resolver_loader", lambda: loader)
+    monkeypatch.setattr(qualification, "CliRunner", ChangedSummaryRunner)
+    trust_file = tmp_path / "trust.json"
+    schema_file = tmp_path / "schema.json"
+    trust_file.write_text("{}")
+    schema_file.write_text("{}")
+    with pytest.raises(ValueError, match="export evidence differs"):
+        qualification.qualify_structure_consumers(
+            trust_file=trust_file,
+            metadata_root=tmp_path,
+            schema_file=schema_file,
+            resource_id="au.mbs.service-items",
+            columns=("source_field_id", "value", "state"),
+            view="fields",
+            limit=2,
+        )
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "invalid_comparison",
+        "missing_semantic_overlay_state",
+        "missing_coverage_state",
+        "missing_comparison_validity",
+        "missing_offset",
+    ],
+)
+def test_structure_qualification_rejects_inconsistent_cli_json(
+    monkeypatch, tmp_path, mutation
+):
+    def loader(**_kwargs):
+        return resolver(
+            native_field_collection_payload(),
+            semantic_dimension="source_structure",
+        )
+
+    class ChangedJsonRunner(CliRunner):
+        def invoke(self, *args, **kwargs):
+            result = super().invoke(*args, **kwargs)
+            if "--format" in args[1] or result.exit_code:
+                return result
+            page = json.loads(result.stdout)
+            if mutation.startswith("missing_"):
+                page.pop(mutation.removeprefix("missing_"), None)
+            else:
+                page["comparison_validity"] = "valid"
+            return SimpleNamespace(exit_code=0, stdout=json.dumps(page) + "\n")
+
+    monkeypatch.setattr(qualification, "load_benefits_resolver", loader)
+    monkeypatch.setattr(cli, "_dataset_resolver_loader", lambda: loader)
+    monkeypatch.setattr(qualification, "CliRunner", ChangedJsonRunner)
+    trust_file = tmp_path / "trust.json"
+    schema_file = tmp_path / "schema.json"
+    trust_file.write_text("{}")
+    schema_file.write_text("{}")
+    with pytest.raises(ValueError, match="CLI JSON"):
+        qualification.qualify_structure_consumers(
+            trust_file=trust_file,
+            metadata_root=tmp_path,
+            schema_file=schema_file,
+            resource_id="au.mbs.service-items",
+            columns=("source_field_id", "value", "state"),
+            view="fields",
+            limit=2,
+        )
+
+
+def test_structure_qualification_rejects_a_changed_repeat_export(
+    monkeypatch, tmp_path
+):
+    def loader(**_kwargs):
+        return resolver(
+            native_field_collection_payload(),
+            semantic_dimension="source_structure",
+        )
+
+    exports = []
+
+    class ChangedRepeatRunner(CliRunner):
+        def invoke(self, *args, **kwargs):
+            result = super().invoke(*args, **kwargs)
+            if args[1][-1] != "jsonl" or result.exit_code:
+                return result
+            exports.append(result.stdout)
+            if len(exports) == 1:
+                return result
+            rows = result.stdout.splitlines()
+            summary = json.loads(rows[-1])
+            summary["source_completeness"] = "established"
+            rows[-1] = json.dumps(
+                summary, sort_keys=True, separators=(",", ":")
+            )
+            return SimpleNamespace(exit_code=0, stdout="\n".join(rows) + "\n")
+
+    monkeypatch.setattr(qualification, "load_benefits_resolver", loader)
+    monkeypatch.setattr(cli, "_dataset_resolver_loader", lambda: loader)
+    monkeypatch.setattr(qualification, "CliRunner", ChangedRepeatRunner)
+    trust_file = tmp_path / "trust.json"
+    schema_file = tmp_path / "schema.json"
+    trust_file.write_text("{}")
+    schema_file.write_text("{}")
+    with pytest.raises(ValueError, match="export is not deterministic"):
+        qualification.qualify_structure_consumers(
+            trust_file=trust_file,
+            metadata_root=tmp_path,
+            schema_file=schema_file,
+            resource_id="au.mbs.service-items",
+            columns=("source_field_id", "value", "state"),
+            view="fields",
+            limit=2,
+        )
