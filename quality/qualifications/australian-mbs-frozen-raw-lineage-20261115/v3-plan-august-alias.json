@@ -1,0 +1,72 @@
+{
+  "contracts": [
+    {
+      "contract_id": "au-mbs:historical-backfill-replay:v1",
+      "correction_rule": "new_snapshot_never_overwrite",
+      "deterministic_output_rule": "canonical_json_sha256",
+      "idempotency_rule": "partition_and_snapshot_sha256",
+      "late_arrival_rule": "append_then_replay_partition",
+      "missing_payload_rule": "metadata_only_fail_closed",
+      "partition_identity": [
+        "source_id",
+        "archive_period",
+        "logical_asset_id"
+      ],
+      "replay_order": [
+        "partition_id",
+        "correction_sequence",
+        "snapshot_id"
+      ],
+      "snapshot_identity": [
+        "partition_id",
+        "payload_sha256",
+        "metadata_sha256"
+      ],
+      "source_id": "au-mbs",
+      "supersession_rule": "explicit_acyclic_predecessor"
+    }
+  ],
+  "replay_plan": {
+    "deterministic": true,
+    "eligible_snapshot_count": 1,
+    "plan_sha256": "98ff457552bb217ea9ad98f1e369d2f238a081da8e40d1c1c32cd33dc33279a5",
+    "schema_version": "historical-replay-plan-v1",
+    "steps": [
+      {
+        "action": "verify_and_rebuild_raw_b2_snapshot_registration",
+        "candidate_only": true,
+        "expected_byte_count": 8293331,
+        "expected_payload_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+        "hosted_replay_status": "pending",
+        "m112_consumer_canary_performed": false,
+        "partition_id": "b1cb568e5cbacd87c4492a30316cdcd03949a991aaf29cee9acf0727791877bc",
+        "registration_semantics": "append_only_idempotent",
+        "snapshot_id": "d392755b41d745c4cc8c06158ec79801eaf9c1171eeee7d6b883200e240e884d",
+        "source_payload_values": "not_read",
+        "v4_admission_performed": false
+      }
+    ]
+  },
+  "snapshots": [
+    {
+      "archive_period": "filename-derived:MBS-XML-20260801.XML",
+      "correction_sequence": 0,
+      "idempotency_key": "f8c1d5f30006fb10d9d2eed6aeffdd349affe852961f6c2e408af26a406d6f77",
+      "late_arriving": false,
+      "logical_asset_id": "5e12cc147bc64b44ae0b105be3fdbefde05d6f8042d0aae0c4d683d831379789",
+      "metadata_sha256": "f4d2889f99e418f4c451b3c0df83d121bb71418f3c859a0ac40fbf5d097e3742",
+      "observation_status": "acquired",
+      "partition_id": "b1cb568e5cbacd87c4492a30316cdcd03949a991aaf29cee9acf0727791877bc",
+      "partition_value": "edithatogo/australian-mbs-source-archive@243f9ff5498816af6e4d9ae4db60528728f01834:raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
+      "payload_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+      "replay_eligible": true,
+      "rights_state": "existing_exact_source_release_authorization",
+      "snapshot_id": "d392755b41d745c4cc8c06158ec79801eaf9c1171eeee7d6b883200e240e884d",
+      "source_id": "au-mbs",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/81efb2067580a870ca258e28007f588c/$FILE/MBS-XML-20260801.XML",
+      "source_version_id": "2026-08-01",
+      "supersedes_snapshot_id": null
+    }
+  ],
+  "vocabulary_version": "3.0.0"
+}

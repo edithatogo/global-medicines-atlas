@@ -1438,3 +1438,25 @@ PR #1446 passed all 28 configured required contexts on head
 `94d5cb322397b214a9be38274df49eba97afd724`. Post-merge Test-Goblin
 `43687693342` and Security and Context `43687693319` passed. The acquisition
 workflow remained active and did not run for the PR or merge.
+
+### Frozen MBS raw lineage and replay — 15 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/mbs-frozen-lineage-replay-20261115`, base
+`d052c5e087eb8f00220e89e88a36f92ad7dd3d32`. This lane owns the three frozen
+raw MBS schedule identities, their existing lineage and digest bindings,
+candidate v1/v3 artifacts, affected replay code and tests, and this handoff.
+The user requested lineage, replay, admission and consumer checks using the
+existing archive. No dataset addition or publication is authorized.
+
+- [x] Bind each frozen revision to its historical source, B1/B2 reference,
+  exact observed digest and scoped rights. Preserve the earlier reference
+  revisions and the August alias; do not rewrite acquisition history.
+- [~] Prepared and validated candidate v1 conformance and v3 replay plans for
+  the three identities. Run an exact-main, metadata-only hosted replay only
+  after its fixed candidate and privacy gates pass; retain native receipts.
+- [~] Advance trusted v4 admission and reader checks only where their remaining
+  exact roles are supported. Keep unsupported roles and independent recovery
+  open. Continue PBS privacy work without reading unassessed payloads or
+  exposing participant or cohort-derived material.
