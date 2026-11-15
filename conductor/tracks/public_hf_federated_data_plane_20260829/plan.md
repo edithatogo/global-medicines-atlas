@@ -1348,3 +1348,43 @@ Prior PR #1443 passed 29 reported required checks on head
 `6bcd02a850837ea73acb4b84734754bf0f352199` with identical tree
 `c251f16927bdbeec224893be1816d12cc6f87ed4`. Both post-merge workflows
 `43670986718` and `43670986774` passed; no acquisition workflow ran.
+
+## Existing-object v4, recovery and PBS privacy follow-up — 15 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/australian-v4-privacy-recovery-20261115`, base
+`eba2ecaebd822f0efa8e314d5ca5ab35c8c94efa`. This lane owns the existing-object
+qualification and privacy evidence packet, its focused tests and this handoff.
+Prior assignments remain history; no dataset mutation is in scope.
+
+- [~] Check the 11 MBS identities at their exact archived revisions, bind
+  independently supported v4 contract roles, and test admission prerequisites.
+  Preserve missing receipts, actual producer and reader chronology, and the
+  four outside projections' historical-writer limitation. Exact tree metadata
+  matches eight LFS digests and three historical non-LFS Git blob identities.
+  The read-only hosted exact-digest workflow is prepared but has not yet run;
+  v4 receipt closure and admission remain unestablished.
+- [x] Check retained primary and independent recovery evidence for those exact
+  objects. Do not infer an independent replica from a primary restore or add
+  a copy. The selected prior restores cover another raw dataset and six
+  separate Silver paths, none of these 11 objects; independent recovery remains
+  unestablished and the frozen denominator is unchanged.
+- [~] Assess remaining PBS-related objects against existing source-specific
+  privacy evidence. Keep participant and cohort-derived material private;
+  unknown classifications do not authorize reading unassessed payloads.
+  Of 1,707 schedule files, 311 match official link metadata. Two archive
+  identities share one profiled XML member with 5,163 schema paths. Neither a
+  link nor that member profile clears a whole archive or its values; all 1,722
+  PBS-related or reimbursement objects retain their prior privacy dispositions.
+- [~] Verify and review the bounded packet on Python 3.15.1, then integrate it
+  only after exact-head protected checks; add or publish no datasets. The 117
+  focused tests, report regeneration, Ruff, ty, basedpyright, actionlint and
+  context validator passed locally. Hosted exact-digest execution and its
+  native receipt remain pending until this packet is merged.
+
+PR #1444 passed all 28 configured required contexts on head
+`3594e6c7c9cf9a177d9d7414a0f0cbad2c203431`; squash merge
+`eba2ecaebd822f0efa8e314d5ca5ab35c8c94efa` has matching tree
+`34c86c187eef72f8e6fe70075378ac751d06313a`. Both post-merge workflows
+`43681149885` and `43681149888` passed, and the acquisition workflow did not run.

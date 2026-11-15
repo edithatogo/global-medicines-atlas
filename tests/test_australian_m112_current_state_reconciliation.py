@@ -8,11 +8,13 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
+import httpx
 import pytest
 import scripts.qualify_australian_existing_derived_gates as derived_gates
 import scripts.qualify_australian_existing_object_gates as object_gates
 import scripts.qualify_australian_privacy_batch as privacy_batch
 import scripts.qualify_australian_schedule_source_privacy as mbs_source_privacy
+import scripts.qualify_australian_v4_privacy_readiness as v4_readiness
 import scripts.qualify_m112_existing_reimbursement_batch as batch_qualification
 import scripts.qualify_mbs_four_projection_dossiers as mbs_dossiers
 import scripts.reconcile_mbs_privacy_replay as privacy_replay
@@ -1527,3 +1529,219 @@ def test_existing_object_gate_check_never_opens_payload_files(
 
     monkeypatch.setattr(Path, "open", metadata_only)
     assert len(object_gates.build_report(ROOT)["mbs_objects"]) == 11
+
+
+@pytest.fixture(scope="module")
+def v4_readiness_evidence() -> dict[str, dict[str, Any]]:
+    return {
+        name: batch_qualification.read_bound_metadata(ROOT, *binding)
+        for name, binding in v4_readiness.INPUTS.items()
+    }
+
+
+def test_exact_v4_and_pbs_privacy_readiness_is_value_free() -> None:
+    report = v4_readiness.build_report(ROOT)
+    assert report == _read(
+        "quality/qualifications/australian-existing-v4-privacy-readiness-20261115.json"
+    )
+    objects = report["mbs_objects"]
+    assert len(objects) == 11
+    assert (
+        sum(
+            row["tree_metadata_identity"] == "lfs_sha256_and_size_match"
+            for row in objects
+        )
+        == 8
+    )
+    assert (
+        sum(
+            row["tree_metadata_identity"]
+            == "git_blob_and_size_match_historical_evidence"
+            for row in objects
+        )
+        == 3
+    )
+    assert all(
+        row["trusted_v4_admission"] == "not_established_by_selected_evidence"
+        and row["independent_recovery"]
+        == "not_established_by_selected_evidence"
+        for row in objects
+    )
+    pbs = report["pbs_privacy"]
+    assert pbs["unassessed_pbs_related_or_reimbursement_objects"] == 1722
+    assert pbs["schedule_objects_with_exact_official_link_metadata"] == 311
+    assert pbs["archive_aliases_with_one_profiled_xml_member"] == 2
+    assert pbs["profiled_member_unique_schema_paths"] == 5163
+    assert pbs["schema_paths_with_patient_or_person_tokens"] == 224
+    assert pbs["schema_paths_with_contact_tokens"] == 32
+    assert pbs["new_privacy_clearances"] == 0
+    assert pbs["unassessed_payload_reads_permitted"] is False
+    assert report["recovery"]["selected_paths_in_prior_silver_restore"] == 0
+    assert report["recovery"]["independent_recovery_established"] is False
+    assert all(value is False for value in report["boundaries"].values())
+
+
+@pytest.mark.parametrize("mutation", ["revision", "lfs", "raw_blob"])
+def test_exact_v4_readiness_rejects_changed_tree_identity(
+    v4_readiness_evidence: dict[str, dict[str, Any]], mutation: str
+) -> None:
+    evidence = deepcopy(v4_readiness_evidence)
+    if mutation == "raw_blob":
+        row = next(
+            r for r in evidence["tree"]["objects"] if r["lfs_sha256"] is None
+        )
+        row["git_blob_oid"] = "0" * 40
+    else:
+        row = next(r for r in evidence["tree"]["objects"] if r["lfs_sha256"])
+        if mutation == "revision":
+            row["revision"] = "0" * 40
+        else:
+            row["lfs_sha256"] = "0" * 64
+    with pytest.raises(
+        ValueError, match=r"tree identity|blob identity|LFS SHA-256"
+    ):
+        v4_readiness.mbs_readiness(evidence)
+
+
+@pytest.mark.parametrize("mutation", ["official_link", "member_schema"])
+def test_pbs_privacy_readiness_rejects_misbound_evidence(
+    v4_readiness_evidence: dict[str, dict[str, Any]], mutation: str
+) -> None:
+    evidence = deepcopy(v4_readiness_evidence)
+    if mutation == "official_link":
+        evidence["pbs_links"]["links"][0]["candidates"][0]["sha256"] = "0" * 64
+    else:
+        evidence["pbs_schema"]["member_sha256"] = "0" * 64
+    with pytest.raises(ValueError, match=r"official-link|member schema"):
+        v4_readiness.pbs_privacy_readiness(evidence)
+
+
+def test_recovery_reconciliation_rejects_changed_scope(
+    v4_readiness_evidence: dict[str, dict[str, Any]],
+) -> None:
+    evidence = deepcopy(v4_readiness_evidence)
+    objects = v4_readiness.mbs_readiness(evidence)
+    evidence["silver_restore"]["objects"][0]["path"] = objects[0]["path"]
+    with pytest.raises(ValueError, match="unexpectedly includes a target"):
+        v4_readiness.recovery_readiness(evidence, objects)
+
+
+def test_hosted_digest_stream_checks_exact_bytes_without_returning_payload() -> (
+    None
+):
+    payload = b"synthetic reference fixture"
+    digest = hashlib.sha256(payload).hexdigest()
+    transport = httpx.MockTransport(
+        lambda _request: httpx.Response(200, content=payload)
+    )
+    with httpx.Client(transport=transport) as client:
+        result = v4_readiness.stream_digest(
+            client,
+            "https://huggingface.co/datasets/example/file",
+            expected_sha256=digest,
+            expected_bytes=len(payload),
+        )
+    assert result == {"sha256": digest, "byte_count": len(payload)}
+    assert payload.decode() not in json.dumps(result)
+
+
+@pytest.mark.parametrize("failure", ["digest", "size", "redirect"])
+def test_hosted_digest_stream_fails_closed(failure: str) -> None:
+    payload = b"synthetic"
+    digest = hashlib.sha256(payload).hexdigest()
+
+    def respond(_request: httpx.Request) -> httpx.Response:
+        if failure == "redirect":
+            return httpx.Response(
+                302, headers={"location": "https://example.org/file"}
+            )
+        return httpx.Response(200, content=payload)
+
+    with (
+        httpx.Client(transport=httpx.MockTransport(respond)) as client,
+        pytest.raises(ValueError, match=r"digest|byte bound|destination"),
+    ):
+        v4_readiness.stream_digest(
+            client,
+            "https://huggingface.co/datasets/example/file",
+            expected_sha256="0" * 64 if failure == "digest" else digest,
+            expected_bytes=len(payload) - 1
+            if failure == "size"
+            else len(payload),
+        )
+
+
+def test_hosted_digest_cannot_run_locally(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    with pytest.raises(ValueError, match="Actions dispatch on main"):
+        v4_readiness.hosted_verify({"mbs_objects": []}, commit="0" * 40)
+
+
+def test_hosted_digest_rejects_changed_scope_before_network(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    commit = "1" * 40
+    for key, value in {
+        "GITHUB_ACTIONS": "true",
+        "GITHUB_REPOSITORY": "edithatogo/global-medicines-atlas",
+        "GITHUB_REF": "refs/heads/main",
+        "GITHUB_EVENT_NAME": "workflow_dispatch",
+        "GITHUB_SHA": commit,
+        "GITHUB_RUN_ID": "123",
+        "GITHUB_RUN_ATTEMPT": "1",
+    }.items():
+        monkeypatch.setenv(key, value)
+    report = v4_readiness.build_report(ROOT)
+    report["mbs_objects"][0]["sha256"] = "0" * 64
+
+    def no_network(*_args: Any, **_kwargs: Any) -> Any:
+        pytest.fail("scope validation must happen before network setup")
+
+    monkeypatch.setattr(v4_readiness.httpx, "Client", no_network)
+    with pytest.raises(ValueError, match="hosted MBS evidence differs"):
+        v4_readiness.hosted_verify(report, commit=commit)
+
+
+def test_hosted_digest_receipt_keeps_exact_scope_and_boundaries(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    commit = "1" * 40
+    for key, value in {
+        "GITHUB_ACTIONS": "true",
+        "GITHUB_REPOSITORY": "edithatogo/global-medicines-atlas",
+        "GITHUB_REF": "refs/heads/main",
+        "GITHUB_EVENT_NAME": "workflow_dispatch",
+        "GITHUB_SHA": commit,
+        "GITHUB_RUN_ID": "123",
+        "GITHUB_RUN_ATTEMPT": "1",
+    }.items():
+        monkeypatch.setenv(key, value)
+    report = v4_readiness.build_report(ROOT)
+    visited: list[str] = []
+
+    def fake_stream(
+        _client: httpx.Client,
+        url: str,
+        *,
+        expected_sha256: str,
+        expected_bytes: int,
+    ) -> dict[str, Any]:
+        visited.append(url)
+        return {"sha256": expected_sha256, "byte_count": expected_bytes}
+
+    monkeypatch.setattr(v4_readiness, "stream_digest", fake_stream)
+    receipt = v4_readiness.hosted_verify(report, commit=commit)
+    assert len(visited) == len(receipt["objects"]) == 11
+    assert all(
+        url.startswith("https://huggingface.co/datasets/") for url in visited
+    )
+    assert {
+        (row["dataset"], row["revision"], row["path"], row["sha256"])
+        for row in receipt["objects"]
+    } == {
+        (row["dataset"], row["revision"], row["path"], row["sha256"])
+        for row in report["mbs_objects"]
+    }
+    assert all(value is False for value in receipt["boundaries"].values())
