@@ -127,6 +127,10 @@ def test_schedule_replay_uses_exact_plan_and_does_not_persist_payload(
     assert receipt["scope"]["path"] == path
     assert receipt["verification"]["payload_values_read"] is False
     assert receipt["verification"]["temporary_source_bytes_removed"] is True
+    assert receipt["verification"]["payload_storage"] == "never_materialized"
+    assert (
+        receipt["verification"]["digest_method"] == "bounded_anonymous_stream"
+    )
     assert receipt["boundaries"]["v4_admission_performed"] is False
     assert not (tmp_path / "payload").exists()
 

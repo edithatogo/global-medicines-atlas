@@ -355,7 +355,16 @@ def execute(
     if not temporary_bytes_removed:
         raise RuntimeError("temporary source bytes remain after replay")
 
-    receipt = {
+    verification: dict[str, Any] = {
+        "anonymous": True,
+        "token_free": True,
+        "payload_values_read": False,
+        "temporary_source_bytes_removed": temporary_bytes_removed,
+    }
+    if dataset == mbs_identity.DATASET:
+        verification["payload_storage"] = "never_materialized"
+        verification["digest_method"] = "bounded_anonymous_stream"
+    receipt: dict[str, Any] = {
         "schema_id": "global-medicines-atlas.m112-v3-replay-execution-receipt",
         "schema_version": 1,
         "status": "passed",
@@ -375,12 +384,7 @@ def execute(
             "registration_sha256": registration_sha256,
             "registration": registration,
         },
-        "verification": {
-            "anonymous": True,
-            "token_free": True,
-            "payload_values_read": False,
-            "temporary_source_bytes_removed": temporary_bytes_removed,
-        },
+        "verification": verification,
         "hosted_workflow": {
             "repository": REPOSITORY,
             "commit": workflow_commit,
