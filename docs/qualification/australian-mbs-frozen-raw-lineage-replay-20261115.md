@@ -48,6 +48,16 @@ candidate plan, registration hash, run identity and privacy boundaries. The
 source bytes were streamed without materialization; these are not independent
 replica or primary-restore receipts. No v4 admission or reader canary is claimed.
 
+## Primary restore preparation
+
+The dispatch-only `australian-mbs-frozen-primary-restore.yml` workflow is
+prepared for these same three replay-qualified objects. It will reconstruct
+each exact object in memory, hash the reconstructed bytes, close the buffer
+and retain only a metadata receipt. The workflow definition and synthetic
+tests are not evidence that a restore has run. This is a primary-copy,
+in-memory check; it does not qualify an independent replica, a disk restore,
+an RPO/RTO or production disaster recovery.
+
 Validate the candidate packet using the repository-local Python 3.15.1:
 
 ```sh

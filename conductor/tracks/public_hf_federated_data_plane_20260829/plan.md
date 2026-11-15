@@ -1507,3 +1507,6 @@ this handoff. It does not add or publish dataset objects.
   participant or cohort-derived data were retained or emitted.
 - [~] Preserve the separate v4 contract, admission, consumer and independent
   recovery gates; merge only after the exact-head protected checks pass.
+- [~] Prepare a bounded exact-revision primary restore into memory for the
+  same three assessed objects. Verify digest, size and buffer closure and
+  retain metadata only. A primary read does not establish an independent copy.
