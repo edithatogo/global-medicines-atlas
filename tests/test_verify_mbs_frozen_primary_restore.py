@@ -5,6 +5,8 @@ from __future__ import annotations
 import gzip
 import hashlib
 import json
+import sys
+from pathlib import Path
 
 import httpx
 import pytest
@@ -129,3 +131,87 @@ def test_hosted_restore_rejects_invalid_run_identity_before_loading_candidates(
     monkeypatch.setattr(restore.replays, "build", unexpected)
     with pytest.raises(ValueError, match="missing run identity"):
         restore.hosted_restore(commit="a" * 40)
+
+
+def test_hosted_restore_checks_all_exact_objects_and_records_only_metadata(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    commit = "a" * 40
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("GITHUB_REPOSITORY", "edithatogo/global-medicines-atlas")
+    monkeypatch.setenv("GITHUB_REF", "refs/heads/main")
+    monkeypatch.setenv("GITHUB_EVENT_NAME", "workflow_dispatch")
+    monkeypatch.setenv("GITHUB_SHA", commit)
+    monkeypatch.setenv("GITHUB_RUN_ID", "123")
+    monkeypatch.setenv("GITHUB_RUN_ATTEMPT", "1")
+    paths = ["raw/one.xml", "raw/two.xml", "raw/three.xml"]
+    objects = [
+        {
+            "dataset": "test/dataset",
+            "revision": "b" * 40,
+            "path": path,
+            "sha256": DIGEST,
+            "byte_count": len(PAYLOAD),
+            "status": "passed",
+        }
+        for path in paths
+    ]
+    monkeypatch.setattr(
+        restore.replays,
+        "build",
+        lambda: {"summary": {"exact_replays_passed": 3}, "objects": objects},
+    )
+    requests: list[str] = []
+
+    def respond(request: httpx.Request) -> httpx.Response:
+        requests.append(str(request.url))
+        return httpx.Response(200, content=PAYLOAD)
+
+    client = _client(httpx.MockTransport(respond))
+    monkeypatch.setattr(restore.httpx, "Client", lambda **_kwargs: client)
+    result = restore.hosted_restore(commit=commit)
+
+    assert [item["path"] for item in result["objects"]] == paths
+    assert len(requests) == 3
+    assert all(
+        url.startswith("https://huggingface.co/datasets/test/dataset/resolve/")
+        for url in requests
+    )
+    assert all(
+        item["sha256"] == DIGEST and item["memory_buffer_closed"]
+        for item in result["objects"]
+    )
+    assert result["workflow_commit"] == commit
+    assert result["workflow_run"] == "123"
+    assert result["boundaries"] == {
+        "primary_copy_only": True,
+        "independent_recovery_established": False,
+        "participant_or_cohort_data_accessed": False,
+        "dataset_added_or_published": False,
+        "v4_admission_or_consumer_canary": False,
+    }
+    assert PAYLOAD.decode() not in json.dumps(result)
+
+
+def test_main_writes_metadata_receipt_only(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    path = tmp_path / "receipt.json"
+    monkeypatch.setattr(
+        restore,
+        "hosted_restore",
+        lambda *, commit: {"objects": [], "commit": commit},
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["restore", "--workflow-commit", "test", "--output", str(path)],
+    )
+    assert restore.main() == 0
+    assert json.loads(path.read_text(encoding="utf-8")) == {
+        "objects": [],
+        "commit": "test",
+    }
+    assert "restored 0 existing MBS objects" in capsys.readouterr().out

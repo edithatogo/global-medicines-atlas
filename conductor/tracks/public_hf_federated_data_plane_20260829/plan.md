@@ -1510,3 +1510,8 @@ this handoff. It does not add or publish dataset objects.
 - [~] Prepare a bounded exact-revision primary restore into memory for the
   same three assessed objects. Verify digest, size and buffer closure and
   retain metadata only. A primary read does not establish an independent copy.
+
+PBS metadata PR #1449 passed required checks including Codecov on head
+`31faa2521676d61f6c5075bac4db0814c08f6a06`; merge
+`e644c8804980df92ad85e594eaf534c60d71d5dd` retained the tested tree
+`9fb03dc3d4bfdc8e3c11b4a369daacdced9d4c79`. No PBS payload was cleared.
