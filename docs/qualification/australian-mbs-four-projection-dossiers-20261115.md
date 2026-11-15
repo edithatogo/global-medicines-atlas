@@ -1,8 +1,8 @@
 # Four existing August 2026 MBS projection dossiers
 
-These dossiers describe four already-public Bronze projections of the August
-2026 MBS **schedule**. They do not describe patient-level claims, utilisation
-or a study cohort. The [machine-readable report](../../quality/qualifications/australian-mbs-four-projection-dossiers-20261115.json)
+The producer identifies these four already-public Bronze files as projections
+of the August 2026 MBS **schedule**. Their output-specific privacy remains
+unqualified. The [machine-readable report](../../quality/qualifications/australian-mbs-four-projection-dossiers-20261115.json)
 binds each path, full SHA-256, byte count, source receipt, product manifest,
 historical publication receipt and producer code revision. No source XML or
 Parquet payload was read to make this report.
@@ -71,11 +71,13 @@ and does not accept the wider Australian federation.
 
 ## Reproduction
 
-With the repository's qualified Python 3.15.1 interpreter, run:
+With a qualified repo-local Python 3.15.1 interpreter, run the following. The
+path shown was used for this assessment; adapt it to the local environment.
 
 ```sh
-python -m scripts.qualify_mbs_four_projection_dossiers --check quality/qualifications/australian-mbs-four-projection-dossiers-20261115.json
-python -m scripts.qualify_mbs_four_projection_dossiers --check-producer-code
+build/federation-env/bin/python --version
+build/federation-env/bin/python -m scripts.qualify_mbs_four_projection_dossiers --check quality/qualifications/australian-mbs-four-projection-dossiers-20261115.json
+build/federation-env/bin/python -m scripts.qualify_mbs_four_projection_dossiers --check-producer-code
 ```
 
 The first command reads only digest-bound repository JSON metadata. The second
