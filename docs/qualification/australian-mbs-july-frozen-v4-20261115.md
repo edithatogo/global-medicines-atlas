@@ -25,12 +25,20 @@ configured admission check for the candidate contract. It did not read the
 source payload or exercise the consumer. Contract SHA-256:
 `8c2032a7831b263f2792a9283759a96b9b91875cef8a685f4e010d84051664b9`.
 
-The dispatch-only hosted workflow is prepared to repeat receipt closure and
-admission on exact merged main, then exercise the existing bounded
-`FederatedReader` against the already assessed July object. The workflow and
-synthetic tests alone are not a hosted admission or a consumer result. Its
-receipt will contain metadata only; no source values or participant or
-cohort-derived data are emitted, and no dataset is published.
+The [hosted workflow](https://github.com/edithatogo/global-medicines-atlas/actions/runs/43699976886)
+passed receipt closure and trusted admission on exact merged main, then
+exercised the existing bounded `FederatedReader` against the assessed July
+object. Its [retained metadata receipt](../../quality/qualifications/australian-mbs-july-frozen-v4-20261115/hosted-43699976886/qualification.json)
+records remote and consumer-stream digest matches and zero cache bytes after
+close. Independent artifact verification checked its digest, ZIP integrity,
+member set and exact contract. No source values or participant or cohort-derived
+data were emitted, and no dataset was published.
+
+The [frozen inventory](../../quality/qualifications/australian-m112-frozen-object-inventory-20261018.json)
+identifies `243f9ff5498816af6e4d9ae4db60528728f01834` as the approved dataset
+revision for this member. Its later `40891976f77ee5e7688edceed25c9ac98a77547e`
+reconciliation revision is recorded separately; this run did not admit that
+later revision.
 
 The August raw objects and all four frozen projections still require their own
 v4 contracts and evidence bindings. Their historical candidate source-era and
