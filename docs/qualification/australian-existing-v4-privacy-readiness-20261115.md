@@ -8,12 +8,20 @@ retains the exact inputs and the eleven individual MBS identities.
 
 ## MBS exact-revision identity and recovery
 
+Hosted run [43687742836](https://github.com/edithatogo/global-medicines-atlas/actions/runs/43687742836)
+subsequently streamed and verified the SHA-256 and byte count of all eleven
+objects at their exact revisions. Its metadata-only artifact passed native
+artifact-digest and ZIP-CRC verification; the [per-object binding](../../quality/qualifications/australian-existing-mbs-digest-binding-20261115.json)
+records the resulting verification evidence. It remains unbound to a v4
+contract and creates no admission, reader canary or independent recovery.
+
 Anonymous tree metadata confirms all eleven paths and byte counts at their
 respective frozen or previously scoped revisions. Eight Parquet objects expose
 matching LFS SHA-256 values. The three non-LFS XML paths expose matching Git
 blob IDs and sizes; the SHA-256 values in the observation are expected values
-from prior receipts, not fresh digest observations. These metadata checks are
-not an exact-revision streamed digest, v4 admission or consumer canary.
+from prior receipts, not fresh digest observations. These earlier metadata
+checks were distinct from the later streamed digest and do not establish v4
+admission or a consumer canary.
 
 The existing primary restore for the raw utilisation archive concerns a
 different dataset. The other selected primary-restore receipt covers six
@@ -23,12 +31,13 @@ privacy, rights and lineage evidence remains separate; the four outside
 projections retain their footer-adjusted replay limitation.
 
 The dispatch-only [hosted digest workflow](../../.github/workflows/australian-existing-mbs-exact-digest.yml)
-is prepared to stream-hash precisely the eleven already source-profiled MBS
-objects, at their exact revisions, on an exact merged main commit. It retains a
-value-free metadata receipt only. It does not write source bytes or dataset
-objects, create a v4 contract, admit data, exercise the production reader, or
-establish an independent restore. A successful hosted receipt remains a
-verification input, not proof that the other contract roles are complete.
+reads only the eleven already source-profiled MBS objects at their exact
+revisions. It retains a value-free metadata receipt only. It does not write
+source bytes or dataset objects, create a v4 contract, admit data, exercise
+the production reader, or establish an independent restore. The successful
+hosted receipt is a verification input, not proof that the other contract
+roles are complete. The first dispatch failed before a source read because of
+its module entry point; the corrected exact-main dispatch passed.
 
 ## PBS privacy evidence
 

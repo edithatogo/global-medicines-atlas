@@ -1410,3 +1410,31 @@ PR #1445 passed all 28 configured required contexts on head
 `cf5274914fece907a289a615cd1ad8c2dbf1cd7f`. The acquisition workflow did not
 run for the PR or merge; the repository's automatic post-merge checks were in
 progress at the first hosted-digest failure.
+
+### Exact hosted digest binding
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/australian-v4-digest-binding-20261115`, base
+`1a63753104b87f0ad929dd977f0c24ae14fe839f`. This lane owns the exact hosted
+receipt binding, affected tests and this handoff; no dataset mutation is in scope.
+
+- [x] Dispatch the corrected exact-main workflow once. Run `43687742836`
+  verified SHA-256 and byte count for all 11 exact MBS identities without
+  persisting or emitting payloads. Artifact `14150709884` passed its native
+  digest, ZIP CRC and exact-member checks; its value-free receipt is retained.
+- [x] Bind all 11 observations as v4 verification evidence candidates with
+  exact run, artifact, receipt and object identities. The binding regenerates
+  deterministically; 124 focused tests, Ruff, ty, basedpyright and the context
+  validator pass on Python 3.15.1.
+- [~] Close the remaining contract receipt roles, trusted admissions and reader
+  canaries only when their exact evidence exists. Independent recovery and the
+  remaining PBS privacy decisions stay open. Preserve the frozen denominator
+  and do not add or publish data.
+
+PR #1446 passed all 28 configured required contexts on head
+`e0611c586a83756033ee635b00a42ecbcccea4f0`; squash merge
+`1a63753104b87f0ad929dd977f0c24ae14fe839f` has matching tree
+`94d5cb322397b214a9be38274df49eba97afd724`. Post-merge Test-Goblin
+`43687693342` and Security and Context `43687693319` passed. The acquisition
+workflow remained active and did not run for the PR or merge.

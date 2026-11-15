@@ -17,6 +17,7 @@ import scripts.qualify_australian_schedule_source_privacy as mbs_source_privacy
 import scripts.qualify_australian_v4_privacy_readiness as v4_readiness
 import scripts.qualify_m112_existing_reimbursement_batch as batch_qualification
 import scripts.qualify_mbs_four_projection_dossiers as mbs_dossiers
+import scripts.reconcile_australian_mbs_exact_digest as mbs_exact_digest
 import scripts.reconcile_mbs_privacy_replay as privacy_replay
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -1745,3 +1746,62 @@ def test_hosted_digest_receipt_keeps_exact_scope_and_boundaries(
         for row in report["mbs_objects"]
     }
     assert all(value is False for value in receipt["boundaries"].values())
+
+
+@pytest.fixture(scope="module")
+def mbs_digest_evidence() -> dict[str, dict[str, Any]]:
+    return {
+        name: batch_qualification.read_bound_metadata(ROOT, *binding)
+        for name, binding in mbs_exact_digest.INPUTS.items()
+    }
+
+
+def test_hosted_exact_mbs_digests_are_bound_without_admission() -> None:
+    report = mbs_exact_digest.build_report(ROOT)
+    assert report == _read(
+        "quality/qualifications/australian-existing-mbs-digest-binding-20261115.json"
+    )
+    assert report["summary"] == {
+        "exact_revision_stream_digests_passed": 11,
+        "frozen_objects": 7,
+        "outside_frozen_objects": 4,
+        "new_v4_admissions": 0,
+        "new_consumer_canaries": 0,
+        "independent_recovery_established": False,
+        "pbs_privacy_clearances": 0,
+    }
+    assert all(
+        row["exact_revision_stream_digest"] == "passed"
+        and row["v4_verification_evidence"] == "available_unbound_to_contract"
+        and row["trusted_v4_admission"] == "not_performed"
+        for row in report["objects"]
+    )
+    assert all(value is False for value in report["boundaries"].values())
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    ["revision", "digest", "run", "boundary", "artifact", "duplicate"],
+)
+def test_hosted_exact_mbs_digest_rejects_misbound_receipts(
+    mbs_digest_evidence: dict[str, dict[str, Any]], mutation: str
+) -> None:
+    evidence = deepcopy(mbs_digest_evidence)
+    if mutation == "revision":
+        evidence["receipt"]["objects"][0]["revision"] = "0" * 40
+    elif mutation == "digest":
+        evidence["receipt"]["objects"][0]["sha256"] = "0" * 64
+    elif mutation == "run":
+        evidence["receipt"]["workflow_run"] = "1"
+    elif mutation == "boundary":
+        evidence["receipt"]["boundaries"]["v4_admission_or_consumer_canary"] = (
+            True
+        )
+    elif mutation == "artifact":
+        evidence["artifact"]["artifact"]["sha256"] = "0" * 64
+    else:
+        evidence["receipt"]["objects"].append(evidence["receipt"]["objects"][0])
+    with pytest.raises(
+        ValueError, match=r"identity|boundary|provenance|duplicate"
+    ):
+        mbs_exact_digest.reconcile(evidence)
