@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -117,3 +118,20 @@ def test_primary_memory_rejects_duplicate_object() -> None:
     values[0]["objects"][1] = values[0]["objects"][0]
     with pytest.raises(ValueError, match="object path differs"):
         qualification.reconcile_memory(*values)
+
+
+def test_report_cli_writes_and_checks_frozen_metadata(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setattr(qualification, "ROOT", tmp_path)
+    monkeypatch.setattr(qualification, "build", lambda: {"objects": []})
+    target = tmp_path / qualification.OUTPUT
+    target.parent.mkdir(parents=True)
+    monkeypatch.setattr(sys, "argv", ["qualification"])
+    assert qualification.main() == 0
+    assert json.loads(target.read_text()) == {"objects": []}
+    monkeypatch.setattr(sys, "argv", ["qualification", "--check"])
+    assert qualification.main() == 0
+    target.write_text("{}")
+    with pytest.raises(ValueError, match="report is stale"):
+        qualification.main()
