@@ -1728,3 +1728,21 @@ The same integrator owns the Test-Goblin workflow guard and its focused test.
 - [~] Remove duplicate serialized replay plans from the PR history after the
   secret scanner flagged their deterministic hashes. Preserve in-memory v3
   schema validation and do not add a scanner exception.
+
+### Manual CI failures and MBS guard readback — 16 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/ci-hudi-regeneration-20261116`. This lane owns the OpenAPI
+baseline and synthetic Hudi experiment fixes, their focused tests, and this
+handoff. The parallel bulk-publication lane retains its own checkout and files.
+No dataset acquisition, publication, participant data or cohort data is in scope.
+
+- [~] Investigate and fix the manually dispatched regeneration and synthetic
+  Hudi failures from run 43772565576 without weakening their behavioral gates.
+- [~] Verify the fixes with focused tests and a manual hosted run whose public
+  MBS acquisition input remains false; then integrate after protected checks.
+- [x] Reconcile the earlier description of the MBS job with the observed
+  branch-protection configuration and the separately authorized bounded run.
+  That job is not a required context, despite the earlier description; its
+  two checks passed in the authorized run, whose other two jobs failed.

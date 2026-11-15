@@ -21,11 +21,20 @@ the current no-acquisition instruction.
 The earlier PR #1457 and its post-merge Test-Goblin runs did fetch already
 public MBS schedule and Silver payloads for an unrelated live parity job. That
 was not identified when those runs were started. The first PR #1458 Test-Goblin
-run was cancelled before its corresponding fetch steps. The proposed workflow
-guard fails the live check before network access unless a manual dispatch has
-the explicit public-MBS-read input enabled. It preserves the required live
-check as a blocking failure; it does not substitute a synthetic pass. The guard
-is not effective on `main` until the change is merged.
+run was cancelled before its corresponding fetch steps. The workflow guard
+fails the live check before network access unless a manual dispatch has the
+explicit public-MBS-read input enabled; it does not substitute a synthetic pass.
+The guard became effective on `main` when #1458 merged. Contrary to the earlier
+description of this job as a required blocking check, the observed branch
+protection does not include its context, so its failure alone does not block a
+merge. The existing required contexts remain separate.
+
+The maintainer subsequently authorized a bounded read of existing public MBS
+files. The public Parquet and six-table checks passed in
+[run 43772565576](https://github.com/edithatogo/global-medicines-atlas/actions/runs/43772565576)
+on the #1458 head, whose tree matches the merged tree. That workflow as a whole
+failed because its regeneration and synthetic Hudi jobs failed independently.
+The authorized read does not authorize further acquisition.
 
 The four frozen outputs have prior exact-byte in-memory reproduction. For the
 four later outputs, the retained reproduction matched after an equal-length

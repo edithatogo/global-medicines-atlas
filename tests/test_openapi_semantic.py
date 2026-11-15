@@ -722,6 +722,76 @@ def test_default_baseline_ref_prefers_explicit_ci_environment(
     assert qualifier._default_baseline_ref() == "abc123"
 
 
+def test_default_baseline_covers_the_entire_squashed_branch(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    repository = tmp_path / "repository"
+    contract = repository / "contracts/openapi-readonly-v1.json"
+    contract.parent.mkdir(parents=True)
+    contract.write_text('{"revision": "base"}', encoding="utf-8")
+    _run_git(repository, "init", "-b", "main")
+    _run_git(repository, "config", "user.email", "test@example.invalid")
+    _run_git(repository, "config", "user.name", "OpenAPI test")
+    _run_git(repository, "add", "contracts/openapi-readonly-v1.json")
+    _run_git(repository, "commit", "-m", "base")
+    base = qualifier._git("rev-parse", "HEAD", root=repository).stdout.strip()
+
+    _run_git(repository, "switch", "-c", "feature")
+    contract.write_text('{"revision": "intermediate"}', encoding="utf-8")
+    _run_git(repository, "commit", "-am", "intermediate")
+    contract.write_text('{"revision": "latest"}', encoding="utf-8")
+    _run_git(repository, "commit", "-am", "latest")
+    _run_git(repository, "switch", "main")
+    _run_git(repository, "merge", "--squash", "feature")
+    _run_git(repository, "commit", "-m", "squashed feature")
+    _run_git(repository, "remote", "add", "origin", str(repository))
+    _run_git(repository, "fetch", "origin", "main")
+    _run_git(repository, "switch", "feature")
+
+    monkeypatch.delenv("GMA_OPENAPI_BASE_REF", raising=False)
+    real_git = qualifier._git
+    with monkeypatch.context() as patch:
+        patch.setattr(
+            qualifier,
+            "_git",
+            lambda *args, **kwargs: real_git(*args, root=repository, **kwargs),
+        )
+        baseline_ref = qualifier._default_baseline_ref()
+    assert baseline_ref == base
+    assert load_historical_snapshot(baseline_ref, root=repository) == {
+        "revision": "base"
+    }
+    with pytest.raises(
+        qualifier.HistoricalBaselineError, match="not an ancestor"
+    ):
+        load_historical_snapshot("origin/main", root=repository)
+
+
+def test_default_baseline_rejects_unrelated_remote_history(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    repository = tmp_path / "repository"
+    repository.mkdir()
+    _run_git(repository, "init", "-b", "main")
+    _run_git(repository, "config", "user.email", "test@example.invalid")
+    _run_git(repository, "config", "user.name", "OpenAPI test")
+    _run_git(repository, "commit", "--allow-empty", "-m", "remote")
+    _run_git(repository, "remote", "add", "origin", str(repository))
+    _run_git(repository, "fetch", "origin", "main")
+    _run_git(repository, "switch", "--orphan", "unrelated")
+    _run_git(repository, "commit", "--allow-empty", "-m", "unrelated")
+
+    monkeypatch.delenv("GMA_OPENAPI_BASE_REF", raising=False)
+    real_git = qualifier._git
+    monkeypatch.setattr(
+        qualifier,
+        "_git",
+        lambda *args, **kwargs: real_git(*args, root=repository, **kwargs),
+    )
+    with pytest.raises(qualifier.HistoricalBaselineError, match="merge-base"):
+        qualifier._default_baseline_ref()
+
+
 def test_current_snapshot_is_deterministic_and_public_endpoint_matches() -> (
     None
 ):

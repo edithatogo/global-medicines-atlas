@@ -34,22 +34,22 @@ def _run_hudi(directory: Path) -> tuple[list[dict[str, object]], str]:
         "hoodie.datasource.write.table.type": "COPY_ON_WRITE",
     }
     try:
-        spark.createDataFrame([
-            {"native_id": "A-001", "value": 1},
-            {"native_id": "B-002", "value": 2},
-        ]).write.format("hudi").options(**options).mode("overwrite").save(
+        # SQL literals are constructed on the JVM, avoiding the Python RDD
+        # serializer used by createDataFrame for local Python collections.
+        spark.sql("""
+            SELECT 'A-001' AS native_id, CAST(1 AS BIGINT) AS value
+            UNION ALL SELECT 'B-002', CAST(2 AS BIGINT)
+        """).write.format("hudi").options(**options).mode("overwrite").save(
             str(target)
         )
-        changes = [
-            {"native_id": "A-001", "value": 11, "_hoodie_is_deleted": False},
-            {"native_id": "B-002", "value": 2, "_hoodie_is_deleted": True},
-            {"native_id": "C-003", "value": 3, "_hoodie_is_deleted": False},
-        ]
-        spark.createDataFrame(changes).write.format("hudi").options(
-            **options
-        ).option("hoodie.datasource.write.operation", "upsert").mode(
-            "append"
-        ).save(str(target))
+        spark.sql("""
+            SELECT 'A-001' AS native_id, CAST(11 AS BIGINT) AS value,
+                   FALSE AS _hoodie_is_deleted
+            UNION ALL SELECT 'B-002', CAST(2 AS BIGINT), TRUE
+            UNION ALL SELECT 'C-003', CAST(3 AS BIGINT), FALSE
+        """).write.format("hudi").options(**options).option(
+            "hoodie.datasource.write.operation", "upsert"
+        ).mode("append").save(str(target))
         records = sorted(
             (
                 row.asDict()
