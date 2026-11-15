@@ -1567,3 +1567,12 @@ this handoff. No dataset mutation is authorized.
 - [~] Integrate the 15-admitted, 15-reader, 1,744-deferred ledger only after
   required exact-head CI. Preserve independent recovery and broader federation
   acceptance as open.
+
+The first ledger PR head triggered an unintended automatic archive run after
+the workflow was restored. Run `43700614570` was cancelled after its retrieval
+step started; per-file retrieval cannot be determined from its log. Packaged
+archive and Hugging Face uploads were skipped, and its synthetic-fixture CI
+artifact was removed. Its first unit lane also exposed a stale 14/1,745
+acceptance-note assertion; the updated 15/1,744 assertion passes locally. Hold
+the archive workflow disabled until the next head's CI events are observed,
+then restore it and check for unintended runs.

@@ -19,9 +19,11 @@ and the [updated source note](aihw-pbs-atc2-monthly-20261113.md) record the
 exact scope. This is the January 2015–September 2026 edition, not the separately
 unidentified September 2025 edition. It does not establish full M-107 coverage.
 
-The frozen M-112 denominator and its 14 raw admissions/reader checks are not
-changed by either observation. No additional data or dataset was published in
-the 15 November reconciliation.
+Those two observations did not change the frozen M-112 denominator or the
+then-recorded 14 raw admissions/reader checks. A subsequent July MBS admission
+and reader check raised the totals to 15 each; see the
+[effective delivery ledger](../../quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261115.json).
+No additional dataset was published in the 15 November reconciliation.
 
 The [batched evidence and consumer boundary](australian-federation-existing-archive-20261115.md)
 links the exact workbook, hosted publication receipt and retained frozen

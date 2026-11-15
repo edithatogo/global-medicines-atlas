@@ -1,6 +1,7 @@
 # Australian archive privacy batch
 
-This batch records an individual privacy disposition for the 1,745 objects
+At the time of this batch, it recorded an individual privacy disposition for
+the 1,745 objects
 deferred from the frozen M-112 raw-delivery ledger and five previously
 identified outputs outside that inventory. The [machine-readable report](../../quality/qualifications/australian-existing-archive-privacy-batch-20261115.json)
 binds each disposition to its dataset, revision, path, byte count and digest.
@@ -24,6 +25,11 @@ Thus 11 objects have a new technical privacy assessment: seven inside and four
 outside the frozen inventory. Another 1,732 frozen objects and one additional
 output remain unassessed. The six earlier MBS Silver profiles are neither new
 assessments nor additional raw-ledger admissions.
+
+A subsequent exact July MBS admission reduced the deferred total to 1,744;
+the [current ledger](../../quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261115.json)
+preserves this batch as a historical assessment. PBS privacy dispositions are
+unchanged by that MBS admission.
 
 ## Basis of the MBS assessments
 

@@ -1105,8 +1105,8 @@ def test_release_readiness_reconciliation_separates_package_from_release() -> (
         for line in acceptance.splitlines()
         if line.startswith("| M-112 federation v4 |")
     )
-    assert "14 exact raw v4 admissions" in m112_row
-    assert "1,745 objects remain deferred" in m112_row
+    assert "15 exact raw v4 admissions" in m112_row
+    assert "1,744 objects remain deferred" in m112_row
     assert "lineage, not this admission count" in m112_row
     assert "`p7_date_convention_selected=false`" in m109_row
     assert (
