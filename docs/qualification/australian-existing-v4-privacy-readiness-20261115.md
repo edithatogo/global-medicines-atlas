@@ -45,6 +45,13 @@ patient charges and organisation contact fields. The profile does not screen
 all values or prove the scope of every ZIP member, so neither archive nor any
 derived output receives a new privacy clearance from this comparison.
 
+The September 2025 PBS API ZIP previously identified by the maintainer is one
+of the unassessed schedule objects. The retained [archive reconciliation](../../quality/qualifications/australian-public-archive-reconciliation-20261113.json)
+records an anonymous digest check and 33 CSV member names for that exact ZIP;
+its path, SHA-256, byte count and acquisition receipt also match the frozen
+object's later revision. Member names establish neither the fields nor the
+values inside them, so this source-specific evidence does not clear the ZIP.
+
 All 1,722 previously unassessed PBS-related or reimbursement objects retain
 their existing privacy dispositions. An appropriate source-specific method and
 evidence are still needed before the remaining payloads can be admitted or

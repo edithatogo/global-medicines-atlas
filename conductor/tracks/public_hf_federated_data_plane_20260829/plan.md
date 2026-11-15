@@ -1400,6 +1400,9 @@ branch `codex/australian-v4-hosted-entrypoint-20261115`, base
   First run `43686413520` failed during imports before any source read and
   produced no artifact. Verify the module command and workflow configuration,
   merge after required CI, then dispatch exactly once on the corrected main.
+- [x] Bind the September 2025 PBS API ZIP's retained 33-member inventory and
+  prior digest to its later frozen identity and acquisition receipt. The
+  member names do not assess fields or values, so privacy remains unassessed.
 
 PR #1445 passed all 28 configured required contexts on head
 `f34f27049728373589a1ee558f53b87af464dbf0`; squash merge
