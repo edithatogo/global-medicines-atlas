@@ -27,6 +27,8 @@
         "byte_count": 1375,
         "exact_metadata_member_set_verified": true,
         "id": 14154158840,
+        "member": "gma-m112-v3-replay-receipt-43695553608-1.json",
+        "name": "australian-m112-v3-replay-43695553608-1",
         "sha256": "09c28fd9546cf7e7e91c42ad4ba7cbb34c98b48cacc7c71bff92df3cdc32f6e0",
         "zip_crc_verified": true
       },
@@ -63,6 +65,8 @@
         "byte_count": 1337,
         "exact_metadata_member_set_verified": true,
         "id": 14154545295,
+        "member": "gma-m112-v3-replay-receipt-43695688398-1.json",
+        "name": "australian-m112-v3-replay-43695688398-1",
         "sha256": "5252a752c7e6c37eb8c48ccb32922a16a1dbcace63919d65a5565ebc5a27a7dd",
         "zip_crc_verified": true
       },
@@ -99,6 +103,8 @@
         "byte_count": 1365,
         "exact_metadata_member_set_verified": true,
         "id": 14154520708,
+        "member": "gma-m112-v3-replay-receipt-43695816820-1.json",
+        "name": "australian-m112-v3-replay-43695816820-1",
         "sha256": "3b13223feb02bcf078dc87b0fec9786df27f967e7330ae82b8350b4e304d2863",
         "zip_crc_verified": true
       },

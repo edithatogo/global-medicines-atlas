@@ -847,7 +847,7 @@ def test_frozen_mbs_gitleaks_exception_is_path_and_digest_bound() -> None:
     assert allowlist["targetRules"] == ["generic-api-key"]
     assert allowlist["condition"] == "AND"
     assert allowlist["regexTarget"] == "match"
-    assert len(allowlist["paths"]) == 1
+    assert len(allowlist["paths"]) == 4
     assert len(allowlist["regexes"]) == 3
     directory = (
         ROOT
@@ -883,6 +883,38 @@ def test_frozen_mbs_gitleaks_exception_is_path_and_digest_bound() -> None:
             for pattern in allowlist["regexes"]
         )
     assert not re.fullmatch(allowlist["paths"][0], "unrelated.json")
+    receipts = sorted(
+        (
+            ROOT
+            / "quality/qualifications/australian-mbs-frozen-raw-v3-replays-20261115"
+        ).glob("hosted-*/replay-receipt.json")
+    )
+    assert len(receipts) == 3
+    for path in receipts:
+        registration = json.loads(path.read_text())["replay"]["registration"]
+        expected = hashlib.sha256(
+            json.dumps(
+                [registration["partition_id"], registration["snapshot_id"]],
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode()
+        ).hexdigest()
+        assert registration["idempotency_key"] == expected
+        assert (
+            sum(
+                bool(re.fullmatch(pattern, path.relative_to(ROOT).as_posix()))
+                for pattern in allowlist["paths"]
+            )
+            == 1
+        )
+        assert (
+            sum(
+                bool(re.fullmatch(pattern, f'idempotency_key": "{expected}"'))
+                for pattern in allowlist["regexes"]
+            )
+            == 1
+        )
 
 
 def test_gitleaks_rejects_publisher_checksum_mismatch(monkeypatch) -> None:

@@ -18,7 +18,7 @@ DIRECTORY = (
     "quality/qualifications/australian-mbs-frozen-raw-v3-replays-20261115/"
 )
 OUTPUT = DIRECTORY + "replay-manifest.json"
-RUNS = {
+RUNS: dict[str, dict[str, Any]] = {
     candidate.JULY: {
         "run": 43695553608,
         "job": 132755170167,
@@ -98,7 +98,11 @@ def reconcile(
 ) -> dict[str, Any]:
     """Check exact identity, replay, run and privacy claims for every path."""
     _require(
-        set(plans) == set(receipts) == set(RUNS) == set(candidate.PATHS),
+        set(plans) == set(receipts) == set(RUNS) == set(candidate.PATHS)
+        and all(
+            len({run[key] for run in RUNS.values()}) == len(RUNS)
+            for key in ("run", "job", "artifact")
+        ),
         "frozen MBS replay denominator differs",
     )
     objects: list[dict[str, Any]] = []
@@ -174,6 +178,8 @@ def reconcile(
             },
             "native_artifact": {
                 "id": run["artifact"],
+                "name": f"australian-m112-v3-replay-{run_id}-1",
+                "member": f"gma-m112-v3-replay-receipt-{run_id}-1.json",
                 "sha256": run["artifact_sha256"],
                 "byte_count": run["artifact_bytes"],
                 "archive_digest_verified": True,

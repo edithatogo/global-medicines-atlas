@@ -142,3 +142,9 @@ and one of the three exact computed field/value pairs. The harness checks the
 derivation and rejects a changed value, another field name or an unrelated
 path. All default scanner rules and the complete-history scan remain active.
 The failure is preserved; the corrected final head requires fresh hosted CI.
+
+The three subsequent native replay receipts contain the same computed
+identities as their plans. The exception also names those three exact hosted
+receipt paths; the field/value requirement is unchanged. The identities were
+recomputed from each receipt's partition and snapshot IDs. Altered values,
+credential fields and unrelated paths remain subject to the scanner.

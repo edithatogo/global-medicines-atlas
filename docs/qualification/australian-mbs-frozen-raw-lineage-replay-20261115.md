@@ -32,6 +32,22 @@ is not proof that a hosted replay has run. Successful replay also does not
 complete v4 receipt closure, trusted admission, a consumer canary, independent
 recovery or federation acceptance.
 
+## Hosted replay results
+
+Three individual dispatches on merged main
+`0c34250f931bc457193eb59da04e9e20107c6600` passed:
+
+- [July XML, run 43695553608](https://github.com/edithatogo/global-medicines-atlas/actions/runs/43695553608).
+- [August canonical XML, run 43695688398](https://github.com/edithatogo/global-medicines-atlas/actions/runs/43695688398).
+- [August alias, run 43695816820](https://github.com/edithatogo/global-medicines-atlas/actions/runs/43695816820).
+
+Each native artifact's archive digest, ZIP CRC and exact metadata member set
+were verified. The retained [replay manifest](../../quality/qualifications/australian-mbs-frozen-raw-v3-replays-20261115/replay-manifest.json)
+rechecks each receipt's exact dataset, frozen revision, path, size and digest,
+candidate plan, registration hash, run identity and privacy boundaries. The
+source bytes were streamed without materialization; these are not independent
+replica or primary-restore receipts. No v4 admission or reader canary is claimed.
+
 Validate the candidate packet using the repository-local Python 3.15.1:
 
 ```sh

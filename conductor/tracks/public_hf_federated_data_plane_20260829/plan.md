@@ -1459,9 +1459,10 @@ existing archive. No dataset addition or publication is authorized.
 - [x] Bind each frozen revision to its historical source, B1/B2 reference,
   exact observed digest and scoped rights. Preserve the earlier reference
   revisions and the August alias; do not rewrite acquisition history.
-- [~] Prepared and validated candidate v1 conformance and v3 replay plans for
-  the three identities. Run an exact-main, metadata-only hosted replay only
-  after its fixed candidate and privacy gates pass; retain native receipts.
+- [x] Prepared candidate v1 conformance and v3 plans for the three identities,
+  then ran each once on exact main. Runs `43695553608`, `43695688398` and
+  `43695816820` passed; their metadata-only receipts and artifact digests are
+  bound in the replay manifest without claiming admission or recovery.
 - [~] Advance trusted v4 admission and reader checks only where their remaining
   exact roles are supported. Keep unsupported roles and independent recovery
   open. Continue PBS privacy work without reading unassessed payloads or
@@ -1501,7 +1502,7 @@ branch `codex/mbs-frozen-replay-receipts-20261115`, base
 value-free replay receipts, their native artifact bindings, focused tests and
 this handoff. It does not add or publish dataset objects.
 
-- [~] Bind each exact-main replay run, job, artifact digest, receipt and
+- [x] Bind each exact-main replay run, job, artifact digest, receipt and
   registration to its corresponding frozen plan. Verify no source payloads or
   participant or cohort-derived data were retained or emitted.
 - [~] Preserve the separate v4 contract, admission, consumer and independent
