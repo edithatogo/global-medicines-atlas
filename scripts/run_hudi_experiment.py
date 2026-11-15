@@ -37,8 +37,9 @@ def _run_hudi(directory: Path) -> tuple[list[dict[str, object]], str]:
         # SQL literals are constructed on the JVM, avoiding the Python RDD
         # serializer used by createDataFrame for local Python collections.
         spark.sql("""
-            SELECT 'A-001' AS native_id, CAST(1 AS BIGINT) AS value
-            UNION ALL SELECT 'B-002', CAST(2 AS BIGINT)
+            SELECT 'A-001' AS native_id, CAST(1 AS BIGINT) AS value,
+                   FALSE AS _hoodie_is_deleted
+            UNION ALL SELECT 'B-002', CAST(2 AS BIGINT), FALSE
         """).write.format("hudi").options(**options).mode("overwrite").save(
             str(target)
         )

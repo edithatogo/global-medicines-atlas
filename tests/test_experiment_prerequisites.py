@@ -131,8 +131,14 @@ def test_hudi_synthetic_workload_survives_unusable_python_serializer(
             return self
 
         def save(self, _target: str) -> None:
+            schema = frozenset(self.rows[0])
             if self.write_mode == "overwrite":
                 self.spark.rows.clear()
+                self.spark.schema = schema
+            elif schema != self.spark.schema:
+                raise ValueError(
+                    "Hudi write schema is not backwards compatible"
+                )
             for row in self.rows:
                 if row.get("_hoodie_is_deleted"):
                     self.spark.rows.pop(row["native_id"], None)
@@ -157,6 +163,7 @@ def test_hudi_synthetic_workload_survives_unusable_python_serializer(
     class Spark:
         def __init__(self) -> None:
             self.rows: dict[str, dict[str, Any]] = {}
+            self.schema: frozenset[str] = frozenset()
             self.read = Frame(self, [])
 
         def __getattr__(self, name: str) -> Any:
