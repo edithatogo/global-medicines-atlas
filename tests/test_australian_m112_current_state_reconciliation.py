@@ -11,6 +11,7 @@ import pytest
 import scripts.qualify_australian_existing_derived_gates as derived_gates
 import scripts.qualify_australian_schedule_source_privacy as mbs_source_privacy
 import scripts.qualify_m112_existing_reimbursement_batch as batch_qualification
+import scripts.qualify_mbs_four_projection_dossiers as mbs_dossiers
 
 ROOT = Path(__file__).resolve().parents[1]
 RECONCILIATION = (
@@ -864,6 +865,170 @@ def test_august_mbs_source_privacy_is_bound_without_output_promotion() -> None:
     assert report["pbs_source"]["source_privacy"] == (
         "unknown_in_imported_acquisition_record"
     )
+
+
+def test_mbs_projection_dossiers_bind_exact_producers_and_leave_gates_closed() -> (
+    None
+):
+    report = mbs_dossiers.build_report(ROOT)
+    assert report == _read(
+        "quality/qualifications/australian-mbs-four-projection-dossiers-20261115.json"
+    )
+    assert report["summary"] == {
+        "dossiers_completed": 4,
+        "output_privacy_qualified": 0,
+        "new_v4_admissions": 0,
+        "new_consumer_canaries": 0,
+        "independent_recoveries_qualified": 0,
+    }
+    assert all(value is False for value in report["boundaries"].values())
+    assert len({row["sha256"] for row in report["dossiers"]}) == 4
+    for row in report["dossiers"]:
+        assert row["source_privacy"] == (
+            "non_sensitive_in_exact_producer_source_receipt"
+        )
+        assert row["output_privacy"] == (
+            "not_qualified_without_output_specific_evidence"
+        )
+        assert row["v4_admission"] == row["consumer_check"] == "not_performed"
+        assert row["independent_recovery"] == "not_qualified"
+        assert row["frozen_m112_member"] is False
+        if row["producer"] == "d781":
+            assert row["bronze_state"] == (
+                "accepted_unreviewed_predecessor_not_recorded_not_v4"
+            )
+        else:
+            assert row["producer"] == "f9f9"
+            assert row["bronze_state"] == (
+                "product_sidecar_not_observed_at_pinned_revision"
+            )
+            assert row["raw_lifecycle"] == (
+                "separately_accepted_raw_b1_b2_not_projection_admission"
+            )
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "equal_size_wrong_digest",
+        "source_sensitivity",
+        "publication_manifest",
+        "workflow_failure",
+        "profile_as_admission",
+        "raw_transform_as_projection",
+        "wrong_producer_commit",
+    ],
+)
+def test_mbs_projection_dossiers_reject_unbound_or_promoted_evidence(
+    mutation: str,
+) -> None:
+    documents = {
+        name: _read(path)
+        for name, (path, _digest) in mbs_dossiers.INPUTS.items()
+    }
+    candidates = derived_gates.mbs_candidates(documents)
+    product = mbs_dossiers.PRODUCTS["f9f9"]
+    scope = next(
+        row
+        for row in documents["mbs_scope"]["products"]
+        if row["product_id"] == product["product_id"]
+    )
+    run = next(
+        row
+        for row in documents["workflow"]["runs"]
+        if row["run_id"] == product["run_id"]
+    )
+    manifest = documents["f9f9_manifest"]
+    if mutation == "equal_size_wrong_digest":
+        source = next(
+            row
+            for row in manifest["objects"]
+            if row["role"] == "source_parquet"
+        )
+        # The other source projection has the same size but a different digest.
+        other = next(
+            row
+            for row in candidates
+            if row["product_id"] == mbs_dossiers.PRODUCTS["d781"]["product_id"]
+            and row["path"].endswith("/source.parquet")
+        )
+        assert source["bytes"] == other["byte_count"]
+        source["sha256"] = other["sha256"]
+    elif mutation == "source_sensitivity":
+        documents["f9f9_receipt"]["sensitivity"]["personal_data"] = "unknown"
+    elif mutation == "publication_manifest":
+        documents["f9f9_publication"]["manifest_sha256"] = "0" * 64
+    elif mutation == "workflow_failure":
+        run["jobs"][0]["steps"][1]["conclusion"] = "failure"
+    elif mutation == "raw_transform_as_projection":
+        documents["f9f9_receipt"]["transformation"]["output_sha256"] = next(
+            row["sha256"]
+            for row in manifest["objects"]
+            if row["role"] == "source_parquet"
+        )
+    elif mutation == "wrong_producer_commit":
+        run["commit"] = mbs_dossiers.PRODUCTS["d781"]["commit"]
+    else:
+        manifest["objects"].append({"role": "admission", "path": "invented"})
+        documents["f9f9_publication"]["verified_objects"] += 1
+    failures = {
+        "equal_size_wrong_digest": "MBS projection identity differs",
+        "source_sensitivity": "MBS source receipt or privacy binding differs",
+        "publication_manifest": "MBS publication receipt differs",
+        "workflow_failure": "producer workflow binding differs",
+        "profile_as_admission": "MBS v2 profile or raw lifecycle differs",
+        "raw_transform_as_projection": "MBS source receipt or privacy binding differs",
+        "wrong_producer_commit": "producer workflow binding differs",
+    }
+    with pytest.raises(ValueError, match=failures[mutation]):
+        mbs_dossiers._validate_product(
+            "f9f9", documents, scope, run, candidates
+        )
+
+
+def test_mbs_projection_dossier_metadata_digest_is_checked(
+    tmp_path: Path,
+) -> None:
+    relative, expected = mbs_dossiers.INPUTS["f9f9_manifest"]
+    target = tmp_path / relative
+    target.parent.mkdir(parents=True)
+    target.write_bytes((ROOT / relative).read_bytes() + b" ")
+    with pytest.raises(ValueError, match="metadata reference digest differs"):
+        batch_qualification.read_bound_metadata(tmp_path, relative, expected)
+
+
+def test_mbs_projection_dossiers_do_not_open_payloads(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    original = Path.open
+
+    def metadata_only(path: Path, *args: Any, **kwargs: Any) -> Any:
+        if path.suffix.lower() in {".xml", ".parquet", ".zip"}:
+            raise AssertionError(
+                "dossier must not open source or projection payloads"
+            )
+        return original(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", metadata_only)
+    assert len(mbs_dossiers.build_report(ROOT)["dossiers"]) == 4
+
+
+def test_mbs_projection_dossiers_reject_changed_consumer_authority(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    original = batch_qualification.read_bound_metadata
+
+    def changed_authority(root: Path, path: str, digest: str) -> dict[str, Any]:
+        value = original(root, path, digest)
+        if path == mbs_dossiers.INPUTS["mbs_rights"][0]:
+            value["boundaries"]["consumer_canaries_authorized"] = True
+        return value
+
+    monkeypatch.setattr(
+        batch_qualification, "read_bound_metadata", changed_authority
+    )
+    with pytest.raises(ValueError, match="consumer authorization boundary"):
+        mbs_dossiers.build_report(ROOT)
 
 
 @pytest.mark.parametrize(

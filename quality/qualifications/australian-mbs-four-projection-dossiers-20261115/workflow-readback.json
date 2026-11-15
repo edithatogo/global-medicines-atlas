@@ -1,0 +1,78 @@
+{
+  "method": "Read-only GitHub Actions run and job metadata; no logs or payloads.",
+  "observed_on": "2026-11-15",
+  "runs": [
+    {
+      "commit": "12e5ca4678e077f8e6bf954aaa780aac83040994",
+      "conclusion": "success",
+      "created_at": "2026-10-02T21:19:35Z",
+      "event": "schedule",
+      "jobs": [
+        {
+          "conclusion": "success",
+          "name": "Acquire exact release, append and anonymously verify",
+          "status": "completed",
+          "steps": [
+            {
+              "conclusion": "success",
+              "name": "Bind main head and exact release authorization"
+            },
+            {
+              "conclusion": "success",
+              "name": "Acquire, append and verify using anonymous reads"
+            },
+            {
+              "conclusion": "success",
+              "name": "Remove verified hosted temporary materializations"
+            },
+            {
+              "conclusion": "success",
+              "name": "Require usable admitted data for a successful update"
+            }
+          ]
+        }
+      ],
+      "run_id": 37066153375,
+      "status": "completed",
+      "updated_at": "2026-10-02T21:20:28Z",
+      "url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37066153375"
+    },
+    {
+      "commit": "644f3f6cfd2b76b0866d5ecb90dde397d67a51eb",
+      "conclusion": "success",
+      "created_at": "2026-10-04T00:06:59Z",
+      "event": "workflow_dispatch",
+      "jobs": [
+        {
+          "conclusion": "success",
+          "name": "Acquire exact release, append and anonymously verify",
+          "status": "completed",
+          "steps": [
+            {
+              "conclusion": "success",
+              "name": "Bind main head and exact release authorization"
+            },
+            {
+              "conclusion": "success",
+              "name": "Acquire, append and verify using anonymous reads"
+            },
+            {
+              "conclusion": "success",
+              "name": "Remove verified hosted temporary materializations"
+            },
+            {
+              "conclusion": "success",
+              "name": "Require usable admitted data for a successful update"
+            }
+          ]
+        }
+      ],
+      "run_id": 37163925043,
+      "status": "completed",
+      "updated_at": "2026-10-04T00:07:39Z",
+      "url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37163925043"
+    }
+  ],
+  "schema_id": "global-medicines-atlas.mbs-producer-workflow-readback",
+  "schema_version": 1
+}
