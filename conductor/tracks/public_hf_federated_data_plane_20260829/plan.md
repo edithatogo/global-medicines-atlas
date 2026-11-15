@@ -1675,3 +1675,56 @@ unassessed PBS, participant or cohort-derived payloads.
   objects blocked when source-specific evidence remains insufficient.
 - [ ] Verify focused tests and protected CI, then merge the bounded technical
   changes without acquiring or publishing data.
+
+### August projection replay and PBS acquisition metadata — 15 November 2026
+
+The same chat continues in branch `codex/mbs-august-projection-v4-20261115`
+in the worktree above. It owns only retrospective source metadata, projection
+registration plans, scoped admission and consumer checks, PBS privacy metadata,
+their tests and this handoff. The existing parallel publication-workflow lane
+retains its own files and checkout.
+
+- [x] Reconstruct two missing source-event and external-reference pairs from
+  retained receipts, preserving the later reconstruction chronology.
+- [x] Replay all eight exact projection registrations twice using metadata;
+  retain the four later outputs' writer-footer qualification and the two
+  `f9f9` independent-replica prerequisites.
+- [x] Join the unassessed PBS paths to the 1,702 retained acquisition events;
+  preserve all unknown privacy dispositions and the 19 unmatched paths.
+- [~] Prepare and check v4 admissions and consumers only where their exact
+  prerequisites can be closed. Metadata replay is not an admission or reader.
+- [ ] Merge after focused checks and protected CI, without dataset acquisition
+  or publication.
+
+### Projection offline consumer preflight — 16 November 2026
+
+The same chat owns the scoped consumer-preflight source and tests in the
+worktree above. The PortableSSD holding its shared Git directory is unavailable;
+preserve the worktree, its pushed replay branch and the local preflight edits.
+
+- [x] Exercise synthetic v4-shape and consumer-identity probes for all eight
+  projection paths. Verify that each reader rejects an unadmitted probe before
+  network access. These are not production contracts, receipt closures or
+  payload canaries.
+- [~] Complete exact production admission and consumer evidence only when the
+  missing roles and the current no-acquisition boundary permit it. The `f9f9`
+  independent-replica prerequisites remain unchanged.
+- [ ] Integrate the replay, PBS metadata and consumer checks with protected CI
+  after Git storage is available, keeping all datasets unchanged.
+
+### Automatic live-check correction — 16 November 2026
+
+The #1457 PR and post-merge Test-Goblin runs executed the existing public MBS
+Parquet and six-table parity fetches. The first #1458 test run was cancelled
+before those steps. This was a missed automatic acquisition route; its source
+was previously public MBS data, with no participant or cohort data involved.
+The same integrator owns the Test-Goblin workflow guard and its focused test.
+
+- [x] Add a fail-closed guard requiring explicit manual-dispatch authorization
+  before either public MBS payload check. Automatic runs fail that required
+  job instead of silently skipping or claiming it passed.
+- [~] The guard exists only on this branch until a protected merge. Keep the
+  PR blocked while no-acquisition is in effect; do not rerun the live check.
+- [~] Remove duplicate serialized replay plans from the PR history after the
+  secret scanner flagged their deterministic hashes. Preserve in-memory v3
+  schema validation and do not add a scanner exception.
