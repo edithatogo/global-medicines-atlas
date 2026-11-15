@@ -1629,3 +1629,9 @@ original worktree was preserved. This clone owns the next PR and hosted check.
 When storage returns, reconcile the original owned changes against the merged
 commit before cleaning either checkout. No native dataset object is owned or
 mutated by this lane.
+
+PR #1455's first head exposed two unassigned test files in the shared test
+inventory. Their cases were moved into the already registered MBS and PBS test
+files, preserving the separate workstream's ownership of `scripts/test_goblin.py`.
+The corrected local inventory and 35 focused cases pass; final-head hosted
+checks remain required.

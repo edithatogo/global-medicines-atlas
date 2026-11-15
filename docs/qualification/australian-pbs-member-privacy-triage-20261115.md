@@ -24,4 +24,4 @@ it reads no participant, cohort-derived or unassessed payload bytes.
 
 To reproduce the metadata-only report with Python 3.15.1, run
 `python -m scripts.qualify_pbs_member_privacy_triage --check`. The focused test
-file is `tests/test_qualify_pbs_member_privacy_triage.py`.
+file is `tests/test_qualify_pbs_schema_privacy_context.py`.

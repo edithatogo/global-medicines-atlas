@@ -47,7 +47,6 @@ raw candidates do not admit them or close M-108, M-109 or M-112.
 
 With a qualified repo-local Python 3.15.1 environment, run
 `python -m scripts.qualify_mbs_august_frozen_v4 --check` and the focused
-`tests/test_qualify_mbs_august_frozen_v4.py` and
 `tests/test_qualify_mbs_july_frozen_v4.py` tests. The separate
 `australian-mbs-august-frozen-v4.yml` workflow is manual, requires the exact
 merged main commit, and performs a bounded reader check only on the two
