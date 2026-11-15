@@ -22,6 +22,20 @@ SILVER_DIR = (
     PREFIX
     + "australian-mbs-silver-v4-admission-remote-read-20261028-40664169948/"
 )
+FRESH_SILVER_DIR = (
+    PREFIX
+    + "australian-mbs-silver-consumer-recheck-20261115/hosted-43651971792/"
+)
+FRESH_MANIFEST_SHA256 = (
+    "c6bea14def58269589ce529562451e9d31a5bde8517b876833bddff8d1013358"
+)
+FRESH_RECEIPT_SHA256 = (
+    "10866fda4be44358ae38f7cf1df9402aa054b62f8216e0a07eb3fb36e14f768b"
+)
+FRESH_COMMIT = "b06d5673603e251f398fc26d500966c1ec51953c"
+FRESH_RUN = 43651971792
+FRESH_JOB = 132622221393
+FRESH_ARTIFACT = 14137250879
 PBS_DIR = PREFIX + "pbs-reproduced-publication-20261102-41395493749/"
 INPUTS = {
     "mbs_scope": (
@@ -319,8 +333,13 @@ def checked_consumers(  # ruff: ignore[too-many-locals] -- Validate each indepen
     receipt: dict[str, Any],
     manifest: dict[str, Any],
     source_semantics: dict[str, Any],
+    *,
+    evidence_directory: str = SILVER_DIR,
+    workflow_run: int = CONSUMER_RUN,
+    browser_expected: bool = True,
+    expected_commit: str | None = None,
 ) -> list[dict[str, Any]]:
-    """Revalidate six previously admitted MBS contracts and historical canaries."""
+    """Revalidate six previously admitted MBS contracts and their canaries."""
     if not all((
         receipt.get("status") == "passed",
         receipt.get("dataset") == DATASET,
@@ -329,8 +348,12 @@ def checked_consumers(  # ruff: ignore[too-many-locals] -- Validate each indepen
         receipt["boundaries"]["source_values_included"] is False,
         receipt["boundaries"]["new_sources_added"] is False,
         receipt["boundaries"]["external_publication_performed"] is False,
-        manifest["workflow"]["run_id"] == CONSUMER_RUN,
+        manifest["workflow"]["run_id"] == workflow_run,
         manifest["validation"]["hosted_workflow_conclusion"] == "success",
+        expected_commit is None
+        or receipt.get("contract_commit")
+        == manifest["workflow"].get("head_sha")
+        == expected_commit,
         source_semantics.get("status")
         == "qualified_exact_source_era_semantics",
         source_semantics["public_dataset_identity"]["dataset"] == DATASET,
@@ -342,7 +365,8 @@ def checked_consumers(  # ruff: ignore[too-many-locals] -- Validate each indepen
     if not all((
         canary.get("status") == "passed",
         canary.get("request_count") == CONSUMER_OBJECTS,
-        canary.get("browser_qualification") == "passed",
+        canary.get("browser_qualification")
+        == ("passed" if browser_expected else "not_performed"),
         canary.get("source_completeness") == "not_established",
         canary.get("surface_request_counts")
         == dict.fromkeys(
@@ -376,10 +400,14 @@ def checked_consumers(  # ruff: ignore[too-many-locals] -- Validate each indepen
         contract_name = f"metadata/contracts/{name}.json"
         semantic_name = f"metadata/semantics/{name}.json"
         contract = bounded.read_bound_metadata(
-            root, SILVER_DIR + contract_name, reports[contract_name]["sha256"]
+            root,
+            evidence_directory + contract_name,
+            reports[contract_name]["sha256"],
         )
-        bounded.read_bound_metadata(
-            root, SILVER_DIR + semantic_name, reports[semantic_name]["sha256"]
+        derived_semantic = bounded.read_bound_metadata(
+            root,
+            evidence_directory + semantic_name,
+            reports[semantic_name]["sha256"],
         )
         location, rights, admitted = (
             contract["location"],
@@ -408,6 +436,10 @@ def checked_consumers(  # ruff: ignore[too-many-locals] -- Validate each indepen
             == admitted["contract_sha256"]
             == read["contract_sha256"],
             reports[semantic_name]["sha256"] == obj["semantic_sha256"],
+            derived_semantic["contract_sha256"] == obj["contract_sha256"],
+            derived_semantic["resource_id"] == obj["resource_id"],
+            derived_semantic["semantic_dimension"] == obj["semantic_dimension"],
+            derived_semantic["entity_granularity"] == obj["entity_granularity"],
             location["dataset"]
             == admitted["dataset"]
             == rights["dataset"]
@@ -438,14 +470,18 @@ def checked_consumers(  # ruff: ignore[too-many-locals] -- Validate each indepen
             check["request_sha256"] in request_hashes,
             check["api_http_status"]
             == check["atlas_http_status"]
-            == check["browser"]["http_status"]
             == HTTPStatus.OK,
             check["cli_exit_code"] == check["export_exit_code"] == 0,
             check["row_count"]
             == check["export_row_count"]
             == check["atlas_rendered_row_count"]
-            == check["browser"]["row_count"]
             == CANARY_ROWS,
+            (
+                check["browser"]["http_status"] == HTTPStatus.OK
+                and check["browser"]["row_count"] == CANARY_ROWS
+                if browser_expected
+                else "browser" not in check
+            ),
         )):
             raise ValueError(
                 "MBS consumer object, privacy or canary evidence differs"
@@ -461,12 +497,108 @@ def checked_consumers(  # ruff: ignore[too-many-locals] -- Validate each indepen
             "contract_sha256": obj["contract_sha256"],
             "privacy": "non_sensitive_in_exact_previously_admitted_contract",
             "admission": "previously_admitted_candidate_product",
-            "consumer_check": "previous_historical_hosted_five_surface_canary_passed",
+            "consumer_check": (
+                "previous_historical_hosted_five_surface_canary_passed"
+                if browser_expected
+                else "fresh_hosted_browser_free_four_surface_canary_passed"
+            ),
             "consumer_request_sha256": check["request_sha256"],
         })
     if {row["table"] for row in output} != set(CONSUMER_TABLES):
         raise ValueError("duplicate or missing MBS consumer table")
     return output
+
+
+def check_fresh_consumers(root: Path = ROOT) -> list[dict[str, Any]]:
+    """Verify the retained browser-free exact-main recheck and prior identity."""
+    manifest = bounded.read_bound_metadata(
+        root, FRESH_SILVER_DIR + "artifact-manifest.json", FRESH_MANIFEST_SHA256
+    )
+    receipt = bounded.read_bound_metadata(
+        root,
+        FRESH_SILVER_DIR + "admission-remote-read.json",
+        FRESH_RECEIPT_SHA256,
+    )
+    workflow, artifact, validation = (
+        manifest[key] for key in ("workflow", "artifact", "validation")
+    )
+    if not all((
+        manifest.get("schema_id")
+        == "global-medicines-atlas.australian-mbs-silver-consumer-recheck-artifact",
+        manifest.get("schema_version") == 1,
+        workflow.get("run_id") == FRESH_RUN,
+        workflow.get("run_attempt") == 1,
+        workflow.get("job_id") == FRESH_JOB,
+        workflow.get("event") == "workflow_dispatch",
+        workflow.get("head_sha") == FRESH_COMMIT,
+        artifact.get("id") == FRESH_ARTIFACT,
+        artifact.get("sha256")
+        == "f117d47190f5720f71bf26c08924f0c4286e71d55d75782ec55b138511f4fbff",
+        validation.get("hosted_workflow_conclusion") == "success",
+        validation.get("artifact_sha256_verified") is True,
+        validation.get("zip_crc_verified") is True,
+        validation.get("exact_metadata_member_set") is True,
+        validation.get("source_values_included") is False,
+        validation.get("browser_qualification") == "not_performed",
+        validation.get("new_unique_admissions") == 0,
+        validation.get("dataset_publication") is False,
+        receipt["boundaries"]["inventory_changed"] is False,
+        receipt["boundaries"]["m112_federation_acceptance"] is False,
+        receipt["boundaries"]["production_promotion"] is False,
+        receipt["boundaries"]["independent_recovery_qualified"] is False,
+    )):
+        raise ValueError("fresh MBS consumer artifact evidence differs")
+    reports = bounded.metadata_index(
+        bounded.metadata_rows(manifest.get("reports"))
+    )
+    expected_paths = {"admission-remote-read.json", "deployment-trust.json"} | {
+        f"metadata/{kind}/{name}.json"
+        for kind in ("contracts", "semantics")
+        for name in CONSUMER_TABLES
+    }
+    if set(reports) != expected_paths:
+        raise ValueError("fresh MBS consumer metadata members differ")
+    for path, binding in reports.items():
+        bounded.read_bound_metadata(
+            root, FRESH_SILVER_DIR + path, binding["sha256"]
+        )
+        if (root / FRESH_SILVER_DIR / path).stat().st_size != binding[
+            "size_bytes"
+        ]:
+            raise ValueError("fresh MBS consumer metadata size differs")
+    if (
+        reports["admission-remote-read.json"]["sha256"] != FRESH_RECEIPT_SHA256
+        or receipt["consumer_canary"]["trust_sha256"]
+        != reports["deployment-trust.json"]["sha256"]
+    ):
+        raise ValueError("fresh MBS consumer receipt or trust differs")
+    source_semantics = bounded.read_bound_metadata(
+        root, *INPUTS["consumer_semantic_manifest"]
+    )
+    fresh = checked_consumers(
+        root,
+        receipt,
+        manifest,
+        source_semantics,
+        evidence_directory=FRESH_SILVER_DIR,
+        workflow_run=FRESH_RUN,
+        browser_expected=False,
+        expected_commit=FRESH_COMMIT,
+    )
+    prior = checked_consumers(
+        root,
+        bounded.read_bound_metadata(root, *INPUTS["consumer_receipt"]),
+        bounded.read_bound_metadata(root, *INPUTS["consumer_manifest"]),
+        source_semantics,
+    )
+    identity = ("table", "dataset", "revision", "path", "sha256", "byte_count")
+    if {tuple(row[key] for key in identity) for row in fresh} != {
+        tuple(row[key] for key in identity) for row in prior
+    }:
+        raise ValueError(
+            "fresh MBS consumer object identities differ from prior"
+        )
+    return fresh
 
 
 def build_report(root: Path = ROOT) -> dict[str, Any]:
@@ -523,7 +655,17 @@ def main() -> int:
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--report", type=Path)
     group.add_argument("--check", type=Path)
+    group.add_argument("--check-fresh-consumers", action="store_true")
     args = parser.parse_args()
+    if args.check_fresh_consumers:
+        rows = check_fresh_consumers()
+        print(
+            json.dumps({
+                "fresh_consumers_verified": len(rows),
+                "new_admissions": 0,
+            })
+        )
+        return 0
     report = build_report()
     if args.report:
         with args.report.open("x", encoding="utf-8") as target:
