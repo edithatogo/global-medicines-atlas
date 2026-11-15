@@ -54,8 +54,9 @@ other evidence exists for them.
 All 1,722 paths remain unassessed and blocked from payload reads and consumer
 use. Neither matching digests nor an unknown classification establishes the
 presence or absence of personal data, transfers rights, or clears a ZIP's
-members. No unassessed PBS, participant or cohort-derived payload was read;
-no dataset was acquired or published.
+members. These metadata assessments read no unassessed PBS, participant or
+cohort-derived payload, and added or published no dataset. The earlier public
+MBS reads by automatic CI are recorded above.
 
 Reproduce with the repository-local Python 3.15.1 interpreter:
 
