@@ -1,0 +1,410 @@
+{
+  "boundaries": {
+    "dataset_acquired_or_published": false,
+    "frozen_inventory_changed": false,
+    "new_rights_or_privacy_decision": false,
+    "participant_or_cohort_data_accessed": false,
+    "source_or_projection_payload_read": false,
+    "v4_admission_or_consumer_canary": false
+  },
+  "inputs": {
+    "bronze_rights": {
+      "path": "quality/qualifications/australian-pbs-bronze-projection-rights-attestation-20261020.json",
+      "sha256": "c1a66decf1b601c6a1da90971cca52258310d8b44bc3dac92006f6be8a6d0cbe"
+    },
+    "coverage": {
+      "path": "quality/qualifications/australian-pbs-acquisition-privacy-coverage-20261115.json",
+      "sha256": "a59046ce6d88de32b954fcbc97f360937e4e240deb95349cd4a1fd3292b21ed2"
+    },
+    "inventory": {
+      "path": "quality/qualifications/australian-existing-archive-privacy-batch-20261115.json",
+      "sha256": "7ab592f48583def8fb05b814d442b394463b3703caf978e885a1d96961029ec8"
+    },
+    "pdf": {
+      "path": "quality/qualifications/australian-m112-pbs-pdf-archive-lineage-20261019.json",
+      "sha256": "b0196e9639fe86d5cf21dae2240bc7c3d6ad0983f8435aa0d55d32538f4c3486"
+    },
+    "projection": {
+      "path": "quality/qualifications/australian-m112-reimbursement-medallion-projection-lineage-20261019.json",
+      "sha256": "a9146e11c71f3d031135dc395d84589497a4aa50e9e10f15acbca08498fc7f97"
+    },
+    "projection_readback": {
+      "path": "quality/qualifications/australian-m112-projection-identity-readback-20261018.json",
+      "sha256": "03f41ee24ba1ac04ad76e63480ddd71c7b3cb01df72cbb05bc91db803a136ddd"
+    },
+    "publication": {
+      "path": "quality/qualifications/pbs-reproduced-publication-20261102-41395493749/publication.json",
+      "sha256": "2316c52d97aee8041b104c7b621363b4b1f16f4cb1a073177e902e86acf74294"
+    },
+    "readiness": {
+      "path": "quality/qualifications/australian-m112-reimbursement-batch-readiness-20261115.json",
+      "sha256": "0969afcd6152cd73f5ff53f28ccb6fb9315090a71ba302ebbee74efaf32db4f5"
+    },
+    "schema_context": {
+      "path": "quality/qualifications/australian-pbs-schema-privacy-context-20261115.json",
+      "sha256": "4a629204fc3810ea8e3d3de5e29f304e8cdecaf9ecbb4889ece6ca43db360209"
+    },
+    "silver_readiness": {
+      "path": "quality/qualifications/pbs-reproduced-v4-evidence-readiness-20261029.json",
+      "sha256": "d581fb505eca81ea2e984941d53c57218bbafcfc9c2de23a6718caf32ea01946"
+    },
+    "silver_rights": {
+      "path": "quality/qualifications/australian-pbs-reproduced-silver-output-rights-attestation-20261029.json",
+      "sha256": "93e0d64ec428ae157e030432e8cce70751df54ec111b9fa11319c74206a3c216"
+    }
+  },
+  "objects": [
+    {
+      "batch": "pbs_frozen_projection_unassessed",
+      "byte_count": 158134,
+      "dataset": "edithatogo/australian-pbs-source-archive",
+      "frozen_member": true,
+      "historical_rights": "exact_output_maintainer_attested_instrument_not_independently_reviewed",
+      "kind": "pbs_bronze_projection",
+      "path": "bronze/2026-04-01/pbs-v3-source.parquet",
+      "privacy": "blocked_unknown_or_unqualified_privacy",
+      "ready_for_payload_read": false,
+      "revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
+      "sha256": "9e9facc336b47c5a9d514388a95c9797ba3e03474806fba00b6f03c0e601e97d",
+      "source_archive_sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20"
+    },
+    {
+      "batch": "pbs_reproduced_silver_unassessed",
+      "byte_count": 637012122,
+      "dataset": "edithatogo/australian-pbs-source-archive",
+      "frozen_member": false,
+      "historical_publication": "anonymous_digest_verified_not_v4_admitted",
+      "historical_rights": "exact_output_maintainer_attested_instrument_not_independently_reviewed",
+      "kind": "pbs_reproduced_silver",
+      "path": "silver/pbs/v4/2026-04-01/8e8bacdc72ea81ecfbb84d161b3f546eee03bddeae32f82daa7231c3759d23fc/values.parquet",
+      "prior_field_state_receipt_names_prior_output": true,
+      "privacy": "blocked_unknown_or_unqualified_privacy",
+      "ready_for_payload_read": false,
+      "revision": "3995deb3e2a82f09472d6a78020fb13bbbc96056",
+      "sha256": "86d65b147dc95787c5e3f14b13abe2630562f050e2221a1340939dcc7776a88c",
+      "source_archive_sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+      "source_member_schema_context": {
+        "contact_related_paths": 44,
+        "patient_related_paths": 224,
+        "schema_paths": 5163,
+        "scope": "source_member_structure_not_output_values_or_privacy_clearance",
+        "selected_identifier_label_matches": 0
+      },
+      "source_member_sha256": "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43",
+      "two_builds_same_algorithm": true
+    },
+    {
+      "batch": "reimbursement_projection_byte_identical_unassessed",
+      "byte_count": 1820758,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "frozen_member": true,
+      "kind": "reimbursement_byte_identical_projection",
+      "path": "data/medallion/acquisition_b1/data.jsonl",
+      "privacy": "blocked_unknown_or_unqualified_privacy",
+      "producer_revision": "083be8aa4ff0f8d8e6df5c5d8242f7783be149de",
+      "producer_source_byte_count": 1820758,
+      "producer_source_path": "data/derived/medallion/bronze_acquisition_ledger.jsonl",
+      "producer_source_sha256": "0bd2f7661037b620a21943ed6d7f2dd28a93437d43072d6ceabf3411b5840da1",
+      "ready_for_payload_read": false,
+      "relationship": "byte_identical_to_exact_producer_source_path",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+      "sha256": "0bd2f7661037b620a21943ed6d7f2dd28a93437d43072d6ceabf3411b5840da1"
+    },
+    {
+      "batch": "reimbursement_projection_byte_identical_unassessed",
+      "byte_count": 27219,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "frozen_member": true,
+      "kind": "reimbursement_byte_identical_projection",
+      "path": "data/medallion/catalogue_b0/data.jsonl",
+      "privacy": "blocked_unknown_or_unqualified_privacy",
+      "producer_revision": "083be8aa4ff0f8d8e6df5c5d8242f7783be149de",
+      "producer_source_byte_count": 27219,
+      "producer_source_path": "data/derived/medallion/bronze_source_index.jsonl",
+      "producer_source_sha256": "c27b998f9425714c42da0a9c8192e6fb5a613031210548cc0eb8b44388aaa8c4",
+      "ready_for_payload_read": false,
+      "relationship": "byte_identical_to_exact_producer_source_path",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+      "sha256": "c27b998f9425714c42da0a9c8192e6fb5a613031210548cc0eb8b44388aaa8c4"
+    },
+    {
+      "batch": "reimbursement_projection_byte_identical_unassessed",
+      "byte_count": 1767273,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "frozen_member": true,
+      "kind": "reimbursement_byte_identical_projection",
+      "path": "data/medallion/evidence_b2/data.jsonl",
+      "privacy": "blocked_unknown_or_unqualified_privacy",
+      "producer_revision": "083be8aa4ff0f8d8e6df5c5d8242f7783be149de",
+      "producer_source_byte_count": 1767273,
+      "producer_source_path": "data/derived/medallion/bronze_evidence.jsonl",
+      "producer_source_sha256": "d7d33a8b0b6bd5cf507639286348b53e79d76e59347ef9575ff555a1e66f68c5",
+      "ready_for_payload_read": false,
+      "relationship": "byte_identical_to_exact_producer_source_path",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+      "sha256": "d7d33a8b0b6bd5cf507639286348b53e79d76e59347ef9575ff555a1e66f68c5"
+    },
+    {
+      "batch": "reimbursement_projection_layer_partition_unassessed",
+      "byte_count": 3267,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "frozen_member": true,
+      "kind": "reimbursement_layer_partition",
+      "path": "data/medallion/gold/data.jsonl",
+      "privacy": "blocked_unknown_or_unqualified_privacy",
+      "producer_revision": "083be8aa4ff0f8d8e6df5c5d8242f7783be149de",
+      "producer_source_byte_count": 18087,
+      "producer_source_path": "data/derived/medallion/medallion_artifacts.jsonl",
+      "producer_source_sha256": "67fc5ec969875ef505a5a830311b8d3454b83ffcd48649194790c7722869a6cd",
+      "ready_for_payload_read": false,
+      "relationship": "exact_layer_partition_of_medallion_artifacts",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+      "sha256": "a4d3a99d9b6db9dff6a9e267e73806460b082d8ee8fbdefb55a3c7d077d85532"
+    },
+    {
+      "batch": "reimbursement_projection_byte_identical_unassessed",
+      "byte_count": 10763,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "frozen_member": true,
+      "kind": "reimbursement_byte_identical_projection",
+      "path": "data/medallion/lineage/data.jsonl",
+      "privacy": "blocked_unknown_or_unqualified_privacy",
+      "producer_revision": "083be8aa4ff0f8d8e6df5c5d8242f7783be149de",
+      "producer_source_byte_count": 10763,
+      "producer_source_path": "data/derived/field_lineage/field_lineage.jsonl",
+      "producer_source_sha256": "9d73e2f79b44f221486b4ad0e1df576cdbd18763d1aa3fa7adb8e6fe526e639f",
+      "ready_for_payload_read": false,
+      "relationship": "byte_identical_to_exact_producer_source_path",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+      "sha256": "9d73e2f79b44f221486b4ad0e1df576cdbd18763d1aa3fa7adb8e6fe526e639f"
+    },
+    {
+      "batch": "reimbursement_projection_byte_identical_unassessed",
+      "byte_count": 4340,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "frozen_member": true,
+      "kind": "reimbursement_byte_identical_projection",
+      "path": "data/medallion/pbs_archive_variants/data.jsonl",
+      "privacy": "blocked_unknown_or_unqualified_privacy",
+      "producer_revision": "083be8aa4ff0f8d8e6df5c5d8242f7783be149de",
+      "producer_source_byte_count": 4340,
+      "producer_source_path": "data/derived/publication/pbs_provenance/pbs_archive_variants.jsonl",
+      "producer_source_sha256": "e9059e17bf78c099f0350610487bbc78e5b51c8e9d49726b0b117e01e3c4d0db",
+      "ready_for_payload_read": false,
+      "relationship": "byte_identical_to_exact_producer_source_path",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+      "sha256": "e9059e17bf78c099f0350610487bbc78e5b51c8e9d49726b0b117e01e3c4d0db"
+    },
+    {
+      "batch": "reimbursement_projection_byte_identical_unassessed",
+      "byte_count": 811545,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "frozen_member": true,
+      "kind": "reimbursement_byte_identical_projection",
+      "path": "data/medallion/pbs_archive_verification/data.jsonl",
+      "privacy": "blocked_unknown_or_unqualified_privacy",
+      "producer_revision": "083be8aa4ff0f8d8e6df5c5d8242f7783be149de",
+      "producer_source_byte_count": 811545,
+      "producer_source_path": "data/derived/publication/pbs_provenance/pbs_archive_verification.jsonl",
+      "producer_source_sha256": "7cea95acfde2f023a8a3b84628b7bcd70a023ab1ebde3d5ac0449eedb36a5f8d",
+      "ready_for_payload_read": false,
+      "relationship": "byte_identical_to_exact_producer_source_path",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+      "sha256": "7cea95acfde2f023a8a3b84628b7bcd70a023ab1ebde3d5ac0449eedb36a5f8d"
+    },
+    {
+      "batch": "reimbursement_projection_byte_identical_unassessed",
+      "byte_count": 871678,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "frozen_member": true,
+      "kind": "reimbursement_byte_identical_projection",
+      "path": "data/medallion/pbs_pdf_provenance/data.jsonl",
+      "privacy": "blocked_unknown_or_unqualified_privacy",
+      "producer_revision": "083be8aa4ff0f8d8e6df5c5d8242f7783be149de",
+      "producer_source_byte_count": 871678,
+      "producer_source_path": "data/derived/publication/pbs_provenance/pbs_pdf_provenance.jsonl",
+      "producer_source_sha256": "24cb8c98f8a09f943ef3369ec63b9a2f7b3e19bfca7cf2a7ec64e1a78dcf4e07",
+      "ready_for_payload_read": false,
+      "relationship": "byte_identical_to_exact_producer_source_path",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+      "sha256": "24cb8c98f8a09f943ef3369ec63b9a2f7b3e19bfca7cf2a7ec64e1a78dcf4e07"
+    },
+    {
+      "batch": "reimbursement_projection_byte_identical_unassessed",
+      "byte_count": 548634,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "frozen_member": true,
+      "kind": "reimbursement_byte_identical_projection",
+      "path": "data/medallion/pbs_structured_provenance/data.jsonl",
+      "privacy": "blocked_unknown_or_unqualified_privacy",
+      "producer_revision": "083be8aa4ff0f8d8e6df5c5d8242f7783be149de",
+      "producer_source_byte_count": 548634,
+      "producer_source_path": "data/derived/publication/pbs_provenance/pbs_structured_provenance.jsonl",
+      "producer_source_sha256": "fab87f283f31f51db1f5f1bee76b02c3fbe5622bea1deee4632be0ff4768a28c",
+      "ready_for_payload_read": false,
+      "relationship": "byte_identical_to_exact_producer_source_path",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+      "sha256": "fab87f283f31f51db1f5f1bee76b02c3fbe5622bea1deee4632be0ff4768a28c"
+    },
+    {
+      "batch": "reimbursement_projection_layer_partition_unassessed",
+      "byte_count": 2088,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "frozen_member": true,
+      "kind": "reimbursement_layer_partition",
+      "path": "data/medallion/platinum/data.jsonl",
+      "privacy": "blocked_unknown_or_unqualified_privacy",
+      "producer_revision": "083be8aa4ff0f8d8e6df5c5d8242f7783be149de",
+      "producer_source_byte_count": 18087,
+      "producer_source_path": "data/derived/medallion/medallion_artifacts.jsonl",
+      "producer_source_sha256": "67fc5ec969875ef505a5a830311b8d3454b83ffcd48649194790c7722869a6cd",
+      "ready_for_payload_read": false,
+      "relationship": "exact_layer_partition_of_medallion_artifacts",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+      "sha256": "82aa16098cbbdedb8d6583caf367c8a41b34ca00f448e354a3921b12592dc9d6"
+    },
+    {
+      "batch": "reimbursement_projection_byte_identical_unassessed",
+      "byte_count": 1321055,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "frozen_member": true,
+      "kind": "reimbursement_byte_identical_projection",
+      "path": "data/medallion/promotion_decisions/data.jsonl",
+      "privacy": "blocked_unknown_or_unqualified_privacy",
+      "producer_revision": "083be8aa4ff0f8d8e6df5c5d8242f7783be149de",
+      "producer_source_byte_count": 1321055,
+      "producer_source_path": "data/derived/medallion/promotion_decisions.jsonl",
+      "producer_source_sha256": "03036720150f163e471445b594d21eeb51f95e4bd7db1070b74afc27b7d8c5c7",
+      "ready_for_payload_read": false,
+      "relationship": "byte_identical_to_exact_producer_source_path",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+      "sha256": "03036720150f163e471445b594d21eeb51f95e4bd7db1070b74afc27b7d8c5c7"
+    },
+    {
+      "batch": "reimbursement_projection_layer_partition_unassessed",
+      "byte_count": 12732,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "frozen_member": true,
+      "kind": "reimbursement_layer_partition",
+      "path": "data/medallion/silver/data.jsonl",
+      "privacy": "blocked_unknown_or_unqualified_privacy",
+      "producer_revision": "083be8aa4ff0f8d8e6df5c5d8242f7783be149de",
+      "producer_source_byte_count": 18087,
+      "producer_source_path": "data/derived/medallion/medallion_artifacts.jsonl",
+      "producer_source_sha256": "67fc5ec969875ef505a5a830311b8d3454b83ffcd48649194790c7722869a6cd",
+      "ready_for_payload_read": false,
+      "relationship": "exact_layer_partition_of_medallion_artifacts",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+      "sha256": "299b3721f72af235dc80a9b96f590a39ef8fe0b683618764ad56af713e1848a1"
+    },
+    {
+      "batch": "pbs_schedule_archived_pdf_unassessed",
+      "byte_count": 15812536,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "event": {
+        "path": "quality/bronze/imported-acquisitions/au-pbs-archive/dfa39bfa3bd839faa6e3265ab3a9510d619759ad50d3e72031951f7d3c167067.json",
+        "sha256": "f666f62073a930ba0cd1c1e0543248d397a07833b70b9f16beebceb4cdca1736"
+      },
+      "event_personal_data": "unknown",
+      "event_sensitivity": "unknown",
+      "frozen_member": true,
+      "kind": "archived_pdf_acquisition_event",
+      "landed_reviewer_status": "unreviewed",
+      "path": "raw/pbs/payloads/au_pbs_archive_2d3c47ade2b9e309_20211012063138_IYAQCS7I3H4VNA5U32AWINJVDCT4NXDM/1227437441b26f616651d0bcc8179b77dfcb81980ce07fd95bddffa36119305c.pdf",
+      "privacy": "blocked_unknown_or_unqualified_privacy",
+      "ready_for_payload_read": false,
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+      "sha256": "1227437441b26f616651d0bcc8179b77dfcb81980ce07fd95bddffa36119305c"
+    },
+    {
+      "batch": "pbs_schedule_archived_pdf_unassessed",
+      "byte_count": 25833664,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "event": {
+        "path": "quality/bronze/imported-acquisitions/au-pbs-archive/7ca86398f79a9c0c26e4dde514a489107f1682632d7d44710f6ea2a2e0a318ef.json",
+        "sha256": "3a82c651ae9d3a064e759a21d522bc2c42d910073358cdf7096f85d1cb034246"
+      },
+      "event_personal_data": "unknown",
+      "event_sensitivity": "unknown",
+      "frozen_member": true,
+      "kind": "archived_pdf_acquisition_event",
+      "landed_reviewer_status": "unreviewed",
+      "path": "raw/pbs/payloads/au_pbs_archive_5c1ea1650f7f4f4e_20230310024454_5AP4J7XZSF74R6TNTYD2ZNBZKFACXSIK/589896699431763600b693a598ebf30129d6a891cf6d94e879932de75ea1d4fd.pdf",
+      "privacy": "blocked_unknown_or_unqualified_privacy",
+      "ready_for_payload_read": false,
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+      "sha256": "589896699431763600b693a598ebf30129d6a891cf6d94e879932de75ea1d4fd"
+    },
+    {
+      "batch": "pbs_schedule_archived_pdf_unassessed",
+      "byte_count": 3767099,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "event": {
+        "path": "quality/bronze/imported-acquisitions/au-pbs-archive/c5f6cd322d8d77ffad162af5baee79c40f6e4b875c1babb6157e32f7ef5f207a.json",
+        "sha256": "607c657dc31ea058e2be05fe3eb71b1b5139776246bd6edba41b173060b100a2"
+      },
+      "event_personal_data": "unknown",
+      "event_sensitivity": "unknown",
+      "frozen_member": true,
+      "kind": "archived_pdf_acquisition_event",
+      "landed_reviewer_status": "unreviewed",
+      "path": "raw/pbs/payloads/au_pbs_archive_9515fa055e11bcf6_20211012063127_QW53EBCHWEIEDAEGX6JK6EBG6HRKHABO/42179afdbe5ad1699623238fb4d071e7a3b2b7e4bf37551198bd6a0d88e02c10.pdf",
+      "privacy": "blocked_unknown_or_unqualified_privacy",
+      "ready_for_payload_read": false,
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+      "sha256": "42179afdbe5ad1699623238fb4d071e7a3b2b7e4bf37551198bd6a0d88e02c10"
+    },
+    {
+      "batch": "pbs_schedule_archived_pdf_unassessed",
+      "byte_count": 5249813,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "event": {
+        "path": "quality/bronze/imported-acquisitions/au-pbs-archive/56954767df0bfa0996f9f198ac5542999b52fca0c5b845592c179230fa104b48.json",
+        "sha256": "166c31b15e193cf4436a518bf3969a81df0c513dfaf820250b248b695a664666"
+      },
+      "event_personal_data": "unknown",
+      "event_sensitivity": "unknown",
+      "frozen_member": true,
+      "kind": "archived_pdf_acquisition_event",
+      "landed_reviewer_status": "unreviewed",
+      "path": "raw/pbs/payloads/au_pbs_archive_95325f419807d23c_20120227130402_HN5UW3KS4BUZNGASA5HS4AHFT5UTZ5KH/63700cc67aa607dbeebce5225ca2f65706e8481ad79cb01b85a146ef3dcc2518.pdf",
+      "privacy": "blocked_unknown_or_unqualified_privacy",
+      "ready_for_payload_read": false,
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+      "sha256": "63700cc67aa607dbeebce5225ca2f65706e8481ad79cb01b85a146ef3dcc2518"
+    },
+    {
+      "batch": "pbs_schedule_archived_pdf_unassessed",
+      "byte_count": 13759104,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "event": {
+        "path": "quality/bronze/imported-acquisitions/au-pbs-archive/361f6e5d0e47f98b60341ccf5e7de590606bd82955bc36ab755d2e6e928d5a87.json",
+        "sha256": "de01e2e9a61582cdcc891bba789d5760e55fbe96058f9966024e284ca6e53077"
+      },
+      "event_personal_data": "unknown",
+      "event_sensitivity": "unknown",
+      "frozen_member": true,
+      "kind": "archived_pdf_acquisition_event",
+      "landed_reviewer_status": "unreviewed",
+      "path": "raw/pbs/payloads/au_pbs_archive_ddc602e635244f70_20230310024638_I5URMVUJKJOCEM23H5JWLUU5MYLWICXY/091b4b03ffce887bfeb9a858557654c864459deca1bb18d2a3d5aa9a90d416d1.pdf",
+      "privacy": "blocked_unknown_or_unqualified_privacy",
+      "ready_for_payload_read": false,
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+      "sha256": "091b4b03ffce887bfeb9a858557654c864459deca1bb18d2a3d5aa9a90d416d1"
+    }
+  ],
+  "recorded_on": "2026-11-16",
+  "schema_id": "global-medicines-atlas.pbs-unmatched-provenance",
+  "schema_version": 1,
+  "summary": {
+    "archived_pdf_acquisition_events": 5,
+    "byte_identical_reimbursement_projections": 9,
+    "frozen_paths": 18,
+    "outside_frozen_paths": 1,
+    "pbs_bronze_projections": 1,
+    "pbs_reproduced_silver_outputs": 1,
+    "prior_unmatched_paths": 19,
+    "privacy_clearances_added": 0,
+    "reimbursement_layer_partitions": 3
+  }
+}

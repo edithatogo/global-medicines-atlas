@@ -1515,5 +1515,8 @@ outbound message is in scope.
   `privacy-secrets/v2026.11.16-py3151` on the exact qualified revision. The
   unsuppressed audit then required the matching version comment, which is now
   present beside the unchanged SHA pin.
-- [~] Verify the receiving PR and its required checks. Preserve both original
-  failed audit attempts; do not suppress findings or imply they passed.
+- [x] Verify PR #1425 after both original failed audit attempts. All 28 required
+  contexts passed on head `ddeaa6d09af7bf84a1a9f3245f02b8d3ad5d9878`; auto-merge
+  `f498a7e5a4a270228da333b2b8a42f21025e01ff` has the same tree. Post-merge
+  privacy and security passed; the non-required public-MBS job stopped at its
+  no-read guard. No audit finding was newly suppressed.
