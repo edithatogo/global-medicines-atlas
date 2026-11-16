@@ -1,0 +1,41 @@
+{
+  "batch_id": "openfda-all-20261030",
+  "repository": "edithatogo/global-medicines-atlas-openfda-all-20261030",
+  "publication_approved": true,
+  "approval_reference": "Direct maintainer instruction of 15 November 2026 to upload the openfda-all snapshot to Hugging Face against the Global Medicines Atlas project.",
+  "snapshot_id": "openfda-all-20261030T130532Z",
+  "source_authority": "U.S. Food and Drug Administration, openFDA",
+  "source_url": "https://open.fda.gov/apis/",
+  "retrieval_date": "2026-10-30",
+  "schema_version": "global-medicines-atlas.openfda-bulk-archive/v1",
+  "pretty_name": "Global Medicines Atlas openFDA bulk archive 2026-10-30",
+  "description": "The complete openFDA bulk download snapshot taken on 30 October 2026: every recorded download.open.fda.gov partition across 31 openFDA endpoints, stored as unmodified source JSON zip files with the per-partition acquisition receipts.",
+  "fields_and_transformations": "No transformation: each payload is the byte-for-byte JSON zip served for one recorded partition URL, and each receipt records that URL, the attempt outcome and the retrieved size.",
+  "payload_suffix": ".zip",
+  "expected_payload_count": 2396,
+  "expected_payload_bytes": 137529793516,
+  "rights": {
+    "licence": "U.S. federal government work; public domain in the United States under 17 U.S.C. 105",
+    "terms": "https://open.fda.gov/terms/",
+    "attribution": "U.S. Food and Drug Administration, openFDA (https://open.fda.gov/apis/)",
+    "redistribution": "Permitted for unmodified source bytes; retain attribution and source URLs.",
+    "fda_website_policies": "https://www.fda.gov/about-fda/about-website/website-policies",
+    "rights_family": "fda-website-public-domain"
+  },
+  "endpoint_coverage": {
+    "endpoints": 31,
+    "partitions": 2396,
+    "retrieval_window": {
+      "started_at": "2026-10-30T13:05:32Z",
+      "finished_at": "2026-10-30T14:37:24Z"
+    },
+    "completion_note": "Four partitions that failed during the original acquisition were re-fetched from their recorded URLs on 15 November 2026 and verified against the recorded Content-Length before publication."
+  },
+  "not_included": [
+    "No parsing, reshaping, harmonisation or cross-source matching; these are raw source partitions.",
+    "No claim that these 31 endpoints form part of the Atlas B0 source index; presence in this archive is not coverage.",
+    "No FAERS quarterly history; that corpus is published separately as faers-live-20260821.",
+    "No credential-gated, restricted or personal source bytes."
+  ],
+  "default_archive_root": "/Volumes/PortableSSD/GMA-downloads/openfda-all-20261030T130532Z"
+}

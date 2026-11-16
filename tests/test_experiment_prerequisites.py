@@ -4,9 +4,11 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import sqlite3
 import sys
 from pathlib import Path
-from types import ModuleType
+from types import ModuleType, SimpleNamespace
+from typing import Any
 
 import pytest
 from pydantic import ValidationError
@@ -94,3 +96,109 @@ def test_hudi_failure_receipt_is_preserved_and_returns_nonzero(
     assert receipt["error"]["message"] == (
         "Python runtime unsupported by the preview"
     )
+
+
+@pytest.mark.unit
+def test_hudi_synthetic_workload_survives_unusable_python_serializer(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    class Frame:
+        def __init__(self, spark: Any, rows: list[dict[str, Any]]) -> None:
+            self.spark = spark
+            self.rows = rows
+            self.write = self
+
+        def format(self, name: str) -> Any:
+            if name != "hudi":
+                raise ValueError("expected Hudi format")
+            return self
+
+        def options(self, **options: str) -> Any:
+            if (
+                options.get("hoodie.datasource.write.recordkey.field")
+                != "native_id"
+            ):
+                raise ValueError("expected native record key")
+            return self
+
+        def mode(self, mode: str) -> Any:
+            self.write_mode = mode
+            return self
+
+        def option(self, name: str, value: str) -> Any:
+            if (name, value) != ("hoodie.datasource.write.operation", "upsert"):
+                raise ValueError("expected upsert")
+            return self
+
+        def save(self, _target: str) -> None:
+            schema = frozenset(self.rows[0])
+            if self.write_mode == "overwrite":
+                self.spark.rows.clear()
+                self.spark.schema = schema
+            elif schema != self.spark.schema:
+                raise ValueError(
+                    "Hudi write schema is not backwards compatible"
+                )
+            for row in self.rows:
+                if row.get("_hoodie_is_deleted"):
+                    self.spark.rows.pop(row["native_id"], None)
+                else:
+                    self.spark.rows[row["native_id"]] = row
+
+        def load(self, _target: str) -> Any:
+            self.rows = list(self.spark.rows.values())
+            return self
+
+        def select(self, *fields: str) -> Any:
+            self.rows = [
+                {field: row[field] for field in fields} for row in self.rows
+            ]
+            return self
+
+        def collect(self) -> list[Any]:
+            return [
+                SimpleNamespace(asDict=lambda row=row: row) for row in self.rows
+            ]
+
+    class Spark:
+        def __init__(self) -> None:
+            self.rows: dict[str, dict[str, Any]] = {}
+            self.schema: frozenset[str] = frozenset()
+            self.read = Frame(self, [])
+
+        def __getattr__(self, name: str) -> Any:
+            if name == "createDataFrame":
+                raise RuntimeError(
+                    "Python function serialization is unavailable"
+                )
+            raise AttributeError(name)
+
+        def sql(self, query: str) -> Frame:
+            with sqlite3.connect(":memory:") as connection:
+                cursor = connection.execute(query)
+                fields = [field[0] for field in cursor.description]
+                rows = [dict(zip(fields, row, strict=True)) for row in cursor]
+            return Frame(self, rows)
+
+        def stop(self) -> None:
+            pass
+
+    spark = Spark()
+    pyspark = ModuleType("pyspark")
+    pyspark.__version__ = "3.5.6-test"  # type: ignore[attr-defined]
+    sql = ModuleType("pyspark.sql")
+    sql.SparkSession = SimpleNamespace(  # type: ignore[attr-defined]
+        builder=SimpleNamespace(
+            appName=lambda _name: SimpleNamespace(getOrCreate=lambda: spark)
+        )
+    )
+    monkeypatch.setitem(sys.modules, "pyspark", pyspark)
+    monkeypatch.setitem(sys.modules, "pyspark.sql", sql)
+
+    records, version = _load_hudi_script()._run_hudi(tmp_path)
+
+    assert records == [
+        {"native_id": "A-001", "value": 11},
+        {"native_id": "C-003", "value": 3},
+    ]
+    assert version == "3.5.6-test"

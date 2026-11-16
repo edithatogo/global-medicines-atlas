@@ -28,12 +28,25 @@ track is not an instruction to extend the current software task. Dataset work
 must close a named capability or gate prerequisite; broader coverage and
 optional experiments remain deferred. This execution order does not change
 track acceptance, rights, admission, recovery, conditional release approval, or
-the current M-105/M-107 dispositions. Read the authoritative Stable contract,
-readiness reconciliation, and bound track receipts for current gate states.
+the current M-105/M-107 dispositions. Read the Stable contract, current
+Australian acceptance register and bound track receipts for current gate states;
+the October readiness reconciliation remains a historical release input.
 
 ---
 
-## Current M-112 raw-object readback (2026-10-28)
+## Current Australian federation readback (2026-11-16)
+
+M-105 is verified under the maintainer's narrow chronology exception and
+M-113 donor archival is verified. M-106 through M-112 and the overall
+Australian federation gate remain blocked. The [current raw-delivery ledger](../quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261115-august.json)
+records **17 raw v4 admissions, 17 admitted-object reader canaries and 1,742
+deferred paths** across the unchanged 1,759-object frozen inventory. The
+separately admitted six-table MBS Silver cohort is not part of these raw counts.
+Deferred paths are not automatically eligible for admission or payload reads.
+Independent recovery remains open. See the [current acceptance register](../docs/qualification/australian-health-federation-acceptance.md)
+for the source-specific limits and newer metadata-only evidence.
+
+## Historical M-112 raw-object readback (2026-10-28)
 
 The [effective raw-delivery reconciliation](../quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261028.json)
 records **14 raw v4 admissions, 14 admitted-object reader canaries and 1,745
@@ -84,7 +97,7 @@ historical snapshots and must not be read as today's totals.
 - [x] **Track: Harden source operations, security, performance and recovery**
   *Archived: [archive/operational_hardening_20260729/index.md](./archive/operational_hardening_20260729/index.md); production disaster recovery and Renovate activation remain authority-gated.*
 - [~] **Track: Qualify the v0.9 candidate and stable v1 release**
-  *Link: [tracks/stable_v1_qualification_20260729/index.md](./tracks/stable_v1_qualification_20260729/index.md); the approved bounded Bronze qualification and M5 gates pass. Stable v1 remains blocked by Australian federation acceptance; final stable-release approval is a separate maintainer decision. Production disaster-recovery authority is a separate non-acceptance gate.*
+  *Link: [tracks/stable_v1_qualification_20260729/index.md](./tracks/stable_v1_qualification_20260729/index.md); the approved bounded Bronze qualification and M5 gates pass. Full Australian federation remains blocked; D-006-13 separately authorizes a scoped software-only v1.0.0 release after exact artifact, security, CI and attestation checks. Production disaster-recovery authority remains separate.*
 - [x] **Track: Develop the academic protocol and preregistration**
   *Link: [tracks/academic_protocol_preregistration_20260729/index.md](./tracks/academic_protocol_preregistration_20260729/index.md); GitHub parent [#66](https://github.com/edithatogo/global-medicines-atlas/issues/66). OSF is deprecated; persistent protocol identity is the in-repo artefacts plus Zenodo `10.5281/zenodo.21734811`.*
 - [~] **Track: Complete bronze medallion landing for current public scope**

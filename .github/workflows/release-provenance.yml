@@ -123,6 +123,7 @@ jobs:
             gzip -n > \
               "build/release-stage/global-medicines-atlas-dataset-${dataset_version}.tar.gz"
       - name: Build and stage software distributions
+        if: ${{ !inputs.publish }}
         run: |
           set -euo pipefail
           rm -rf -- build/dist
@@ -136,7 +137,35 @@ jobs:
           test "${#distributions[@]}" -eq 2
           cp --target-directory=build/release-stage -- "${distributions[@]}"
           cp -- uv.lock build/release-stage/uv.lock
+      - name: Reproduce and stage the exact software release
+        if: inputs.publish
+        run: |
+          set -euo pipefail
+          rm -rf -- build/release-stage build/reproducible-candidate
+          mkdir -p build/release-stage
+          uv run --locked --python 3.15.1 python -m scripts.build_stable_v1_release_candidate build \
+            --root . \
+            --stage build/reproducible-candidate \
+            --receipt build/reproducible-candidate-receipt.json
+          for artifact in wheel sdist; do
+            uv run --locked --python 3.15.1 python -m scripts.build_stable_v1_release_candidate consume \
+              --root . \
+              --stage build/reproducible-candidate \
+              --receipt build/reproducible-candidate-receipt.json \
+              --artifact "$artifact" \
+              --environment "build/release-consumer-$artifact" \
+              > "build/release-consumer-$artifact.json"
+          done
+          mapfile -d '' distributions < <(
+            find build/reproducible-candidate/dist -maxdepth 1 -type f \
+              \( -name '*.whl' -o -name '*.tar.gz' \) -print0 | sort -z
+          )
+          test "${#distributions[@]}" -eq 2
+          cp --target-directory=build/release-stage -- "${distributions[@]}"
+          cp -- build/reproducible-candidate/uv.lock build/release-stage/uv.lock
+          cp -- build/reproducible-candidate/sbom.cdx.json build/release-stage/sbom.cdx.json
       - name: Generate reproducible CycloneDX SBOM
+        if: ${{ !inputs.publish }}
         env:
           DYNAMIC_VERSION: ${{ steps.version.outputs.value }}
         run: |
@@ -199,6 +228,17 @@ jobs:
         with:
           name: dry-run-qualification-evidence-${{ github.run_id }}
           path: build/release-stage/**
+          if-no-files-found: error
+          retention-days: 90
+      - name: Persist reproducible software candidate receipt
+        if: inputs.publish
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: reproducible-software-candidate-${{ github.run_id }}
+          path: |
+            build/reproducible-candidate-receipt.json
+            build/release-consumer-wheel.json
+            build/release-consumer-sdist.json
           if-no-files-found: error
           retention-days: 90
       - name: Persist exact release-candidate assets
@@ -274,8 +314,11 @@ jobs:
           mapfile -d '' assets < <(find stage -type f -print0 | sort -z)
           test "${#assets[@]}" -gt 0
           release_flags=()
+          release_notes="Qualified immutable assets from $QUALIFIED_COMMIT"
           if [[ "$RELEASE_TYPE" == "prerelease" ]]; then
             release_flags+=(--prerelease)
+          else
+            release_notes="Software-only release from $QUALIFIED_COMMIT. Australian federation requirements M-105 through M-112 remain incomplete and are outside this release. No new datasets, complete historical coverage, production service, or clinical suitability are claimed."
           fi
           gh release create \
             --repo "$GITHUB_REPOSITORY" \
@@ -283,5 +326,5 @@ jobs:
             "${release_flags[@]}" \
             --target "$QUALIFIED_COMMIT" \
             --title "$RELEASE_TAG" \
-            --notes "Qualified immutable assets from $QUALIFIED_COMMIT" \
+            --notes "$release_notes" \
             -- "$RELEASE_TAG" "${assets[@]}"

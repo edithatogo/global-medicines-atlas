@@ -807,7 +807,7 @@
     },
     {
       "requirement_id": "M-105",
-      "state": "blocked",
+      "state": "verified",
       "evidence": [
         "conductor/requirements.md",
         "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md",
@@ -816,11 +816,10 @@
         "quality/qualifications/australian-donor-m105-chronology-waiver-20261018.json",
         "quality/qualifications/australian-donor-m105-dispositions.json",
         "docs/qualification/australian-donor-parity-gap.md",
-        "quality/qualifications/australian-donor-m105-current-disposition-20261023.json"
+        "quality/qualifications/australian-donor-m105-current-disposition-20261023.json",
+        "quality/qualifications/australian-donor-m105-current-disposition-20261115.json"
       ],
-      "blocker_ids": [
-        "stable-v1-australian-health-federation"
-      ]
+      "blocker_ids": []
     },
     {
       "requirement_id": "M-106",
@@ -831,7 +830,8 @@
         "conductor/tracks/australian_health_source_consolidation_20260829/spec.md",
         "docs/qualification/australian-mbs-m106-domain.md",
         "quality/qualifications/australian-mbs-silver-semantic-manifest-20261017.json",
-        "quality/qualifications/mbs-workbook-field-state-reconciliation-20261025-shapes-40149410629.json"
+        "quality/qualifications/mbs-workbook-field-state-reconciliation-20261025-shapes-40149410629.json",
+        "quality/qualifications/mbs-annual-public-workbook-qualification-20261115.json"
       ],
       "blocker_ids": [
         "stable-v1-australian-health-federation"
@@ -846,7 +846,9 @@
         "conductor/tracks/public_hf_federated_data_plane_20260829/spec.md",
         "docs/qualification/australian-mbs-pbs-m107-snapshots.md",
         "quality/qualifications/australian-mbs-official-index-reconciliation-20261017.json",
-        "quality/qualifications/australian-pbs-m107-link-crosswalk-20261018.json"
+        "quality/qualifications/australian-pbs-m107-link-crosswalk-20261018.json",
+        "quality/qualifications/australian-pbs-m107-existing-archive-crosswalk-20261115.json",
+        "quality/qualifications/australian-pbs-m107-four-link-metadata-20261115.json"
       ],
       "blocker_ids": [
         "stable-v1-australian-health-federation"
@@ -865,7 +867,10 @@
         "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028-2.json",
         "quality/qualifications/australian-mbs-august-projection-current-tree-readback-20261028.json",
         "quality/qualifications/australian-mbs-august-f9f9-prefix-disposition-20261028.json",
-        "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028-3.json"
+        "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028-3.json",
+        "quality/qualifications/australian-mbs-august-projection-field-lineage-qualification-20261115.json",
+        "quality/qualifications/australian-mbs-august-projection-v3-20261115/metadata-replay.json",
+        "quality/qualifications/australian-existing-archive-privacy-batch-20261115.json"
       ],
       "blocker_ids": [
         "stable-v1-australian-health-federation"
@@ -887,7 +892,8 @@
         "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r18.json",
         "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r19.json",
         "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028-3.json",
-        "quality/qualifications/mbs-historical-workbook-source-column-semantics-20261028.json"
+        "quality/qualifications/mbs-historical-workbook-source-column-semantics-20261028.json",
+        "docs/qualification/australian-semantic-consumer-safety-20261115.md"
       ],
       "blocker_ids": [
         "stable-v1-australian-health-federation"
@@ -922,7 +928,9 @@
         "quality/qualifications/platinum-actual-consumer-reconciliation-20261028.json",
         "quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261028-40653807510/admission-remote-read.json",
         "quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261028-40653807510/artifact-manifest.json",
-        "quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261028-40664169948/artifact-manifest.json"
+        "quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261028-40664169948/artifact-manifest.json",
+        "docs/qualification/australian-semantic-consumer-safety-20261115.md",
+        "quality/qualifications/australian-mbs-august-projection-consumer-preflight-20261115.json"
       ],
       "blocker_ids": [
         "stable-v1-australian-health-federation"
@@ -945,7 +953,9 @@
         "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028-3.json",
         "quality/qualifications/australian-m112-pbs-utilisation-rights-lineage-reconciliation-20261028.json",
         "quality/qualifications/australian-m112-pbs-v4-admission-readers-20261028/manifest.json",
-        "quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261028.json"
+        "quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261028.json",
+        "quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261115-august.json",
+        "quality/qualifications/australian-pbs-acquisition-privacy-coverage-20261115.json"
       ],
       "blocker_ids": [
         "stable-v1-australian-health-federation"
@@ -1322,7 +1332,17 @@
         "quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261028-40664169948/artifact-manifest.json",
         "quality/qualifications/mbs-historical-workbook-source-column-semantics-20261028.json",
         "quality/qualifications/australian-m112-pbs-v4-admission-readers-20261028/manifest.json",
-        "quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261028.json"
+        "quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261028.json",
+        "quality/qualifications/mbs-annual-public-workbook-qualification-20261115.json",
+        "quality/qualifications/australian-pbs-m107-existing-archive-crosswalk-20261115.json",
+        "quality/qualifications/australian-pbs-m107-four-link-metadata-20261115.json",
+        "quality/qualifications/australian-mbs-august-projection-field-lineage-qualification-20261115.json",
+        "quality/qualifications/australian-mbs-august-projection-v3-20261115/metadata-replay.json",
+        "quality/qualifications/australian-existing-archive-privacy-batch-20261115.json",
+        "docs/qualification/australian-semantic-consumer-safety-20261115.md",
+        "quality/qualifications/australian-mbs-august-projection-consumer-preflight-20261115.json",
+        "quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261115-august.json",
+        "quality/qualifications/australian-pbs-acquisition-privacy-coverage-20261115.json"
       ]
     },
     {

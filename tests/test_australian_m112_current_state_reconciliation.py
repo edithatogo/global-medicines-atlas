@@ -4,8 +4,21 @@ from __future__ import annotations
 
 import hashlib
 import json
+from copy import deepcopy
 from pathlib import Path
 from typing import Any
+
+import httpx
+import pytest
+import scripts.qualify_australian_existing_derived_gates as derived_gates
+import scripts.qualify_australian_existing_object_gates as object_gates
+import scripts.qualify_australian_privacy_batch as privacy_batch
+import scripts.qualify_australian_schedule_source_privacy as mbs_source_privacy
+import scripts.qualify_australian_v4_privacy_readiness as v4_readiness
+import scripts.qualify_m112_existing_reimbursement_batch as batch_qualification
+import scripts.qualify_mbs_four_projection_dossiers as mbs_dossiers
+import scripts.reconcile_australian_mbs_exact_digest as mbs_exact_digest
+import scripts.reconcile_mbs_privacy_replay as privacy_replay
 
 ROOT = Path(__file__).resolve().parents[1]
 RECONCILIATION = (
@@ -28,6 +41,149 @@ LIVE_V4_ADDENDUM = (
 
 def _read(path: str) -> dict[str, Any]:
     return json.loads((ROOT / path).read_text(encoding="utf-8"))
+
+
+def test_existing_mbs_silver_role_receipt_binds_value_free_reports() -> None:
+    reports = (
+        ROOT / "quality/qualifications/"
+        "shared-mbs-silver-delivery-20261115-43608538996"
+    )
+    qualification = json.loads((reports / "qualification.json").read_bytes())
+    assert qualification["producer_commit"] == (
+        "946757ccdf5b21130811233f285807f5307ea209"
+    )
+    assert qualification["status"] == "passed"
+    assert qualification["source_values_included"] is False
+    assert qualification["publication_performed"] is False
+    assert qualification["admission_performed"] is False
+    assert len(qualification["tables"]) == 6
+    for table in qualification["tables"]:
+        for key in (
+            "passed",
+            "schema_equal",
+            "row_values_equal",
+            "native_values_preserved",
+            "deterministic_replay",
+        ):
+            assert table[key] is True
+    assert set(qualification["role_report_sha256"]) == {
+        "cache-cleanup",
+        "primary-restore",
+        "silver-promotion",
+        "v1-conformance",
+        "v2-field-lineage",
+        "v3-backfill-replay",
+    }
+    for name, expected in qualification["role_report_sha256"].items():
+        report = json.loads((reports / f"{name}.json").read_bytes())
+        canonical = json.dumps(
+            report, sort_keys=True, separators=(",", ":"), default=str
+        ).encode()
+        assert hashlib.sha256(canonical).hexdigest() == expected
+    cleanup = json.loads((reports / "cache-cleanup.json").read_bytes())
+    restore = json.loads((reports / "primary-restore.json").read_bytes())
+    assert cleanup["source_payload_written_to_disk"] is False
+    assert cleanup["disk_cache_exercised"] is False
+    assert cleanup["remaining_entries"] == 0
+    assert restore["object_count"] == 6
+    assert restore["status"] == "passed"
+
+
+def test_existing_archive_batch_binds_evidence_without_promoting_gates() -> (
+    None
+):
+    batch = _read(
+        "quality/qualifications/"
+        "australian-federation-existing-archive-reconciliation-20261115.json"
+    )
+    for reference in batch["evidence_inputs"].values():
+        evidence_path = ROOT / reference["path"]
+        if (
+            reference["path"]
+            == "quality/qualifications/stable-v1-contract.json"
+        ):
+            # This dated batch bound the pre-D-006-14 contract; preserve its bytes.
+            evidence_path = (
+                ROOT
+                / "quality/qualifications/scoped-software-v1-original-contract-20261114.json"
+            )
+        assert (
+            hashlib.sha256(evidence_path.read_bytes()).hexdigest()
+            == reference["sha256"]
+        )
+
+    historical = _read(batch["evidence_inputs"]["frozen_comparison"]["path"])
+    ledger = _read(batch["evidence_inputs"]["raw_admission_ledger"]["path"])
+    frozen = batch["frozen_inventory"]
+    assert (
+        frozen["matching_paths"]
+        == historical["frozen_inventory"]["matching_objects"]
+        == 1759
+    )
+    assert frozen["matching_observed_on"] == historical["observed_on"]
+    assert frozen["fresh_full_inventory_readback_performed"] is False
+    assert (
+        frozen["raw_v4_admissions"]
+        == ledger["effective_counts"]["raw_v4_admissions"]
+        == 14
+    )
+    assert (
+        frozen["raw_reader_canaries"]
+        == ledger["effective_counts"]["raw_admitted_object_reader_canaries"]
+        == 14
+    )
+    assert (
+        frozen["deferred_admission"]
+        == ledger["effective_counts"]["deferred_objects"]
+        == 1745
+    )
+    assert frozen["six_mbs_silver_tables_included_in_raw_count"] is False
+
+    annual = _read(batch["evidence_inputs"]["annual_workbook_profile"]["path"])
+    mbs = batch["mbs_annual_workbook"]
+    assert mbs["raw_sha256"] == annual["source"]["sha256"]
+    assert mbs["receipt_sha256"] == annual["source"]["receipt_sha256"]
+    assert (
+        mbs["patients_sheet_classified_rows"]
+        == annual["profile"]["data_rows"]
+        == 2202
+    )
+    assert mbs["m106_accepted"] is False
+    assert mbs["patient_values_emitted"] is False
+
+    receipt = _read(
+        batch["evidence_inputs"]["aihw_publication_receipt"]["path"]
+    )
+    aihw = batch["aihw_monthly_atc2"]
+    assert aihw["revision"] == receipt["revision"]
+    assert (
+        aihw["manifest_canonical_sorted_compact_json_sha256"]
+        == receipt["manifest_sha256"]
+    )
+    assert aihw["manifest_raw_bytes_sha256"] != receipt["manifest_sha256"]
+    assert aihw["manifest_file_count"] == receipt["archive_file_count"] == 1078
+    assert (
+        aihw["participant_files_published"]
+        == receipt["participant_files_published"]
+        == 0
+    )
+    assert (
+        aihw["anonymous_new_pair_digest_verification"]
+        == receipt["anonymous_digest_verification"]
+        == "passed"
+    )
+    assert aihw["september_2025_edition_identified"] is False
+    assert (
+        batch["existing_derived_evidence"]["mbs_july_2025_silver_tables"] == 6
+    )
+    assert (
+        batch["existing_derived_evidence"]["pbs_april_2026_silver_v4_admitted"]
+        is False
+    )
+    assert batch["federation_requirement_states"] == {
+        f"M-{number}": "blocked" for number in range(105, 113)
+    }
+    assert all(value is False for value in batch["boundaries"].values())
 
 
 def test_m112_reconciliation_uses_approved_denominator_and_latest_readback() -> (
@@ -337,3 +493,1315 @@ def test_release_field_contract_is_requirements_not_gate_clearance():
         "historical_comparison",
     }
     assert not any(contract["non_claims"].values())
+
+
+def test_existing_reimbursement_batch_retains_per_object_privacy_gates() -> (
+    None
+):
+    report = batch_qualification.build_report()
+    saved = _read(
+        "quality/qualifications/"
+        "australian-m112-reimbursement-batch-readiness-20261115.json"
+    )
+    assert report == saved
+    assert report["result"] == {
+        "metadata_identity_rights_lineage_joined": 1719,
+        "raw_source_sensitivity_unknown": 1707,
+        "projection_sensitivity_not_qualified": 12,
+        "ready_for_payload_read": 0,
+        "new_admissions": 0,
+        "consumer_checks_on_selected_objects": 0,
+        "other_metadata_rows_reconciled": 26,
+        "other_prior_separate_mbs_silver_consumer_receipts": 6,
+    }
+    objects = report["objects"]
+    assert len({row["path"] for row in objects}) == 1719
+    assert all(row["ready_for_payload_read"] is False for row in objects)
+    assert all(row["v4_admission"] == "not_performed" for row in objects)
+    assert all(
+        row["consumer_check"] == "not_performed_privacy_gate_blocked"
+        for row in objects
+    )
+    assert (
+        sum(
+            row["lineage_evidence"] == "exact_layer_partition_metadata_linked"
+            for row in objects
+        )
+        == 3
+    )
+    assert (
+        sum(
+            row["lineage_evidence"]
+            == "byte_identical_producer_projection_metadata_linked"
+            for row in objects
+        )
+        == 9
+    )
+    assert all(value is False for value in report["boundaries"].values())
+    other = report["other_frozen_objects"]
+    assert len(other) == 26
+    assert len({(row["dataset"], row["path"]) for row in other}) == 26
+    previous_silver = [
+        row
+        for row in other
+        if row["prior_separate_silver_consumer"] is not None
+    ]
+    assert len(previous_silver) == 6
+    assert all(
+        row["prior_separate_silver_consumer"]["qualified_revision"]
+        != row["frozen_revision"]
+        for row in previous_silver
+    )
+    assert all(row["current_payload_read"] == "not_performed" for row in other)
+    assert all(
+        row["current_raw_v4_admission"] == "not_performed" for row in other
+    )
+
+
+def test_existing_projection_partition_requires_its_recorded_relation() -> None:
+    docs = {
+        key: batch_qualification._read_bound(
+            ROOT, *batch_qualification.INPUTS[key]
+        )
+        for key in (
+            "frozen",
+            "overlay",
+            "projection_attestation",
+            "projection_lineage",
+        )
+    }
+    path = "data/medallion/silver/data.jsonl"
+    dataset = batch_qualification.DATASET
+    frozen = next(
+        x
+        for x in docs["frozen"]["members"]
+        if x["dataset"] == dataset and x["path"] == path
+    )
+    overlay = next(
+        x
+        for x in docs["overlay"]["objects"]
+        if x["dataset"] == dataset and x["path"] == path
+    )
+    rights = next(
+        x
+        for x in docs["projection_attestation"]["authorized_objects"]
+        if x["path"] == path
+    )
+    lineage = next(
+        x
+        for x in docs["projection_lineage"]["objects"]
+        if x["dataset_path"] == path
+    )
+    args = {
+        "path": path,
+        "frozen": frozen,
+        "overlay": overlay,
+        "rights": rights,
+    }
+    assert lineage["producer_source_sha256"] != lineage["dataset_sha256"]
+    record = batch_qualification._projection_record(**args, lineage=lineage)
+    assert record["lineage_evidence"] == "exact_layer_partition_metadata_linked"
+    assert record["ready_for_payload_read"] is False
+    with pytest.raises(ValueError, match="byte-identical"):
+        batch_qualification._projection_record(
+            **args,
+            lineage={
+                **lineage,
+                "projection_relation": "byte_identical_to_exact_producer_source_path",
+            },
+        )
+    with pytest.raises(ValueError, match="partition"):
+        batch_qualification._projection_record(
+            **args, lineage={**lineage, "producer_source_sha256": "0" * 64}
+        )
+    with pytest.raises(ValueError, match="unsupported"):
+        batch_qualification._projection_record(
+            **args, lineage={**lineage, "projection_relation": "unverified"}
+        )
+
+
+def test_batch_metadata_reader_rejects_unbound_paths(tmp_path: Path) -> None:
+    parent = tmp_path / "quality" / "qualifications"
+    parent.mkdir(parents=True)
+    body = b'{"schema_id":"test"}'
+    (parent / "record.json").write_bytes(body)
+    digest = hashlib.sha256(body).hexdigest()
+    assert batch_qualification._read_bound(
+        tmp_path, "quality/qualifications/record.json", digest
+    ) == {"schema_id": "test"}
+    with pytest.raises(ValueError, match="digest"):
+        batch_qualification._read_bound(
+            tmp_path, "quality/qualifications/record.json", "0" * 64
+        )
+    with pytest.raises(ValueError, match="invalid"):
+        batch_qualification._read_bound(
+            tmp_path, "quality/qualifications/../record.json", digest
+        )
+    (parent / "link.json").symlink_to(parent / "record.json")
+    with pytest.raises(ValueError, match="symlink"):
+        batch_qualification._read_bound(
+            tmp_path, "quality/qualifications/link.json", digest
+        )
+
+
+def test_pbs_reader_rechecks_bind_six_prior_admissions() -> None:
+    manifest = _read(
+        "quality/qualifications/"
+        "australian-m112-pbs-reader-recheck-20261115/manifest.json"
+    )
+    ledger_ref = manifest["prior_ledger"]
+    ledger_bytes = (ROOT / ledger_ref["path"]).read_bytes()
+    assert hashlib.sha256(ledger_bytes).hexdigest() == ledger_ref["sha256"]
+    ledger = json.loads(ledger_bytes)
+    keys = ("dataset", "revision", "path", "sha256", "byte_count")
+    admitted = {
+        tuple(row[k] for k in keys) for row in ledger["new_admitted_identities"]
+    }
+    assert len(admitted) == manifest["rechecked_existing_objects"] == 6
+    assert {
+        tuple(row[k] for k in keys) for row in manifest["objects"]
+    } == admitted
+    assert manifest["new_unique_admissions"] == 0
+    assert manifest["raw_admissions_before_and_after"] == 14
+    assert manifest["raw_canaries_before_and_after"] == 14
+    assert manifest["deferred_before_and_after"] == 1745
+    assert all(value is False for value in manifest["boundaries"].values())
+    for row in manifest["objects"]:
+        receipt_bytes = (ROOT / row["receipt_path"]).read_bytes()
+        assert (
+            hashlib.sha256(receipt_bytes).hexdigest() == row["receipt_sha256"]
+        )
+        receipt = json.loads(receipt_bytes)
+        assert receipt["status"] == row["status"] == "passed"
+        assert tuple(receipt["admission"][k] for k in keys) == tuple(
+            row[k] for k in keys
+        )
+        canary = receipt["consumer_canary"]
+        assert canary["status"] == "passed"
+        assert all(
+            canary["object"][k] == row[k]
+            for k in ("dataset", "revision", "path", "sha256")
+        )
+        assert canary["object"]["bytes"] == row["byte_count"]
+        assert canary["hosted_workflow"]["run_id"] == row["run_id"]
+        assert (
+            canary["hosted_workflow"]["commit"] == manifest["workflow_commit"]
+        )
+        assert canary["verification"]["remote_digest_match"] is True
+        assert canary["verification"]["consumer_stream_digest_match"] is True
+        assert canary["verification"]["reader_cache_bytes_after_close"] == 0
+        assert canary["boundaries"]["source_values_or_rows_included"] is False
+        assert canary["boundaries"]["source_payload_bytes_retained"] is False
+        assert canary["boundaries"]["public_dataset_mutated"] is False
+
+
+def test_mbs_reader_rechecks_bind_eight_prior_admissions() -> None:  # ruff: ignore[too-many-statements] -- Each object must bind its own independent evidence.
+    manifest = _read(
+        "quality/qualifications/"
+        "australian-m112-mbs-reader-recheck-20261115/manifest.json"
+    )
+    ledger_ref = manifest["prior_ledger"]
+    ledger_bytes = (ROOT / ledger_ref["path"]).read_bytes()
+    assert hashlib.sha256(ledger_bytes).hexdigest() == ledger_ref["sha256"]
+    ledger = json.loads(ledger_bytes)
+    keys = (
+        "dataset",
+        "revision",
+        "path",
+        "sha256",
+        "contract_path",
+        "contract_sha256",
+    )
+    previous = {
+        tuple(row[key] for key in keys)
+        for row in ledger["prior_admitted_identities"]
+    }
+    assert len(previous) == manifest["rechecked_existing_objects"] == 8
+    assert {
+        tuple(row[key] for key in keys) for row in manifest["objects"]
+    } == previous
+    assert manifest["new_unique_admissions"] == 0
+    assert (
+        manifest["raw_admissions_before_and_after"]
+        == ledger["effective_counts"]["raw_v4_admissions"]
+        == 14
+    )
+    assert (
+        manifest["raw_canaries_before_and_after"]
+        == ledger["effective_counts"]["raw_admitted_object_reader_canaries"]
+        == 14
+    )
+    assert (
+        manifest["deferred_before_and_after"]
+        == ledger["effective_counts"]["deferred_objects"]
+        == 1745
+    )
+    assert all(value is False for value in manifest["boundaries"].values())
+    assert (
+        sum(row["byte_count"] for row in manifest["objects"])
+        == manifest["total_bytes"]
+    )
+    for row in manifest["objects"]:
+        contract_bytes = (ROOT / row["contract_path"]).read_bytes()
+        assert (
+            hashlib.sha256(contract_bytes).hexdigest() == row["contract_sha256"]
+        )
+        contract = json.loads(contract_bytes)
+        assert contract["rights"]["sensitivity"] == "non_sensitive"
+        assert contract["rights"]["publication"] == "approved_exact_scope"
+        assert contract["rights"]["subject_sha256"] == row["sha256"]
+        assert contract["location"]["bytes"] == row["byte_count"]
+        receipt_bytes = (ROOT / row["receipt_path"]).read_bytes()
+        assert (
+            hashlib.sha256(receipt_bytes).hexdigest() == row["receipt_sha256"]
+        )
+        receipt = json.loads(receipt_bytes)
+        assert receipt["status"] == "admitted_with_consumer_canary"
+        assert receipt["source_values_or_payload_bytes_retained"] is False
+        assert receipt["receipt_closure"]["receipt_content_retained"] is False
+        assert receipt["admission"]["contract_sha256"] == row["contract_sha256"]
+        assert all(
+            receipt["admission"][key] == row[key]
+            for key in ("dataset", "revision", "path", "sha256", "byte_count")
+        )
+        canary = receipt["consumer_canary"]
+        assert canary["status"] == row["status"] == "passed"
+        assert all(
+            canary["object"][key] == row[key]
+            for key in ("dataset", "revision", "path", "sha256")
+        )
+        assert canary["object"]["bytes"] == row["byte_count"]
+        assert canary["hosted_workflow"]["run_id"] == row["run_id"]
+        assert canary["hosted_workflow"]["run_attempt"] == row["run_attempt"]
+        assert (
+            canary["hosted_workflow"]["commit"] == manifest["workflow_commit"]
+        )
+        assert canary["verification"]["origin"] == "remote"
+        assert canary["verification"]["remote_digest_match"] is True
+        assert canary["verification"]["consumer_stream_digest_match"] is True
+        assert canary["verification"]["reader_cache_bytes_after_close"] == 0
+        assert (
+            canary["verification"]["source_values_or_rows_interpreted"] is False
+        )
+        assert canary["boundaries"]["source_values_or_rows_included"] is False
+        assert canary["boundaries"]["source_payload_bytes_retained"] is False
+        assert canary["boundaries"]["public_dataset_mutated"] is False
+    retry = manifest["retained_retry"]
+    assert retry["first_attempt_status"] == "failed_before_reader"
+    assert (
+        retry["first_attempt_failure"]
+        == "anonymous_github_receipt_http_403_rate_limit"
+    )
+    assert retry["additional_attempts"] == 1
+    assert retry["second_attempt_status"] == "passed"
+    assert [
+        (row["run_id"], row["run_attempt"])
+        for row in manifest["objects"]
+        if row["run_attempt"] != 1
+    ] == [(retry["run_id"], 2)]
+
+
+def test_existing_derived_objects_reconcile_without_promoting_gates() -> None:
+    report = derived_gates.build_report(ROOT)
+    recorded = _read(
+        "quality/qualifications/australian-existing-derived-gates-20261115.json"
+    )
+    assert report == recorded
+    assert report["result"] == {
+        "mbs_outside_frozen_candidates": 4,
+        "pbs_silver_candidates": 1,
+        "candidate_privacy_qualified_by_this_check": 0,
+        "new_admissions": 0,
+        "new_live_consumer_canaries": 0,
+        "previous_mbs_silver_consumer_objects_revalidated": 6,
+    }
+    assert all(value is False for value in report["boundaries"].values())
+    assert len({row["path"] for row in report["mbs_candidates"]}) == 4
+    for row in report["mbs_candidates"]:
+        assert row["frozen_m112_member"] is False
+        assert row["privacy"] == "not_qualified_in_selected_evidence"
+        assert row["v4_admission"] == row["consumer_check"] == "not_performed"
+        assert row["payload_read_permitted_by_this_report"] is False
+    pbs = report["pbs_candidate"]
+    assert pbs["revision"] == "3995deb3e2a82f09472d6a78020fb13bbbc96056"
+    assert (
+        pbs["public_location"]
+        == "prior_hosted_and_anonymous_digest_verification_passed"
+    )
+    assert pbs["field_state"] == "prior_receipt_names_different_output"
+    assert pbs["privacy"] == "not_qualified_in_selected_evidence"
+    assert pbs["v4_admission"] == pbs["consumer_check"] == "not_performed"
+    assert pbs["independent_recovery"] == "not_qualified"
+    consumers = report["prior_mbs_consumer_objects"]
+    assert len(consumers) == len({row["path"] for row in consumers}) == 6
+    assert all(
+        row["admission"] == "previously_admitted_candidate_product"
+        for row in consumers
+    )
+    assert all(
+        row["privacy"] == "non_sensitive_in_exact_previously_admitted_contract"
+        for row in consumers
+    )
+
+
+def test_derived_mbs_equal_size_does_not_prove_identity() -> None:
+    sources = {
+        name: _read(path)
+        for name, (path, _digest) in derived_gates.INPUTS.items()
+    }
+    tree = sources["mbs_tree"]["readback"]["objects"]
+    assert tree[0]["byte_count"] == tree[2]["byte_count"]
+    tree[0]["sha256"] = tree[2]["sha256"]
+    with pytest.raises(ValueError, match="object binding differs"):
+        derived_gates.mbs_candidates(sources)
+
+
+def test_august_mbs_source_privacy_is_bound_without_output_promotion() -> None:
+    report = mbs_source_privacy.build_report(ROOT)
+    assert report == _read(
+        "quality/qualifications/australian-schedule-source-privacy-check-20261115.json"
+    )
+    assert len(report["mbs_products"]) == 2
+    assert sum(row["object_count"] for row in report["mbs_products"]) == 4
+    assert all(
+        row["projection_privacy"] == "not_qualified_by_source_classification"
+        and row["v4_admission"] == "not_performed"
+        for row in report["mbs_products"]
+    )
+    assert all(value is False for value in report["boundaries"].values())
+    assert report["pbs_source"]["source_privacy"] == (
+        "unknown_in_imported_acquisition_record"
+    )
+
+
+def test_mbs_projection_dossiers_bind_exact_producers_and_leave_gates_closed() -> (
+    None
+):
+    report = mbs_dossiers.build_report(ROOT)
+    assert report == _read(
+        "quality/qualifications/australian-mbs-four-projection-dossiers-20261115.json"
+    )
+    assert report["summary"] == {
+        "dossiers_completed": 4,
+        "output_privacy_qualified": 0,
+        "new_v4_admissions": 0,
+        "new_consumer_canaries": 0,
+        "independent_recoveries_qualified": 0,
+    }
+    assert all(value is False for value in report["boundaries"].values())
+    assert len({row["sha256"] for row in report["dossiers"]}) == 4
+    for row in report["dossiers"]:
+        assert row["source_privacy"] == (
+            "non_sensitive_in_exact_producer_source_receipt"
+        )
+        assert row["output_privacy"] == (
+            "not_qualified_without_output_specific_evidence"
+        )
+        assert row["v4_admission"] == row["consumer_check"] == "not_performed"
+        assert row["independent_recovery"] == "not_qualified"
+        assert row["frozen_m112_member"] is False
+        if row["producer"] == "d781":
+            assert row["bronze_state"] == (
+                "accepted_unreviewed_predecessor_not_recorded_not_v4"
+            )
+        else:
+            assert row["producer"] == "f9f9"
+            assert row["bronze_state"] == (
+                "product_sidecar_not_observed_at_pinned_revision"
+            )
+            assert row["raw_lifecycle"] == (
+                "separately_accepted_raw_b1_b2_not_projection_admission"
+            )
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "equal_size_wrong_digest",
+        "source_sensitivity",
+        "publication_manifest",
+        "workflow_failure",
+        "profile_as_admission",
+        "raw_transform_as_projection",
+        "wrong_producer_commit",
+    ],
+)
+def test_mbs_projection_dossiers_reject_unbound_or_promoted_evidence(
+    mutation: str,
+) -> None:
+    documents = {
+        name: _read(path)
+        for name, (path, _digest) in mbs_dossiers.INPUTS.items()
+    }
+    candidates = derived_gates.mbs_candidates(documents)
+    product = mbs_dossiers.PRODUCTS["f9f9"]
+    scope = next(
+        row
+        for row in documents["mbs_scope"]["products"]
+        if row["product_id"] == product["product_id"]
+    )
+    run = next(
+        row
+        for row in documents["workflow"]["runs"]
+        if row["run_id"] == product["run_id"]
+    )
+    manifest = documents["f9f9_manifest"]
+    if mutation == "equal_size_wrong_digest":
+        source = next(
+            row
+            for row in manifest["objects"]
+            if row["role"] == "source_parquet"
+        )
+        # The other source projection has the same size but a different digest.
+        other = next(
+            row
+            for row in candidates
+            if row["product_id"] == mbs_dossiers.PRODUCTS["d781"]["product_id"]
+            and row["path"].endswith("/source.parquet")
+        )
+        assert source["bytes"] == other["byte_count"]
+        source["sha256"] = other["sha256"]
+    elif mutation == "source_sensitivity":
+        documents["f9f9_receipt"]["sensitivity"]["personal_data"] = "unknown"
+    elif mutation == "publication_manifest":
+        documents["f9f9_publication"]["manifest_sha256"] = "0" * 64
+    elif mutation == "workflow_failure":
+        run["jobs"][0]["steps"][1]["conclusion"] = "failure"
+    elif mutation == "raw_transform_as_projection":
+        documents["f9f9_receipt"]["transformation"]["output_sha256"] = next(
+            row["sha256"]
+            for row in manifest["objects"]
+            if row["role"] == "source_parquet"
+        )
+    elif mutation == "wrong_producer_commit":
+        run["commit"] = mbs_dossiers.PRODUCTS["d781"]["commit"]
+    else:
+        manifest["objects"].append({"role": "admission", "path": "invented"})
+        documents["f9f9_publication"]["verified_objects"] += 1
+    failures = {
+        "equal_size_wrong_digest": "MBS projection identity differs",
+        "source_sensitivity": "MBS source receipt or privacy binding differs",
+        "publication_manifest": "MBS publication receipt differs",
+        "workflow_failure": "producer workflow binding differs",
+        "profile_as_admission": "MBS v2 profile or raw lifecycle differs",
+        "raw_transform_as_projection": "MBS source receipt or privacy binding differs",
+        "wrong_producer_commit": "producer workflow binding differs",
+    }
+    with pytest.raises(ValueError, match=failures[mutation]):
+        mbs_dossiers._validate_product(
+            "f9f9", documents, scope, run, candidates
+        )
+
+
+def test_mbs_projection_dossier_metadata_digest_is_checked(
+    tmp_path: Path,
+) -> None:
+    relative, expected = mbs_dossiers.INPUTS["f9f9_manifest"]
+    target = tmp_path / relative
+    target.parent.mkdir(parents=True)
+    target.write_bytes((ROOT / relative).read_bytes() + b" ")
+    with pytest.raises(ValueError, match="metadata reference digest differs"):
+        batch_qualification.read_bound_metadata(tmp_path, relative, expected)
+
+
+def test_mbs_projection_dossiers_do_not_open_payloads(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    original = Path.open
+
+    def metadata_only(path: Path, *args: Any, **kwargs: Any) -> Any:
+        if path.suffix.lower() in {".xml", ".parquet", ".zip"}:
+            raise AssertionError(
+                "dossier must not open source or projection payloads"
+            )
+        return original(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", metadata_only)
+    assert len(mbs_dossiers.build_report(ROOT)["dossiers"]) == 4
+
+
+def test_mbs_projection_dossiers_reject_changed_consumer_authority(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    original = batch_qualification.read_bound_metadata
+
+    def changed_authority(root: Path, path: str, digest: str) -> dict[str, Any]:
+        value = original(root, path, digest)
+        if path == mbs_dossiers.INPUTS["mbs_rights"][0]:
+            value["boundaries"]["consumer_canaries_authorized"] = True
+        return value
+
+    monkeypatch.setattr(
+        batch_qualification, "read_bound_metadata", changed_authority
+    )
+    with pytest.raises(ValueError, match="consumer authorization boundary"):
+        mbs_dossiers.build_report(ROOT)
+
+
+def test_existing_archive_privacy_batch_preserves_per_object_dispositions() -> (
+    None
+):
+    report = privacy_batch.build_report(ROOT)
+    assert report == _read(
+        "quality/qualifications/australian-existing-archive-privacy-batch-20261115.json"
+    )
+    assert report["summary"] == {
+        "newly_assessed_non_sensitive_frozen": 7,
+        "newly_assessed_non_sensitive_outside_frozen": 4,
+        "prior_separate_silver_profiles": 6,
+        "frozen_unassessed": 1732,
+        "outside_unassessed": 1,
+        "new_admissions": 0,
+        "new_consumer_checks": 0,
+    }
+    assert len(report["objects"]) == 1750
+    assert (
+        len({
+            (row["dataset"], row["path"], row["sha256"])
+            for row in report["objects"]
+        })
+        == 1750
+    )
+    assert all(value is False for value in report["boundaries"].values())
+    assert report["batches"]["pbs_schedule_pdf_unassessed"] == 1047
+    assert report["batches"]["pbs_schedule_archived_pdf_unassessed"] == 5
+    assert report["batches"]["pbs_schedule_zip_unassessed"] == 652
+    assert report["batches"]["pbs_schedule_csv_unassessed"] == 3
+    assert (
+        report["batches"]["mbs_historical_zip_structurally_profiled_unassessed"]
+        == 5
+    )
+    assert (
+        report["batches"]["mbs_demographic_workbook_profiled_unassessed"] == 1
+    )
+    assert report["batches"]["other_mbs_schedule_raw_unassessed"] == 5
+    assert report["batches"]["pbs_frozen_raw_unassessed"] == 1
+    assert report["batches"]["pbs_frozen_projection_unassessed"] == 1
+    assert all(
+        row["privacy"] == privacy_batch.UNKNOWN
+        for row in report["objects"]
+        if row["batch"].startswith("pbs_schedule_")
+    )
+
+
+def _synthetic_parquet_footer(prefix: bytes, marker: bytes) -> bytes:
+    footer = b"synthetic-footer:" + marker + b":end"
+    return (
+        b"PAR1" + prefix + footer + len(footer).to_bytes(4, "little") + b"PAR1"
+    )
+
+
+def test_mbs_replay_changes_only_writer_marker_in_footer() -> None:
+    original = _synthetic_parquet_footer(
+        b"synthetic-body", privacy_replay.NEW_MARKER
+    )
+    adjusted, positions = privacy_replay.adjusted_writer_footer(original)
+    assert len(adjusted) == len(original)
+    assert adjusted == original.replace(
+        privacy_replay.NEW_MARKER, privacy_replay.OLD_MARKER
+    )
+    assert positions["footer_start"] <= positions["marker_offset"]
+    assert original[-8:] == adjusted[-8:]
+
+
+@pytest.mark.parametrize("case", ["wrong_magic", "outside_footer", "duplicate"])
+def test_mbs_replay_rejects_unsafe_writer_marker(case: str) -> None:
+    if case == "wrong_magic":
+        value = b"not-parquet"
+    elif case == "outside_footer":
+        value = _synthetic_parquet_footer(
+            privacy_replay.NEW_MARKER, b"no-marker"
+        )
+    else:
+        value = _synthetic_parquet_footer(b"", privacy_replay.NEW_MARKER * 2)
+    with pytest.raises(ValueError, match=r"Parquet boundaries|writer marker"):
+        privacy_replay.adjusted_writer_footer(value)
+
+
+@pytest.mark.parametrize("mutation", ["source", "digest", "footer", "boundary"])
+def test_mbs_outside_privacy_rejects_misbound_replay(mutation: str) -> None:
+    observation = _read(privacy_batch.EVIDENCE["outside_replay"][0])
+    prior = _read(privacy_batch.EVIDENCE["outside_dossiers"][0])
+    if mutation == "source":
+        observation["source"]["sha256"] = "0" * 64
+    elif mutation == "digest":
+        observation["objects"][0]["footer_adjusted_sha256"] = "0" * 64
+    elif mutation == "footer":
+        observation["objects"][0]["marker_offset"] = 0
+    else:
+        observation["boundaries"]["participant_or_cohort_data_accessed"] = True
+    with pytest.raises(ValueError, match="Outside MBS replay"):
+        privacy_batch._check_outside_replay(observation, prior)
+
+
+def test_mbs_replay_rejects_unknown_source_before_reading(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    original = batch_qualification.read_bound_metadata
+    event_path = mbs_source_privacy.SOURCE_RECEIPTS[privacy_replay.EVENT_ID][0]
+
+    def unknown_source(root: Path, path: str, digest: str) -> dict[str, Any]:
+        value = original(root, path, digest)
+        if path == event_path:
+            value["sensitivity"]["data_sensitivity"] = "unknown"
+        return value
+
+    def forbidden_read(_root: Path = ROOT) -> bytes:
+        raise AssertionError("unclassified source must not be read")
+
+    monkeypatch.setattr(
+        batch_qualification, "read_bound_metadata", unknown_source
+    )
+    monkeypatch.setattr(
+        privacy_replay, "read_classified_source", forbidden_read
+    )
+    with pytest.raises(ValueError, match="source classification is not exact"):
+        privacy_replay.replay(ROOT)
+
+
+def test_direct_mbs_source_read_rechecks_privacy_before_network(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    original = batch_qualification.read_bound_metadata
+    event_path = mbs_source_privacy.SOURCE_RECEIPTS[privacy_replay.EVENT_ID][0]
+
+    def unknown_source(root: Path, path: str, digest: str) -> dict[str, Any]:
+        value = original(root, path, digest)
+        if path == event_path:
+            value["sensitivity"]["personal_data"] = "unknown"
+        return value
+
+    def forbidden_network(*_args: Any, **_kwargs: Any) -> Any:
+        raise AssertionError("unclassified source must not reach the network")
+
+    monkeypatch.setattr(
+        batch_qualification, "read_bound_metadata", unknown_source
+    )
+    monkeypatch.setattr(privacy_replay.httpx, "Client", forbidden_network)
+    with pytest.raises(ValueError, match="source classification is not exact"):
+        privacy_replay.read_classified_source(ROOT)
+
+
+def test_pbs_public_location_does_not_promote_privacy() -> None:
+    report = _read(privacy_batch.EVIDENCE["reimbursement"][0])
+    row = next(
+        r
+        for r in report["objects"]
+        if r["representation"] == "raw_source_payload"
+    )
+    event = _read(row["metadata_references"]["acquisition_event_path"])
+    assert privacy_batch._pbs_group(row, event).startswith("pbs_schedule_")
+    event["sensitivity"]["personal_data"] = "none"
+    with pytest.raises(
+        ValueError, match="PBS source privacy or provenance differs"
+    ):
+        privacy_batch._pbs_group(row, event)
+
+
+def test_mbs_frozen_privacy_rejects_receipt_with_query_data() -> None:
+    lineage = _read(privacy_batch.EVIDENCE["frozen_replay"][0])
+    receipts = {
+        name: _read(privacy_batch.EVIDENCE[name][0])
+        for name in ("frozen_6bc_receipt", "frozen_99_receipt")
+    }
+    receipts["frozen_99_receipt"]["retrieval"]["uri"] += "?unexpected=1"
+    with pytest.raises(ValueError, match="projection source receipt differs"):
+        privacy_batch._check_frozen_replay(lineage, receipts)
+
+
+def test_historical_structural_profiles_cannot_clear_privacy() -> None:
+    documents = {
+        name: _read(path)
+        for name, (path, _digest) in privacy_batch.EVIDENCE.items()
+        if name.startswith("historical_")
+    }
+    profiles = privacy_batch._historical_mbs_profiles(documents)
+    assert len(profiles) == 6
+    assert all(
+        profile["batch"].endswith("unassessed") for profile in profiles.values()
+    )
+    documents["historical_zip_0"]["result"]["members_held"] = 1
+    with pytest.raises(
+        ValueError, match="Historical MBS ZIP structural evidence differs"
+    ):
+        privacy_batch._historical_mbs_profiles(documents)
+
+
+def test_privacy_batch_does_not_read_archived_payloads(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    original = Path.open
+
+    def metadata_only(path: Path, *args: Any, **kwargs: Any) -> Any:
+        if path.suffix.lower() in {".xml", ".parquet", ".zip", ".csv", ".pdf"}:
+            raise AssertionError(
+                "privacy batch must not open archived payloads"
+            )
+        return original(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", metadata_only)
+    assert len(privacy_batch.build_report(ROOT)["objects"]) == 1750
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    ["personal_data", "source_digest", "product_source", "duplicate_object"],
+)
+def test_august_mbs_source_privacy_rejects_unbound_or_sensitive_evidence(
+    mutation: str,
+) -> None:
+    scope = _read(derived_gates.INPUTS["mbs_scope"][0])
+    receipts = {
+        identity: _read(binding[0])
+        for identity, binding in mbs_source_privacy.SOURCE_RECEIPTS.items()
+    }
+    first = next(iter(receipts.values()))
+    if mutation == "personal_data":
+        first["sensitivity"]["personal_data"] = "unknown"
+    elif mutation == "source_digest":
+        first["payload_sha256"] = "a" * 64
+    elif mutation == "product_source":
+        scope["products"][0]["source"]["sha256"] = "b" * 64
+    else:
+        scope["objects"][0]["path"] = scope["objects"][1]["path"]
+    with pytest.raises(
+        ValueError,
+        match=r"source privacy receipt|source binding|product identities",
+    ):
+        mbs_source_privacy.qualify_documents(scope, receipts)
+
+
+@pytest.mark.parametrize(
+    "mutation", ["event_privacy", "member_source", "lineage"]
+)
+def test_pbs_source_privacy_rejects_mismatched_source_evidence(
+    mutation: str,
+) -> None:
+    event = _read(mbs_source_privacy.PBS_EVENT[0])
+    lineage = _read(mbs_source_privacy.PBS_LINEAGE[0])
+    package = _read(derived_gates.INPUTS["pbs_package"][0])
+    if mutation == "event_privacy":
+        event["sensitivity"]["data_sensitivity"] = "non_sensitive"
+    elif mutation == "member_source":
+        package["member_binding"]["archive_payload"]["sha256"] = "a" * 64
+    else:
+        for row in lineage["objects"]:
+            if (
+                row["dataset"] == "edithatogo/australian-pbs-source-archive"
+                and row["path"] == mbs_source_privacy.PBS_SOURCE_PATH
+            ):
+                row["local_records"]["acquisition_event_path"] = "wrong.json"
+                break
+    with pytest.raises(ValueError, match=r"PBS .* binding differs"):
+        mbs_source_privacy.qualify_pbs_source(event, lineage, package)
+
+
+def test_derived_pbs_rejects_misbound_verified_revision() -> None:
+    sources = {
+        name: _read(path)
+        for name, (path, _digest) in derived_gates.INPUTS.items()
+    }
+    sources["pbs_verification"]["revision"] = "a" * 40
+    with pytest.raises(ValueError, match="candidate evidence differs"):
+        derived_gates.pbs_candidate(sources)
+
+
+def test_existing_consumer_check_rejects_wrong_object_and_request() -> None:
+    receipt = _read(derived_gates.INPUTS["consumer_receipt"][0])
+    manifest = _read(derived_gates.INPUTS["consumer_manifest"][0])
+    semantics = _read(derived_gates.INPUTS["consumer_semantic_manifest"][0])
+    receipt["remote_reads"][0]["object_sha256"] = "a" * 64
+    with pytest.raises(ValueError, match="object, privacy or canary"):
+        derived_gates.checked_consumers(ROOT, receipt, manifest, semantics)
+    receipt = _read(derived_gates.INPUTS["consumer_receipt"][0])
+    receipt["consumer_canary"]["evidence"][0]["request_sha256"] = "b" * 64
+    with pytest.raises(ValueError, match="object, privacy or canary"):
+        derived_gates.checked_consumers(ROOT, receipt, manifest, semantics)
+
+
+def test_fresh_mbs_consumers_match_prior_objects_without_browser() -> None:
+    rows = derived_gates.check_fresh_consumers(ROOT)
+    assert {row["table"] for row in rows} == derived_gates.CONSUMER_TABLES
+    assert all(
+        row["consumer_check"]
+        == "fresh_hosted_browser_free_four_surface_canary_passed"
+        and row["privacy"]
+        == "non_sensitive_in_exact_previously_admitted_contract"
+        for row in rows
+    )
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    ["commit", "object", "browser_claim", "unexpected_browser_evidence"],
+)
+def test_fresh_mbs_consumer_evidence_rejects_mismatches(mutation: str) -> None:
+    receipt = _read(
+        derived_gates.FRESH_SILVER_DIR + "admission-remote-read.json"
+    )
+    manifest = _read(derived_gates.FRESH_SILVER_DIR + "artifact-manifest.json")
+    semantics = _read(derived_gates.INPUTS["consumer_semantic_manifest"][0])
+    if mutation == "commit":
+        receipt["contract_commit"] = "a" * 40
+    elif mutation == "object":
+        receipt["remote_reads"][0]["object_sha256"] = "b" * 64
+    elif mutation == "browser_claim":
+        receipt["consumer_canary"]["browser_qualification"] = "passed"
+    else:
+        receipt["consumer_canary"]["evidence"][0]["browser"] = {
+            "http_status": 200,
+            "row_count": 2,
+        }
+    with pytest.raises(
+        ValueError,
+        match=r"boundary differs|object, privacy or canary|canary summary differs",
+    ):
+        derived_gates.checked_consumers(
+            ROOT,
+            receipt,
+            manifest,
+            semantics,
+            evidence_directory=derived_gates.FRESH_SILVER_DIR,
+            workflow_run=derived_gates.FRESH_RUN,
+            browser_expected=False,
+            expected_commit=derived_gates.FRESH_COMMIT,
+        )
+
+
+def test_existing_consumer_check_rejects_unqualified_privacy(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    receipt = _read(derived_gates.INPUTS["consumer_receipt"][0])
+    manifest = _read(derived_gates.INPUTS["consumer_manifest"][0])
+    semantics = _read(derived_gates.INPUTS["consumer_semantic_manifest"][0])
+    original = derived_gates.bounded.read_bound_metadata
+
+    def read_with_unqualified_privacy(
+        root: Path, relative: str, digest: str
+    ) -> dict[str, Any]:
+        result = original(root, relative, digest)
+        if relative.endswith("metadata/contracts/services.json"):
+            result["rights"]["sensitivity"] = "unknown"
+        return result
+
+    monkeypatch.setattr(
+        derived_gates.bounded,
+        "read_bound_metadata",
+        read_with_unqualified_privacy,
+    )
+    with pytest.raises(ValueError, match="object, privacy or canary"):
+        derived_gates.checked_consumers(ROOT, receipt, manifest, semantics)
+
+
+@pytest.fixture(scope="module")
+def retained_object_gate_evidence() -> dict[str, dict[str, Any]]:
+    return {
+        name: batch_qualification.read_bound_metadata(ROOT, *binding)
+        for name, binding in object_gates.INPUTS.items()
+    }
+
+
+def test_existing_object_gates_reconcile_without_promoting_data() -> None:
+    report = object_gates.build_report(ROOT)
+    assert report == _read(
+        "quality/qualifications/australian-existing-mbs-pbs-object-gates-20261115.json"
+    )
+    assert len(report["mbs_objects"]) == 11
+    assert sum(row["frozen_member"] for row in report["mbs_objects"]) == 7
+    assert all(
+        row["v4_admission"] == "not_established_by_selected_evidence"
+        and row["privacy"] == privacy_batch.ASSESSED
+        for row in report["mbs_objects"]
+    )
+    candidates = [
+        row for row in report["mbs_objects"] if row["candidate_v4_roles"]
+    ]
+    assert len(candidates) == 2
+    assert all(
+        row["candidate_v4_roles"]["revision"] != row["revision"]
+        and row["candidate_v4_roles"]["state"]
+        == "candidate_unbound_at_different_revision"
+        for row in candidates
+    )
+    pbs = report["pbs_metadata"]
+    assert pbs["unassessed_objects"] == 1722
+    assert pbs["schedule_b1_records_unknown"] == 1707
+    assert pbs["schedule_distinct_digest_size_pairs"] == 1707
+    assert pbs["same_digest_and_size_candidates"] == 0
+    assert pbs["newly_assessed_non_sensitive"] == 0
+    assert all(value is False for value in report["boundaries"].values())
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    ["frozen_rights", "outside_revision", "authorization", "candidate"],
+)
+def test_existing_mbs_gates_reject_misbound_evidence(
+    retained_object_gate_evidence: dict[str, dict[str, Any]], mutation: str
+) -> None:
+    evidence = deepcopy(retained_object_gate_evidence)
+    if mutation == "frozen_rights":
+        evidence["frozen_rights"]["authorized_objects"][0]["sha256"] = "0" * 64
+    elif mutation == "outside_revision":
+        evidence["outside_rights"]["authorized_objects"][0]["revision"] = (
+            "0" * 40
+        )
+    elif mutation == "authorization":
+        evidence["frozen_rights"]["boundaries"][
+            "v4_admission_or_promotion_authorized"
+        ] = True
+    else:
+        target = next(
+            row
+            for row in evidence["august_roles"]["objects"]
+            if row["dataset"] == object_gates.DATASET
+            and row["sha256"] == object_gates.AUGUST_DIGEST
+        )
+        target["v4_admission_eligible"] = True
+    with pytest.raises(ValueError, match=r"rights|authorization|v4 candidate"):
+        object_gates.reconcile_mbs(evidence)
+
+
+@pytest.mark.parametrize(
+    "mutation", ["screen_email", "context_digest", "projection_revision"]
+)
+def test_existing_pbs_privacy_rejects_unsupported_transfer(
+    retained_object_gate_evidence: dict[str, dict[str, Any]], mutation: str
+) -> None:
+    evidence = deepcopy(retained_object_gate_evidence)
+    if mutation == "screen_email":
+        evidence["pbs_screen"]["objects"][0]["email_like_cell_values"] = 1
+    elif mutation == "context_digest":
+        evidence["csv_header_context"]["objects"][0]["sha256"] = "0" * 64
+    else:
+        projection = next(
+            row
+            for row in evidence["privacy"]["objects"]
+            if row["batch"].startswith("reimbursement_projection_")
+        )
+        projection["revision"] = "0" * 40
+    with pytest.raises(
+        ValueError, match=r"PBS prior screened|projection privacy identity"
+    ):
+        object_gates.reconcile_pbs(evidence)
+
+
+def test_pbs_content_match_does_not_automatically_clear_privacy(
+    retained_object_gate_evidence: dict[str, dict[str, Any]],
+) -> None:
+    evidence = deepcopy(retained_object_gate_evidence)
+    row = next(
+        row
+        for row in evidence["privacy"]["objects"]
+        if row["batch"].startswith("pbs_schedule_")
+    )
+    source = next(
+        item
+        for item in evidence["reimbursement"]["objects"]
+        if item["dataset"] == row["dataset"] and item["path"] == row["path"]
+    )
+    screened = evidence["pbs_qualified"]["objects"][0]
+    for target in (row, source):
+        target["sha256"] = screened["sha256"]
+        target["byte_count"] = screened["byte_count"]
+    result = object_gates.reconcile_pbs(evidence)
+    assert result["same_digest_and_size_candidates"] == 1
+    assert result["matching_candidates_gain_privacy_clearance"] is False
+    assert result["newly_assessed_non_sensitive"] == 0
+    assert result["unassessed_payload_reads_permitted"] is False
+
+
+def test_existing_object_gate_check_never_opens_payload_files(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    original = Path.open
+
+    def metadata_only(path: Path, *args: Any, **kwargs: Any) -> Any:
+        if path.suffix.lower() in {
+            ".xml",
+            ".parquet",
+            ".zip",
+            ".csv",
+            ".pdf",
+            ".xlsx",
+        }:
+            raise AssertionError("object gate check must not open payloads")
+        return original(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", metadata_only)
+    assert len(object_gates.build_report(ROOT)["mbs_objects"]) == 11
+
+
+@pytest.fixture(scope="module")
+def v4_readiness_evidence() -> dict[str, dict[str, Any]]:
+    return {
+        name: batch_qualification.read_bound_metadata(ROOT, *binding)
+        for name, binding in v4_readiness.INPUTS.items()
+    }
+
+
+def test_exact_v4_and_pbs_privacy_readiness_is_value_free() -> None:
+    report = v4_readiness.build_report(ROOT)
+    assert report == _read(
+        "quality/qualifications/australian-existing-v4-privacy-readiness-20261115.json"
+    )
+    objects = report["mbs_objects"]
+    assert len(objects) == 11
+    assert (
+        sum(
+            row["tree_metadata_identity"] == "lfs_sha256_and_size_match"
+            for row in objects
+        )
+        == 8
+    )
+    assert (
+        sum(
+            row["tree_metadata_identity"]
+            == "git_blob_and_size_match_historical_evidence"
+            for row in objects
+        )
+        == 3
+    )
+    assert all(
+        row["trusted_v4_admission"] == "not_established_by_selected_evidence"
+        and row["independent_recovery"]
+        == "not_established_by_selected_evidence"
+        for row in objects
+    )
+    pbs = report["pbs_privacy"]
+    assert pbs["unassessed_pbs_related_or_reimbursement_objects"] == 1722
+    assert pbs["schedule_objects_with_exact_official_link_metadata"] == 311
+    assert pbs["archive_aliases_with_one_profiled_xml_member"] == 2
+    assert pbs["profiled_member_unique_schema_paths"] == 5163
+    assert pbs["schema_paths_with_patient_or_person_tokens"] == 224
+    assert pbs["schema_paths_with_contact_tokens"] == 32
+    assert pbs["new_privacy_clearances"] == 0
+    assert pbs["unassessed_payload_reads_permitted"] is False
+    assert report["recovery"]["selected_paths_in_prior_silver_restore"] == 0
+    assert report["recovery"]["independent_recovery_established"] is False
+    assert all(value is False for value in report["boundaries"].values())
+
+
+@pytest.mark.parametrize("mutation", ["revision", "lfs", "raw_blob"])
+def test_exact_v4_readiness_rejects_changed_tree_identity(
+    v4_readiness_evidence: dict[str, dict[str, Any]], mutation: str
+) -> None:
+    evidence = deepcopy(v4_readiness_evidence)
+    if mutation == "raw_blob":
+        row = next(
+            r for r in evidence["tree"]["objects"] if r["lfs_sha256"] is None
+        )
+        row["git_blob_oid"] = "0" * 40
+    else:
+        row = next(r for r in evidence["tree"]["objects"] if r["lfs_sha256"])
+        if mutation == "revision":
+            row["revision"] = "0" * 40
+        else:
+            row["lfs_sha256"] = "0" * 64
+    with pytest.raises(
+        ValueError, match=r"tree identity|blob identity|LFS SHA-256"
+    ):
+        v4_readiness.mbs_readiness(evidence)
+
+
+@pytest.mark.parametrize("mutation", ["official_link", "member_schema"])
+def test_pbs_privacy_readiness_rejects_misbound_evidence(
+    v4_readiness_evidence: dict[str, dict[str, Any]], mutation: str
+) -> None:
+    evidence = deepcopy(v4_readiness_evidence)
+    if mutation == "official_link":
+        evidence["pbs_links"]["links"][0]["candidates"][0]["sha256"] = "0" * 64
+    else:
+        evidence["pbs_schema"]["member_sha256"] = "0" * 64
+    with pytest.raises(ValueError, match=r"official-link|member schema"):
+        v4_readiness.pbs_privacy_readiness(evidence)
+
+
+def test_recovery_reconciliation_rejects_changed_scope(
+    v4_readiness_evidence: dict[str, dict[str, Any]],
+) -> None:
+    evidence = deepcopy(v4_readiness_evidence)
+    objects = v4_readiness.mbs_readiness(evidence)
+    evidence["silver_restore"]["objects"][0]["path"] = objects[0]["path"]
+    with pytest.raises(ValueError, match="unexpectedly includes a target"):
+        v4_readiness.recovery_readiness(evidence, objects)
+
+
+def test_hosted_digest_stream_checks_exact_bytes_without_returning_payload() -> (
+    None
+):
+    payload = b"synthetic reference fixture"
+    digest = hashlib.sha256(payload).hexdigest()
+    transport = httpx.MockTransport(
+        lambda _request: httpx.Response(200, content=payload)
+    )
+    with httpx.Client(transport=transport) as client:
+        result = v4_readiness.stream_digest(
+            client,
+            "https://huggingface.co/datasets/example/file",
+            expected_sha256=digest,
+            expected_bytes=len(payload),
+        )
+    assert result == {"sha256": digest, "byte_count": len(payload)}
+    assert payload.decode() not in json.dumps(result)
+
+
+@pytest.mark.parametrize("failure", ["digest", "size", "redirect"])
+def test_hosted_digest_stream_fails_closed(failure: str) -> None:
+    payload = b"synthetic"
+    digest = hashlib.sha256(payload).hexdigest()
+
+    def respond(_request: httpx.Request) -> httpx.Response:
+        if failure == "redirect":
+            return httpx.Response(
+                302, headers={"location": "https://example.org/file"}
+            )
+        return httpx.Response(200, content=payload)
+
+    with (
+        httpx.Client(transport=httpx.MockTransport(respond)) as client,
+        pytest.raises(ValueError, match=r"digest|byte bound|destination"),
+    ):
+        v4_readiness.stream_digest(
+            client,
+            "https://huggingface.co/datasets/example/file",
+            expected_sha256="0" * 64 if failure == "digest" else digest,
+            expected_bytes=len(payload) - 1
+            if failure == "size"
+            else len(payload),
+        )
+
+
+def test_hosted_digest_cannot_run_locally(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    with pytest.raises(ValueError, match="Actions dispatch on main"):
+        v4_readiness.hosted_verify({"mbs_objects": []}, commit="0" * 40)
+
+
+def test_hosted_digest_rejects_changed_scope_before_network(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    commit = "1" * 40
+    for key, value in {
+        "GITHUB_ACTIONS": "true",
+        "GITHUB_REPOSITORY": "edithatogo/global-medicines-atlas",
+        "GITHUB_REF": "refs/heads/main",
+        "GITHUB_EVENT_NAME": "workflow_dispatch",
+        "GITHUB_SHA": commit,
+        "GITHUB_RUN_ID": "123",
+        "GITHUB_RUN_ATTEMPT": "1",
+    }.items():
+        monkeypatch.setenv(key, value)
+    report = v4_readiness.build_report(ROOT)
+    report["mbs_objects"][0]["sha256"] = "0" * 64
+
+    def no_network(*_args: Any, **_kwargs: Any) -> Any:
+        pytest.fail("scope validation must happen before network setup")
+
+    monkeypatch.setattr(v4_readiness.httpx, "Client", no_network)
+    with pytest.raises(ValueError, match="hosted MBS evidence differs"):
+        v4_readiness.hosted_verify(report, commit=commit)
+
+
+def test_hosted_digest_receipt_keeps_exact_scope_and_boundaries(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    commit = "1" * 40
+    for key, value in {
+        "GITHUB_ACTIONS": "true",
+        "GITHUB_REPOSITORY": "edithatogo/global-medicines-atlas",
+        "GITHUB_REF": "refs/heads/main",
+        "GITHUB_EVENT_NAME": "workflow_dispatch",
+        "GITHUB_SHA": commit,
+        "GITHUB_RUN_ID": "123",
+        "GITHUB_RUN_ATTEMPT": "1",
+    }.items():
+        monkeypatch.setenv(key, value)
+    report = v4_readiness.build_report(ROOT)
+    visited: list[str] = []
+
+    def fake_stream(
+        _client: httpx.Client,
+        url: str,
+        *,
+        expected_sha256: str,
+        expected_bytes: int,
+    ) -> dict[str, Any]:
+        visited.append(url)
+        return {"sha256": expected_sha256, "byte_count": expected_bytes}
+
+    monkeypatch.setattr(v4_readiness, "stream_digest", fake_stream)
+    receipt = v4_readiness.hosted_verify(report, commit=commit)
+    assert len(visited) == len(receipt["objects"]) == 11
+    assert all(
+        url.startswith("https://huggingface.co/datasets/") for url in visited
+    )
+    assert {
+        (row["dataset"], row["revision"], row["path"], row["sha256"])
+        for row in receipt["objects"]
+    } == {
+        (row["dataset"], row["revision"], row["path"], row["sha256"])
+        for row in report["mbs_objects"]
+    }
+    assert all(value is False for value in receipt["boundaries"].values())
+
+
+@pytest.fixture(scope="module")
+def mbs_digest_evidence() -> dict[str, dict[str, Any]]:
+    return {
+        name: batch_qualification.read_bound_metadata(ROOT, *binding)
+        for name, binding in mbs_exact_digest.INPUTS.items()
+    }
+
+
+def test_hosted_exact_mbs_digests_are_bound_without_admission() -> None:
+    report = mbs_exact_digest.build_report(ROOT)
+    assert report == _read(
+        "quality/qualifications/australian-existing-mbs-digest-binding-20261115.json"
+    )
+    assert report["summary"] == {
+        "exact_revision_stream_digests_passed": 11,
+        "frozen_objects": 7,
+        "outside_frozen_objects": 4,
+        "new_v4_admissions": 0,
+        "new_consumer_canaries": 0,
+        "independent_recovery_established": False,
+        "pbs_privacy_clearances": 0,
+    }
+    assert all(
+        row["exact_revision_stream_digest"] == "passed"
+        and row["v4_verification_evidence"] == "available_unbound_to_contract"
+        and row["trusted_v4_admission"] == "not_performed"
+        for row in report["objects"]
+    )
+    assert all(value is False for value in report["boundaries"].values())
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    ["revision", "digest", "run", "boundary", "artifact", "duplicate"],
+)
+def test_hosted_exact_mbs_digest_rejects_misbound_receipts(
+    mbs_digest_evidence: dict[str, dict[str, Any]], mutation: str
+) -> None:
+    evidence = deepcopy(mbs_digest_evidence)
+    if mutation == "revision":
+        evidence["receipt"]["objects"][0]["revision"] = "0" * 40
+    elif mutation == "digest":
+        evidence["receipt"]["objects"][0]["sha256"] = "0" * 64
+    elif mutation == "run":
+        evidence["receipt"]["workflow_run"] = "1"
+    elif mutation == "boundary":
+        evidence["receipt"]["boundaries"]["v4_admission_or_consumer_canary"] = (
+            True
+        )
+    elif mutation == "artifact":
+        evidence["artifact"]["artifact"]["sha256"] = "0" * 64
+    else:
+        evidence["receipt"]["objects"].append(evidence["receipt"]["objects"][0])
+    with pytest.raises(
+        ValueError, match=r"identity|boundary|provenance|duplicate"
+    ):
+        mbs_exact_digest.reconcile(evidence)

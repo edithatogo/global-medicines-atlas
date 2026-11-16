@@ -35,10 +35,8 @@ flags:
   full:
     carryforward: false
 
-comment:
-  layout: "reach,diff,flags,files"
-  behavior: default
-  require_changes: true
+# Coverage remains enforced through checks, without outbound PR comments.
+comment: false
 
 github_checks:
   annotations: true

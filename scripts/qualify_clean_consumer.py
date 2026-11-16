@@ -231,9 +231,9 @@ print(json.dumps({'atlas_page': 'passed', 'atlas_static_asset': 'passed'}, sort_
 """
 
 
-def _serving_probe(database: Path) -> str:
-    """Start the installed ASGI factory on loopback using synthetic data."""
-    server = """
+def _serving_server() -> str:
+    """Build the isolated server and publish its readiness file atomically."""
+    return """
 import asyncio, json, socket, sys
 from pathlib import Path
 import uvicorn
@@ -242,14 +242,22 @@ app = create_app()
 listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 listener.bind(("127.0.0.1", 0))
 listener.listen(128)
-Path(sys.argv[1]).write_text(json.dumps({
+ready = Path(sys.argv[1])
+temporary = ready.with_name(ready.name + ".tmp")
+temporary.write_text(json.dumps({
     "url": f"http://127.0.0.1:{listener.getsockname()[1]}"
-}))
+}), encoding="utf-8")
+temporary.replace(ready)
 server = uvicorn.Server(uvicorn.Config(
     app, access_log=False, log_level="error"
 ))
 asyncio.run(server.serve(sockets=[listener]))
 """
+
+
+def _serving_probe(database: Path) -> str:
+    """Start the installed ASGI factory on loopback using synthetic data."""
+    server = _serving_server()
     template = """
 import json, os, subprocess, sys, tempfile, time
 from pathlib import Path

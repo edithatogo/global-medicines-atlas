@@ -1091,3 +1091,687 @@ This closes the exact approved append and digest-verification work. It does
 not perform v4 admission, consumer canaries or independent recovery, and does
 not close the broader incomplete track tasks above. No additional append is
 authorized by this transaction.
+
+## Australian MBS and PBS archive reconciliation (2026-11-13)
+
+- [x] Reconcile the frozen inventory and exact schedule and utilisation outputs
+  against the public Hub revisions. Record archive identity, product
+  qualification and remaining gaps in a public discovery record.
+- [x] Link the record from GitHub and the Hugging Face catalogue, using one
+  hosted exact-parent card update and anonymous readback. Align the local
+  checkout with protected GitHub main at the terminal checkpoint. PR #1428 and
+  catalogue workflow run `43420305199` completed these steps.
+
+Owner: Codex chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, checkout
+`/Volumes/PortableSSD/GitHub/global-medicines-atlas`, branch
+`codex/reconcile-australian-hf-archive`. Owned paths are the reconciliation
+record, discovery links, this track increment and the existing project-page
+publisher and its focused tests. Native write scope is the catalogue README.
+The owned test scope also includes the incremental archive publication fixture,
+whose workflow-attempt assumptions caused reproducible failures on a CI rerun.
+
+## Recovered AIHW ATC2 monthly archive (2026-11-13)
+
+- [x] Verify the recovered public ZIP digest and CRC, inspect its six worksheet
+  headers and compare the archive manifest and the existing environmental file.
+- [~] Qualify one exact PBS archive append, retain source rights and attribution,
+  then publish from protected main and verify anonymously before local cleanup.
+
+The current chat prepared the exact ATC2 contract in the reconciliation
+checkout. Hosted run `43420355656` could not acquire the reviewed publisher ZIP
+and left the PBS archive unchanged. The workflow returned to its disabled state.
+
+Owner: Codex chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, managed worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/recover-aihw-atc2-draft-transport`. Scope is the PBS workflow
+route, exact ATC2 contract, documentation, and focused tests. The native write
+scope is one append to the PBS archive and temporary unpublished GitHub draft
+`444173498` with asset `743483280`. The subsequent hosted publication completed
+and is recorded by
+`quality/qualifications/aihw-atc2-publication-20261114-43565582684.json`;
+the preceding text is the historical pending state.
+
+## Existing-archive per-object qualification (2026-11-15)
+
+The maintainer explicitly resumed a bounded M-112 increment: batch per-object
+qualification and consumer checks for already archived data, without adding
+sources or publishing datasets. Individual participant and cohort-derived data
+remain private. The frozen 1,759-object inventory, its original requirement
+states and all rights, sensitivity, admission and recovery gates are unchanged.
+
+Owner: Codex chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, managed worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/federation-batch-existing-20261115`, based on merged main
+`ab69da47d7c338e3a3aecb8bcaec9757989403b6`. The scope is exact frozen-object
+metadata qualification, sensitivity and remaining-role gap accounting,
+focused synthetic negative controls, and read-only reruns of six previously
+admitted, source-profiled non-sensitive PBS objects. No publication workflow,
+shared authentication change or private dataset access is authorized.
+
+- [x] Bind 1,719 reimbursement-archive candidates to frozen identities and
+  retained rights/lineage metadata. Verify each of 1,707 raw objects' B1, B2 and
+  landed records against their pinned digests. All 1,707 have unknown source
+  sensitivity and all 12 projections lack an object-specific sensitivity
+  assessment in this evidence. Their payload reads, consumer checks and new
+  admissions therefore remain blocked. Nine projection relationships are
+  byte-identical and three are recorded layer partitions.
+- [x] Reconcile the other 26 raw-ledger-deferred frozen paths against the
+  retained overlay. Six also have earlier, separately scoped MBS Silver
+  admission and API, CLI, Atlas and export evidence at a distinct immutable
+  revision; they do not add six raw admissions. No new payload read is claimed
+  for these 26 paths.
+- [x] Rerun the existing hosted reader once for each of six already admitted,
+  source-profiled PBS aggregate/reference objects. All six runs passed on
+  exact main; metadata-only receipts establish digest and cache cleanup. The
+  repeat checks did not create additional unique admissions.
+- [~] Focused failure-closed, federation reader, admission, consumer and
+  context tests passed: 170 tests on Python 3.15.1. Integrate after exact-head
+  protected checks. Stop at unqualified privacy and per-object gates; do not
+  infer independent recovery or acceptance.
+
+The reproducible [per-object metadata report](../../../quality/qualifications/australian-m112-reimbursement-batch-readiness-20261115.json)
+has SHA-256 `0969afcd6152cd73f5ff53f28ccb6fb9315090a71ba302ebbee74efaf32db4f5`.
+The [PBS reader manifest](../../../quality/qualifications/australian-m112-pbs-reader-recheck-20261115/manifest.json)
+binds all six hosted receipts. No source rows, individual participant data,
+cohort-derived data, new source or dataset publication were added.
+
+PR #1435 passed 29 reported required checks on head
+`24404455b9abe2987c00b1c697f22931098e9bc4` and merged as
+`ab69da47d7c338e3a3aecb8bcaec9757989403b6`, tree
+`f94c78f72f84d7fb0b7fc06806b523cfa0b032c1`. The automatically triggered
+unrelated data-layer run `43613625929` was canceled with no runner, executed
+step or artifact. The regular workflow remains enabled; no data was acquired
+or published by that run.
+
+## Existing PBS crosswalk and admitted-object consumers (2026-11-15)
+
+The maintainer requested the existing PBS metadata crosswalk, investigation of
+four unmatched publisher links, and continued privacy, admission and consumer
+checks, with no new or published data. Owner: chat
+`01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/pbs-federation-metadata-20261115`, base
+`1abd398b97f230ebfdf6729bfb1dd6f4c9f4dfac`. The Australian Silver/Gold track
+owns the metadata-only crosswalk and link investigation; this track owns
+read-only rechecks of already admitted, source-profiled public objects.
+
+- [x] Verify each of the eight existing MBS contracts identifies the exact
+  non-sensitive, previously admitted public aggregate object. The 311 distinct
+  reimbursement B1 candidates retain unknown sensitivity and remain blocked
+  from payload reads and new v4 admission.
+- [x] Recheck all eight objects through the bounded hosted reader, retaining
+  value-free receipts. One GitHub receipt request was rate-limited before its
+  reader ran; its one bounded retry passed. Repeat checks are not new admissions.
+- [x] Reconcile the consumer and admission evidence without adding sources,
+  publishing datasets or accepting the full federation. Effective raw counts
+  remain 14 admitted, 14 checked and 1,745 deferred.
+
+The preceding batch was integrated as PR #1437 after the required checks
+passed on head `11644ac00f77993adc06e1c79ab0dc4f39fb108a`; its squash merge
+`1abd398b97f230ebfdf6729bfb1dd6f4c9f4dfac` has the same checked tree
+`649fe7404027d7c183a138405f8e2f97bbddab09`. No dataset publication or
+acquisition workflow was run as part of that integration.
+
+## Existing derived-output privacy and delivery checks (2026-11-15)
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/australian-federation-evidence-20261115`, base
+`036fd0f998fb3feb8722cff347b4179228b8a21f`. Reconcile the four already-public
+August MBS projections and the previously published reproduced PBS Silver
+output against retained identity, privacy, rights and admission evidence. Reuse
+the existing six-object MBS consumer evidence; check missing gates without
+reading unassessed source payloads or adding or publishing datasets.
+
+- [x] Bind each candidate to exact retained identity, rights, privacy and
+  delivery evidence, including the later PBS publication receipt; preserve
+  incomplete privacy, semantics, replica, admission and consumer gates.
+- [x] Verify the existing six-object MBS consumer receipts and focused
+  fail-closed controls; do not count repeated checks as new admission.
+- [~] Refresh the six existing MBS Silver profiles and run API, CLI, Atlas and
+  export checks in hosted exact-main execution with no external browser. The
+  local replay of the old contracts failed closed because their temporary cache
+  had expired; preserve that failure and do not extend its historical expiry.
+- [~] Integrate only the metadata and test packet after protected checks.
+
+The preceding crosswalk was merged as PR #1438: checked head
+`48cf2df3460c91d3c0a1127438761d955b85c233`, squash merge
+`036fd0f998fb3feb8722cff347b4179228b8a21f`, matching tree
+`42b40a438f934306bc2a601d8ce632d671aa1662`, with 29 required checks passed.
+Post-merge Test-Goblin run `43645937655` succeeded with 29 successful jobs and
+one skipped optional Hudi preview. The acquisition workflow did not run.
+
+## Four existing MBS projection dossiers (2026-11-15)
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/mbs-projection-dossiers-20261115`, base
+`d86cd8eb1268a15c912ce36f7017b5ad22ca6316`. Reconcile the four exact public
+August MBS projection identities, their retained producer metadata and code,
+rights, source privacy and existing admission states. Stop at a documented,
+reproducible disposition for each object. Do not inspect source or projection
+payloads, admit outputs, run consumer canaries, add datasets, publish dataset
+bytes, change the frozen inventory or access participant or cohort data.
+
+- [x] Bind four separate objects to their exact producer manifests, source
+  receipts, published-byte verification and pinned tree metadata. Check the
+  twelve relevant historical workflow and code blobs against their commits.
+- [x] Reconcile the legacy accepted-unreviewed sidecar and the later accepted
+  raw lifecycle without mistaking either for projection-v4 admission. Record
+  the source sensitivity and the distinct unqualified output privacy state.
+- [x] Verify the metadata-only report with 46 focused tests, fail-closed
+  controls, Ruff, both type checkers and the context validator on Python
+  3.15.1. The [dossiers](../../../quality/qualifications/australian-mbs-four-projection-dossiers-20261115.json)
+  and [explanation](../../../docs/qualification/australian-mbs-four-projection-dossiers-20261115.md)
+  preserve the provenance and remaining gates.
+- [~] All four output privacy assessments, v4 contracts and separate
+  admission decisions, authorized consumer checks and independent recovery
+  remain open. The dossiers do not change the M-112 denominator or admit data.
+- [x] Integrate PR #1441 after all 29 reported required checks passed on
+  head `27faa31495877d403b66ebc7d5394f0d54440450`. Squash merge
+  `83be6caa502e37081bdc09e578a6d9e37b6f1568` has the checked tree
+  `d82c990b65498eb41ae0682304c6a8dfe979d0e0`. The acquisition workflow
+  remained enabled afterward and did not run for the merge; the ordinary
+  post-merge test and security workflows were queued at this checkpoint.
+
+## Batched Australian privacy assessments (2026-11-15)
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/australian-privacy-batch-20261115`, started from the exact
+dossier head `27faa31495877d403b66ebc7d5394f0d54440450`, now merged with the
+same tree as `83be6caa502e37081bdc09e578a6d9e37b6f1568`. Group existing
+frozen objects and four separately scoped MBS outputs by exact
+source and transformation evidence, then record an individual, fail-closed
+privacy disposition for each. A bounded in-memory replay may read only the
+already-classified public August MBS schedule at its exact archived digest;
+source rows and reconstructed output bytes are not retained or emitted.
+Stop at missing evidence. Do not read unclassified payloads or participant or
+cohort-derived data, add sources, publish datasets, change rights or admission,
+or alter the frozen inventory.
+
+- [x] Assess 11 exact MBS source and projection identities as non-sensitive
+  source profiles: seven frozen objects and the four separately scoped outputs.
+  The latter match their prior digests after one explicitly recorded,
+  equal-length writer-version substitution in the regenerated Parquet footer;
+  the historical PyArrow 25 writer was not run.
+- [x] Preserve the six prior separate Silver profiles and retain 1,732 frozen
+  objects and one outside output as unassessed. Group the 1,707 historical PBS
+  schedule files by exact source metadata and type without promoting them.
+  Bind five historical MBS ZIPs and one workbook to their existing structural
+  profiles while retaining their unassessed privacy states.
+- [x] Check the value-free [per-object privacy report](../../../quality/qualifications/australian-existing-archive-privacy-batch-20261115.json),
+  the [footer-adjusted replay receipt](../../../quality/qualifications/australian-privacy-batch-20261115/mbs-outside-frozen-replay.json)
+  and 61 focused tests on Python 3.15.1. Ruff, both type checkers and the
+  context validator pass. No archived unclassified payload was read.
+- [~] Keep rights, v4 admissions, consumer checks and independent recovery
+  separate. Integrate this packet after its own exact-head protected checks.
+
+## Existing MBS object gates and PBS privacy metadata — 15 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/australian-existing-object-gates-20261115`, base
+`6bcd02a850837ea73acb4b84734754bf0f352199`. This lane owns the exact-object
+readiness reconciliation, privacy-metadata crosswalk, affected tests and this
+handoff. Prior assignments remain history; no native mutation is in scope.
+
+- [x] Bind the seven newly source-profile-assessed frozen MBS objects and four
+  outside projections to their exact existing rights, lineage, privacy and v4
+  evidence. Record distinct role and admission gaps without inferring an
+  authorization, admitting an object or running an unapproved consumer. All
+  11 have retained scoped rights and lineage evidence; two August raw aliases
+  have candidate v4 roles at a different revision. Four outside projections
+  retain the footer-adjusted replay and historical-writer limitation.
+- [x] Compare the unassessed PBS schedule objects and projections against
+  retained source-specific privacy metadata and the six separately qualified
+  PBS utilisation objects. Do not propagate an assessment across a different
+  digest, source scope or transformation; do not read unassessed payloads. The
+  1,722 PBS-related and reimbursement candidates include 1,707 schedule B1
+  records with unknown sensitivity; none matches the six screened utilisation
+  objects by both digest and size. Zero new privacy assessments were made.
+- [~] Test and review the bounded value-free packet, then integrate it without
+  adding or publishing data. Stop at genuinely missing evidence or authority;
+  preserve the frozen denominator and independent-recovery gate. The 103
+  focused tests, report regeneration, Ruff, ty, basedpyright and context
+  validator passed on Python 3.15.1; exact-head protected CI remains required.
+- [~] Repair the synthetic installed-consumer readiness-file race exposed by
+  the first PR head's Windows check. The readiness JSON is now published by
+  atomic replacement; 33 consumer tests, the deterministic partial-write
+  regression and a browser-free synthetic service probe pass locally. The
+  full local medallion test stopped before this path because the separate
+  Playwright browser was unavailable. The exact final head still needs the
+  protected Windows and other required checks.
+
+Prior PR #1443 passed 29 reported required checks on head
+`28a52abde16fbdcd112e2bd1b19782bde8bd4c86` and merged as
+`6bcd02a850837ea73acb4b84734754bf0f352199` with identical tree
+`c251f16927bdbeec224893be1816d12cc6f87ed4`. Both post-merge workflows
+`43670986718` and `43670986774` passed; no acquisition workflow ran.
+
+## Existing-object v4, recovery and PBS privacy follow-up — 15 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/australian-v4-privacy-recovery-20261115`, base
+`eba2ecaebd822f0efa8e314d5ca5ab35c8c94efa`. This lane owns the existing-object
+qualification and privacy evidence packet, its focused tests and this handoff.
+Prior assignments remain history; no dataset mutation is in scope.
+
+- [~] Check the 11 MBS identities at their exact archived revisions, bind
+  independently supported v4 contract roles, and test admission prerequisites.
+  Preserve missing receipts, actual producer and reader chronology, and the
+  four outside projections' historical-writer limitation. Exact tree metadata
+  matches eight LFS digests and three historical non-LFS Git blob identities.
+  The read-only hosted exact-digest workflow is prepared but has not yet run;
+  v4 receipt closure and admission remain unestablished.
+- [x] Check retained primary and independent recovery evidence for those exact
+  objects. Do not infer an independent replica from a primary restore or add
+  a copy. The selected prior restores cover another raw dataset and six
+  separate Silver paths, none of these 11 objects; independent recovery remains
+  unestablished and the frozen denominator is unchanged.
+- [~] Assess remaining PBS-related objects against existing source-specific
+  privacy evidence. Keep participant and cohort-derived material private;
+  unknown classifications do not authorize reading unassessed payloads.
+  Of 1,707 schedule files, 311 match official link metadata. Two archive
+  identities share one profiled XML member with 5,163 schema paths. Neither a
+  link nor that member profile clears a whole archive or its values; all 1,722
+  PBS-related or reimbursement objects retain their prior privacy dispositions.
+- [~] Verify and review the bounded packet on Python 3.15.1, then integrate it
+  only after exact-head protected checks; add or publish no datasets. The 117
+  focused tests, report regeneration, Ruff, ty, basedpyright, actionlint and
+  context validator passed locally. Hosted exact-digest execution and its
+  native receipt remain pending until this packet is merged.
+
+PR #1444 passed all 28 configured required contexts on head
+`3594e6c7c9cf9a177d9d7414a0f0cbad2c203431`; squash merge
+`eba2ecaebd822f0efa8e314d5ca5ab35c8c94efa` has matching tree
+`34c86c187eef72f8e6fe70075378ac751d06313a`. Both post-merge workflows
+`43681149885` and `43681149888` passed, and the acquisition workflow did not run.
+
+### Exact-digest workflow entry point
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/australian-v4-hosted-entrypoint-20261115`, base
+`f3e30e31b39213d23aa75d454bafcc5fedfe5372`.
+
+- [~] Correct the hosted command to invoke the qualified module entry point.
+  First run `43686413520` failed during imports before any source read and
+  produced no artifact. Verify the module command and workflow configuration,
+  merge after required CI, then dispatch exactly once on the corrected main.
+- [x] Bind the September 2025 PBS API ZIP's retained 33-member inventory and
+  prior digest to its later frozen identity and acquisition receipt. The
+  member names do not assess fields or values, so privacy remains unassessed.
+
+PR #1445 passed all 28 configured required contexts on head
+`f34f27049728373589a1ee558f53b87af464dbf0`; squash merge
+`f3e30e31b39213d23aa75d454bafcc5fedfe5372` has matching tree
+`cf5274914fece907a289a615cd1ad8c2dbf1cd7f`. The acquisition workflow did not
+run for the PR or merge; the repository's automatic post-merge checks were in
+progress at the first hosted-digest failure.
+
+### Exact hosted digest binding
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/australian-v4-digest-binding-20261115`, base
+`1a63753104b87f0ad929dd977f0c24ae14fe839f`. This lane owns the exact hosted
+receipt binding, affected tests and this handoff; no dataset mutation is in scope.
+
+- [x] Dispatch the corrected exact-main workflow once. Run `43687742836`
+  verified SHA-256 and byte count for all 11 exact MBS identities without
+  persisting or emitting payloads. Artifact `14150709884` passed its native
+  digest, ZIP CRC and exact-member checks; its value-free receipt is retained.
+- [x] Bind all 11 observations as v4 verification evidence candidates with
+  exact run, artifact, receipt and object identities. The binding regenerates
+  deterministically; 124 focused tests, Ruff, ty, basedpyright and the context
+  validator pass on Python 3.15.1.
+- [~] Close the remaining contract receipt roles, trusted admissions and reader
+  canaries only when their exact evidence exists. Independent recovery and the
+  remaining PBS privacy decisions stay open. Preserve the frozen denominator
+  and do not add or publish data.
+
+PR #1446 passed all 28 configured required contexts on head
+`e0611c586a83756033ee635b00a42ecbcccea4f0`; squash merge
+`1a63753104b87f0ad929dd977f0c24ae14fe839f` has matching tree
+`94d5cb322397b214a9be38274df49eba97afd724`. Post-merge Test-Goblin
+`43687693342` and Security and Context `43687693319` passed. The acquisition
+workflow remained active and did not run for the PR or merge.
+
+PR #1447 passed all 28 required contexts on head
+`53b320311c4006f0d5ee9cb0012930015bc3d2da`; squash merge
+`d052c5e087eb8f00220e89e88a36f92ad7dd3d32` has the same tree
+`6a8e775e1d9d1f66a44d66d729117d312ec0623e`. Post-merge Test-Goblin
+`43689047538` and Security and Context `43689047467` passed.
+
+### Frozen MBS raw lineage and replay — 15 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/mbs-frozen-lineage-replay-20261115`, base
+`d052c5e087eb8f00220e89e88a36f92ad7dd3d32`. This lane owns the three frozen
+raw MBS schedule identities, their existing lineage and digest bindings,
+candidate v1/v3 artifacts, affected replay code and tests, and this handoff.
+The user requested lineage, replay, admission and consumer checks using the
+existing archive. No dataset addition or publication is authorized.
+
+- [x] Bind each frozen revision to its historical source, B1/B2 reference,
+  exact observed digest and scoped rights. Preserve the earlier reference
+  revisions and the August alias; do not rewrite acquisition history.
+- [x] Prepared candidate v1 conformance and v3 plans for the three identities,
+  then ran each once on exact main. Runs `43695553608`, `43695688398` and
+  `43695816820` passed; their metadata-only receipts and artifact digests are
+  bound in the replay manifest without claiming admission or recovery.
+- [~] Advance trusted v4 admission and reader checks only where their remaining
+  exact roles are supported. Keep unsupported roles and independent recovery
+  open. Continue PBS privacy work without reading unassessed payloads or
+  exposing participant or cohort-derived material.
+
+PR #1448 passed all 28 required contexts on head
+`5fabc5fcd1fe84d2c9cb442f1e4624bdcb750304`; squash merge
+`0c34250f931bc457193eb59da04e9e20107c6600` has the same tree
+`85c69ed44ca7a94b16528c64135604736522f241`. Codecov patch coverage and the
+full-history security scan passed. The automatic data archive was disabled
+for the PR and merge to prevent acquisition, and no archive run was triggered.
+
+### PBS privacy metadata context — 15 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/pbs-schema-privacy-context-20261115`, started from
+`d052c5e087eb8f00220e89e88a36f92ad7dd3d32` and rebased onto PR #1448's merge.
+This lane owns a bounded PBS
+schema-context report, its tests and this handoff. It uses retained metadata;
+unassessed PBS payloads and participant or cohort-derived material are outside
+the read scope. No dataset addition or publication is authorized.
+
+- [x] Reconcile the already recorded April 2026 member schema paths to their
+  structural contexts and the exact existing archive aliases. Preserve the
+  distinction between schema labels, source values and privacy decisions.
+- [~] Validate and integrate the metadata-only result after protected checks.
+  Keep the wider PBS archive and any unassessed payload blocked; do not infer a
+  privacy clearance from absent lexical markers or a public URL.
+
+### Frozen MBS replay receipt binding — 15 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/mbs-frozen-replay-receipts-20261115`, base
+`0c34250f931bc457193eb59da04e9e20107c6600`. This lane owns the three hosted
+value-free replay receipts, their native artifact bindings, focused tests and
+this handoff. It does not add or publish dataset objects.
+
+- [x] Bind each exact-main replay run, job, artifact digest, receipt and
+  registration to its corresponding frozen plan. Verify no source payloads or
+  participant or cohort-derived data were retained or emitted.
+- [~] Preserve the separate v4 contract, admission, consumer and independent
+  recovery gates; merge only after the exact-head protected checks pass.
+- [~] Prepare a bounded exact-revision primary restore into memory for the
+  same three assessed objects. Verify digest, size and buffer closure and
+  retain metadata only. A primary read does not establish an independent copy.
+
+PBS metadata PR #1449 passed required checks including Codecov on head
+`31faa2521676d61f6c5075bac4db0814c08f6a06`; merge
+`e644c8804980df92ad85e594eaf534c60d71d5dd` retained the tested tree
+`9fb03dc3d4bfdc8e3c11b4a369daacdced9d4c79`. No PBS payload was cleared.
+
+### Frozen MBS primary restore reconciliation — 15 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/mbs-frozen-primary-history-20261115`. This lane owns only
+public workflow and inventory metadata, exact primary-restore receipts,
+focused tests and this handoff. It adds or publishes no dataset.
+
+- [x] Reconcile historical run `36532129354` to all seven frozen exact
+  objects, preserving the prior publication and acquisition chronology. The
+  four outside projections do not match this receipt's exact scope.
+- [x] Verify new run `43697888963` and its metadata artifact for the same three
+  raw objects. It reconstructs only the primary in memory and retains no
+  source payload files or values. Independent recovery remains open.
+- [~] Preserve the separate v4 admission, consumer and independent-replica
+  gates; integrate after the exact-head checks pass.
+
+### Frozen July MBS v4 admission and reader check — 15 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/mbs-july-frozen-v4-check-20261115`. This lane owns only the
+existing July raw object's v4 candidate, bounded admission and reader workflow,
+focused tests and this handoff. No dataset mutation is authorized.
+
+- [x] Bind the July exact identity, previously assessed non-sensitive source,
+  scoped rights and existing source profile to its immutable v4 role evidence.
+  The metadata-only local closure verified 13 roles at 10 distinct locations
+  and the independently configured candidate admission passed locally.
+- [x] Run the guarded exact-main workflow and verify its value-free artifact.
+  Run `43699976886` passed trusted admission and the remote reader against the
+  approved frozen revision; its 13 receipt roles and cache cleanup were checked.
+- [~] Keep August and projection contracts, independent recovery and overall
+  federation acceptance separate and open until their own evidence is qualified.
+
+### Frozen July MBS hosted admission ledger — 15 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/mbs-july-frozen-v4-ledger-20261115`. This lane owns the hosted
+metadata receipt, exact-member delivery reconciliation, focused tests and
+this handoff. No dataset mutation is authorized.
+
+- [x] Verify native artifact digest, ZIP CRC, exact member, v4 closure, trusted
+  admission, remote reader digest and zero cache after close.
+- [x] Confirm the approved frozen dataset revision is `243f9ff5498816af6e4d9ae4db60528728f01834`;
+  the later `40891976f77ee5e7688edceed25c9ac98a77547e` is a separate
+  reconciliation revision. The approved membership key is dataset plus path.
+- [~] Integrate the 15-admitted, 15-reader, 1,744-deferred ledger only after
+  required exact-head CI. Preserve independent recovery and broader federation
+  acceptance as open.
+
+The first ledger PR head triggered an unintended automatic archive run after
+the workflow was restored. Run `43700614570` was cancelled after its retrieval
+step started; per-file retrieval cannot be determined from its log. Packaged
+archive and Hugging Face uploads were skipped, and its synthetic-fixture CI
+artifact was removed. Its first unit lane also exposed a stale 14/1,745
+acceptance-note assertion; the updated 15/1,744 assertion passes locally. Hold
+the archive workflow disabled until the next head's CI events are observed,
+then restore it and check for unintended runs.
+
+### No-acquisition CI guard — 15 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/archive-ci-no-acquisition-20261115`. This lane owns the
+data-layer archive workflow guard, focused tests and this handoff. It does not
+acquire or publish datasets.
+
+- [x] Require a manual event and an explicit, default-off acquisition input for
+  the live retrieval job. Preserve the separate publication condition.
+- [x] Keep the synthetic Bronze exercise and checksum on PR and main events,
+  but restrict its artifact upload to manual events. Focused structural
+  checks and actionlint pass.
+- [x] Temporarily guard the old default workflow while integrating this change.
+  PR #1454 and both post-merge workflows passed; no archive run was triggered
+  for the PR head or merge. The workflow was restored active.
+- [~] Verify an automatic PR or push run skips the live job and fixture upload
+  when a subsequent substantive change triggers it; do not dispatch it.
+
+### August frozen MBS profiles and PBS member triage — 15 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/mbs-august-v4-profiles-20261115`. This lane owns only the two
+August raw profiles, their bounded reader workflow and tests, PBS metadata-only
+triage, and this handoff. No data acquisition or publication is authorized.
+
+- [x] Validate two distinct frozen-path v4 candidates and close 14 receipt
+  roles per object in local offline trusted-profile admission. Preserve the
+  July–August comparison scope and the unresolved field semantics.
+- [x] Check exact consumer bindings and local refusal of live raw reads; the
+  protected hosted remote-reader canaries have not yet run.
+- [x] Reconcile the 1,722 unassessed PBS/reimbursement paths and triage the 33
+  recorded API member names without reading unassessed bytes or clearing any
+  privacy disposition.
+- [~] Integrate and run the exact-main hosted reader workflow after Git storage
+  returns. `/Volumes/PortableSSD` is not currently detected, so the worktree's
+  shared Git directory is unavailable; preserve these owned local edits.
+
+### Storage recovery handoff — 15 November 2026
+
+The same chat remains the sole integrator. A separate temporary **Git clone**,
+not an app-managed worktree, is at
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas/build/no-data-recovery-repo`,
+branch `codex/mbs-august-pbs-no-data-recovery-20261115`, based on main merge
+`9839417e3b61ecbe521a035341ddc6dda4c9aaa0`. The managed-worktree attempt could
+not resolve the disconnected Git store. Only the explicitly owned source,
+tests, metadata reports and handoff were copied, with byte comparisons; the
+original worktree was preserved. This clone owns the next PR and hosted check.
+When storage returns, reconcile the original owned changes against the merged
+commit before cleaning either checkout. No native dataset object is owned or
+mutated by this lane.
+
+PR #1455's first head exposed two unassigned test files in the shared test
+inventory. Their cases were moved into the already registered MBS and PBS test
+files, preserving the separate workstream's ownership of `scripts/test_goblin.py`.
+The corrected local inventory and 35 focused cases pass; final-head hosted
+checks remain required.
+
+### August frozen MBS hosted ledger — 15 November 2026
+
+The same chat owns the temporary recovery clone at
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas/build/no-data-recovery-repo`,
+branch `codex/mbs-august-frozen-v4-ledger-20261115`. It owns the hosted
+metadata receipt, frozen-ledger reconciliation, focused tests and this
+handoff. No dataset mutation is authorized.
+
+- [x] Merge PR #1455 after all exact-head required checks pass. Its post-merge
+  Test-Goblin and Security and Context workflows pass. The automatic archive
+  workflow ran only the synthetic checks and skipped both live retrieval and
+  the synthetic artifact upload.
+- [x] Verify run `43705630353`: the native artifact digest, ZIP CRC and exact
+  metadata member match; both distinct paths pass independently configured
+  admission and remote reader checks with an empty cache after close.
+- [~] Integrate the 17-admitted, 17-reader, 1,742-deferred frozen ledger after
+  its final-head checks. Preserve the separate projection, independent recovery
+  and federation acceptance gates.
+
+### August projection field lineage and delivery — 15 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/mbs-august-projection-lineage-20261115`. This lane owns only
+the eight already-archived August MBS projection identities, their retained
+lineage and v4 evidence, bounded consumer checks, PBS privacy metadata, tests
+and this handoff. It acquires and publishes no dataset and must not read
+unassessed PBS, participant or cohort-derived payloads.
+
+- [x] Bind each exact projection and producer code to source-native field
+  lineage; preserve frozen versus outside-frozen revisions and the adjusted
+  writer limitation of the later four projections.
+- [~] Check product-specific admission and consumers only where all existing
+  prerequisites are met. The two `f9f9` outputs retain their separately
+  recorded independent-replica prerequisite; do not waive it.
+- [~] Continue PBS privacy assessments using retained metadata; keep unknown
+  objects blocked when source-specific evidence remains insufficient.
+- [x] Merge the field-lineage changes in PR #1457 after focused and protected
+  checks. Its automatic CI also read existing public MBS payloads, as recorded
+  in the later live-check correction; no participant or cohort data was read.
+
+### August projection replay and PBS acquisition metadata — 15 November 2026
+
+The same chat continues in branch `codex/mbs-august-projection-v4-20261115`
+in the worktree above. It owns only retrospective source metadata, projection
+registration plans, scoped admission and consumer checks, PBS privacy metadata,
+their tests and this handoff. The existing parallel publication-workflow lane
+retains its own files and checkout.
+
+- [x] Reconstruct two missing source-event and external-reference pairs from
+  retained receipts, preserving the later reconstruction chronology.
+- [x] Replay all eight exact projection registrations twice using metadata;
+  retain the four later outputs' writer-footer qualification and the two
+  `f9f9` independent-replica prerequisites.
+- [x] Join the unassessed PBS paths to the 1,702 retained acquisition events;
+  preserve all unknown privacy dispositions and the 19 unmatched paths.
+- [~] Prepare and check v4 admissions and consumers only where their exact
+  prerequisites can be closed. Metadata replay is not an admission or reader.
+- [x] Merge the metadata replay and PBS assessment in PR #1458 after focused
+  and protected checks. The later bounded public-MBS read had separate approval.
+
+### Projection offline consumer preflight — 16 November 2026
+
+The same chat owns the scoped consumer-preflight source and tests in the
+worktree above. The PortableSSD holding its shared Git directory was unavailable
+during the preflight and was reconnected before integration.
+
+- [x] Exercise synthetic v4-shape and consumer-identity probes for all eight
+  projection paths. Verify that each reader rejects an unadmitted probe before
+  network access. These are not production contracts, receipt closures or
+  payload canaries.
+- [~] Complete exact production admission and consumer evidence only when the
+  missing roles and the current no-acquisition boundary permit it. The `f9f9`
+  independent-replica prerequisites remain unchanged.
+- [x] Integrate the replay, PBS metadata and synthetic consumer preflight in
+  PR #1458 after Git storage returned, without changing any dataset.
+
+### Automatic live-check correction — 16 November 2026
+
+The #1457 PR and post-merge Test-Goblin runs executed the existing public MBS
+Parquet and six-table parity fetches. The first #1458 test run was cancelled
+before those steps. This was a missed automatic acquisition route; its source
+was previously public MBS data, with no participant or cohort data involved.
+The same integrator owns the Test-Goblin workflow guard and its focused test.
+
+- [x] Add a fail-closed guard requiring explicit manual-dispatch authorization
+  before either public MBS payload check. Automatic runs fail that live
+  job instead of silently skipping or claiming it passed.
+- [x] Merge the guard in PR #1458. Its live job is not among the configured
+  required branch-protection contexts, so its failure alone does not block a
+  merge. The separately authorized run `43772565576` passed both existing
+  public-MBS checks; that authorization does not cover further payload reads.
+- [x] Remove duplicate serialized replay plans from the PR history after the
+  secret scanner flagged their deterministic hashes. Preserve in-memory v3
+  schema validation and do not add a scanner exception.
+
+### Manual CI failures and MBS guard readback — 16 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/ci-hudi-regeneration-20261116`. This lane owns the OpenAPI
+baseline and synthetic Hudi experiment fixes, their focused tests, and this
+handoff. The parallel bulk-publication lane retains its own checkout and files.
+No dataset acquisition, publication, participant data or cohort data is in scope.
+
+- [x] Fix the manually dispatched regeneration and synthetic Hudi failures from
+  run `43772565576` without weakening their behavioral gates. The subsequent
+  Hudi schema failure and its correction remain in the evidence log.
+- [x] Verify regeneration and real synthetic Hudi execution in manual run
+  `43776510954` with public MBS acquisition disabled; merge PR #1459 after all
+  configured required checks passed. Its post-merge Test-Goblin run passed 28
+  jobs, skipped the manual-only Hudi job and failed the guarded MBS job before
+  either payload step. Security and Context and the data-layer archive passed.
+- [x] Reconcile the earlier description of the MBS job with the observed
+  branch-protection configuration and the separately authorized bounded run.
+  That job is not a required context, despite the earlier description; its
+  two checks passed in the authorized run, whose other two jobs failed.
+
+### Federation status and evidence reconciliation — 16 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/australian-status-reconciliation-20261116`. This lane owns the
+current federation summary, scheduling metadata, Stable contract evidence
+links and their focused validation. The parallel bulk-publication lane retains
+its own checkout and files. No dataset acquisition or publication, payload
+read, participant or cohort-derived data access, rights change, or gate waiver
+is in scope.
+
+- [x] Reconcile current M-105 and M-113 dispositions, the M-106–M-112 blocked
+  states, the 17-object raw-v4 ledger and the latest metadata-only evidence.
+- [x] Preserve the historical October readiness and November software-release
+  approval bytes while making their chronology clear in current summaries.
+- [x] Refresh the hash-bound project overview for 16 November, distinguish the
+  federation gate and Stable qualification from the released software scope,
+  and preserve the separately approved Hub publication packet unchanged.
+- [~] The affected 225 contract, context, federation and release-authority
+  tests pass locally; validate the final patch and integrate after required
+  hosted checks. The public-MBS no-read guard remains unchanged.

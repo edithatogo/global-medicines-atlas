@@ -1,0 +1,75 @@
+name: Bulk archive publication
+
+on:
+  workflow_dispatch:
+    inputs:
+      batch:
+        description: Committed source-batch directory name
+        required: true
+        type: string
+      archive_root:
+        description: Absolute path of the completed archive on the runner
+        required: true
+        type: string
+      publish:
+        description: Upload the prepared archive to Hugging Face
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bulk-archive-${{ inputs.batch }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish ${{ inputs.batch }}
+    # Dedicated label; every other job in this repository targets ubuntu-24.04.
+    # The archive lives on one workstation's disk, so this job needs that
+    # machine's runner. Match on the explicit label alone so a platform-label
+    # spelling difference cannot silently leave the job queued forever.
+    runs-on: gma-archive
+    timeout-minutes: 2880
+    steps:
+      - name: Check out the dispatched commit
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.13.6"
+          enable-cache: true
+      - name: Synchronize Python 3.15 environment
+        run: uv sync --python 3.15.1 --locked
+      - name: Prepare and publish the approved archive
+        env:
+          BATCH: ${{ inputs.batch }}
+          ARCHIVE_ROOT: ${{ inputs.archive_root }}
+          PUBLISH_REQUESTED: ${{ inputs.publish }}
+          GMA_MAINTAINER_PUBLICATION_APPROVED: ${{ inputs.publish && 'yes-i-approve-publication' || 'unset' }}
+          GMA_PUBLICATION_ENVIRONMENT: ${{ inputs.publish && 'production' || 'unset' }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          set -euo pipefail
+          args=(
+            --manifest "quality/source-batches/${BATCH}/manifest.json"
+            --archive-root "${ARCHIVE_ROOT}"
+            --output build/bulk-publication
+            --exact-commit "${GITHUB_SHA}"
+          )
+          if [ "${PUBLISH_REQUESTED}" = "true" ]; then
+            args+=(--publish)
+          fi
+          uv run --python 3.15.1 --with huggingface-hub==0.34.4 \
+            python scripts/publish_bulk_archive.py "${args[@]}"
+      - name: Upload publication receipts
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: bulk-publication-${{ inputs.batch }}
+          path: build/bulk-publication
+          if-no-files-found: warn
+          retention-days: 90

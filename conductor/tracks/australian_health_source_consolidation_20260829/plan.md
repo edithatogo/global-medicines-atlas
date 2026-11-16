@@ -1435,6 +1435,26 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   authorized Health.gov workbook families and the remaining historical
   denominator. Neither status closes or expands no-new-sources semantic work.
 
+## M-105 chronology amendment review (2026-11-15)
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/australian-federation-evidence-20261115`, base
+`036fd0f998fb3feb8722cff347b4179228b8a21f`. Review the exact post-archive
+donor dossier, previous narrow waiver and later blocked disposition; prepare
+an evidence-bound decision without changing the current gate or fabricating
+pre-archive proof. Participant and cohort-derived data remain private.
+
+- [x] Verify the retained 54 baseline and 10 changed-path dispositions,
+  archive receipts and current donor repository metadata.
+- [x] Present the narrow chronology choice and its trade-offs. The maintainer
+  approved the exception and M-105 acceptance subject to the exact dossier
+  checks, recorded in D-006-14 and a new bound current disposition. D-006-12
+  and the actual historical sequence remain preserved.
+- [x] Reconcile M-105 to verified after the existing dossier and negative
+  controls pass; keep M-106–M-112 and full federation blocked. Protected PR
+  checks and integration remain pending.
+
 ## System completion execution focus (2026-10-25)
 
 Select the next task through the [system completion charter](../../system-completion.md)
@@ -1555,3 +1575,26 @@ Owner, native scope and stop condition: [remaining archive work](../../../docs/q
 - [ ] Remove verified owned temporary copies and restore disabled workflow state.
 
 Owner and native scope: remaining-public-archives qualification report.
+
+### Existing schedule-source privacy check — 15 November 2026
+
+- [x] Bind the two existing August MBS source classifications to the exact
+  schedule XML named by the two products and four outside-inventory outputs.
+- [x] Bind the reproduced PBS Silver candidate to its existing source archive
+  and imported acquisition record, which still records privacy as unknown.
+- [~] Qualify privacy and admission for each derived output separately. The
+  source classifications, public location and existing rights attestations do
+  not themselves establish output privacy, consumer permission or federation.
+
+The [value-free metadata report](../../../quality/qualifications/australian-schedule-source-privacy-check-20261115.json)
+records the exact identities and limits. No source payload, participant data or
+cohort-derived data was inspected or published for this check.
+
+- [x] Recheck the six previously admitted July 2025 MBS schedule tables with
+  fresh short-lived contracts in [hosted run 43651971792](https://github.com/edithatogo/global-medicines-atlas/actions/runs/43651971792).
+  The six remote digest reads and 24 API, CLI, Atlas and JSONL export checks
+  passed; browser qualification was not performed. The
+  [value-free receipt manifest](../../../quality/qualifications/australian-mbs-silver-consumer-recheck-20261115/hosted-43651971792/artifact-manifest.json)
+  binds the exact main commit and retained metadata. The previously expired
+  local attempt remains recorded; no new unique admission or dataset
+  publication resulted.

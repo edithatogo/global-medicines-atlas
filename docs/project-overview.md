@@ -30,19 +30,25 @@ Approval, funding, formulary and terminology assertions stay independent.
 | Measure | Complete | Denominator | Proportion |
 |---|---:|---:|---:|
 | Closed delivery tracks | 14 | 20 | 70% |
-| Verified tracked Stable v1 requirements | 84 | 92 | 91.3% |
+| Verified tracked Stable v1 requirements | 85 | 92 | 92.4% |
 <!-- gma-progress:end -->
 
 These are **unweighted counts**, not estimates of effort, source-population
 coverage or release readiness. An in-progress track receives no partial credit.
 Closing a software track can transfer an external follow-up to an open issue;
 therefore track closure does not imply every external gate is met. The
-[release reconciliation](../quality/qualifications/stable-v1-release-readiness-reconciliation.json)
-still blocks Stable v1 on Australian federation and records independent recovery
-authority separately. The [roadmap](../conductor/roadmap.md) retains the full scope.
+[28 October readiness snapshot](../quality/qualifications/stable-v1-release-readiness-reconciliation.json)
+is retained as a historical input to the later software-only release approval.
+Software-only v1.0.0 was released; the [current federation register](qualification/australian-health-federation-acceptance.md)
+records M-105 accepted under a narrow chronology exception, M-113 verified,
+and M-106 through M-112 still blocked. Independent recovery remains separate.
+The [roadmap](../conductor/roadmap.md) retains the full scope.
 
-The [snapshot](project-status.json) binds the two input digests. Regenerate or
-check the diagrams using the governed interpreter:
+The [snapshot](project-status.json) binds the two input digests. Its legacy
+`stable_release_state` field reports the Stable qualification state, not the
+status of the scoped software release; `stable_qualification_state` names the
+same value explicitly. Regenerate or check the diagrams using the governed
+interpreter:
 
 ```sh
 uv run --python 3.15.1 python scripts/render_project_overview.py

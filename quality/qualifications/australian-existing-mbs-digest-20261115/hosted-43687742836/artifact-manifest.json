@@ -1,0 +1,33 @@
+{
+  "artifact": {
+    "expires_at": "2027-02-13T06:57:18Z",
+    "id": 14150709884,
+    "name": "australian-existing-mbs-exact-digest-43687742836-1",
+    "sha256": "050686e57bcee70b2fa9017ce40c690405dfe9119669ed5395f6a23fc1125119",
+    "size_bytes": 1400
+  },
+  "report": {
+    "path": "digest-receipt.json",
+    "sha256": "bbfd25983a89d7aba244a71bd2372b6c23f7d05cc2065a3506bf49e618f08191",
+    "size_bytes": 4533
+  },
+  "schema_id": "global-medicines-atlas.australian-existing-mbs-digest-artifact",
+  "schema_version": 1,
+  "validation": {
+    "artifact_sha256_verified": true,
+    "dataset_publication": false,
+    "exact_metadata_member_set": true,
+    "hosted_workflow_conclusion": "success",
+    "new_admissions": 0,
+    "source_values_included": false,
+    "zip_crc_verified": true
+  },
+  "workflow": {
+    "event": "workflow_dispatch",
+    "head_sha": "1a63753104b87f0ad929dd977f0c24ae14fe839f",
+    "job_id": 132731666837,
+    "run_attempt": 1,
+    "run_id": 43687742836,
+    "url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/43687742836"
+  }
+}

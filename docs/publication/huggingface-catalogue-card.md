@@ -47,12 +47,24 @@ current global coverage or production acceptance. Related approved archives:
 and [historical NZULM 2023](https://huggingface.co/datasets/edithatogo/nzulm-2023-source-archive).
 Their own editions, receipts, source terms and licence exclusions govern use.
 
+## Australian MBS and PBS archives
+
+The public Australian inventory was reconciled on 13 November 2026.
+All 1,759 frozen objects matched their approved archive identities.
+The September 2025 PBS schedule API ZIP contains 33 CSVs. Historical MBS
+demographics source ZIPs start in 1993. PBS utilisation includes the 1991–2008
+ATC2 teaching CSV and the May 2002–January 2015 AIHW historical workbook.
+
+[Pinned revisions, the September ZIP and its 33 member names, and qualification status](https://github.com/edithatogo/global-medicines-atlas/blob/main/docs/qualification/australian-public-archive-reconciliation-20261113.md) ·
+[MBS utilisation archive](https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive) ·
+[PBS utilisation archive](https://huggingface.co/datasets/edithatogo/australian-pbs-utilisation-archive)
+
 <!-- gma-progress:start -->
-## Roadmap snapshot — 3 November 2026
+## Roadmap snapshot — 16 November 2026
 
 ![Roadmap ledger completion](https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue/resolve/main/assets/roadmap.svg)
 
-**14/20 delivery tracks closed (70%); 84/92 tracked Stable v1 requirements verified (91.3%).** Measured on 3 November 2026. 6 tracks and 8 requirements remain open.
+**14/20 delivery tracks closed (70%); 85/92 tracked Stable v1 requirements verified (92.4%).** Measured on 16 November 2026. 6 tracks and 7 requirements remain open.
 
 These are separate, unweighted ledger counts, not worldwide source coverage, effort or release readiness. A single mandatory gate can block release.
 

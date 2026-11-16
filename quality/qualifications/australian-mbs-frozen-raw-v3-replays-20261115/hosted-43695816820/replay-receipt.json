@@ -1,0 +1,57 @@
+{
+  "boundaries": {
+    "m112_consumer_canary_performed": false,
+    "public_dataset_mutation": false,
+    "source_values_or_rows_included": false,
+    "v4_admission_performed": false
+  },
+  "candidate_only": true,
+  "hosted_workflow": {
+    "commit": "0c34250f931bc457193eb59da04e9e20107c6600",
+    "repository": "edithatogo/global-medicines-atlas",
+    "run_attempt": 1,
+    "run_id": 43695816820,
+    "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/43695816820"
+  },
+  "replay": {
+    "partition_id": "b1cb568e5cbacd87c4492a30316cdcd03949a991aaf29cee9acf0727791877bc",
+    "plan_sha256": "34f2994843af52841926dd76daa226748db7738d8e65e6af1f92938193886d64",
+    "registration": {
+      "archive_period": "filename-derived:MBS-XML-20260801.XML",
+      "byte_count": 8293331,
+      "idempotency_key": "f8c1d5f30006fb10d9d2eed6aeffdd349affe852961f6c2e408af26a406d6f77",
+      "logical_asset_id": "5e12cc147bc64b44ae0b105be3fdbefde05d6f8042d0aae0c4d683d831379789",
+      "metadata_sha256": "f4d2889f99e418f4c451b3c0df83d121bb71418f3c859a0ac40fbf5d097e3742",
+      "operation": "append_only_idempotent_raw_b2_registration",
+      "partition_id": "b1cb568e5cbacd87c4492a30316cdcd03949a991aaf29cee9acf0727791877bc",
+      "payload_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+      "payload_values_read": false,
+      "rights_state": "existing_exact_source_release_authorization",
+      "schema_version": "m112-raw-b2-replay-registration-v1",
+      "snapshot_id": "d392755b41d745c4cc8c06158ec79801eaf9c1171eeee7d6b883200e240e884d",
+      "source_id": "au-mbs",
+      "source_version_id": "2026-08-01"
+    },
+    "registration_sha256": "0fdfab87323c8c7589fd62e04921256919c42a5588a933465d017f758534e3f0",
+    "snapshot_id": "d392755b41d745c4cc8c06158ec79801eaf9c1171eeee7d6b883200e240e884d",
+    "vocabulary_version": "3.0.0"
+  },
+  "schema_id": "global-medicines-atlas.m112-v3-replay-execution-receipt",
+  "schema_version": 1,
+  "scope": {
+    "byte_count": 8293331,
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "path": "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
+    "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+    "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+  },
+  "status": "passed",
+  "verification": {
+    "anonymous": true,
+    "digest_method": "bounded_anonymous_stream",
+    "payload_storage": "never_materialized",
+    "payload_values_read": false,
+    "temporary_source_bytes_removed": true,
+    "token_free": true
+  }
+}

@@ -1379,3 +1379,116 @@ PR body was removed and GitHub's automatic issue closure reversed.
 Do not replace Python 3.15.1 with ZeroGPU's older supported runtimes. Free tier
 sleep/quota limits remain explicit. Production temporal data and original #61
 acceptance stay incomplete; no broader federation or Stable release.
+
+## Soup Sieve security-update evidence — 13 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, managed worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/soupsieve-security-evidence`, based on Renovate PR #1427.
+Scope is the existing Soup Sieve lock update, active lock export, affected
+current evidence bindings, focused validation and protected integration.
+The prior experiment outcomes and dated receipts remain historical evidence.
+Native scope is the repository and its existing CI. The isolated Python
+3.15.1 checks and locked third-party audit passed. Next operation is the
+companion pull request and protected CI. Codecov pull-request comments are
+disabled to enforce the existing outbound-message prohibition; coverage
+uploads, status checks and thresholds remain unchanged.
+
+## OpenTelemetry security maintenance — 14 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, managed worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/opentelemetry-security`, based on main `f5897746a346`.
+Native scope is this repository and its existing CI. Next operation is a
+scoped technical pull request and protected integration.
+
+- [x] Resolve Dependabot alert #17 and the main dependency-audit failure for
+  OpenTelemetry API 1.45.1. Carry the patched 1.45.2 update from PR #1431,
+  regenerate the PEP 751 export and current lock-bound metadata, preserve prior
+  experiment results and dated receipts, run focused tests and the security
+  audit, and integrate only after protected checks pass. Do not change the
+  federation, source, release, privacy, or outbound-message boundaries.
+
+Local qualification: Python 3.15.1 and uv 0.13.6; the two failing PR checks were
+reproduced before the lock-bound metadata was refreshed. The 71 affected tests,
+674 outbound-message policy tests, strict audit of all 138 third-party locked
+versions, lock/export reproducibility, context, receipt, and Ruff checks pass.
+The prior experiment outcomes and dated evidence remain unchanged. PR #1433
+passed its protected checks and merged as `99c8dbbbeeccd1e343f46ba56bcdad1557fbd89f`;
+main security run `43568425430` and Test-Goblin run `43568425485` passed.
+Dependabot alert #17 is fixed.
+
+## Scoped software-only v1.0.0 release — 14 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, managed worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/scoped-software-v1`, based on main `99c8dbbbeecc`.
+Native scope is this repository, its protected release workflow, and the exact
+software-only GitHub release. No data acquisition or data publication is in
+scope. The scoped authority and fail-closed validation retain the original
+federation gate and its blocked requirements as unfinished. Next operation:
+submit this packet for protected checks, then qualify the exact release through
+the hosted workflow if those checks pass.
+
+- [x] Qualify and publish software-only `v1.0.0` using existing data and
+  representative fixtures. Defer M-105 through M-112 from this release without
+  marking them passed; retain all source, rights, privacy, security, protected
+  CI, exact-artifact and release-attestation boundaries. Make the release
+  limitations visible to users. Verify the tag, assets, attestations, and clean
+  consumers before claiming the release complete.
+
+PR #1434 passed all 28 required contexts at head
+`75720929cc7af307cbd02831f80843ce4b2f179f` and merged as
+`946757ccdf5b21130811233f285807f5307ea209`, tree
+`3629d39e100a9a42870a17533c66c42bd47ae4d4`. Main security run `43601729105`
+and Test-Goblin run `43601729089` passed. Protected release run `43601848829`
+reproduced the exact wheel and source distribution, passed both clean consumers,
+and created the attested release. All seven release-asset digests, anonymous
+software downloads and distribution attestations were verified. The unrelated
+public-data archive check was cancelled before upload and its workflow restored;
+no source data or dataset was added by the release. M-105 through M-112 remain
+blocked under the unchanged full-federation contract.
+
+## Existing-archive federation qualification — 15 November 2026
+
+The maintainer requested a bounded federation increment using existing data:
+reconcile archive notes, qualify the already-public annual Medicare workbook,
+and batch existing federation-evidence and consumer tests. This is a scoped
+resumption, not approval to add sources, publish datasets or derived outputs,
+change rights, accept deferred requirements, access individual participant or
+cohort-derived data, or contact a third party.
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, managed worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/federation-existing-archive-20261115`, based on main
+`946757ccdf5b21130811233f285807f5307ea209`. Scope is source-consolidation,
+M-106 qualification, federation role and consumer evidence, associated focused
+tests, and this shared coordination record. Native scope is read-only access to
+the existing public archive and previously verified receipts. No shared
+authentication or other native writer is assigned. The exact workbook and
+existing archive metadata have been checked without exporting patient values;
+the next operation is protected PR validation, then merge if the required
+checks pass.
+
+- [x] Record the exact annual workbook's source-native public aggregate fields,
+  period/shape evidence and unresolved patient-count semantics, without storing
+  its bytes or values in Git.
+- [x] Reconcile current archive and federation notes against the November public
+  archive receipts, retaining each historical report and all original blockers.
+- [x] Batch focused existing federation role, admission and consumer tests; bind
+  passing evidence to its actual scope and leave unsupported requirements open.
+
+The [bounded reconciliation](../../../docs/qualification/australian-federation-existing-archive-20261115.md)
+binds both archive revisions and their receipts while preserving the 13 November
+frozen-inventory scan as historical evidence. The workbook's 2,202 classified
+aggregate rows cover native financial-year labels 2009–10 through 2025–26; its
+definition and value shapes do not establish cross-group deduplication,
+suppression or item-level patient counts. The 357 selected local tests passed.
+Read-only hosted run [43608538996](https://github.com/edithatogo/global-medicines-atlas/actions/runs/43608538996)
+qualified all six existing July 2025 MBS Silver tables against their source
+replay at base main `946757ccdf5b21130811233f285807f5307ea209`; its
+[value-free reports](../../../quality/qualifications/shared-mbs-silver-delivery-20261115-43608538996/qualification.json)
+retain the six role hashes, in-memory cache eviction and primary-object restore.
+The run did not perform a new admission or publication, and its primary restore
+is not an independent-backup recovery rehearsal. Hosted PR CI and merge remain
+pending; none is an M-105 through M-112 acceptance decision.

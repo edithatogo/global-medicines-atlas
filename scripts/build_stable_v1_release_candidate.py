@@ -972,8 +972,8 @@ def build_candidate(root: Path, stage: Path, receipt_path: Path) -> str:
         limitations=(
             "This local candidate is unsigned and has no provenance attestation.",
             "No maintainer licence or stable-release approval is inferred.",
-            "No version-control tag or hosted release has been created.",
-            "The candidate has not been uploaded or published to any external service.",
+            "This candidate build does not create a version-control tag or hosted release.",
+            "This candidate build does not upload or publish its output.",
         ),
     )
     receipt_path.parent.mkdir(parents=True, exist_ok=True)

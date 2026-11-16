@@ -4,7 +4,7 @@
 [![Security and Context](https://github.com/edithatogo/global-medicines-atlas/actions/workflows/security-context.yml/badge.svg?branch=main)](https://github.com/edithatogo/global-medicines-atlas/actions/workflows/security-context.yml)
 [![Codecov](https://codecov.io/gh/edithatogo/global-medicines-atlas/branch/main/graph/badge.svg)](https://app.codecov.io/gh/edithatogo/global-medicines-atlas)
 [![Public data](https://img.shields.io/badge/Hugging_Face-public_archives-FFD21E?logo=huggingface)](https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21734811.svg)](https://doi.org/10.5281/zenodo.21734811)
+[![Prerelease archive DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21734811.svg)](https://doi.org/10.5281/zenodo.21734811)
 [![Python 3.15](https://img.shields.io/badge/Python-3.15-3776AB?logo=python&logoColor=white)](https://www.python.org/downloads/)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-D22128.svg)](LICENSE)
 
@@ -16,10 +16,10 @@ The project keeps those dimensions independent. A terminology match, product
 listing, price, or formulary entry is never treated as regulatory approval
 without source-specific evidence.
 
-> **Status · 3 November 2026:** hardened research software candidate with
-> public, revision-pinned source archives. Live global coverage, a production
-> service and Stable v1 acceptance remain open. The published `v1.0.0rc1` is a
-> historical prerelease, not approval of the current candidate or data estate.
+> **v1.0.0 scope · 14 November 2026:** research software using existing,
+> revision-pinned public archives. Australian federation requirements M-105
+> through M-112, complete historical coverage and a production service remain
+> unqualified. The `v1.0.0rc1` Zenodo DOI identifies that earlier prerelease.
 
 [Use the software](#use-the-atlas) ·
 [Browse public data](https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue) ·
@@ -35,7 +35,7 @@ without source-specific evidence.
 | MBS/PBS typed and linked evidence | Selected MBS cohort qualified; broader semantics and derived delivery incomplete |
 | Testing and hardening | Protected CI, mutation/performance tests, CodeQL, dependency audit, SBOM and coverage gates |
 | Production API/Atlas and current global coverage | External qualification required; no hosted service claimed |
-| Stable v1 | Blocked by remaining federation and release acceptance |
+| Software v1.0.0 | Scoped software release; Australian federation remains incomplete |
 
 ## Medallion architecture
 
@@ -53,7 +53,7 @@ See the [current architecture and progress](docs/project-overview.md).
 <!-- gma-progress:start -->
 ![Roadmap ledger completion](docs/assets/roadmap.svg)
 
-**14/20 delivery tracks closed (70%); 84/92 tracked Stable v1 requirements verified (91.3%).** Measured on 3 November 2026. 6 tracks and 8 requirements remain open.
+**14/20 delivery tracks closed (70%); 85/92 tracked Stable v1 requirements verified (92.4%).** Measured on 16 November 2026. 6 tracks and 7 requirements remain open.
 
 These are separate, unweighted ledger counts, not worldwide source coverage, effort or release readiness. A single mandatory gate can block release.
 
@@ -72,6 +72,10 @@ Selected linked archives include:
 | [Australian MBS](https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive) | Service benefits, source editions and selected qualified Silver tables |
 | [Australian PBS](https://huggingface.co/datasets/edithatogo/australian-pbs-source-archive) | Funding/formulary source archive and published projections |
 | [Historical NZULM 2023](https://huggingface.co/datasets/edithatogo/nzulm-2023-source-archive) | 102 permitted historical members; licence exclusions retained |
+
+The [Australian MBS and PBS archive reconciliation](docs/qualification/australian-public-archive-reconciliation-20261113.md)
+links exact archive revisions, the September 2025 PBS schedule ZIP and its 33
+CSV members, and public utilisation files including MBS demographics from 1993.
 
 Pin a full revision and verify the object digest before use. Publication and
 byte verification do not establish semantic qualification, v4 admission,

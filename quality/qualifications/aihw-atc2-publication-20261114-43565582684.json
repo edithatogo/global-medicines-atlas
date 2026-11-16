@@ -1,0 +1,24 @@
+{
+  "anonymous_digest_verification": "passed",
+  "archive_file_count": 1078,
+  "dataset": "edithatogo/australian-pbs-utilisation-archive",
+  "manifest_sha256": "05008c9edf470c86411542cdb5564449b30092d2775814ab983618ffa1d7adb9",
+  "new_payloads": 1,
+  "parent_revision": "e7d39f34e48adba2aaef601281887503baaf3354",
+  "participant_files_published": 0,
+  "prior_anonymous_verification_run": [
+    42215694518
+  ],
+  "prior_manifest_objects_preserved": 1076,
+  "revision": "ba60e1d18b81e4af3cae50bc9fbfe719406fa5f3",
+  "run_coverage": {
+    "coverage_status": "complete",
+    "failed_resources": []
+  },
+  "temporary_source_bytes_removed": true,
+  "verification_scope": "new pairs and complete prior manifest preservation",
+  "verified_file_count": 2,
+  "workflow_attempt": "1",
+  "workflow_commit": "f5897746a3464671b27275b3d66f912de9ca09ea",
+  "workflow_run": "43565582684"
+}

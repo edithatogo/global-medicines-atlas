@@ -1199,11 +1199,14 @@ def test_documentation_and_script_preserve_external_gates() -> None:
     assert "unsigned and unattested" in guide
     assert "stable release, production deployment" in guide.replace("\n", " ")
     assert (
-        "stable promotion remains blocked by the australian health federation qualification gate"
+        "full-federation qualification remains blocked by the australian health federation gate"
         in guide.replace("\n", " ")
     )
-    assert "after the gates pass" in guide
-    assert "protected signing and attestation workflow" in guide.replace(
+    assert "m-112 remain blocked" in guide
+    assert "all applicable non-deferred gates pass" in guide.replace("\n", " ")
+    assert "protected checks" in guide
+    assert "signing and attestation workflow" in guide.replace("\n", " ")
+    assert "no new data or dataset publication is authorized" in guide.replace(
         "\n", " "
     )
     assert "3.15.1" in guide

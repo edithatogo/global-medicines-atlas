@@ -1164,7 +1164,9 @@ def source_structure_query(
                 "offset": page.offset,
                 "query_sha256": page.query_sha256,
                 "row_count": len(page.rows),
+                "coverage_state": page.coverage_state,
                 "comparison_validity": page.comparison_validity,
+                "semantic_overlay_state": page.semantic_overlay_state,
                 "source_completeness": "not_established",
             })
         )

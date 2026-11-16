@@ -21,6 +21,11 @@ ISSUE_COMMENT_POST = re.compile(
 )
 
 
+def test_codecov_disables_pull_request_comments():
+    configuration = yaml.safe_load((ROOT / "codecov.yml").read_text())
+    assert configuration["comment"] is False
+
+
 @pytest.mark.parametrize("path", WORKFLOWS, ids=lambda path: path.name)
 def test_workflow_has_no_outbound_comment_command_or_issue_write(path):
     document = yaml.load(path.read_text(), Loader=yaml.BaseLoader)

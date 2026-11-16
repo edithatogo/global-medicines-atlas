@@ -1,0 +1,9 @@
+{
+  "browser_launched": false,
+  "dataset_published_or_modified": false,
+  "error_message": "verified cache evidence unavailable",
+  "error_type": "DeliveryQualificationError",
+  "source_values_emitted": false,
+  "started_at": "2026-11-14T22:26:08.241160+00:00",
+  "status": "failed"
+}

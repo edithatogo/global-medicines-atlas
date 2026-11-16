@@ -47,6 +47,13 @@ class SourceStructurePage(PlatinumSurfaceModel):
     reason: str | None
     coverage_state: Literal["not_declared"] = "not_declared"
     comparison_validity: Literal["not_evaluated"] = "not_evaluated"
+    semantic_overlay_state: Literal["not_applied"] = Field(
+        default="not_applied",
+        description=(
+            "The source-structure view does not apply a semantic overlay; "
+            "a native state is not an interpretation state."
+        ),
+    )
 
 
 class SourceStructureService:

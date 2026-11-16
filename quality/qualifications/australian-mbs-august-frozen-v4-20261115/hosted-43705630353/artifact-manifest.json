@@ -1,0 +1,34 @@
+{
+  "artifact": {
+    "byte_count": 2955,
+    "id": 14158262195,
+    "member": "mbs-august-frozen-v4.json",
+    "name": "mbs-august-frozen-v4-43705630353-1",
+    "sha256": "66fe072df5aff6ec551c6a23a799293327d99ea697237a091f1f9b54613864a6"
+  },
+  "receipt": {
+    "byte_count": 25534,
+    "path": "quality/qualifications/australian-mbs-august-frozen-v4-20261115/hosted-43705630353/qualification.json",
+    "sha256": "42b38094fe116f9aaaadf1a88264a95a3ca8c0b3102dacb10d333897adf9ff29"
+  },
+  "schema_id": "global-medicines-atlas.mbs-august-frozen-v4-artifact",
+  "schema_version": 1,
+  "validation": {
+    "exact_contracts_and_consumers_verified": true,
+    "exact_member_set_verified": true,
+    "native_artifact_digest_verified": true,
+    "source_values_retained": false,
+    "zip_crc_verified": true
+  },
+  "workflow": {
+    "attempt": 1,
+    "commit": "5f0a373664f28c629822d7174b1045a067158b73",
+    "completed_at": "2026-11-15T10:46:04Z",
+    "conclusion": "success",
+    "event": "workflow_dispatch",
+    "job": 132785965334,
+    "repository": "edithatogo/global-medicines-atlas",
+    "run": 43705630353,
+    "started_at": "2026-11-15T10:45:45Z"
+  }
+}

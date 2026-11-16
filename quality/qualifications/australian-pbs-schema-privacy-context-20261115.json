@@ -1,0 +1,89 @@
+{
+  "april_2026": {
+    "archive_aliases": [
+      {
+        "byte_count": 11156706,
+        "dataset": "edithatogo/australian-pbs-source-archive",
+        "path": "raw/2026-04-01/2026-04-01-XML-V3.zip",
+        "privacy": "blocked_unknown_or_unqualified_privacy",
+        "revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
+        "sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20"
+      },
+      {
+        "byte_count": 11156706,
+        "dataset": "edithatogo/reimbursement-atlas",
+        "path": "raw/pbs/payloads/au_pbs_structured_6f905abc167f052d/f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20.zip",
+        "privacy": "blocked_unknown_or_unqualified_privacy",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20"
+      }
+    ],
+    "archive_sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+    "contact_related_context_counts": {
+      "organisations-list": 22,
+      "previous-list": 22
+    },
+    "generic_xml_id_path_contexts": {
+      "maximum_patient_charge_descendant": 6,
+      "patient_element": 2
+    },
+    "member_schema_paths": 5163,
+    "member_sha256": "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43",
+    "patient_related_ancestor_with_generic_xml_id_context_counts": {
+      "prescribing-texts-list": 1,
+      "previous-list": 3,
+      "schedule": 4
+    },
+    "patient_related_context_counts": {
+      "RDF": 7,
+      "prescribing-texts-list": 22,
+      "previous-list": 91,
+      "schedule": 104
+    },
+    "selected_explicit_identifier_label_count": 0
+  },
+  "boundaries": {
+    "archive_privacy_cleared": false,
+    "dataset_added_or_published": false,
+    "participant_or_cohort_data_accessed": false,
+    "schema_path_matches_interpreted_as_people_or_identifiers": false,
+    "selected_lexical_markers_are_exhaustive": false,
+    "source_values_or_unassessed_payloads_read": false,
+    "unassessed_payload_reads_authorized": false
+  },
+  "inputs": {
+    "api": {
+      "path": "quality/qualifications/australian-public-archive-reconciliation-20261113.json",
+      "sha256": "f7883925fe095e46b184690e966101b10b8dcec2326e03d93cb5b18c1e3b5fcf"
+    },
+    "api_event": {
+      "path": "quality/bronze/imported-acquisitions/au-pbs/93bf599c49a0c71eceec49b25c3355130d587d14c57337826fa23e5458be7e21.json",
+      "sha256": "d6ecb3a3e011c2501e6ebcb2e8b9eb37f8c54f152c1c4e412f453e02bc7d4d9f"
+    },
+    "privacy": {
+      "path": "quality/qualifications/australian-existing-archive-privacy-batch-20261115.json",
+      "sha256": "7ab592f48583def8fb05b814d442b394463b3703caf978e885a1d96961029ec8"
+    },
+    "readiness": {
+      "path": "quality/qualifications/australian-existing-v4-privacy-readiness-20261115.json",
+      "sha256": "84f76a2187830bf1e0949261df739f6eae45fb39f9c58750d7cdce09d4875d39"
+    },
+    "schema": {
+      "path": "quality/qualifications/pbs-schema-paths-20261022-39667604237.json",
+      "sha256": "6da85f3e3526a52dca7b0f41206b5ec1afde854f89d858ae659867827219408b"
+    }
+  },
+  "recorded_on": "2026-11-15",
+  "schema_id": "global-medicines-atlas.pbs-schema-privacy-context",
+  "schema_version": 1,
+  "september_2025_api": {
+    "byte_count": 5827162,
+    "dataset": "edithatogo/reimbursement-atlas",
+    "member_names_with_review_tokens": 8,
+    "path": "raw/pbs/payloads/au_pbs_structured_28ef7f6eefc6309f/60ade25f04a6451239587ac546c34390099b231036349b3a4eaf28409eefdf59.zip",
+    "privacy": "blocked_unknown_or_unqualified_privacy",
+    "recorded_csv_members": 33,
+    "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+    "sha256": "60ade25f04a6451239587ac546c34390099b231036349b3a4eaf28409eefdf59"
+  }
+}

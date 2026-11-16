@@ -7,6 +7,32 @@ immutable archive evidence. The hosted run below records anonymous digest
 verification and cleanup; this documentation update read only the public
 manifest, not raw schedule payloads.
 
+## Existing PBS archive crosswalk, 2026-11-15
+
+The newer [metadata crosswalk](../../quality/qualifications/australian-pbs-m107-existing-archive-crosswalk-20261115.json)
+reconciles the earlier 316 official link occurrences with retained archive
+records. It newly matches **311 occurrences to 310 distinct reimbursement
+archive paths** by exact official URL and independently digest-bound B1, B2
+and landed metadata. One occurrence was already matched to the April 2026
+source archive; its separate reimbursement mirror has the same recorded digest
+and size but retains its own identity, rights and privacy state. The older
+October crosswalk below is a historical snapshot and is not overwritten.
+
+Four link occurrences remain unmatched: two August 2022 XML archives and the
+August and September 2026 API CSV archives. Their publisher URLs returned
+HTTP 200 to HEAD requests; the [observation](../../quality/qualifications/australian-pbs-m107-four-link-metadata-20261115.json)
+records the declared lengths and the exact three public archive revisions
+searched. No exact basename or declared-size match appeared in those tree
+listings. Their response bodies were not retained, so the negative search is
+an observed result, not independently replayable proof of absence. HEAD does
+not identify bytes; different August 2022 extracts are not assumed equivalent.
+
+The matched reimbursement objects' retained sensitivity remains unknown and
+their privacy and v4 admission gates remain blocked. The April source-archive
+receipt's permitted-use claim still conflicts with the upstream rights ledger.
+This reconciliation reads metadata only and does not establish the expected
+historical denominator, source-era semantics or M-107 completion.
+
 ## Exact Health.gov endpoint recheck, 2026-10-28
 
 A single metadata-only `HEAD` request to each of the three already-authorized

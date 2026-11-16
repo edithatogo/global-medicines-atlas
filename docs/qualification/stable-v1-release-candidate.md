@@ -1,5 +1,14 @@
 # Stable-v1 release-candidate verification
 
+## Scoped software-only release — 14 November 2026
+
+D-006-13 authorizes an exact software-only v1.0.0 release while M-105 through
+M-112 remain blocked and outside its scope. The protected release workflow
+builds the tagged software candidate twice and exercises both exact
+distributions before attestation. No new data or dataset publication is
+authorized. Earlier full-federation release conditions below remain historical
+context for that broader qualification.
+
 This procedure builds and verifies a local stable-v1 candidate from one clean,
 content-identified Git commit. It produces one wheel, one source distribution,
 a normalized CycloneDX SBOM, the exact dependency lock, content-bound
@@ -10,18 +19,17 @@ approved software-only prerelease `v1.0.0rc1` is now tagged and published on
 GitHub and archived at Zenodo DOI
 [10.5281/zenodo.21734811](https://doi.org/10.5281/zenodo.21734811). This does
 not constitute a stable release, production deployment, or source-data
-publication. OSF is deprecated. Stable promotion remains blocked by the
-Australian health federation qualification gate. After the gates pass, the
-exact current candidate and protected checks must be verified before the
-existing conditional approval is exercised through the protected signing and
-attestation workflow. Production disaster-recovery authority remains a separate
-isolated gate.
+publication. OSF is deprecated. Full-federation qualification remains blocked
+by the Australian health federation gate. The separately approved scoped
+software release requires an exact current candidate and protected checks
+through the signing and attestation workflow. Production disaster-recovery
+authority remains a separate isolated gate.
 
 The currently retained candidate receipt is historical and is bound to
 `6be062860b70ce3ef28dec55adfc3a1995802947` (the merge of PR #118). Later
 system changes mean it is not the exact candidate for a future stable release.
-After all qualification gates pass, build a fresh candidate from the exact
-qualified commit. The integration harness clones the canonical remote, checks
+For the scoped release, build a fresh candidate from the exact commit once all
+applicable non-deferred gates pass. The integration harness clones the canonical remote, checks
 out that exact commit, rebuilds with the pinned release toolchain, and requires
 the rebuilt receipt to match before it exercises the wheel and sdist consumers.
 The archives use canonical wheel payload/RECORD data, normalized generated

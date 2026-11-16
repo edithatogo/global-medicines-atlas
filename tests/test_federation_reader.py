@@ -146,6 +146,49 @@ def test_unadmitted_or_invalid_contract_never_fetches() -> None:
         FederatedReader(schema=b"{}", admission_records=())
 
 
+def test_existing_unadmitted_derived_candidates_cannot_reuse_silver_admission() -> (
+    None
+):
+    """Changed candidate identities fail before metadata or payload requests."""
+    report = json.loads(
+        (
+            ROOT
+            / "quality/qualifications/australian-existing-derived-gates-20261115.json"
+        ).read_text(encoding="utf-8")
+    )
+    candidates = [*report["mbs_candidates"], report["pbs_candidate"]]
+    assert len(candidates) == 5
+    admitted = (
+        ROOT
+        / "quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261028-40664169948/metadata/contracts/services.json"
+    ).read_bytes()
+    hub = Hub()
+    with reader(hub, admitted, schema=SCHEMA_V41) as client:
+        for candidate in candidates:
+            forged = json.loads(admitted)
+            for section in ("location", "verification"):
+                forged[section].update(
+                    dataset=candidate["dataset"],
+                    revision=candidate["revision"],
+                    path=candidate["path"],
+                    sha256=candidate["sha256"],
+                    bytes=candidate["byte_count"],
+                )
+            forged["rights"].update(
+                dataset=candidate["dataset"],
+                path=candidate["path"],
+                subject_sha256=candidate["sha256"],
+            )
+            with (
+                pytest.raises(ValueError, match="not independently admitted"),
+                client.open(json.dumps(forged).encode()),
+            ):
+                pytest.fail(
+                    "a changed candidate must not use a prior admission"
+                )
+    assert not hub.requests
+
+
 def test_duplicate_json_members_are_rejected_before_remote_fetch() -> None:
     raw = document()
     marker = b'"source": {'

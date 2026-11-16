@@ -1,0 +1,318 @@
+{
+  "boundaries": {
+    "consumer_canary_performed": false,
+    "dataset_added_or_published": false,
+    "field_semantics_accepted": false,
+    "historical_writer_executed_for_outside_outputs": false,
+    "independent_recovery_established": false,
+    "participant_or_cohort_data_accessed": false,
+    "source_or_projection_payload_read": false,
+    "v4_admission_performed": false
+  },
+  "inputs": {
+    "digest": {
+      "path": "quality/qualifications/australian-existing-mbs-digest-binding-20261115.json",
+      "sha256": "9f1211574b46c18bbb37cf47399c68a8c4197c2bb08f9aaccac96930566ed02f"
+    },
+    "digest_receipt": {
+      "path": "quality/qualifications/australian-existing-mbs-digest-20261115/hosted-43687742836/digest-receipt.json",
+      "sha256": "bbfd25983a89d7aba244a71bd2372b6c23f7d05cc2065a3506bf49e618f08191"
+    },
+    "dossiers": {
+      "path": "quality/qualifications/australian-mbs-four-projection-dossiers-20261115.json",
+      "sha256": "0b3e7c53204695148b5b563e4bb7024cad421cc6cfa6ebf2c56f31af3a291d1e"
+    },
+    "frozen_replay": {
+      "path": "quality/qualifications/australian-m112-mbs-bronze-projection-lineage-20261019.json",
+      "sha256": "ef32417220d838e2cb625d8d0ab7a34009b99bdf3181314e5a4536442d0f1720"
+    },
+    "frozen_rights": {
+      "path": "quality/qualifications/australian-mbs-august-bronze-rights-attestation-20261020.json",
+      "sha256": "8c1fe64099098ebe6e34ffe0409415d799e1a4c7c57382218fbfcfd52e0dbb24"
+    },
+    "outside_replay": {
+      "path": "quality/qualifications/australian-privacy-batch-20261115/mbs-outside-frozen-replay.json",
+      "sha256": "eeb694be498244d41fdec69f16f24a9cd135a54fa0420405b7b71751609717f0"
+    },
+    "outside_rights": {
+      "path": "quality/qualifications/australian-mbs-august-outside-m112-projection-rights-attestation-20261020.json",
+      "sha256": "dc5a53ffaed82e758bbe918f0615b5158bdbdf65ad41da2193c6c84ba41841c5"
+    },
+    "profile": {
+      "path": "quality/qualifications/mbs-source-era-candidate-2026-08-01-dmy-profile.json",
+      "sha256": "8e8d14f88baabc10a172fd2ec3947f8a89947828d64fb0237398dc230896763e"
+    },
+    "readiness": {
+      "path": "quality/qualifications/australian-existing-v4-privacy-readiness-20261115.json",
+      "sha256": "84f76a2187830bf1e0949261df739f6eae45fb39f9c58750d7cdce09d4875d39"
+    },
+    "receipt_6bc9": {
+      "path": "quality/bronze/receipts/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1.json",
+      "sha256": "ff916b49a4993b523da2f41952805b4e1e2064e0ce21edc8bd6643c1acda77a8"
+    },
+    "receipt_99fa": {
+      "path": "quality/qualifications/australian-privacy-batch-20261115/frozen-99-source-receipt.json",
+      "sha256": "4f694fd7364061cd05fee33ea52e6dbeef17d1067b8437f72e726ab168fc2fc7"
+    },
+    "receipt_d781": {
+      "path": "quality/qualifications/australian-mbs-four-projection-dossiers-20261115/d781-source-receipt.json",
+      "sha256": "24703e52245ac5605618c4d19be1cea4adc71f067e77a411b274be3b21d60bf7"
+    },
+    "receipt_f9f9": {
+      "path": "quality/qualifications/australian-mbs-four-projection-dossiers-20261115/f9f9-source-receipt.json",
+      "sha256": "e741e662dcdf1d64a187af46d8069effe6323b8664cdc90398c4adcb04cad90d"
+    }
+  },
+  "objects": [
+    {
+      "byte_count": 24367,
+      "consumer_check": "not_performed",
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "expected_records_from_existing_evidence": 165,
+      "field_lineage_records": 85,
+      "field_semantics_accepted": false,
+      "frozen_member": true,
+      "path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/p7.parquet",
+      "producer_code_sha256": {
+        "src/global_medicines_atlas/adapters/au_mbs.py": "f874882bb7e0d3675b791e6cc10393595c705f7b2a977dcff1388a0c27862363",
+        "src/global_medicines_atlas/mbs_compatibility.py": "2a1d1a5d3709776504b9d9aeec4f708d0e304fa7b8de99b343418f75131c42d7",
+        "src/global_medicines_atlas/mbs_release.py": "41b344750a8612f97b3f49f19505523335e2eb4b8808be35a1a8aaaa70814fad"
+      },
+      "producer_commit": "0190183f6b313ad21746c5b15b7cf4bd7153085c",
+      "reproduction": "exact_bytes_reproduced_in_memory_at_prior_revision",
+      "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+      "rights_evidence": {
+        "path": "quality/qualifications/australian-mbs-august-bronze-rights-attestation-20261020.json",
+        "sha256": "8c1fe64099098ebe6e34ffe0409415d799e1a4c7c57382218fbfcfd52e0dbb24"
+      },
+      "selection": "Group=P7",
+      "sha256": "2da8606d3e408294bcfdc914906de4814d33c1a72acf5a2ba40f91473267516a",
+      "source_receipt": {
+        "path": "quality/bronze/receipts/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1.json",
+        "sha256": "ff916b49a4993b523da2f41952805b4e1e2064e0ce21edc8bd6643c1acda77a8"
+      },
+      "v4_admission": "not_performed"
+    },
+    {
+      "byte_count": 454247,
+      "consumer_check": "not_performed",
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "expected_records_from_existing_evidence": 6046,
+      "field_lineage_records": 85,
+      "field_semantics_accepted": false,
+      "frozen_member": true,
+      "path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/source.parquet",
+      "producer_code_sha256": {
+        "src/global_medicines_atlas/adapters/au_mbs.py": "f874882bb7e0d3675b791e6cc10393595c705f7b2a977dcff1388a0c27862363",
+        "src/global_medicines_atlas/mbs_compatibility.py": "2a1d1a5d3709776504b9d9aeec4f708d0e304fa7b8de99b343418f75131c42d7",
+        "src/global_medicines_atlas/mbs_release.py": "41b344750a8612f97b3f49f19505523335e2eb4b8808be35a1a8aaaa70814fad"
+      },
+      "producer_commit": "0190183f6b313ad21746c5b15b7cf4bd7153085c",
+      "reproduction": "exact_bytes_reproduced_in_memory_at_prior_revision",
+      "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+      "rights_evidence": {
+        "path": "quality/qualifications/australian-mbs-august-bronze-rights-attestation-20261020.json",
+        "sha256": "8c1fe64099098ebe6e34ffe0409415d799e1a4c7c57382218fbfcfd52e0dbb24"
+      },
+      "selection": "all_source_records",
+      "sha256": "80f8e0d3cc67f6f3a22f23cc3bfb0db5da4d44d79741da3ce1c31ee92836627a",
+      "source_receipt": {
+        "path": "quality/bronze/receipts/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1.json",
+        "sha256": "ff916b49a4993b523da2f41952805b4e1e2064e0ce21edc8bd6643c1acda77a8"
+      },
+      "v4_admission": "not_performed"
+    },
+    {
+      "byte_count": 24367,
+      "consumer_check": "not_performed",
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "expected_records_from_existing_evidence": 165,
+      "field_lineage_records": 85,
+      "field_semantics_accepted": false,
+      "frozen_member": true,
+      "path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/p7.parquet",
+      "producer_code_sha256": {
+        "src/global_medicines_atlas/adapters/au_mbs.py": "f874882bb7e0d3675b791e6cc10393595c705f7b2a977dcff1388a0c27862363",
+        "src/global_medicines_atlas/mbs_compatibility.py": "2a1d1a5d3709776504b9d9aeec4f708d0e304fa7b8de99b343418f75131c42d7",
+        "src/global_medicines_atlas/mbs_release.py": "41b344750a8612f97b3f49f19505523335e2eb4b8808be35a1a8aaaa70814fad"
+      },
+      "producer_commit": "435527a630d055056985372aba1620bcf7340da4",
+      "reproduction": "exact_bytes_reproduced_in_memory_at_prior_revision",
+      "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+      "rights_evidence": {
+        "path": "quality/qualifications/australian-mbs-august-bronze-rights-attestation-20261020.json",
+        "sha256": "8c1fe64099098ebe6e34ffe0409415d799e1a4c7c57382218fbfcfd52e0dbb24"
+      },
+      "selection": "Group=P7",
+      "sha256": "6362f7f3a5d9870545cc074450b81a82475d68fdb062f38083713f56bd88d2fe",
+      "source_receipt": {
+        "path": "quality/qualifications/australian-privacy-batch-20261115/frozen-99-source-receipt.json",
+        "sha256": "4f694fd7364061cd05fee33ea52e6dbeef17d1067b8437f72e726ab168fc2fc7"
+      },
+      "v4_admission": "not_performed"
+    },
+    {
+      "byte_count": 454247,
+      "consumer_check": "not_performed",
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "expected_records_from_existing_evidence": 6046,
+      "field_lineage_records": 85,
+      "field_semantics_accepted": false,
+      "frozen_member": true,
+      "path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/source.parquet",
+      "producer_code_sha256": {
+        "src/global_medicines_atlas/adapters/au_mbs.py": "f874882bb7e0d3675b791e6cc10393595c705f7b2a977dcff1388a0c27862363",
+        "src/global_medicines_atlas/mbs_compatibility.py": "2a1d1a5d3709776504b9d9aeec4f708d0e304fa7b8de99b343418f75131c42d7",
+        "src/global_medicines_atlas/mbs_release.py": "41b344750a8612f97b3f49f19505523335e2eb4b8808be35a1a8aaaa70814fad"
+      },
+      "producer_commit": "435527a630d055056985372aba1620bcf7340da4",
+      "reproduction": "exact_bytes_reproduced_in_memory_at_prior_revision",
+      "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+      "rights_evidence": {
+        "path": "quality/qualifications/australian-mbs-august-bronze-rights-attestation-20261020.json",
+        "sha256": "8c1fe64099098ebe6e34ffe0409415d799e1a4c7c57382218fbfcfd52e0dbb24"
+      },
+      "selection": "all_source_records",
+      "sha256": "5219094d2ec7f4386380b356cc17f071c97751db43ed367746a6d07ca4ff3eaf",
+      "source_receipt": {
+        "path": "quality/qualifications/australian-privacy-batch-20261115/frozen-99-source-receipt.json",
+        "sha256": "4f694fd7364061cd05fee33ea52e6dbeef17d1067b8437f72e726ab168fc2fc7"
+      },
+      "v4_admission": "not_performed"
+    },
+    {
+      "byte_count": 24367,
+      "consumer_check": "not_performed",
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "expected_records_from_existing_evidence": 165,
+      "field_lineage_records": 85,
+      "field_semantics_accepted": false,
+      "frozen_member": false,
+      "path": "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b/p7.parquet",
+      "producer_code_sha256": {
+        "src/global_medicines_atlas/adapters/au_mbs.py": "f874882bb7e0d3675b791e6cc10393595c705f7b2a977dcff1388a0c27862363",
+        "src/global_medicines_atlas/mbs_compatibility.py": "3d7a4263a020a7f9569968b3007f5d10a8a52b067154eed67281bd5a52eae111",
+        "src/global_medicines_atlas/mbs_release.py": "41b344750a8612f97b3f49f19505523335e2eb4b8808be35a1a8aaaa70814fad"
+      },
+      "producer_commit": "12e5ca4678e077f8e6bf954aaa780aac83040994",
+      "reproduction": "footer_adjusted_reproduction_not_historical_writer",
+      "revision": "b925a8a80b0f90db09513e7ce1378045461b05c0",
+      "rights_evidence": {
+        "path": "quality/qualifications/australian-mbs-august-outside-m112-projection-rights-attestation-20261020.json",
+        "sha256": "dc5a53ffaed82e758bbe918f0615b5158bdbdf65ad41da2193c6c84ba41841c5"
+      },
+      "selection": "Group=P7",
+      "sha256": "c4aa29f9d4bdc683e4720649c551f59c21d6c72c40db732795f9a27a060609f7",
+      "source_receipt": {
+        "path": "quality/qualifications/australian-mbs-four-projection-dossiers-20261115/d781-source-receipt.json",
+        "sha256": "24703e52245ac5605618c4d19be1cea4adc71f067e77a411b274be3b21d60bf7"
+      },
+      "v4_admission": "not_performed"
+    },
+    {
+      "byte_count": 454247,
+      "consumer_check": "not_performed",
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "expected_records_from_existing_evidence": 6046,
+      "field_lineage_records": 85,
+      "field_semantics_accepted": false,
+      "frozen_member": false,
+      "path": "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b/source.parquet",
+      "producer_code_sha256": {
+        "src/global_medicines_atlas/adapters/au_mbs.py": "f874882bb7e0d3675b791e6cc10393595c705f7b2a977dcff1388a0c27862363",
+        "src/global_medicines_atlas/mbs_compatibility.py": "3d7a4263a020a7f9569968b3007f5d10a8a52b067154eed67281bd5a52eae111",
+        "src/global_medicines_atlas/mbs_release.py": "41b344750a8612f97b3f49f19505523335e2eb4b8808be35a1a8aaaa70814fad"
+      },
+      "producer_commit": "12e5ca4678e077f8e6bf954aaa780aac83040994",
+      "reproduction": "footer_adjusted_reproduction_not_historical_writer",
+      "revision": "b925a8a80b0f90db09513e7ce1378045461b05c0",
+      "rights_evidence": {
+        "path": "quality/qualifications/australian-mbs-august-outside-m112-projection-rights-attestation-20261020.json",
+        "sha256": "dc5a53ffaed82e758bbe918f0615b5158bdbdf65ad41da2193c6c84ba41841c5"
+      },
+      "selection": "all_source_records",
+      "sha256": "02693aaa7d1aea9fc66f13061e8081ffbeea486f057e2f716caa4906ac6dda96",
+      "source_receipt": {
+        "path": "quality/qualifications/australian-mbs-four-projection-dossiers-20261115/d781-source-receipt.json",
+        "sha256": "24703e52245ac5605618c4d19be1cea4adc71f067e77a411b274be3b21d60bf7"
+      },
+      "v4_admission": "not_performed"
+    },
+    {
+      "byte_count": 24367,
+      "consumer_check": "not_performed",
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "expected_records_from_existing_evidence": 165,
+      "field_lineage_records": 85,
+      "field_semantics_accepted": false,
+      "frozen_member": false,
+      "path": "bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/p7.parquet",
+      "producer_code_sha256": {
+        "src/global_medicines_atlas/adapters/au_mbs.py": "f874882bb7e0d3675b791e6cc10393595c705f7b2a977dcff1388a0c27862363",
+        "src/global_medicines_atlas/mbs_compatibility.py": "3d7a4263a020a7f9569968b3007f5d10a8a52b067154eed67281bd5a52eae111",
+        "src/global_medicines_atlas/mbs_release.py": "d59e04b58783912b557dff53ee536a3cbf7d39725ebb2e77d11bedfc29417828"
+      },
+      "producer_commit": "644f3f6cfd2b76b0866d5ecb90dde397d67a51eb",
+      "reproduction": "footer_adjusted_reproduction_not_historical_writer",
+      "revision": "b925a8a80b0f90db09513e7ce1378045461b05c0",
+      "rights_evidence": {
+        "path": "quality/qualifications/australian-mbs-august-outside-m112-projection-rights-attestation-20261020.json",
+        "sha256": "dc5a53ffaed82e758bbe918f0615b5158bdbdf65ad41da2193c6c84ba41841c5"
+      },
+      "selection": "Group=P7",
+      "sha256": "50ce02b896984a4065a9f132890f38f19ec430c3f435dc589b1cbd978111dd69",
+      "source_receipt": {
+        "path": "quality/qualifications/australian-mbs-four-projection-dossiers-20261115/f9f9-source-receipt.json",
+        "sha256": "e741e662dcdf1d64a187af46d8069effe6323b8664cdc90398c4adcb04cad90d"
+      },
+      "v4_admission": "not_performed"
+    },
+    {
+      "byte_count": 454247,
+      "consumer_check": "not_performed",
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "expected_records_from_existing_evidence": 6046,
+      "field_lineage_records": 85,
+      "field_semantics_accepted": false,
+      "frozen_member": false,
+      "path": "bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/source.parquet",
+      "producer_code_sha256": {
+        "src/global_medicines_atlas/adapters/au_mbs.py": "f874882bb7e0d3675b791e6cc10393595c705f7b2a977dcff1388a0c27862363",
+        "src/global_medicines_atlas/mbs_compatibility.py": "3d7a4263a020a7f9569968b3007f5d10a8a52b067154eed67281bd5a52eae111",
+        "src/global_medicines_atlas/mbs_release.py": "d59e04b58783912b557dff53ee536a3cbf7d39725ebb2e77d11bedfc29417828"
+      },
+      "producer_commit": "644f3f6cfd2b76b0866d5ecb90dde397d67a51eb",
+      "reproduction": "footer_adjusted_reproduction_not_historical_writer",
+      "revision": "b925a8a80b0f90db09513e7ce1378045461b05c0",
+      "rights_evidence": {
+        "path": "quality/qualifications/australian-mbs-august-outside-m112-projection-rights-attestation-20261020.json",
+        "sha256": "dc5a53ffaed82e758bbe918f0615b5158bdbdf65ad41da2193c6c84ba41841c5"
+      },
+      "selection": "all_source_records",
+      "sha256": "553399aa06830708a1dfb74351b5b49b6a799d7bd7b7584ab86aad168227369c",
+      "source_receipt": {
+        "path": "quality/qualifications/australian-mbs-four-projection-dossiers-20261115/f9f9-source-receipt.json",
+        "sha256": "e741e662dcdf1d64a187af46d8069effe6323b8664cdc90398c4adcb04cad90d"
+      },
+      "v4_admission": "not_performed"
+    }
+  ],
+  "recorded_on": "2026-11-15",
+  "schema_id": "global-medicines-atlas.mbs-august-projection-field-lineage",
+  "schema_version": 1,
+  "semantics_status": {
+    "path": "docs/qualification/mbs-xml-v3-field-semantics-status-2026-08.md",
+    "sha256": "2163c7e141bbad4e943894258da813b7ed48734227ac79dd42fd79100e35f6ce"
+  },
+  "v2_lineage": {
+    "canonical_sha256": "d9da8caa62c620349508f75870457a613f0a84814609c88449c90d25f8a9fc0c",
+    "canonicalization": "sorted_compact_utf8_json",
+    "path": "quality/qualifications/australian-mbs-august-projection-v2-field-lineage-20261115.json",
+    "records": 680,
+    "sha256": "4e5ce6ce699aa1d84f2a6ad28ee2b552b6bd62ba9e93db3fd886576e8dcd76f6"
+  },
+  "v2_schema": {
+    "path": "contracts/medallion/v2/field-lineage.schema.json",
+    "sha256": "bf31ee62a3566a8fde512748b79f644e0fab760f60924e4eb9d510d3c1ef6f8a"
+  }
+}

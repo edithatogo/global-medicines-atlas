@@ -1,0 +1,101 @@
+{
+  "artifact": {
+    "expires_at": "2027-02-12T23:11:26Z",
+    "id": 14137250879,
+    "name": "mbs-silver-v4-admission-43651971792-1",
+    "sha256": "f117d47190f5720f71bf26c08924f0c4286e71d55d75782ec55b138511f4fbff",
+    "size_bytes": 20847
+  },
+  "reports": [
+    {
+      "path": "admission-remote-read.json",
+      "sha256": "10866fda4be44358ae38f7cf1df9402aa054b62f8216e0a07eb3fb36e14f768b",
+      "size_bytes": 44286
+    },
+    {
+      "path": "deployment-trust.json",
+      "sha256": "6a2e6d0be2eec35576057787a1628bdd6dc5d8f7e8904fda34f46c17b0cee92a",
+      "size_bytes": 14067
+    },
+    {
+      "path": "metadata/contracts/benefits.json",
+      "sha256": "779886cb044e5fc6a022eda22ae86f05fd35481df890d84b7402cecb07502b7d",
+      "size_bytes": 5965
+    },
+    {
+      "path": "metadata/contracts/caps.json",
+      "sha256": "c6b9cccba99b6e732de61538e2a598920aadd34c995d73a8cc546487cd4f3656",
+      "size_bytes": 5951
+    },
+    {
+      "path": "metadata/contracts/descriptions.json",
+      "sha256": "8455a5f8787d5f637d176da9c7332bb45b59a34b21e7c424f80d0b8b8aa0f665",
+      "size_bytes": 5977
+    },
+    {
+      "path": "metadata/contracts/fees.json",
+      "sha256": "ec788030d05a7047b696ad1404fbb1991f033d15d91a7e608d18c3232b0c34d2",
+      "size_bytes": 5951
+    },
+    {
+      "path": "metadata/contracts/hierarchy.json",
+      "sha256": "f85ff3ed5852d7270afec40c59acdf9e5957be572d95b05d13197344984689a2",
+      "size_bytes": 5966
+    },
+    {
+      "path": "metadata/contracts/services.json",
+      "sha256": "71bfd89fe116373127e286614bbbbdd4bbfe20b5b03cbbb888ae601e31f62db3",
+      "size_bytes": 5965
+    },
+    {
+      "path": "metadata/semantics/benefits.json",
+      "sha256": "15be80bcb950ad37e38335a86dd5b78f3a5ff1424d1e9b9c26b298fe00b1ee62",
+      "size_bytes": 220
+    },
+    {
+      "path": "metadata/semantics/caps.json",
+      "sha256": "9ca1307807002cde499fe5dfddb29fb4d6ecb1545de4075456e39fec074d50ed",
+      "size_bytes": 216
+    },
+    {
+      "path": "metadata/semantics/descriptions.json",
+      "sha256": "3a2195c199718f5e007bbbd16400f4447c78872f45c8af02a4f61cd63224481f",
+      "size_bytes": 224
+    },
+    {
+      "path": "metadata/semantics/fees.json",
+      "sha256": "2ce68f23abb0c084b0b0df46fb51f09fdf6104bc8a4346bc48d1eee2449e1f18",
+      "size_bytes": 216
+    },
+    {
+      "path": "metadata/semantics/hierarchy.json",
+      "sha256": "f11365fca3167e27a90bc9eaacb5b809098bffc8c885f0db10800a3e831fa98a",
+      "size_bytes": 221
+    },
+    {
+      "path": "metadata/semantics/services.json",
+      "sha256": "7ce46f1aa1dd501dacbdbb35fb0a2c8c0a87b265c66541e2bc681bbde50a3db8",
+      "size_bytes": 220
+    }
+  ],
+  "schema_id": "global-medicines-atlas.australian-mbs-silver-consumer-recheck-artifact",
+  "schema_version": 1,
+  "validation": {
+    "artifact_sha256_verified": true,
+    "browser_qualification": "not_performed",
+    "dataset_publication": false,
+    "exact_metadata_member_set": true,
+    "hosted_workflow_conclusion": "success",
+    "new_unique_admissions": 0,
+    "source_values_included": false,
+    "zip_crc_verified": true
+  },
+  "workflow": {
+    "event": "workflow_dispatch",
+    "head_sha": "b06d5673603e251f398fc26d500966c1ec51953c",
+    "job_id": 132622221393,
+    "run_attempt": 1,
+    "run_id": 43651971792,
+    "url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/43651971792"
+  }
+}

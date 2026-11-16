@@ -10,7 +10,7 @@
     "promote_optional_previews": false,
     "full_local_suite_per_dataset": false
   },
-  "selected_stage": "consumers",
+  "selected_stage": "release",
   "stages": [
     {
       "id": "silver-gold",
@@ -18,7 +18,7 @@
       "release_gate": "stable-v1-australian-health-federation",
       "capability": "Source-faithful Silver and reviewed Gold with explicit unknowns",
       "current_failure": "Structural and field-state evidence does not establish every required source meaning or semantic relationship.",
-      "next_action": "Deferred from the bounded software milestone by the 2026-10-29 maintainer decision. On explicit resumption of federation: Resolve only interpretations or reviewed relationships required by the declared consumer contract; reconcile every field state and retain unsupported values as unresolved. Scoped 2026-11-05 exception: prepare PBS historical utilisation backfill and exact candidate inventory under docs/qualification/pbs-historical-backfill-20261105.md; The maintainer approved the additional legacy/PBS Medicare Statistics publication on 2026-11-05; execute the protected hosted backfill with bounded raw-workbook validation and anonymous verification. General federation stays deferred. Scoped 2026-11-06 maintainer exception: compare MBS custodial reports including 1993 and publish only the frozen public cohort under docs/qualification/mbs-flinders-public-backfill-20261106.md; preserve participant privacy and all federation gates. Scoped 2026-11-06 historical ATC2 teaching-CSV publication approved with both upstream notices and zero-fill caveat; execute only the four-object historical-atc2-public-20261106 contract via Actions and retain all other gates.",
+      "next_action": "Deferred from the bounded software milestone by the 2026-10-29 maintainer decision. On explicit resumption of federation: Resolve only interpretations or reviewed relationships required by the declared consumer contract; reconcile every field state and retain unsupported values as unresolved. Scoped 2026-11-05 exception: prepare PBS historical utilisation backfill and exact candidate inventory under docs/qualification/pbs-historical-backfill-20261105.md; The maintainer approved the additional legacy/PBS Medicare Statistics publication on 2026-11-05; execute the protected hosted backfill with bounded raw-workbook validation and anonymous verification. General federation stays deferred. Scoped 2026-11-06 maintainer exception: compare MBS custodial reports including 1993 and publish only the frozen public cohort under docs/qualification/mbs-flinders-public-backfill-20261106.md; preserve participant privacy and all federation gates. Scoped 2026-11-06 historical ATC2 teaching-CSV publication approved with both upstream notices and zero-fill caveat; execute only the four-object historical-atc2-public-20261106 contract via Actions and retain all other gates. Scoped 2026-11-13 exception: preserve the recovered public AIHW ATC2 monthly ZIP under the exact reviewed contract, with attribution, protected hosted publication and anonymous verification; retain all participant privacy and federation gates.",
       "completion_evidence": "Existing exact-source semantic, field-state, reviewed-control and producer receipts satisfy the required product contract.",
       "stop_condition": "Stop interpretation work when that contract passes or lacks supporting evidence; carry missing evidence as a blocker and advance independent system tasks.",
       "validation": "Select affected contract or matcher tests and their negative controls; reuse unchanged corpus receipts."
@@ -28,8 +28,8 @@
       "track": "public_hf_federated_data_plane_20260829",
       "release_gate": "stable-v1-australian-health-federation",
       "capability": "Qualified producer output reaches independently admitted v4 delivery",
-      "current_failure": "The exact six-table July 2025 MBS Silver cohort passes v4 admission and actual consumers. Six exact PBS raw-B2 objects now also pass native admission and bounded reader canaries, bringing the frozen raw-object totals to 14 admissions, 14 canaries and 1,745 deferred. These raw receipts do not qualify PBS domain meanings or derived delivery; other mandatory eligible outputs remain blocked by object-specific evidence.",
-      "next_action": "Deferred from the bounded software milestone by the 2026-10-29 maintainer decision. On explicit resumption of federation: Reuse the qualified shared path for other mandatory eligible outputs once their exact identity, lineage, rights, and v4 roles qualify; retain unsupported object-specific evidence as blockers without changing the frozen inventory.",
+      "current_failure": "The exact six-table July 2025 MBS Silver cohort passes v4 admission and actual consumers. The later frozen raw-delivery ledger records 17 admissions, 17 reader canaries and 1,742 deferred paths across 1,759 objects, including the six earlier PBS raw objects and three subsequent MBS XML paths. The Silver cohort is separate from those raw counts. These receipts do not qualify PBS domain meanings or derived delivery; other mandatory eligible outputs remain blocked by object-specific evidence.",
+      "next_action": "Deferred from the bounded software milestone by the 2026-10-29 maintainer decision. On explicit resumption of federation: Reuse the qualified shared path for other mandatory eligible outputs once their exact identity, lineage, rights, and v4 roles qualify; retain unsupported object-specific evidence as blockers without changing the frozen inventory. The initial scoped 2026-11-15 batch rechecked six previously admitted PBS objects without a new admission; later July and August MBS raw admissions are recorded separately. Under the current no-acquisition boundary, prepare metadata-only evidence and synthetic checks without fetching additional payloads or publishing datasets.",
       "completion_evidence": "Exact identity, lineage, rights, qualification, admission, remote-reader, and actual consumer receipts for every mandatory eligible output; current six-table receipts establish the shared path only.",
       "stop_condition": "Stop custom dataset work once the shared path works; record object-specific missing evidence without inventing admission or expanding the frozen inventory.",
       "validation": "Use focused affected admission, distribution, remote-reader, and consumer selectors; rerun the exact-main hosted qualification for each approved output cohort."
@@ -40,9 +40,9 @@
       "release_gate": "stable-v1-australian-health-federation",
       "capability": "API, CLI, Atlas and exports consume the same qualified revisions",
       "current_failure": "The hosted candidate passed on exact main through #1403, but Docker Space creation returned HTTP 402 requiring a paid account plan. The maintainer requires free-only hosting; native Render authentication and free/no-payment-method readback are not yet recorded.",
-      "next_action": "Implement the approved free-only route: one Render Free Python 3.15.1 API/Atlas Blueprint, existing locked package and HF archive/cache, no paid resources or automatic deployments. Retire paid Space creation, preserve original acceptance gates, and stop at native account authentication/consent or zero-cost qualification if unavailable.",
+      "next_action": "Implement the approved free-only route: one Render Free Python 3.15.1 API/Atlas Blueprint, existing locked package and HF archive/cache, no paid resources or automatic deployments. Retire paid Space creation, preserve original acceptance gates, and stop at native account authentication/consent or zero-cost qualification if unavailable. The scoped 2026-11-15 exception rechecked six previously admitted PBS aggregate/reference objects and reused prior MBS Silver consumer evidence without dataset publication or private-data access.",
       "completion_evidence": "For the current software milestone: locked Python 3.15.1 setup, representative product tests, clean wheel/sdist consumer receipt, supported contributor commands, and protected integration. Later live federation acceptance continues to require its original exact per-output receipts.",
-      "stop_condition": "Stop when the bounded software checklist in system-completion.md passes. Do not start deferred federation work or claim Stable v1 release readiness.",
+      "stop_condition": "The bounded software checklist is complete. Do not start deferred federation work or claim full federation acceptance as part of the scoped software release.",
       "validation": "Use existing focused context and product tests and one clean-consumer package check; reuse unchanged hosted coverage/security evidence and retain all required PR checks."
     },
     {
@@ -60,12 +60,12 @@
       "id": "release",
       "track": "stable_v1_qualification_20260729",
       "release_gate": "stable-v1-australian-health-federation",
-      "capability": "Existing Stable v1 acceptance and promotion close with observable evidence",
-      "current_failure": "The authoritative Stable v1 reconciliation still retains Australian federation as unresolved.",
-      "next_action": "Deferred from the bounded software milestone by the 2026-10-29 maintainer decision. On explicit resumption of federation: Reconcile the existing requirement and release contract after system evidence changes; resolve required M-105/M-107 or other blockers only through their existing decision contracts.",
-      "completion_evidence": "Existing qualification contract and readiness reconciliation pass, followed by exact candidate, protected checks and attestation under the existing conditional promotion approval.",
-      "stop_condition": "Do not claim stable qualification, issue a release or waive a dependent requirement from this scheduling plan; stop at the existing release and authority boundaries.",
-      "validation": "Run affected reconciliation tests and required final integration, package, security and release gates once at the coherent system milestone."
+      "capability": "Release the approved, scoped software-only v1.0.0 with observable evidence",
+      "current_failure": "The full federation contract remains blocked and cannot by itself authorize the narrower software release.",
+      "next_action": "Apply the maintainer's 2026-11-14 scoped software approval, verify all non-deferred gates, and prepare and publish only the exact software release through the protected workflow. Add no data or sources.",
+      "completion_evidence": "The exact approved software scope and candidate, protected checks, assets, tag, checksums and attestations are verified. M-105 was separately accepted under D-006-14; M-106 through M-112 and the full federation gate remain blocked.",
+      "stop_condition": "Stop if any non-deferred software, security, privacy, rights, protected-check, reproducibility or attestation gate fails. Never claim deferred federation acceptance or publish a dataset.",
+      "validation": "Run affected release-authority, package and context tests, protected CI, and the exact hosted software-release qualification and readback."
     }
   ]
 }

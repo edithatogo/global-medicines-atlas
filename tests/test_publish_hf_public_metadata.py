@@ -8,6 +8,7 @@ import hashlib
 import json
 import sys
 from datetime import UTC, datetime
+from pathlib import Path
 from types import ModuleType, SimpleNamespace
 from typing import Any, cast
 
@@ -575,11 +576,32 @@ def test_project_pages_bind_only_reviewed_metadata(
         publish_project_pages.approved_files()
 
 
+def test_australian_card_approval_uses_frozen_bytes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The live overview may change without reauthorizing a publication."""
+    frozen = pages.ROOT / pages.AUSTRALIAN_FILES["README.md"]
+    copied = tmp_path / pages.AUSTRALIAN_FILES["README.md"]
+    copied.parent.mkdir(parents=True)
+    copied.write_bytes(frozen.read_bytes())
+    (tmp_path / "docs/publication/huggingface-catalogue-card.md").write_text(
+        "Updated overview awaiting its own approval.\n"
+    )
+    monkeypatch.setattr(pages, "ROOT", tmp_path)
+
+    _, bindings = pages.approved_files(australian_archive=True)
+    assert bindings[0].sha256 == hashlib.sha256(frozen.read_bytes()).hexdigest()
+    copied.write_text("Altered approved card.\n")
+    with pytest.raises(ValueError, match="bytes differ"):
+        pages.approved_files(australian_archive=True)
+
+
 @pytest.mark.parametrize(
     "outcome", ["success", "other_object_changed", "bad_digest"]
 )
+@pytest.mark.parametrize("australian_archive", [False, True])
 def test_project_pages_cas_scope_and_anonymous_readback(
-    tmp_path, monkeypatch, outcome
+    tmp_path, monkeypatch, outcome, australian_archive
 ) -> None:
     for name, value in {
         "GITHUB_ACTIONS": "true",
@@ -591,7 +613,10 @@ def test_project_pages_cas_scope_and_anonymous_readback(
         "HF_TOKEN": "synthetic-test-only",
     }.items():
         monkeypatch.setenv(name, value)
-    parent, bindings = pages.approved_files()
+    parent, bindings = pages.approved_files(
+        australian_archive=australian_archive
+    )
+    files = pages.AUSTRALIAN_FILES if australian_archive else pages.FILES
     commits = []
 
     class Api:
@@ -606,10 +631,16 @@ def test_project_pages_cas_scope_and_anonymous_readback(
                 SimpleNamespace(rfilename="source.xml", blob_id=source_blob),
                 SimpleNamespace(rfilename="README.md", blob_id="old-card"),
             ]
+            if australian_archive:
+                siblings.extend(
+                    SimpleNamespace(rfilename=key, blob_id="retained-diagram")
+                    for key in pages.FILES
+                    if key != "README.md"
+                )
             if revision == "b" * 40:
                 siblings.extend(
                     SimpleNamespace(rfilename=key, blob_id="new")
-                    for key in pages.FILES
+                    for key in files
                     if key != "README.md"
                 )
             return SimpleNamespace(
@@ -636,17 +667,21 @@ def test_project_pages_cas_scope_and_anonymous_readback(
     )
     receipt = tmp_path / "receipt.json"
     if outcome == "success":
-        pages.publish("a" * 40, receipt, sdk)
+        pages.publish(
+            "a" * 40, receipt, sdk, australian_archive=australian_archive
+        )
         result = json.loads(receipt.read_bytes())
         assert result["state"] == "anonymously_verified"
-        assert result["unchanged_other_git_objects"] == 1
+        assert result["unchanged_other_git_objects"] == (
+            3 if australian_archive else 1
+        )
         assert result["files"] == [b.model_dump(mode="json") for b in bindings]
     else:
         with pytest.raises(ValueError, match=r"outside|anonymous"):
-            pages.publish("a" * 40, receipt, sdk)
+            pages.publish(
+                "a" * 40, receipt, sdk, australian_archive=australian_archive
+            )
         assert json.loads(receipt.read_bytes())["state"] == "uploaded"
     assert len(commits) == 1
     assert commits[0]["parent_commit"] == parent
-    assert {op["path_in_repo"] for op in commits[0]["operations"]} == set(
-        pages.FILES
-    )
+    assert {op["path_in_repo"] for op in commits[0]["operations"]} == set(files)

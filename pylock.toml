@@ -780,10 +780,10 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/53/a1/1681dfa1c904d4e
 
 [[packages]]
 name = "opentelemetry-api"
-version = "1.45.1"
+version = "1.45.2"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/2e/02/6e0ae9cc61bd3169d401077b507b3ebc344745171e1051ab430be012dcd9/opentelemetry_api-1.45.1.tar.gz", upload-time = 2026-10-06T17:32:58Z, size = 72804, hashes = { sha256 = "aa38ed19bcc084ba42782a73255b3582283eced7ad6dddbd6695189e69adfb75" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/1e/41/f7dcf80b81ee8e71c1a2b59f14208bc723edbd89ed027a73b175abf6348e/opentelemetry_api-1.45.1-py3-none-any.whl", upload-time = 2026-10-06T17:32:33Z, size = 60256, hashes = { sha256 = "b31553efa588ae44bc306f863c785c5333a9ecc091248c6ee68b4b6c87fdedfb" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/19/14/cf3a6b6448849656e1e5f4e2101f3988dc6789724050096aba1bc5ccf592/opentelemetry_api-1.45.2.tar.gz", upload-time = 2026-10-29T17:29:37Z, size = 73277, hashes = { sha256 = "d7b0008e21e5fd61cbe7a7f34ca3b6905a78ab677d9bc395e299359c75cda6b4" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/a9/2d/610db864d7513158cebb8f36cc88e67e73bd6c7aa1905ef18d89e1281c81/opentelemetry_api-1.45.2-py3-none-any.whl", upload-time = 2026-10-29T17:29:06Z, size = 60335, hashes = { sha256 = "2cbd737377e710ee740d261c94e93fa0f08e6d037c18f17513cc0a2d94479a34" } }]
 
 [[packages]]
 name = "orjson"
@@ -1335,10 +1335,10 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/32/46/9cb0e58b2deb7f8
 
 [[packages]]
 name = "soupsieve"
-version = "3.0.4"
+version = "4.0"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/19/63/0b6bae54546aed98d72f12d09df57b19a287f01c84d22047fa2e23772ab9/soupsieve-3.0.4.tar.gz", upload-time = 2026-10-22T00:45:26Z, size = 119017, hashes = { sha256 = "924fab84ae21604c19e175e1f39815eb6fa83ba23836e09e9de180925e5bc4c0" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/07/66/473f7ca0be0b06e38ee8c85ee2db184e3981bd769fac2e7c19c8a8865211/soupsieve-3.0.4-py3-none-any.whl", upload-time = 2026-10-22T00:45:24Z, size = 42458, hashes = { sha256 = "8412826614f9c632227067d0985aeb9f584bd15efc852955430e097a9fe7afbf" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/7d/5e/19b7c5d20bc2f226c44f33a9d9aab9740efed7555b96e656231fd564e514/soupsieve-4.0.tar.gz", upload-time = 2026-11-03T14:28:55Z, size = 151929, hashes = { sha256 = "ccd6470b256394ac44b08b86fd94b30a17d335a5335c8a3d15565f7b03d3c8cf" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/4f/18/d24df2f733ee0655c58717d51add4118a70e64692d0e47d403b9aac4cf98/soupsieve-4.0-py3-none-any.whl", upload-time = 2026-11-03T14:28:53Z, size = 50158, hashes = { sha256 = "5e7494bfce90e06676cfb4c5c2cf22243e98e5cf24646bb1ecdda46d318550a0" } }]
 
 [[packages]]
 name = "starlette"

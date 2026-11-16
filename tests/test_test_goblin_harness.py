@@ -580,6 +580,38 @@ def test_governed_occurrence_validation_rejects_one_stale_runner() -> None:
         )
 
 
+def test_archive_runner_is_accepted_for_bulk_publication_only() -> None:
+    """The local-disk archive label stays scoped to its dispatch workflow."""
+    versions = {"runner": "ubuntu-24.04"}
+    documents = HARNESS._workflow_documents()
+
+    HARNESS._validate_runners(documents, versions)
+
+    smuggled = dict(documents)
+    smuggled[ROOT / ".github" / "workflows" / "codex-unrelated.yml"] = {
+        "jobs": {"publish": {"runs-on": HARNESS.ARCHIVE_RUNNER}}
+    }
+    with pytest.raises(ValueError, match="workflow runners are not governed"):
+        HARNESS._validate_runners(smuggled, versions)
+
+
+def test_non_string_runner_is_reported_as_drift() -> None:
+    """A label list names its workflow instead of raising TypeError."""
+    versions = {"runner": "ubuntu-24.04"}
+    documents = dict(HARNESS._workflow_documents())
+    documents[ROOT / ".github" / "workflows" / "labels.yml"] = {
+        "jobs": {"publish": {"runs-on": ["self-hosted", "gma-archive"]}}
+    }
+
+    with pytest.raises(
+        ValueError, match="workflow runners are not governed"
+    ) as info:
+        HARNESS._validate_runners(documents, versions)
+
+    assert "labels.yml=" in str(info.value)
+    assert "gma-archive" in str(info.value)
+
+
 def test_measured_receipt_records_artifact_identity(
     tmp_path, monkeypatch
 ) -> None:
@@ -706,7 +738,7 @@ def test_gitleaks_allowlist_is_limited_to_verified_public_evidence() -> None:
     )
     assert config["extend"] == {"useDefault": True}
     allowlists = config["allowlists"]
-    assert len(allowlists) == 1
+    assert len(allowlists) == 2
     allowlist = allowlists[0]
     assert allowlist["targetRules"] == ["generic-api-key"]
     assert allowlist["regexTarget"] == "match"
@@ -837,6 +869,83 @@ def test_pbs_replay_gitleaks_allowlist_binds_the_computed_key() -> None:
         assert any(
             re.fullmatch(pattern, f'idempotency_key": "{expected_key}"')
             for pattern in config["allowlists"][0]["regexes"]
+        )
+
+
+def test_frozen_mbs_gitleaks_exception_is_path_and_digest_bound() -> None:
+    """Only the three computed identities in their exact plans are excepted."""
+    config = tomllib.loads((ROOT / ".gitleaks.toml").read_text())
+    allowlist = config["allowlists"][1]
+    assert allowlist["targetRules"] == ["generic-api-key"]
+    assert allowlist["condition"] == "AND"
+    assert allowlist["regexTarget"] == "match"
+    assert len(allowlist["paths"]) == 4
+    assert len(allowlist["regexes"]) == 3
+    directory = (
+        ROOT
+        / "quality/qualifications/australian-mbs-frozen-raw-lineage-20261115"
+    )
+    plans = sorted(directory.glob("v3-plan-*.json"))
+    assert len(plans) == 3
+    for path in plans:
+        snapshot = json.loads(path.read_text())["snapshots"][0]
+        expected = hashlib.sha256(
+            json.dumps(
+                [snapshot["partition_id"], snapshot["snapshot_id"]],
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode()
+        ).hexdigest()
+        assert snapshot["idempotency_key"] == expected
+        assert re.fullmatch(
+            allowlist["paths"][0], path.relative_to(ROOT).as_posix()
+        )
+        assert (
+            sum(
+                bool(re.fullmatch(pattern, f'idempotency_key": "{expected}"'))
+                for pattern in allowlist["regexes"]
+            )
+            == 1
+        )
+        changed = expected[:-1] + ("0" if expected[-1] != "0" else "1")
+        assert not any(
+            re.fullmatch(pattern, f'idempotency_key": "{changed}"')
+            or re.fullmatch(pattern, f'api_key": "{expected}"')
+            for pattern in allowlist["regexes"]
+        )
+    assert not re.fullmatch(allowlist["paths"][0], "unrelated.json")
+    receipts = sorted(
+        (
+            ROOT
+            / "quality/qualifications/australian-mbs-frozen-raw-v3-replays-20261115"
+        ).glob("hosted-*/replay-receipt.json")
+    )
+    assert len(receipts) == 3
+    for path in receipts:
+        registration = json.loads(path.read_text())["replay"]["registration"]
+        expected = hashlib.sha256(
+            json.dumps(
+                [registration["partition_id"], registration["snapshot_id"]],
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode()
+        ).hexdigest()
+        assert registration["idempotency_key"] == expected
+        assert (
+            sum(
+                bool(re.fullmatch(pattern, path.relative_to(ROOT).as_posix()))
+                for pattern in allowlist["paths"]
+            )
+            == 1
+        )
+        assert (
+            sum(
+                bool(re.fullmatch(pattern, f'idempotency_key": "{expected}"'))
+                for pattern in allowlist["regexes"]
+            )
+            == 1
         )
 
 

@@ -10,6 +10,7 @@ from datetime import date
 from pathlib import Path
 
 import pytest
+from bs4 import BeautifulSoup
 from scripts import render_project_overview as overview
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -150,6 +151,76 @@ def test_overview_derives_all_progress_sections_and_preserves_prose(
         == json.loads(
             (overview_root / "docs/project-status.json").read_bytes()
         )["as_of"]
+    )
+
+
+@pytest.mark.parametrize("gate_state", ["blocked", "passed"])
+def test_overview_distinguishes_federation_and_stable_qualification(
+    overview_root: Path, gate_state: str
+) -> None:
+    contract_path = (
+        overview_root / "quality/qualifications/stable-v1-contract.json"
+    )
+    contract = json.loads(contract_path.read_text(encoding="utf-8"))
+    gate = next(
+        gate
+        for gate in contract["release_gates"]
+        if gate["gate_id"] == "stable-v1-australian-health-federation"
+    )
+    gate["state"] = gate_state
+    contract["qualification_state"] = "blocked"
+    contract_path.write_text(json.dumps(contract), encoding="utf-8")
+
+    rendered = overview.outputs(date(2026, 11, 16))[
+        overview_root / "docs/assets/roadmap.svg"
+    ]
+    root = BeautifulSoup(rendered, "html.parser")
+    labels = [node.get_text() for node in root.find_all("text")]
+    assert (
+        labels[labels.index("Federation gate") + 1] == gate_state.capitalize()
+    )
+    assert labels[labels.index("Stable qualification") + 1] == "Blocked"
+    assert "Stable v1 release" not in labels
+
+
+@pytest.mark.parametrize("alteration", ["missing", "duplicate", "invalid"])
+def test_overview_rejects_ambiguous_federation_gate(
+    overview_root: Path, alteration: str
+) -> None:
+    contract_path = (
+        overview_root / "quality/qualifications/stable-v1-contract.json"
+    )
+    contract = json.loads(contract_path.read_text(encoding="utf-8"))
+    gates = contract["release_gates"]
+    gate = next(
+        gate
+        for gate in gates
+        if gate["gate_id"] == "stable-v1-australian-health-federation"
+    )
+    if alteration == "missing":
+        gates.remove(gate)
+    elif alteration == "duplicate":
+        gates.append(dict(gate))
+    else:
+        gate["state"] = "unknown"
+    contract_path.write_text(json.dumps(contract), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="federation gate"):
+        overview.outputs(date(2026, 11, 16))
+
+
+def test_snapshot_labels_legacy_release_state_as_qualification(
+    overview_root: Path,
+) -> None:
+    snapshot = json.loads(
+        overview.outputs(date(2026, 11, 16))[
+            overview_root / "docs/project-status.json"
+        ]
+    )
+    assert snapshot["stable_release_state"] == "blocked"
+    assert snapshot["stable_qualification_state"] == "blocked"
+    assert snapshot["stable_release_state_meaning"] == (
+        "stable_qualification_not_software_release"
     )
 
 

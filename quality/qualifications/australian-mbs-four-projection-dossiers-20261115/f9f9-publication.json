@@ -1,0 +1,33 @@
+{
+  "anonymous_digest_verification": "passed",
+  "data_acquired": true,
+  "dataset": "edithatogo/australian-mbs-source-archive",
+  "legacy_paths_preserved": 59,
+  "lifecycle_publication": {
+    "anonymous_digest_verification": "passed",
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "metadata_revision": "1e4971c35c0ef45026168a8e2498d1bd57a3c324",
+    "object_sha256": {
+      "bronze/acquisitions/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd.json": "0473edd93fe9c2781701116febbd68a0c68262b74be5b4de52409d5c52570d30",
+      "bronze/admissions/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd/39df4d1a14f1b90d1be41ae9e1fab7b99c9c75385f735b00831c8c199a1350f0.json": "25dcc63b950ee330b28cfdd66747e4708891701703f8a91bda3c3b569d5fee7a",
+      "bronze/admissions/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd/56434cc0e027f2d8b082060feee63c490959b63a26a6aff91c01f84614432a12.json": "a2e4cb971425c78b9d39cdceb46420bc4beb5b0006636d94911a2013e0b414b6",
+      "bronze/raw-evidence/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd/manifest.json": "4104bc85b891dd489e94378c40129870ef98f087c0e28862feb759a3723501fb",
+      "bronze/receipts/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd.json": "14fb98f49eb4e92dc467c0781a1cbd8a3409994b28059922783558235e97b21a"
+    },
+    "raw_archive_revision": "abdf414cdea0127d3edda6f8af402d1a01139623",
+    "schema_id": "global-medicines-atlas.mbs-verified-lifecycle-publication",
+    "verified_objects": 5
+  },
+  "manifest_path": "bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/manifest.json",
+  "manifest_sha256": "feea0cb0f8179568e99230afc830571293d99aa4f4de04800b6b43fc0e40115f",
+  "parent_revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+  "profile_state": "accepted",
+  "record_count": 6046,
+  "revision": "abdf414cdea0127d3edda6f8af402d1a01139623",
+  "schema_id": "global-medicines-atlas.mbs-hosted-publication",
+  "source_archive_revision": "abdf414cdea0127d3edda6f8af402d1a01139623",
+  "temporary_source_bytes_removed": true,
+  "verified_objects": 7,
+  "workflow_commit": "644f3f6cfd2b76b0866d5ecb90dde397d67a51eb",
+  "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37163925043"
+}

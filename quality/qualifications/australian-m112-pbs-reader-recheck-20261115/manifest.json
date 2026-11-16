@@ -1,0 +1,99 @@
+{
+  "boundaries": {
+    "dataset_publication": false,
+    "federation_accepted": false,
+    "independent_recovery_qualified": false,
+    "individual_participant_or_cohort_data_accessed": false,
+    "new_sources": false,
+    "source_values_emitted": false
+  },
+  "deferred_before_and_after": 1745,
+  "frozen_object_count": 1759,
+  "new_unique_admissions": 0,
+  "objects": [
+    {
+      "byte_count": 372149,
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+      "receipt_path": "quality/qualifications/australian-m112-pbs-reader-recheck-20261115/43614668635.json",
+      "receipt_sha256": "c5e5f3a55eb97b36069ad72b6abdc0e79d47ec4e91602db9fc32323bb0981ba9",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "run_id": 43614668635,
+      "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/43614668635",
+      "sha256": "32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b",
+      "status": "passed"
+    },
+    {
+      "byte_count": 468764,
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+      "receipt_path": "quality/qualifications/australian-m112-pbs-reader-recheck-20261115/43614671608.json",
+      "receipt_sha256": "2ba9c211f1934c79200959af9b28392d8723d4181c8bf60a3f2fbae5722c9eab",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "run_id": 43614671608,
+      "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/43614671608",
+      "sha256": "147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99",
+      "status": "passed"
+    },
+    {
+      "byte_count": 35384567,
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "path": "raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+      "receipt_path": "quality/qualifications/australian-m112-pbs-reader-recheck-20261115/43614674740.json",
+      "receipt_sha256": "7f9ddbd0e52af2ac856f8cdbdfe487c5d4951faa3bba54c4f6247b84599e9552",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "run_id": 43614674740,
+      "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/43614674740",
+      "sha256": "4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4",
+      "status": "passed"
+    },
+    {
+      "byte_count": 36381946,
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "path": "raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+      "receipt_path": "quality/qualifications/australian-m112-pbs-reader-recheck-20261115/43614677855.json",
+      "receipt_sha256": "561afe2a030885969754d38afd38e396d325aa7d2aacbf91d74cc1e71f4e1e16",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "run_id": 43614677855,
+      "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/43614677855",
+      "sha256": "f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8",
+      "status": "passed"
+    },
+    {
+      "byte_count": 1063694,
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "path": "raw/pbs/utilisation/reference/pbs-item-drug-map.csv",
+      "receipt_path": "quality/qualifications/australian-m112-pbs-reader-recheck-20261115/43614680473.json",
+      "receipt_sha256": "490839d89d28a8cddd45fe174fab4e7ab418671bae1a21608522690c9baf17d4",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "run_id": 43614680473,
+      "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/43614680473",
+      "sha256": "51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8",
+      "status": "passed"
+    },
+    {
+      "byte_count": 117376499,
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "path": "raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx",
+      "receipt_path": "quality/qualifications/australian-m112-pbs-reader-recheck-20261115/43614683704.json",
+      "receipt_sha256": "e66d0ef5b284f35b7e54cf3a0ec5b63f21b98b0bc45ba701126366e73af56929",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "run_id": 43614683704,
+      "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/43614683704",
+      "sha256": "48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca",
+      "status": "passed"
+    }
+  ],
+  "prior_ledger": {
+    "path": "quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261028.json",
+    "sha256": "c556cf596514d7cb69bce0a188f87460ad2746c3afacc559cec8ebd56cd7a3a3"
+  },
+  "raw_admissions_before_and_after": 14,
+  "raw_canaries_before_and_after": 14,
+  "rechecked_existing_objects": 6,
+  "recorded_on": "2026-11-15",
+  "schema_id": "global-medicines-atlas.m112-pbs-reader-recheck-batch",
+  "schema_version": 1,
+  "workflow_commit": "ab69da47d7c338e3a3aecb8bcaec9757989403b6",
+  "workflow_path": ".github/workflows/australian-m112-pbs-v4-admission-qualification.yml"
+}

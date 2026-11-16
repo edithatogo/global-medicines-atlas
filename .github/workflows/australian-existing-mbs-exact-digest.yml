@@ -1,0 +1,51 @@
+name: Australian existing MBS exact-revision digest check
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_commit:
+        description: Exact merged main commit to qualify
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: australian-existing-mbs-exact-digest-${{ inputs.target_commit }}
+  cancel-in-progress: false
+
+jobs:
+  verify-existing-mbs:
+    name: Verify eleven classified existing MBS objects
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Require exact default-branch identity
+        env:
+          REQUESTED_COMMIT: ${{ inputs.target_commit }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = 'refs/heads/main'
+          test "$GITHUB_SHA" = "$REQUESTED_COMMIT"
+      - name: Stream and verify exact classified objects
+        env:
+          HF_HUB_DISABLE_IMPLICIT_TOKEN: '1'
+        run: |
+          set -euo pipefail
+          uv run --locked --python 3.15.1 python -m scripts.qualify_australian_v4_privacy_readiness \
+            --verify \
+            --workflow-commit "$GITHUB_SHA" \
+            --output "$RUNNER_TEMP/australian-existing-mbs-exact-digest.json"
+      - name: Retain value-free digest receipt
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: australian-existing-mbs-exact-digest-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/australian-existing-mbs-exact-digest.json
+          if-no-files-found: error
+          retention-days: 90

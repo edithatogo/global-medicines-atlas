@@ -1,5 +1,21 @@
 # System completion execution charter
 
+## Scoped software release — 14 November 2026
+
+The maintainer selected a software-only `v1.0.0` release using the existing
+code and archives, without adding or publishing data. At that decision, the
+original Australian federation requirements M-105 through M-112 were blocked and deferred
+from this software release; they are not marked complete or reinterpreted.
+Decision D-006-13 authorizes only this exact software scope after every other
+release gate, exact-artifact reproduction, protected checks and attestation
+pass. Production deployment, dataset publication, rights changes and
+independent production disaster recovery remain separate.
+
+On 15 November the maintainer separately approved D-006-14: M-105 is accepted
+under a chronology-only exception after its exact dossier checks pass. M-106
+through M-112 and the full federation gate remain blocked. This later decision
+does not change the scope of the earlier software release.
+
 ## Accessibility testing excluded — 3 November 2026
 
 The maintainer explicitly removed accessibility testing from project scope.
@@ -20,11 +36,23 @@ federation later**. Complete the existing software candidate using its current
 qualified inputs and representative fixtures. Add no sources, object cohorts,
 semantic interpretations or infrastructure merely to finish the software.
 
-This supersedes the earlier scheduling requirement to work through all five
-federation stages before stopping. It does not amend their acceptance contracts,
-mark blocked requirements complete, or permit a Stable v1 release. The
-Australian federation stages below remain the later milestone, with their
-receipts and limitations intact. The bounded candidate is not a new release tag.
+That decision superseded the earlier scheduling requirement to work through
+all five federation stages before stopping. It did not amend their acceptance
+contracts or authorize a release. The later 14 November decision above permits
+only the separately scoped software release; the full federation criteria,
+receipts and limitations remain unchanged.
+
+## Scoped existing-archive batch — 15 November 2026
+
+The maintainer explicitly resumed per-object qualification and consumer
+checks for the existing Australian archive. This increment uses the frozen
+inventory and retained evidence; it does not authorize adding or publishing
+datasets, changing rights, accessing participant or cohort-derived data, or
+accepting the full federation. Unknown sensitivity and incomplete per-object
+admission evidence remain blockers. Already admitted non-sensitive public
+aggregate and reference objects may be rechecked read-only; repeat checks do
+not create additional admissions. The owning data-plane track records the
+scope, evidence and stop conditions.
 
 ## Bounded software finish line
 
@@ -42,8 +70,9 @@ Use one coherent completion packet, with this finite checklist:
 
 Once this checklist passes, stop software-completion work. Do not fill every
 remaining checkbox in historical plans. Report the tested candidate, commands,
-artifact paths and limitations once. Stable v1 remains blocked by the existing
-federation contract; dataset publication, deployment and expanded claims retain
+artifact paths and limitations once. Full federation remains blocked by its
+existing contract; the separately approved software release does not qualify
+that federation. Dataset publication, deployment and expanded claims retain
 their separate authority requirements.
 
 ## Later federation milestone
@@ -54,13 +83,16 @@ charter sets scheduling priority. It does not change acceptance criteria,
 qualify data, waive requirements, or authorize publication or release.
 
 Use the [Stable v1 contract](../quality/qualifications/stable-v1-contract.json),
-its [readiness reconciliation](../quality/qualifications/stable-v1-release-readiness-reconciliation.json),
+the [current Australian acceptance register](../docs/qualification/australian-health-federation-acceptance.md),
 the owning track receipts, and `scripts/reconcile_stable_v1_contract.py` for
-gate states. Read their bound evidence before choosing work; do not infer
-current status from historical plan sections. Conditional maintainer approval
-remains subject to its recorded conditions. The current M-105 and M-107
-dispositions remain effective until supported by their required evidence and
-any applicable decision.
+current gate states. The [28 October readiness reconciliation](../quality/qualifications/stable-v1-release-readiness-reconciliation.json)
+is a historical snapshot bound to the later scoped software-release approval;
+its earlier M-105 and raw-delivery statements are not current. Preserve its
+bytes and the separately retained original contract. Read the bound evidence
+before choosing work; do not infer current status from historical plan
+sections. Conditional maintainer approval remains subject to its recorded
+conditions. The current M-105 and M-107 dispositions remain effective until
+supported by their required evidence and any applicable decision.
 
 ### Acceptance lanes
 
@@ -263,3 +295,13 @@ Execute only the four-object digest-frozen historical ATC2 contract through
 Actions. Continue bounded public ATC2 discovery; participant/cohort-derived
 sources, general federation, semantic admission and public releases remain
 excluded. Stop this publication at anonymous readback and workflow restoration.
+
+## Recovered AIHW ATC2 monthly file — 13 November 2026
+
+The maintainer requested recovery, comparison and publication of missing public
+ATC2 data. The previously unavailable publisher ZIP is now available and the
+exact 88,904,070-byte object is absent from the verified PBS archive manifest.
+Prepare one source-faithful append under the existing hosted publication and
+anonymous-verification boundary. Keep the publisher attribution and licence
+notice with the object, preserve the prior manifest, and retain the local copy
+until verification succeeds. Participant and cohort-derived data remain private.

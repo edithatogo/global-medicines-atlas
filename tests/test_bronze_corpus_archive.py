@@ -10,6 +10,7 @@ from hashlib import sha256
 from pathlib import Path
 
 import pytest
+import yaml
 from scripts.exercise_bronze_corpus import main as exercise_main
 
 import global_medicines_atlas.bronze_corpus_archive as archive_mod
@@ -40,6 +41,25 @@ def test_hosted_workflow_archives_corpus_without_implicit_publication() -> None:
         publish
     )
     assert "github.event_name == 'push'" not in publish
+
+
+@pytest.mark.unit
+def test_automatic_corpus_check_does_not_upload_archive() -> None:
+    workflow = yaml.safe_load(WORKFLOW.read_text(encoding="utf-8"))
+    corpus = workflow["jobs"]["bronze-corpus"]
+    assert "if" not in corpus
+    steps = {step.get("name"): step for step in corpus["steps"]}
+    assert (
+        "scripts/exercise_bronze_corpus.py"
+        in steps["Exercise Bronze machinery against governed corpus"]["run"]
+    )
+    assert (
+        "sha256sum --check SHA256SUMS"
+        in steps["Verify archive checksum"]["run"]
+    )
+    assert steps["Upload exercised Bronze corpus archive"]["if"] == (
+        "github.event_name == 'workflow_dispatch'"
+    )
 
 
 @pytest.mark.integration

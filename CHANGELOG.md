@@ -5,6 +5,18 @@ the project uses Semantic Versioning once stable release qualification begins.
 
 ## Unreleased
 
+## [1.0.0] - 2026-11-14
+
+This is a scoped software-only release of the Python package, CLI, read-only
+API, Atlas and export tooling. It uses existing public archives and adds no
+datasets. Australian federation requirements M-105 through M-112 remain open;
+full historical coverage, a production service and clinical suitability are
+not claimed.
+
+### Security
+
+- Update OpenTelemetry API to 1.45.2 and preserve locked dependency auditing.
+
 ## [1.0.0rc1] - 2026-08-01
 
 This release candidate packages the independently reviewed global comparison
