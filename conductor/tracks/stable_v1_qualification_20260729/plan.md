@@ -1492,3 +1492,28 @@ retain the six role hashes, in-memory cache eviction and primary-object restore.
 The run did not perform a new admission or publication, and its primary restore
 is not an independent-backup recovery rehearsal. Hosted PR CI and merge remain
 pending; none is an M-105 through M-112 acceptance decision.
+
+## Shared privacy-action CI repair — 16 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/privacy-secrets-ci-20261116`. Scope is PR #1425's privacy workflow,
+its existing security checks and a narrow upstream scanner maintenance snapshot.
+No source data, participant or cohort-derived data, dataset publication or
+outbound message is in scope.
+
+- [x] Reproduce the linked `stale-action-refs` finding, and integrate current
+  main locally before any PR CI can run. Retain its no-acquisition guards.
+- [x] Replace the obsolete Python 3.12 action candidate with the exact Python
+  3.15.1 maintenance revision `5faba2c520775e61d5a7032eda6677ec1c022d21`.
+  Its upstream notice-preserving backport passed real scanner tests locally and
+  the complete Linux canary in repository-standards run `43827733844`.
+- [x] Preserve and check the original scanner scopes and read-only permissions;
+  validate the workflow with actionlint and the focused privacy and no-message
+  tests. The installed scanner dependencies passed the advisory lookup.
+- [x] With maintainer approval, create and verify tag
+  `privacy-secrets/v2026.11.16-py3151` on the exact qualified revision. The
+  unsuppressed audit then required the matching version comment, which is now
+  present beside the unchanged SHA pin.
+- [~] Verify the receiving PR and its required checks. Preserve both original
+  failed audit attempts; do not suppress findings or imply they passed.
