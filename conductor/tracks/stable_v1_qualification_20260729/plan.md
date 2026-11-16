@@ -1511,7 +1511,9 @@ outbound message is in scope.
 - [x] Preserve and check the original scanner scopes and read-only permissions;
   validate the workflow with actionlint and the focused privacy and no-message
   tests. The installed scanner dependencies passed the advisory lookup.
-- [~] The unmodified pedantic audit still reports one `stale-action-refs`
-  finding until an approved public version tag points to the exact qualified
-  upstream revision. Verify the receiving PR and required checks after that
-  decision; do not suppress the finding or imply the original run passed.
+- [x] With maintainer approval, create and verify tag
+  `privacy-secrets/v2026.11.16-py3151` on the exact qualified revision. The
+  unsuppressed audit then required the matching version comment, which is now
+  present beside the unchanged SHA pin.
+- [~] Verify the receiving PR and its required checks. Preserve both original
+  failed audit attempts; do not suppress findings or imply they passed.
