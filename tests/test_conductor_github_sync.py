@@ -166,6 +166,282 @@ def test_top_level_subissues_map_to_plan_phases_without_false_drift(
 
 
 @pytest.mark.unit
+def test_explicit_parent_only_track_does_not_invent_phase_issues(
+    tmp_path: Path,
+) -> None:
+    module = _load_module()
+    _write_track(tmp_path, metadata_shape="top-level")
+    track = tmp_path / "conductor" / "tracks" / "migration"
+    metadata_path = track / "metadata.json"
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    metadata["github_subissues"] = []
+    metadata_path.write_text(json.dumps(metadata), encoding="utf-8")
+    (track / "plan.md").write_text(
+        "## Phase 1: First\n\n- [ ] Task\n\n## Phase 2: Second\n\n- [ ] Task\n",
+        encoding="utf-8",
+    )
+    fixture = _fixture()
+    parent = cast(
+        "dict[str, object]", cast("list[object]", fixture["issues"])[0]
+    )
+    parent["subissues"] = []
+    fixture["issues"] = [parent]
+
+    receipt = module.synchronise(
+        tmp_path, module.load_fixture(_write_fixture(tmp_path, fixture))
+    )
+
+    assert receipt["status"] == "in_sync"
+    assert receipt["issues_checked"] == 1
+    assert receipt["drifts"] == []
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("actual_parent", [1, 99])
+def test_task_subissue_is_checked_without_becoming_a_phase(
+    tmp_path: Path, actual_parent: int
+) -> None:
+    module = _load_module()
+    _write_track(tmp_path, metadata_shape="top-level")
+    track = tmp_path / "conductor" / "tracks" / "migration"
+    metadata_path = track / "metadata.json"
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    metadata["github_subissues"] = [
+        {"kind": "task", "number": 7, "state": "closed"}
+    ]
+    metadata_path.write_text(json.dumps(metadata), encoding="utf-8")
+    (track / "plan.md").write_text(
+        "## Phase 1: First\n\n- [ ] Task\n", encoding="utf-8"
+    )
+    fixture = _fixture()
+    parent = cast(
+        "dict[str, object]", cast("list[object]", fixture["issues"])[0]
+    )
+    parent["subissues"] = [7]
+    fixture["issues"] = [
+        parent,
+        {
+            "number": 7,
+            "state": "closed",
+            "labels": [],
+            "parent": actual_parent,
+            "subissues": [],
+        },
+    ]
+
+    receipt = module.synchronise(
+        tmp_path, module.load_fixture(_write_fixture(tmp_path, fixture))
+    )
+
+    assert receipt["issues_checked"] == 2
+    if actual_parent != 1:
+        assert [
+            (item["issue"], item["code"]) for item in receipt["drifts"]
+        ] == [(7, "github_parent_mismatch")]
+    else:
+        assert receipt["status"] == "in_sync"
+        assert receipt["drifts"] == []
+
+
+@pytest.mark.unit
+def test_task_subissue_state_drift_is_reported(tmp_path: Path) -> None:
+    module = _load_module()
+    _write_track(tmp_path, metadata_shape="top-level")
+    track = tmp_path / "conductor" / "tracks" / "migration"
+    metadata_path = track / "metadata.json"
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    metadata["github_subissues"] = [
+        {"kind": "task", "number": 7, "state": "closed"}
+    ]
+    metadata_path.write_text(json.dumps(metadata), encoding="utf-8")
+    (track / "plan.md").write_text(
+        "## Phase 1: First\n\n- [ ] Task\n", encoding="utf-8"
+    )
+    fixture = _fixture()
+    parent = cast(
+        "dict[str, object]", cast("list[object]", fixture["issues"])[0]
+    )
+    parent["subissues"] = [7]
+    fixture["issues"] = [
+        parent,
+        {"number": 7, "state": "open", "labels": [], "parent": 1},
+    ]
+
+    receipt = module.synchronise(
+        tmp_path, module.load_fixture(_write_fixture(tmp_path, fixture))
+    )
+
+    assert [(item["issue"], item["code"]) for item in receipt["drifts"]] == [
+        (7, "github_state_mismatch")
+    ]
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "task_entries",
+    [
+        [{"kind": "task", "number": 1}],
+        [{"kind": "task", "number": 5}],
+        [{"kind": "task", "number": 7}, {"kind": "task", "number": 7}],
+        [{"kind": "unknown", "number": 7}],
+        [{"kind": "task"}],
+        [{"kind": "task", "number": 7, "state": "unknown"}],
+    ],
+)
+def test_ambiguous_task_subissue_metadata_is_reported(
+    tmp_path: Path, task_entries: list[dict[str, object]]
+) -> None:
+    module = _load_module()
+    _write_track(tmp_path, metadata_shape="top-level")
+    metadata_path = (
+        tmp_path / "conductor" / "tracks" / "migration" / "metadata.json"
+    )
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    metadata["github_subissues"].extend(task_entries)
+    metadata_path.write_text(json.dumps(metadata), encoding="utf-8")
+
+    receipt = module.synchronise(
+        tmp_path, module.load_fixture(_write_fixture(tmp_path, _fixture()))
+    )
+
+    assert receipt["status"] == "drift"
+    assert receipt["drifts"][0]["code"] == "track_issue_metadata_invalid"
+
+
+@pytest.mark.unit
+def test_non_list_subissue_metadata_is_reported(tmp_path: Path) -> None:
+    module = _load_module()
+    _write_track(tmp_path, metadata_shape="top-level")
+    metadata_path = (
+        tmp_path / "conductor" / "tracks" / "migration" / "metadata.json"
+    )
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    metadata["github_subissues"] = None
+    metadata_path.write_text(json.dumps(metadata), encoding="utf-8")
+
+    receipt = module.synchronise(
+        tmp_path, module.load_fixture(_write_fixture(tmp_path, _fixture()))
+    )
+
+    assert receipt["status"] == "drift"
+    assert receipt["drifts"][0]["code"] == "track_issue_metadata_invalid"
+
+
+@pytest.mark.unit
+def test_live_mode_requests_task_subissues(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    module = _load_module()
+    _write_track(tmp_path, metadata_shape="top-level")
+    track = tmp_path / "conductor" / "tracks" / "migration"
+    metadata_path = track / "metadata.json"
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    metadata["github_subissues"].append({
+        "kind": "task",
+        "number": 7,
+        "state": "closed",
+    })
+    metadata_path.write_text(json.dumps(metadata), encoding="utf-8")
+    fixture = _fixture()
+    issues = cast("list[object]", fixture["issues"])
+    parent = cast("dict[str, object]", issues[0])
+    parent["subissues"] = [5, 6, 7]
+    issues.append({"number": 7, "state": "closed", "labels": [], "parent": 1})
+    loaded = module.load_fixture(_write_fixture(tmp_path, fixture))
+    requested: list[set[int]] = []
+
+    def load_live(repository: str, numbers: set[int]) -> dict[int, object]:
+        assert repository == "owner/repository"
+        requested.append(numbers)
+        return loaded
+
+    monkeypatch.setattr(module, "load_live_issues", load_live)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["sync", "--root", str(tmp_path), "--repository", "owner/repository"],
+    )
+
+    assert module.main() == 0
+    assert requested == [{1, 5, 6, 7}]
+    assert json.loads(capsys.readouterr().out)["status"] == "in_sync"
+
+
+@pytest.mark.unit
+def test_partially_linked_phases_are_drift_not_a_crash(
+    tmp_path: Path,
+) -> None:
+    module = _load_module()
+    _write_track(tmp_path, metadata_shape="top-level")
+    track = tmp_path / "conductor" / "tracks" / "migration"
+    metadata_path = track / "metadata.json"
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    del metadata["github_subissues"]
+    metadata_path.write_text(json.dumps(metadata), encoding="utf-8")
+    (track / "plan.md").write_text(
+        "## Phase 1: First ([GitHub #5](https://example.test/issues/5))\n\n"
+        "- [ ] Task\n\n## Phase 2: Second\n\n- [ ] Task\n",
+        encoding="utf-8",
+    )
+
+    receipt = module.synchronise(
+        tmp_path, module.load_fixture(_write_fixture(tmp_path, _fixture()))
+    )
+
+    assert receipt["status"] == "drift"
+    assert receipt["issues_checked"] == 2
+    assert receipt["drifts"][0]["code"] == "track_issue_metadata_invalid"
+    assert "phase issue" in receipt["drifts"][0]["actual"]["message"]
+
+
+@pytest.mark.unit
+def test_complete_plan_links_can_supply_absent_phase_metadata(
+    tmp_path: Path,
+) -> None:
+    module = _load_module()
+    _write_track(tmp_path, metadata_shape="top-level")
+    metadata_path = (
+        tmp_path / "conductor" / "tracks" / "migration" / "metadata.json"
+    )
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    del metadata["github_subissues"]
+    metadata_path.write_text(json.dumps(metadata), encoding="utf-8")
+
+    receipt = module.synchronise(
+        tmp_path, module.load_fixture(_write_fixture(tmp_path, _fixture()))
+    )
+
+    assert receipt["status"] == "in_sync"
+    assert receipt["issues_checked"] == 3
+
+
+@pytest.mark.unit
+def test_unmapped_phases_without_parent_only_declaration_report_drift(
+    tmp_path: Path,
+) -> None:
+    module = _load_module()
+    _write_track(tmp_path, metadata_shape="top-level")
+    track = tmp_path / "conductor" / "tracks" / "migration"
+    metadata_path = track / "metadata.json"
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    del metadata["github_subissues"]
+    metadata_path.write_text(json.dumps(metadata), encoding="utf-8")
+    (track / "plan.md").write_text(
+        "## Phase 1: First\n\n- [ ] Task\n", encoding="utf-8"
+    )
+
+    receipt = module.synchronise(
+        tmp_path, module.load_fixture(_write_fixture(tmp_path, _fixture()))
+    )
+
+    assert receipt["status"] == "drift"
+    assert receipt["drifts"][0]["code"] == "track_issue_metadata_invalid"
+    assert "parent-only" in receipt["drifts"][0]["actual"]["message"]
+
+
+@pytest.mark.unit
 @pytest.mark.parametrize(
     ("layout", "review_heading"),
     [
