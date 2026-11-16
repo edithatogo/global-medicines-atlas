@@ -42,6 +42,11 @@ jobs:
     outputs:
       qualified-set-digest: ${{ steps.qualified-set.outputs.digest }}
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           ref: ${{ github.sha }}
@@ -271,6 +276,11 @@ jobs:
       contents: write # Required to create the new draft release.
       id-token: write # Required for keyless approved-release provenance.
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
       - name: Require an explicit new release tag
         shell: bash
         env:
