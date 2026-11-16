@@ -1734,6 +1734,11 @@ publication, new rights conclusion or admission is in scope.
   The affected and related metadata tests passed in a 157-test selection before
   the final frozen-membership check; the final 32-test affected file, Ruff,
   BasedPyright, ty and context checks passed. Integrate after protected checks.
+- [x] Bind the reproduced Silver output's recorded source-member digest to the
+  earlier XML schema-context receipt. Its 5,163 schema paths include 224
+  patient/person-related and 44 contact-related lexical paths; these counts are
+  not people, identifiers or value screening. The final affected file now has
+  34 passing tests, including wrong-member and false-clearance controls.
 
 ### Automatic live-check correction — 16 November 2026
 

@@ -232,6 +232,13 @@ def test_unmatched_paths_have_separate_provenance_and_privacy_states() -> None:
     assert bronze["source_archive_sha256"] == silver["source_archive_sha256"]
     assert bronze["sha256"] != silver["sha256"]
     assert silver["two_builds_same_algorithm"] is True
+    assert silver["source_member_schema_context"] == {
+        "schema_paths": 5163,
+        "patient_related_paths": 224,
+        "contact_related_paths": 44,
+        "selected_identifier_label_matches": 0,
+        "scope": "source_member_structure_not_output_values_or_privacy_clearance",
+    }
     assert (
         silver["historical_publication"]
         == "anonymous_digest_verified_not_v4_admitted"
@@ -322,6 +329,14 @@ def test_unmatched_provenance_rejects_inventory_or_pdf_drift(
             "silver_admission",
             "PBS Silver identity, publication or lineage differs",
         ),
+        (
+            "schema_member",
+            "PBS Silver identity, publication or lineage differs",
+        ),
+        (
+            "schema_clearance",
+            "PBS Silver identity, publication or lineage differs",
+        ),
     ],
 )
 def test_unmatched_provenance_rejects_projection_drift(
@@ -354,6 +369,10 @@ def test_unmatched_provenance_rejects_projection_drift(
         docs["publication"]["revision"] = "0" * 40
     elif mutation == "silver_archive":
         docs["silver_rights"]["authorized_output"]["archive_sha256"] = "0" * 64
+    elif mutation == "schema_member":
+        docs["schema_context"]["april_2026"]["member_sha256"] = "0" * 64
+    elif mutation == "schema_clearance":
+        docs["schema_context"]["boundaries"]["archive_privacy_cleared"] = True
     else:
         docs["publication"]["v4_admission_performed"] = True
     with pytest.raises(ValueError, match=message):

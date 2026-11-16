@@ -40,6 +40,10 @@
       "path": "quality/qualifications/australian-m112-reimbursement-batch-readiness-20261115.json",
       "sha256": "0969afcd6152cd73f5ff53f28ccb6fb9315090a71ba302ebbee74efaf32db4f5"
     },
+    "schema_context": {
+      "path": "quality/qualifications/australian-pbs-schema-privacy-context-20261115.json",
+      "sha256": "4a629204fc3810ea8e3d3de5e29f304e8cdecaf9ecbb4889ece6ca43db360209"
+    },
     "silver_readiness": {
       "path": "quality/qualifications/pbs-reproduced-v4-evidence-readiness-20261029.json",
       "sha256": "d581fb505eca81ea2e984941d53c57218bbafcfc9c2de23a6718caf32ea01946"
@@ -79,6 +83,13 @@
       "revision": "3995deb3e2a82f09472d6a78020fb13bbbc96056",
       "sha256": "86d65b147dc95787c5e3f14b13abe2630562f050e2221a1340939dcc7776a88c",
       "source_archive_sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+      "source_member_schema_context": {
+        "contact_related_paths": 44,
+        "patient_related_paths": 224,
+        "schema_paths": 5163,
+        "scope": "source_member_structure_not_output_values_or_privacy_clearance",
+        "selected_identifier_label_matches": 0
+      },
       "source_member_sha256": "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43",
       "two_builds_same_algorithm": true
     },

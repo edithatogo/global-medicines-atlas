@@ -31,7 +31,13 @@ frozen M-112 inventory; the reproduced Silver output is outside it.
 
 The Bronze and Silver outputs bind to the same recorded source archive digest,
 but have different output identities and transformations. This observation
-does not transfer privacy or rights decisions between them. The September 2025
+does not transfer privacy or rights decisions between them. The Silver
+output's recorded source-member digest also matches the prior [schema context](australian-pbs-schema-privacy-context-20261115.md):
+5,163 distinct schema paths, including 224 with patient- or person-related
+tokens and 44 with contact-related tokens. The selected explicit identifier
+labels had zero lexical matches. These are structural path counts, not people,
+identifiers or values, and they do not screen the Silver output or clear privacy.
+The September 2025
 API ZIP and its 33 named members also retain their existing unknown privacy
 dispositions; filenames and one XML member's schema labels do not screen their
 contents.

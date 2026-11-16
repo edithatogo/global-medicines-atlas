@@ -50,6 +50,10 @@ INPUTS = {
         "quality/qualifications/pbs-reproduced-v4-evidence-readiness-20261029.json",
         "d581fb505eca81ea2e984941d53c57218bbafcfc9c2de23a6718caf32ea01946",
     ),
+    "schema_context": (
+        "quality/qualifications/australian-pbs-schema-privacy-context-20261115.json",
+        "4a629204fc3810ea8e3d3de5e29f304e8cdecaf9ecbb4889ece6ca43db360209",
+    ),
     "silver_rights": (
         "quality/qualifications/australian-pbs-reproduced-silver-output-rights-attestation-20261029.json",
         "93e0d64ec428ae157e030432e8cce70751df54ec111b9fa11319c74206a3c216",
@@ -67,6 +71,9 @@ PREVIOUS_MATCHED_PATHS = 1703
 UNMATCHED_PATHS = 19
 ARCHIVED_PDF_EVENTS = 5
 FROZEN_PATHS = 18
+MEMBER_SCHEMA_PATHS = 5163
+PATIENT_RELATED_PATHS = 224
+CONTACT_RELATED_PATHS = 44
 
 
 def _require(condition: object, message: str) -> None:
@@ -260,6 +267,8 @@ def _silver_record(row: dict[str, Any], docs: dict[str, Any]) -> dict[str, Any]:
     rights = docs["silver_rights"]
     authorized = rights["authorized_output"]
     publication = docs["publication"]
+    schema_context = docs["schema_context"]
+    member = schema_context["april_2026"]
     _require(
         (
             publication.get("dataset"),
@@ -283,10 +292,23 @@ def _silver_record(row: dict[str, Any], docs: dict[str, Any]) -> dict[str, Any]:
         and authorized.get("dataset") == row["dataset"]
         and output.get("source_member_sha256")
         == authorized.get("member_sha256")
+        == member.get("member_sha256")
         and authorized.get("archive_sha256")
         == docs["projection"]["pbs_source_parquet_lineage"][
             "source_of_truth_sha256"
         ]
+        == member.get("archive_sha256")
+        and member.get("member_schema_paths") == MEMBER_SCHEMA_PATHS
+        and sum(member.get("patient_related_context_counts", {}).values())
+        == PATIENT_RELATED_PATHS
+        and sum(member.get("contact_related_context_counts", {}).values())
+        == CONTACT_RELATED_PATHS
+        and member.get("selected_explicit_identifier_label_count") == 0
+        and schema_context["boundaries"].get("archive_privacy_cleared") is False
+        and schema_context["boundaries"].get(
+            "unassessed_payload_reads_authorized"
+        )
+        is False
         and rights.get("public_release_rights_attested") is True
         and rights.get("permission_instrument_existence_and_applicability")
         == "maintainer_attested_not_independently_reviewed_or_located"
@@ -301,6 +323,19 @@ def _silver_record(row: dict[str, Any], docs: dict[str, Any]) -> dict[str, Any]:
         "kind": "pbs_reproduced_silver",
         "source_archive_sha256": authorized["archive_sha256"],
         "source_member_sha256": authorized["member_sha256"],
+        "source_member_schema_context": {
+            "schema_paths": member["member_schema_paths"],
+            "patient_related_paths": sum(
+                member["patient_related_context_counts"].values()
+            ),
+            "contact_related_paths": sum(
+                member["contact_related_context_counts"].values()
+            ),
+            "selected_identifier_label_matches": member[
+                "selected_explicit_identifier_label_count"
+            ],
+            "scope": "source_member_structure_not_output_values_or_privacy_clearance",
+        },
         "two_builds_same_algorithm": True,
         "prior_field_state_receipt_names_prior_output": True,
         "historical_rights": "exact_output_maintainer_attested_instrument_not_independently_reviewed",
