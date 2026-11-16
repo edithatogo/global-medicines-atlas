@@ -4,8 +4,10 @@
     "github>edithatogo/renovate-config",
     ":dependencyDashboard"
   ],
-  "dependencyDashboard": true,
-  "dependencyDashboardTitle": "Dependency update dashboard",
+  "dependencyDashboard": {
+    "enabled": true,
+    "title": "Dependency update dashboard"
+  },
   "labels": [
     "dependencies"
   ],
