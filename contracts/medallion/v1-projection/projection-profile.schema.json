@@ -1,0 +1,272 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://edithatogo.github.io/contracts/medallion/v1-projection/projection-profile.schema.json",
+  "title": "V1 source and same-stratum Bronze projection profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_id",
+    "schema_version",
+    "source",
+    "projection",
+    "producer",
+    "source_v1",
+    "v2_lineage",
+    "raw_admission",
+    "derivation",
+    "boundaries",
+    "source_rights_context",
+    "projection_rights"
+  ],
+  "properties": {
+    "schema_id": {
+      "const": "global-medicines-atlas.v1-b2-projection-profile"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "source": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/identity"
+        },
+        {
+          "type": "object",
+          "required": [
+            "acquisition_id",
+            "representation",
+            "stratum",
+            "artifact_id",
+            "acquisition_event",
+            "b2_reference"
+          ],
+          "properties": {
+            "acquisition_id": {
+              "$ref": "#/$defs/sha"
+            },
+            "representation": {
+              "const": "raw"
+            },
+            "stratum": {
+              "const": "B2"
+            },
+            "artifact_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "acquisition_event": {
+              "$ref": "#/$defs/ref"
+            },
+            "b2_reference": {
+              "$ref": "#/$defs/ref"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "projection": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/identity"
+        },
+        {
+          "type": "object",
+          "required": [
+            "representation",
+            "stratum"
+          ],
+          "properties": {
+            "representation": {
+              "const": "projection"
+            },
+            "stratum": {
+              "const": "B2"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "commit",
+        "acquisition_id",
+        "event",
+        "b2_reference",
+        "reconstructed_event",
+        "source_receipt"
+      ],
+      "properties": {
+        "commit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "acquisition_id": {
+          "$ref": "#/$defs/sha"
+        },
+        "event": {
+          "$ref": "#/$defs/ref"
+        },
+        "b2_reference": {
+          "$ref": "#/$defs/ref"
+        },
+        "reconstructed_event": {
+          "type": "boolean"
+        },
+        "source_receipt": {
+          "$ref": "#/$defs/ref"
+        }
+      }
+    },
+    "source_v1": {
+      "$ref": "#/$defs/ref"
+    },
+    "v2_lineage": {
+      "$ref": "#/$defs/ref"
+    },
+    "raw_admission": {
+      "$ref": "#/$defs/ref"
+    },
+    "derivation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "is_promotion",
+        "producer_and_reference_acquisitions_are_distinct"
+      ],
+      "properties": {
+        "kind": {
+          "const": "same_stratum_source_faithful_projection"
+        },
+        "is_promotion": {
+          "const": false
+        },
+        "producer_and_reference_acquisitions_are_distinct": {
+          "const": true
+        }
+      }
+    },
+    "boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "new_source_admission",
+        "projection_admission",
+        "output_privacy_cleared",
+        "source_or_projection_payload_read",
+        "dataset_publication"
+      ],
+      "properties": {
+        "new_source_admission": {
+          "const": false
+        },
+        "projection_admission": {
+          "const": false
+        },
+        "output_privacy_cleared": {
+          "const": false
+        },
+        "source_or_projection_payload_read": {
+          "const": false
+        },
+        "dataset_publication": {
+          "const": false
+        }
+      }
+    },
+    "source_rights_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "basis",
+        "instrument_independently_reviewed",
+        "scope",
+        "new_decision",
+        "authorization",
+        "source_contract"
+      ],
+      "properties": {
+        "basis": {
+          "const": "maintainer_attested_exact_scope"
+        },
+        "instrument_independently_reviewed": {
+          "const": false
+        },
+        "scope": {
+          "const": "raw_source_only"
+        },
+        "new_decision": {
+          "const": false
+        },
+        "authorization": {
+          "$ref": "#/$defs/ref"
+        },
+        "source_contract": {
+          "$ref": "#/$defs/ref"
+        }
+      }
+    },
+    "projection_rights": {
+      "$ref": "#/$defs/ref"
+    }
+  },
+  "$defs": {
+    "sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha"
+        }
+      }
+    },
+    "identity": {
+      "type": "object",
+      "required": [
+        "dataset",
+        "revision",
+        "path",
+        "sha256",
+        "byte_count"
+      ],
+      "properties": {
+        "dataset": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha"
+        },
+        "byte_count": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    }
+  }
+}

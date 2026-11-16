@@ -1,0 +1,62 @@
+{
+  "artifacts": [
+    {
+      "artifact_id": "m112:edithatogo/australian-mbs-source-archive@243f9ff5498816af6e4d9ae4db60528728f01834:raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+      "layer": "bronze_b2",
+      "lineage": {
+        "input_artifact_ids": [
+          "b1-acquisition:fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd"
+        ],
+        "input_sha256": [
+          "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+        ]
+      },
+      "promotion_status": "approved_within_scope",
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-source-archive:raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml:c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+        "reason_codes": [
+          "existing_exact_source_release_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-source-archive@243f9ff5498816af6e4d9ae4db60528728f01834:raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml sha256:c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+        "status": "approved"
+      },
+      "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+    }
+  ],
+  "promotion_decisions": [
+    {
+      "decision_id": "restated-raw-b1-b2:c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565:2026-11-16",
+      "fail_closed": true,
+      "from_layer": "bronze_b1",
+      "input_sha256": [
+        "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+      ],
+      "passed_gate_ids": [
+        "existing_raw_b2_acceptance",
+        "existing_exact_source_rights",
+        "source_b1_b2_lineage"
+      ],
+      "reason_codes": [
+        "restates_existing_accepted_raw_source_not_projection"
+      ],
+      "required_gate_ids": [
+        "existing_raw_b2_acceptance",
+        "existing_exact_source_rights",
+        "source_b1_b2_lineage"
+      ],
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-source-archive:raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml:c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+        "reason_codes": [
+          "existing_exact_source_release_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-source-archive@243f9ff5498816af6e4d9ae4db60528728f01834:raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml sha256:c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+        "status": "approved"
+      },
+      "status": "approved",
+      "subject_artifact_id": "m112:edithatogo/australian-mbs-source-archive@243f9ff5498816af6e4d9ae4db60528728f01834:raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+      "to_layer": "bronze_b2"
+    }
+  ],
+  "repository": "global-medicines-atlas",
+  "vocabulary_version": "1.0.0"
+}

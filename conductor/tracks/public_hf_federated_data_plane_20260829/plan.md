@@ -1915,3 +1915,27 @@ new acquisition, dataset publication or expanded frozen inventory is in scope.
   retain separate v4 admission, consumer and independent-recovery gates.
   Full v3 plan JSON triggered the generic-secret rule on hash fields and is
   not retained; the existing digest-bound replay report remains the evidence.
+
+### Projection v1 profile, durable v3 and privacy — 16 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-issue-reconciliation/global-medicines-atlas`,
+branch `codex/mbs-projection-v1-v3-20261116`, base `6cf454da`. The shared
+capability is exact-object federation lineage: pinned v1 cannot distinguish a
+B2 projection or express B2-to-B2 production, and full v3 plan JSON triggered
+the scanner. Scope is the same four frozen MBS projections plus PBS privacy
+review using retained evidence. No payload reads, participant or cohort data,
+new datasets, acquisition, publication, new rights or admission are allowed.
+
+- [x] Implement and verify a representation-aware v1 projection profile and
+  a schema- and semantics-valid restatement of the existing raw B1-to-B2
+  decision. Preserve the original schema, old receipt and distinct acquisition
+  chronology; no new admission or rights decision is made.
+- [x] Implement and verify four compact v3 metadata-registration receipts,
+  pinning reconstruction inputs and code. Reconstructed plans match the
+  existing digests; synthetic v4 closure passes, with no scanner suppression.
+- [x] Review PBS and MBS privacy context using existing source receipts and
+  producer code. The PBS readback does not include sensitivity; source rights
+  and classifications do not clear any output. Privacy remains unknown.
+- [~] Run affected negative controls and protected CI, record post-merge workflow
+  outcomes and retain all other admission, consumer and recovery gates.
