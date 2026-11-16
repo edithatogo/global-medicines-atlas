@@ -22,6 +22,9 @@ compare retained aggregate profiles and exercise offline admission isolation.
 The [historical coverage reconciliation](../../../docs/qualification/australian-historical-coverage-reconciliation-20261116.md)
 joins retained PBS discovery and MBS index metadata to the observed archive
 revisions without claiming a complete historical denominator.
+The [existing-evidence closure](../../../docs/qualification/australian-existing-evidence-closure-20261116.md)
+binds each August projection to the applicable historical primary-restore and
+publication evidence, and joins PBS schedule paths to their privacy context.
 The [5 October derived-product reconciliation](../../../docs/qualification/australian-m108-derived-products.md)
 and [inventory](../../../quality/qualifications/australian-m108-derived-products-20261005.json)
 remain historical evidence.
