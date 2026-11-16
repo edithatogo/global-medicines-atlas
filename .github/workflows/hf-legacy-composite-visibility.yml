@@ -26,6 +26,11 @@ jobs:
     permissions:
       contents: read
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
       - name: Check out exact authorization contract
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
@@ -311,6 +316,11 @@ jobs:
     timeout-minutes: 10
     permissions: {}
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
       - name: Restore private visibility and record reconciliation
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
@@ -380,6 +390,11 @@ jobs:
     timeout-minutes: 10
     permissions: {}
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
       - name: Check durable receipts and fail closed
         id: reconcile
         env:
