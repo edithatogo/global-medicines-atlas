@@ -5,6 +5,7 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import socket
 from dataclasses import replace
 from datetime import UTC, datetime
 from io import BytesIO
@@ -13,6 +14,7 @@ from pathlib import Path
 import pyarrow.parquet as pq
 import pytest
 import scripts.check_mbs_august_projection_consumers as consumer_preflight
+import scripts.prepare_mbs_august_projection_admission as admission_prep
 import scripts.qualify_mbs_august_projection_field_lineage as field_lineage
 import scripts.qualify_mbs_august_projection_replay as projection_replay
 import scripts.reconcile_mbs_august_projection_sources as source_reconstruction
@@ -348,3 +350,98 @@ def test_consumer_probe_rejects_an_identity_mismatch(
     )
     with pytest.raises(ValueError, match="consumer identity binding differs"):
         consumer_preflight.build()
+
+
+def test_august_admission_preparation_binds_eight_without_admitting() -> None:
+    report = admission_prep.build()
+    assert report == json.loads(
+        (admission_prep.ROOT / admission_prep.OUTPUT).read_bytes()
+    )
+    objects = report["objects"]
+    assert len(objects) == 8
+    assert sum(row["frozen_member"] for row in objects) == 4
+    assert (
+        sum(
+            row["independent_replica_required_before_admission"]
+            for row in objects
+        )
+        == 2
+    )
+    assert all(row["admission_ready"] is False for row in objects)
+    assert all(row["actual_admission"] == "not_performed" for row in objects)
+    assert all(
+        row["privacy"]["status"] == "source_profile_assessed_non_sensitive"
+        for row in objects
+    )
+    assert all(row["lineage"]["field_records"] == 85 for row in objects)
+    assert all(
+        row["lineage"]["replay_scope"] == "registration_metadata_only"
+        for row in objects
+    )
+    assert all(
+        row["consumer"]["actual_payload_canary"] == "not_performed"
+        for row in objects
+    )
+    assert not any(report["boundaries"].values())
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "digest",
+        "revision",
+        "privacy",
+        "membership",
+        "replica",
+        "field",
+        "disposition",
+        "disposition_revision",
+        "source_chronology",
+        "rights_revision",
+    ],
+)
+def test_august_admission_preparation_rejects_inconsistent_evidence(
+    mutation: str,
+) -> None:
+    evidence = copy.deepcopy(admission_prep.load())
+    if mutation == "digest":
+        evidence["digest"]["objects"][0]["sha256"] = "0" * 64
+    elif mutation == "revision":
+        evidence["replay"]["objects"][0]["revision"] = "0" * 40
+    elif mutation == "privacy":
+        evidence["privacy"]["objects"][0]["privacy"] = "unassessed"
+    elif mutation == "membership":
+        evidence["lineage"]["objects"][0]["frozen_member"] = False
+    elif mutation == "replica":
+        evidence["consumer"]["objects"][-1][
+            "independent_replica_required_before_admission"
+        ] = False
+    elif mutation == "field":
+        evidence["v2"]["records"][0]["output_sha256"] = "0" * 64
+    elif mutation == "disposition_revision":
+        evidence["disposition"]["evidence"]["revision"] = "0" * 40
+    elif mutation == "source_chronology":
+        evidence["replay"]["objects"][0]["source"]["reconstructed_now"] = True
+    elif mutation == "rights_revision":
+        row = next(
+            row
+            for row in evidence["lineage"]["objects"]
+            if not row["frozen_member"]
+        )
+        rights = evidence["referenced"][row["rights_evidence"]["path"]]
+        rights["authorized_objects"][0]["revision"] = "0" * 40
+    else:
+        evidence["disposition"]["objects"].pop()
+    with pytest.raises(ValueError, match="differs"):
+        admission_prep.reconcile(evidence)
+
+
+def test_august_admission_preparation_does_not_use_network(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def forbidden(*_args: object, **_kwargs: object) -> None:
+        raise AssertionError("admission preparation attempted network access")
+
+    monkeypatch.setattr(socket, "create_connection", forbidden)
+    monkeypatch.setattr(socket, "socket", forbidden)
+    assert len(admission_prep.build()["objects"]) == 8

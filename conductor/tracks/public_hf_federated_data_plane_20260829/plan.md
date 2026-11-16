@@ -1730,10 +1730,11 @@ publication, new rights conclusion or admission is in scope.
   output. Eighteen belong to the frozen inventory and one is outside it. All
   remain privacy-blocked. Keep historical and current rights/admission records
   distinct; do not open payloads to resolve the remaining assessment gaps.
-- [~] Deterministic regeneration, scoped review and negative controls passed.
+- [x] Deterministic regeneration, scoped review and negative controls passed.
   The affected and related metadata tests passed in a 157-test selection before
   the final frozen-membership check; the final 32-test affected file, Ruff,
-  BasedPyright, ty and context checks passed. Integrate after protected checks.
+  BasedPyright, ty and context checks passed. PR #1462 merged after protected
+  checks; the final integration receipt is appended to the evidence log.
 - [x] Bind the reproduced Silver output's recorded source-member digest to the
   earlier XML schema-context receipt. Its 5,163 schema paths include 224
   patient/person-related and 44 contact-related lexical paths; these counts are
@@ -1802,3 +1803,22 @@ is in scope.
 - [~] The affected 225 contract, context, federation and release-authority
   tests pass locally; validate the final patch and integrate after required
   hosted checks. The public-MBS no-read guard remains unchanged.
+
+### August projection admission preparation — 16 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, managed worktree
+`/Users/doughnut/.codex/worktrees/gma-issue-reconciliation/global-medicines-atlas`,
+branch `codex/mbs-august-admission-preparation-20261116`, base `79fd5963`.
+This lane owns the eight-object draft packet, its bounded metadata generator,
+focused tests and this handoff. It performs no payload read, acquisition,
+publication, new rights or privacy decision, admission or consumer canary.
+
+- [x] Assemble exact-revision draft components and link each object's existing
+  digest, source, field-lineage, privacy and rights evidence. Preserve the four
+  outside-inventory revisions and the footer-adjusted reproduction limitation.
+- [x] Check that mismatched identity, privacy, rights chronology, field lineage
+  or independent-replica requirements fail closed and the builder uses no network.
+- [~] Resolve the actual v4 roles, separate admission decisions and permitted
+  consumer checks in a later authorized operation. The two `f9f9` paths still
+  require independently verifiable replica evidence before admission; none of
+  the eight drafts is an admission or complete contract.
