@@ -1888,3 +1888,6 @@ change rights or bypass separate admission and independent-recovery gates.
   archive workflow passed; Test-Goblin passed 28 jobs and its live MBS job
   stopped at the no-read guard before either payload step. The manual Hudi job
   was skipped. Required final-head CI for this change remains separate.
+- [x] Register the new reconciliation tests in the unit lane after the first
+  hosted attempt rejected the unassigned test file. The inventory and affected
+  tests passed locally; final-head hosted checks remain required.

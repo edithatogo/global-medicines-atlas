@@ -271,6 +271,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_qualify_m112_v3_replay.py",
         "tests/test_qualify_mbs_frozen_raw_replay.py",
         "tests/test_qualify_pbs_schema_privacy_context.py",
+        "tests/test_reconcile_australian_existing_evidence.py",
         "tests/test_reconcile_mbs_frozen_v3_replays.py",
         "tests/test_verify_mbs_frozen_primary_restore.py",
         "tests/test_qualify_mbs_frozen_primary_history.py",
