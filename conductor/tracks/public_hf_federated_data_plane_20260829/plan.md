@@ -1891,3 +1891,27 @@ change rights or bypass separate admission and independent-recovery gates.
 - [x] Register the new reconciliation tests in the unit lane after the first
   hosted attempt rejected the unassigned test file. The inventory and affected
   tests passed locally; final-head hosted checks remain required.
+
+### Four frozen MBS projection roles and privacy — 16 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, managed worktree
+`/Users/doughnut/.codex/worktrees/gma-issue-reconciliation/global-medicines-atlas`,
+branch `codex/frozen-mbs-projection-roles-20261116`, base `cfbae964`.
+The selected gate is four frozen August Bronze projections' v1/v2/v3 role
+evidence and output privacy, with PBS privacy assessment from existing
+evidence. No source or projection payload, participant or cohort-derived data,
+new acquisition, dataset publication or expanded frozen inventory is in scope.
+
+- [~] Validate and bind the four existing v2 field-lineage sets and reproduce
+  their v3 metadata plans in memory. The pinned v1 lacks a
+  representation field and B2-to-B2 transition; an executable guard treats
+  a v1 B2 label alone as insufficient. The retained source v1 receipt has
+  target-layer mismatches. Projection v1 remains open.
+- [x] Assess output privacy from the source schema and fixed producer code;
+  native text is retained and all four output clearances remain unknown.
+- [x] Bind the reproduced PBS Silver output to its producer and source-member
+  metadata; its native value retention leaves output privacy unknown.
+- [~] Run focused negative controls and protected CI, record evidence, and
+  retain separate v4 admission, consumer and independent-recovery gates.
+  Full v3 plan JSON triggered the generic-secret rule on hash fields and is
+  not retained; the existing digest-bound replay report remains the evidence.
