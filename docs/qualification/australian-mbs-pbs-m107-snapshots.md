@@ -7,6 +7,10 @@ immutable archive evidence. The hosted run below records anonymous digest
 verification and cleanup; this documentation update read only the public
 manifest, not raw schedule payloads.
 
+The [16 November historical coverage reconciliation](australian-historical-coverage-reconciliation-20261116.md)
+updates the retained utilisation and schedule metadata observations without
+changing M-107's blocked status.
+
 ## Existing PBS archive crosswalk, 2026-11-15
 
 The newer [metadata crosswalk](../../quality/qualifications/australian-pbs-m107-existing-archive-crosswalk-20261115.json)
