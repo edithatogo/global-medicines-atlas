@@ -1,0 +1,69 @@
+{
+  "boundaries": {
+    "consumer_canary": false,
+    "dataset_publication": false,
+    "payload_replayed": false,
+    "projection_admission": false,
+    "source_or_projection_payload_read": false
+  },
+  "metadata_sha256": "051831c32f65b349030384b7138e32944ecc5f45a7bda7a049d9b83036d0d242",
+  "prior_replay": {
+    "path": "quality/qualifications/australian-mbs-august-projection-v3-20261115/metadata-replay.json",
+    "sha256": "264295cc3697f81058af6fd1a62e007bc73761b6fb1ac1b3bbb4614277d5e006"
+  },
+  "producer_acquisition_id": "783bd12fab14dc8f93cb34b1d87e9c3f7c95543d261b008f4e0da018a3d11e57",
+  "projection": {
+    "byte_count": 454247,
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/source.parquet",
+    "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+    "sha256": "5219094d2ec7f4386380b356cc17f071c97751db43ed367746a6d07ca4ff3eaf"
+  },
+  "projection_rights": {
+    "path": "quality/qualifications/australian-mbs-august-bronze-rights-attestation-20261020.json",
+    "sha256": "8c1fe64099098ebe6e34ffe0409415d799e1a4c7c57382218fbfcfd52e0dbb24"
+  },
+  "reconstructed_plan_sha256": "1033e196ff5affb92646432cddca2739f61cc4919a035d9aac2c299c58d94cc3",
+  "reconstruction": {
+    "lineage_builder": {
+      "path": "scripts/qualify_mbs_august_projection_field_lineage.py",
+      "sha256": "ab48500950766722196a2ebfbb06907e0d0588f8c153315d3b2a87bfb05de364"
+    },
+    "lineage_report": {
+      "path": "quality/qualifications/australian-mbs-august-projection-field-lineage-qualification-20261115.json",
+      "sha256": "e880ccded4e51b0eae7bfd9f4370824eebb3d6d8efa91bed1167a4289e8fe1f6"
+    },
+    "plan_builder": {
+      "path": "scripts/qualify_mbs_august_projection_replay.py",
+      "sha256": "fedb7199e17e2c1c58ea2d4142c2fd121d6866fd3633008bcc3d1529c967b7a0"
+    },
+    "python": "3.15.1",
+    "recipe": "mbs-august-v3-metadata-registration-v1",
+    "v3_builder": {
+      "path": "scripts/qualify_m112_v3_replay.py",
+      "sha256": "c8ce3ef0f7aac75a01e391c993dfc8600cf07379250840e7efaa96d0f588f633"
+    }
+  },
+  "registration_sha256": "dd136c4e153ed56206601733e3c0704a67416c39f4359c5b9e14bcfdb2f999cc",
+  "replay_schema_sha256": "5d0f472b124701ef66dcc1a5c39670826b8e95e5faf576cc394a3cd22df9419c",
+  "schema_id": "global-medicines-atlas.v3-metadata-registration-receipt",
+  "schema_version": 1,
+  "scope": "deterministic_metadata_registration_only",
+  "source_b2": {
+    "path": "quality/qualifications/australian-mbs-august-source-reconstruction-20261115/99fa-b2-reference.json",
+    "sha256": "483133cc323e077bc2df6e1ac1da709616d76d782c6a32046bc94c40f8199f43"
+  },
+  "source_event": {
+    "path": "quality/qualifications/australian-mbs-august-source-reconstruction-20261115/99fa-acquisition.json",
+    "sha256": "1aebb8fc0bb044b20aadfa36992fe7e39977c8118adc5b9530fe5c368129ddf4"
+  },
+  "source_receipt": {
+    "path": "quality/qualifications/australian-privacy-batch-20261115/frozen-99-source-receipt.json",
+    "sha256": "4f694fd7364061cd05fee33ea52e6dbeef17d1067b8437f72e726ab168fc2fc7"
+  },
+  "source_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+  "v2_lineage": {
+    "path": "quality/qualifications/australian-mbs-august-projection-v2-field-lineage-20261115.json",
+    "sha256": "4e5ce6ce699aa1d84f2a6ad28ee2b552b6bd62ba9e93db3fd886576e8dcd76f6"
+  }
+}

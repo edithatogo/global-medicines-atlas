@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://edithatogo.github.io/contracts/medallion/v3-registration/metadata-receipt.schema.json",
+  "title": "V3 deterministic metadata-registration receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_id",
+    "schema_version",
+    "projection",
+    "producer_acquisition_id",
+    "source_sha256",
+    "source_event",
+    "source_b2",
+    "v2_lineage",
+    "prior_replay",
+    "reconstructed_plan_sha256",
+    "registration_sha256",
+    "metadata_sha256",
+    "replay_schema_sha256",
+    "scope",
+    "boundaries",
+    "source_receipt",
+    "projection_rights",
+    "reconstruction"
+  ],
+  "properties": {
+    "schema_id": {
+      "const": "global-medicines-atlas.v3-metadata-registration-receipt"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "projection": {
+      "$ref": "#/$defs/identity"
+    },
+    "producer_acquisition_id": {
+      "$ref": "#/$defs/sha"
+    },
+    "source_sha256": {
+      "$ref": "#/$defs/sha"
+    },
+    "source_event": {
+      "$ref": "#/$defs/ref"
+    },
+    "source_b2": {
+      "$ref": "#/$defs/ref"
+    },
+    "v2_lineage": {
+      "$ref": "#/$defs/ref"
+    },
+    "prior_replay": {
+      "$ref": "#/$defs/ref"
+    },
+    "reconstructed_plan_sha256": {
+      "$ref": "#/$defs/sha"
+    },
+    "registration_sha256": {
+      "$ref": "#/$defs/sha"
+    },
+    "metadata_sha256": {
+      "$ref": "#/$defs/sha"
+    },
+    "replay_schema_sha256": {
+      "$ref": "#/$defs/sha"
+    },
+    "scope": {
+      "const": "deterministic_metadata_registration_only"
+    },
+    "boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_or_projection_payload_read",
+        "payload_replayed",
+        "projection_admission",
+        "consumer_canary",
+        "dataset_publication"
+      ],
+      "properties": {
+        "source_or_projection_payload_read": {
+          "const": false
+        },
+        "payload_replayed": {
+          "const": false
+        },
+        "projection_admission": {
+          "const": false
+        },
+        "consumer_canary": {
+          "const": false
+        },
+        "dataset_publication": {
+          "const": false
+        }
+      }
+    },
+    "source_receipt": {
+      "$ref": "#/$defs/ref"
+    },
+    "projection_rights": {
+      "$ref": "#/$defs/ref"
+    },
+    "reconstruction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recipe",
+        "python",
+        "lineage_report",
+        "plan_builder",
+        "v3_builder",
+        "lineage_builder"
+      ],
+      "properties": {
+        "recipe": {
+          "const": "mbs-august-v3-metadata-registration-v1"
+        },
+        "python": {
+          "const": "3.15.1"
+        },
+        "lineage_report": {
+          "$ref": "#/$defs/ref"
+        },
+        "plan_builder": {
+          "$ref": "#/$defs/ref"
+        },
+        "v3_builder": {
+          "$ref": "#/$defs/ref"
+        },
+        "lineage_builder": {
+          "$ref": "#/$defs/ref"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha"
+        }
+      }
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dataset",
+        "revision",
+        "path",
+        "sha256",
+        "byte_count"
+      ],
+      "properties": {
+        "dataset": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha"
+        },
+        "byte_count": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    }
+  }
+}

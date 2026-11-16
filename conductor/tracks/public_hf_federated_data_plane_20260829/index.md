@@ -25,6 +25,9 @@ revisions without claiming a complete historical denominator.
 The [existing-evidence closure](../../../docs/qualification/australian-existing-evidence-closure-20261116.md)
 binds each August projection to the applicable historical primary-restore and
 publication evidence, and joins PBS schedule paths to their privacy context.
+The [frozen projection v1 and v3 profile](../../../docs/qualification/australian-frozen-mbs-projection-v1-v3-20261116.md)
+adds exact-identity role verification and compact metadata-replay receipts;
+output privacy, actual admission and consumer checks remain separate.
 The [5 October derived-product reconciliation](../../../docs/qualification/australian-m108-derived-products.md)
 and [inventory](../../../quality/qualifications/australian-m108-derived-products-20261005.json)
 remain historical evidence.
