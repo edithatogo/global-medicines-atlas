@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
+from io import BytesIO
 from pathlib import Path
 
+import pyarrow.parquet as pq
 import pytest
 from pydantic import AnyUrl, ValidationError
 
@@ -21,6 +23,7 @@ from global_medicines_atlas.mbs_compatibility import (
     select_group_records,
     select_p7_records,
 )
+from global_medicines_atlas.mbs_release import mbs_source_parquet
 from global_medicines_atlas.models import CanonicalMedicineRecord
 from global_medicines_atlas.receipts import (
     AcquisitionMethod,
@@ -287,3 +290,23 @@ def test_source_parser_rejects_nested_missing_identity_and_root_metadata(
 ) -> None:
     with pytest.raises(ValueError, match=message):
         parse_mbs_source_xml(payload, _receipt(payload))
+
+
+def test_synthetic_free_text_is_preserved_in_both_source_projections() -> None:
+    """P7 selection is not a content or privacy filter."""
+    payload = (
+        b"<MBS_XML><Data><ItemNum>1</ItemNum><Group>P7</Group>"
+        b"<Description>SYNTHETIC_FREE_TEXT_MARKER</Description>"
+        b"</Data></MBS_XML>"
+    )
+    batch = parse_mbs_source_xml(payload, _receipt(payload))
+    for only_p7 in (False, True):
+        table = pq.read_table(  # pyright: ignore[reportUnknownMemberType]
+            BytesIO(mbs_source_parquet(batch, only_p7=only_p7))
+        )
+        assert table.num_rows == 1
+        fields = table.to_pylist()[0]["fields"]
+        assert {
+            "name": "Description",
+            "value": "SYNTHETIC_FREE_TEXT_MARKER",
+        } in fields

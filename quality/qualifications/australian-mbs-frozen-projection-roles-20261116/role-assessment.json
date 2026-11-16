@@ -1,0 +1,174 @@
+{
+  "boundaries": {
+    "dataset_acquired_or_published": false,
+    "output_privacy_cleared": false,
+    "participant_or_cohort_data_accessed": false,
+    "source_or_projection_payload_read": false,
+    "v4_admission_or_consumer_canary": false
+  },
+  "objects": [
+    {
+      "admission": "not_performed",
+      "byte_count": 24367,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "output_text_preserved_without_redaction": true,
+      "path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/p7.parquet",
+      "privacy": "unknown_output_values_not_screened",
+      "producer_commit": "0190183f6b313ad21746c5b15b7cf4bd7153085c",
+      "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+      "sha256": "2da8606d3e408294bcfdc914906de4814d33c1a72acf5a2ba40f91473267516a",
+      "source_acquisition_id": "f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1",
+      "v1": {
+        "errors": [
+          "target_layer_mismatch",
+          "target_layer_mismatch",
+          "target_layer_mismatch",
+          "projection_subject_absent"
+        ],
+        "status": "blocked_no_projection_representation_in_v1"
+      },
+      "v2": {
+        "matching_records": 85,
+        "path": "quality/qualifications/australian-mbs-august-projection-v2-field-lineage-20261115.json",
+        "sha256": "4e5ce6ce699aa1d84f2a6ad28ee2b552b6bd62ba9e93db3fd886576e8dcd76f6"
+      },
+      "v3": {
+        "plan_bytes_retained": false,
+        "reconstructed_plan_sha256": "d5f8a368178a9b2d5d927a926cfe004c6bce8a930602882dce041d33d4d207ee",
+        "replay_report_path": "quality/qualifications/australian-mbs-august-projection-v3-20261115/metadata-replay.json",
+        "replay_report_sha256": "264295cc3697f81058af6fd1a62e007bc73761b6fb1ac1b3bbb4614277d5e006",
+        "scope": "metadata_registration_only"
+      }
+    },
+    {
+      "admission": "not_performed",
+      "byte_count": 454247,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "output_text_preserved_without_redaction": true,
+      "path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/source.parquet",
+      "privacy": "unknown_output_values_not_screened",
+      "producer_commit": "0190183f6b313ad21746c5b15b7cf4bd7153085c",
+      "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+      "sha256": "80f8e0d3cc67f6f3a22f23cc3bfb0db5da4d44d79741da3ce1c31ee92836627a",
+      "source_acquisition_id": "f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1",
+      "v1": {
+        "errors": [
+          "target_layer_mismatch",
+          "target_layer_mismatch",
+          "target_layer_mismatch",
+          "projection_subject_absent"
+        ],
+        "status": "blocked_no_projection_representation_in_v1"
+      },
+      "v2": {
+        "matching_records": 85,
+        "path": "quality/qualifications/australian-mbs-august-projection-v2-field-lineage-20261115.json",
+        "sha256": "4e5ce6ce699aa1d84f2a6ad28ee2b552b6bd62ba9e93db3fd886576e8dcd76f6"
+      },
+      "v3": {
+        "plan_bytes_retained": false,
+        "reconstructed_plan_sha256": "58d9dd93f0e6cdfa913f64463b6fac214fa101970acff006368325677b0c5264",
+        "replay_report_path": "quality/qualifications/australian-mbs-august-projection-v3-20261115/metadata-replay.json",
+        "replay_report_sha256": "264295cc3697f81058af6fd1a62e007bc73761b6fb1ac1b3bbb4614277d5e006",
+        "scope": "metadata_registration_only"
+      }
+    },
+    {
+      "admission": "not_performed",
+      "byte_count": 24367,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "output_text_preserved_without_redaction": true,
+      "path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/p7.parquet",
+      "privacy": "unknown_output_values_not_screened",
+      "producer_commit": "435527a630d055056985372aba1620bcf7340da4",
+      "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+      "sha256": "6362f7f3a5d9870545cc074450b81a82475d68fdb062f38083713f56bd88d2fe",
+      "source_acquisition_id": "783bd12fab14dc8f93cb34b1d87e9c3f7c95543d261b008f4e0da018a3d11e57",
+      "v1": {
+        "errors": [
+          "target_layer_mismatch",
+          "target_layer_mismatch",
+          "target_layer_mismatch",
+          "projection_subject_absent"
+        ],
+        "status": "blocked_no_projection_representation_in_v1"
+      },
+      "v2": {
+        "matching_records": 85,
+        "path": "quality/qualifications/australian-mbs-august-projection-v2-field-lineage-20261115.json",
+        "sha256": "4e5ce6ce699aa1d84f2a6ad28ee2b552b6bd62ba9e93db3fd886576e8dcd76f6"
+      },
+      "v3": {
+        "plan_bytes_retained": false,
+        "reconstructed_plan_sha256": "19467f72e38469898cb1327edcfd7d424cd1dcd0fad80f042e3dac43b2f00a6e",
+        "replay_report_path": "quality/qualifications/australian-mbs-august-projection-v3-20261115/metadata-replay.json",
+        "replay_report_sha256": "264295cc3697f81058af6fd1a62e007bc73761b6fb1ac1b3bbb4614277d5e006",
+        "scope": "metadata_registration_only"
+      }
+    },
+    {
+      "admission": "not_performed",
+      "byte_count": 454247,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "output_text_preserved_without_redaction": true,
+      "path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/source.parquet",
+      "privacy": "unknown_output_values_not_screened",
+      "producer_commit": "435527a630d055056985372aba1620bcf7340da4",
+      "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+      "sha256": "5219094d2ec7f4386380b356cc17f071c97751db43ed367746a6d07ca4ff3eaf",
+      "source_acquisition_id": "783bd12fab14dc8f93cb34b1d87e9c3f7c95543d261b008f4e0da018a3d11e57",
+      "v1": {
+        "errors": [
+          "target_layer_mismatch",
+          "target_layer_mismatch",
+          "target_layer_mismatch",
+          "projection_subject_absent"
+        ],
+        "status": "blocked_no_projection_representation_in_v1"
+      },
+      "v2": {
+        "matching_records": 85,
+        "path": "quality/qualifications/australian-mbs-august-projection-v2-field-lineage-20261115.json",
+        "sha256": "4e5ce6ce699aa1d84f2a6ad28ee2b552b6bd62ba9e93db3fd886576e8dcd76f6"
+      },
+      "v3": {
+        "plan_bytes_retained": false,
+        "reconstructed_plan_sha256": "1033e196ff5affb92646432cddca2739f61cc4919a035d9aac2c299c58d94cc3",
+        "replay_report_path": "quality/qualifications/australian-mbs-august-projection-v3-20261115/metadata-replay.json",
+        "replay_report_sha256": "264295cc3697f81058af6fd1a62e007bc73761b6fb1ac1b3bbb4614277d5e006",
+        "scope": "metadata_registration_only"
+      }
+    }
+  ],
+  "pbs_reproduced_silver": {
+    "admission": "not_performed",
+    "applies_to": "exact_reproduced_silver_output_only",
+    "finding": "native_values_preserved_not_deidentified_by_field_names",
+    "output_id": "8e8bacdc72ea81ecfbb84d161b3f546eee03bddeae32f82daa7231c3759d23fc",
+    "output_sha256": "86d65b147dc95787c5e3f14b13abe2630562f050e2221a1340939dcc7776a88c",
+    "privacy": "unknown_output_values_not_screened",
+    "producer_code_sha256": {
+      "src/global_medicines_atlas/pbs_value_package_v2.py": "7a6856ec17472022077360ce0e00a5d179a42609680237c5e9f137f06c836e4b",
+      "src/global_medicines_atlas/pbs_xml_slots.py": "e689561f81bc476e57741e7f90afd0743ed064cbec297babdd59fd11ca38d326"
+    },
+    "producer_commit": "c0f17f86f5d4f9a21efc28181786201005c369da",
+    "retained_native_core_includes_value": true,
+    "schema_paths": 5163,
+    "source_member_sha256": "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43"
+  },
+  "recorded_on": "2026-11-16",
+  "schema_id": "global-medicines-atlas.frozen-mbs-projection-role-assessment",
+  "schema_version": 1,
+  "v1_limit": "No rebuildable Bronze projection representation in pinned v1; raw B2 is not the projection.",
+  "v1_source_receipt": {
+    "path": "quality/qualifications/australian-mbs-frozen-raw-lineage-20261115/v1-conformance.json",
+    "projection_subject": false,
+    "schema_valid": true,
+    "semantic_errors": [
+      "target_layer_mismatch",
+      "target_layer_mismatch",
+      "target_layer_mismatch"
+    ],
+    "sha256": "288072cbfbbaee7efe4f35d8ed84487233da9dc025b5099f6091696456d1921c"
+  }
+}

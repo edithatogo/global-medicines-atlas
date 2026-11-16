@@ -6,10 +6,13 @@ import copy
 import json
 import socket
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any
 
 import pytest
 import scripts.qualify_m112_existing_reimbursement_batch as bounded
+import scripts.qualify_mbs_august_projection_field_lineage as lineage
+import scripts.qualify_mbs_frozen_projection_roles as roles
 import scripts.reconcile_australian_existing_evidence as reconciliation
 from jsonschema import Draft202012Validator, FormatChecker
 
@@ -185,3 +188,140 @@ def test_projection_roles_reject_substituted_evidence(mutation: str) -> None:
         )
     with pytest.raises(ValueError, match="differs"):
         reconciliation.projection_roles(e)
+
+
+def test_frozen_projection_roles_reproduce_without_network(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def no_network(*_args: object, **_kwargs: object) -> None:
+        pytest.fail("role assessment must not access the network")
+
+    monkeypatch.setattr(socket.socket, "connect", no_network)
+    checked_commits: list[str] = []
+
+    def record_code(_root: Path, commit: str, _files: dict[str, str]) -> None:
+        checked_commits.append(commit)
+
+    # Hosted unit checkouts are shallow; the real blobs are verified by the
+    # separate local --check, while this test exercises the metadata joins.
+    monkeypatch.setattr(roles, "check_code", record_code)
+    outputs = roles.build()
+    assert checked_commits.count(roles.PBS_COMMIT) == 1
+    assert len(checked_commits) == 5
+    assert outputs == {roles.REPORT: Path(roles.REPORT).read_bytes()}
+    report = json.loads(outputs[roles.REPORT])
+    assert (
+        report["v1_source_receipt"]["semantic_errors"]
+        == ["target_layer_mismatch"] * 3
+    )
+    assert len(report["objects"]) == 4
+    assert all(
+        item["v2"]["matching_records"] == 85
+        and item["v3"]["scope"] == "metadata_registration_only"
+        and item["v3"]["plan_bytes_retained"] is False
+        and item["privacy"] == "unknown_output_values_not_screened"
+        and item["admission"] == "not_performed"
+        for item in report["objects"]
+    )
+    pbs = report["pbs_reproduced_silver"]
+    assert pbs["retained_native_core_includes_value"] is True
+    assert pbs["privacy"] == "unknown_output_values_not_screened"
+    assert not any(report["boundaries"].values())
+
+
+def test_v1_semantics_detects_inconsistent_subject_and_approval() -> None:
+    fixture = json.loads(
+        Path("contracts/medallion/v1/fixtures/valid.json").read_bytes()
+    )
+    assert roles.semantic_errors(fixture) == []
+    altered = copy.deepcopy(fixture)
+    altered["artifacts"][0]["layer"] = "bronze_b2"
+    assert "target_layer_mismatch" in roles.semantic_errors(altered)
+    altered = copy.deepcopy(fixture)
+    altered["promotion_decisions"][0]["passed_gate_ids"] = []
+    assert "approval_gate_missing" in roles.semantic_errors(altered)
+    altered = copy.deepcopy(fixture)
+    altered["promotion_decisions"][0]["input_sha256"] = ["0" * 64]
+    assert "lineage_checksum_mismatch" in roles.semantic_errors(altered)
+
+
+def test_projection_roles_reject_mutated_v2_record(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    original = lineage.build
+
+    def altered(root: Path) -> tuple[dict[str, Any], dict[str, Any]]:
+        vocabulary, crosswalk = original(root)
+        vocabulary["records"][0]["output_sha256"] = "0" * 64
+        return vocabulary, crosswalk
+
+    monkeypatch.setattr(lineage, "build", altered)
+    with pytest.raises(ValueError, match="v2 bytes differ"):
+        roles.build()
+
+
+def test_pbs_assessment_rejects_wrong_output_identity(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    original = roles.checked_json
+
+    def altered(root: Path, name: str, digest: str) -> dict[str, Any]:
+        value = original(root, name, digest)
+        if name == roles.PBS_READY:
+            value["output"]["parquet_sha256"] = "0" * 64
+        return value
+
+    monkeypatch.setattr(roles, "checked_json", altered)
+    with pytest.raises(
+        ValueError, match="PBS output or source identity differs"
+    ):
+        roles.pbs_assessment(roles.ROOT)
+
+
+def test_code_blob_digest_check_fails_closed(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(roles.shutil, "which", lambda _name: "/usr/bin/git")
+    monkeypatch.setattr(
+        roles.subprocess,
+        "run",
+        lambda *_args, **_kwargs: SimpleNamespace(stdout=b"synthetic code"),
+    )
+    digest = roles.sha(b"synthetic code")
+    roles.check_code(roles.ROOT, "synthetic-commit", {"synthetic.py": digest})
+    with pytest.raises(ValueError, match="producer code digest differs"):
+        roles.check_code(
+            roles.ROOT, "synthetic-commit", {"synthetic.py": "0" * 64}
+        )
+
+
+def test_projection_roles_reject_mutated_v3_plan(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    original = roles.replay._plan  # pyright: ignore[reportPrivateUsage]
+
+    def altered(*args: Any, **kwargs: Any) -> dict[str, Any]:
+        packet = original(*args, **kwargs)
+        packet["plan"]["replay_plan"]["plan_sha256"] = "0" * 64
+        return packet
+
+    monkeypatch.setattr(roles, "check_code", lambda *_args: None)
+    monkeypatch.setattr(roles.replay, "_plan", altered)
+    with pytest.raises(ValueError, match="v3 plan or object identity differs"):
+        roles.build()
+
+
+def test_v1_rejects_a_projection_disguised_as_raw_b2() -> None:
+    document = json.loads(
+        Path("contracts/medallion/v1/fixtures/valid.json").read_bytes()
+    )
+    path = "bronze/example/projection.parquet"
+    assert "projection_subject_absent" in roles.projection_v1_errors(
+        document, path
+    )
+    document["artifacts"][0]["artifact_id"] = path
+    document["artifacts"][0]["layer"] = "bronze_b2"
+    document["promotion_decisions"][0]["subject_artifact_id"] = path
+    assert "projection_mislabeled_as_raw_b2" in roles.projection_v1_errors(
+        document, path
+    )
