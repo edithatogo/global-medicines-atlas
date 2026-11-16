@@ -1822,3 +1822,22 @@ publication, new rights or privacy decision, admission or consumer canary.
   consumer checks in a later authorized operation. The two `f9f9` paths still
   require independently verifiable replica evidence before admission; none of
   the eight drafts is an admission or complete contract.
+
+### August bounded semantics and consumer checks — 16 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, managed worktree
+`/Users/doughnut/.codex/worktrees/gma-issue-reconciliation/global-medicines-atlas`,
+branch `codex/mbs-bounded-semantics-consumers-20261116`, base `f1ebc2aa`.
+This lane owns only the metadata-only profile comparison, offline consumer
+isolation tests, their report and this handoff. No source or projection payload,
+participant or cohort data, acquisition, publication or new admission is in scope.
+
+- [x] Reconcile all 40 native-field presence and null totals between the two
+  retained source/candidate Silver profiles, and bind each field's name/value
+  lineage to the eight prepared projection identities. Preserve provisional
+  semantics and the `ItemChange` and `EMSNCap` documentation conflicts.
+- [x] Exercise eight synthetic identities against the six prior July Silver
+  admissions and an in-memory rekeyed mismatch; require rejection before I/O.
+- [~] Keep actual output privacy, v4 receipt closure, typed admission, payload
+  consumer canaries and independent recovery separate. The `f9f9` replica
+  prerequisite remains in force; this check changes no federation gate.

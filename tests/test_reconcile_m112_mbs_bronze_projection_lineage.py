@@ -14,6 +14,7 @@ from pathlib import Path
 import pyarrow.parquet as pq
 import pytest
 import scripts.check_mbs_august_projection_consumers as consumer_preflight
+import scripts.check_mbs_august_semantics_consumers as bounded_checks
 import scripts.prepare_mbs_august_projection_admission as admission_prep
 import scripts.qualify_mbs_august_projection_field_lineage as field_lineage
 import scripts.qualify_mbs_august_projection_replay as projection_replay
@@ -445,3 +446,92 @@ def test_august_admission_preparation_does_not_use_network(
     monkeypatch.setattr(socket, "create_connection", forbidden)
     monkeypatch.setattr(socket, "socket", forbidden)
     assert len(admission_prep.build()["objects"]) == 8
+
+
+def test_august_bounded_semantics_and_consumer_checks() -> None:
+    report = bounded_checks.build()
+    assert report == json.loads(
+        (bounded_checks.ROOT / bounded_checks.OUTPUT).read_bytes()
+    )
+    assert report["semantics"]["native_fields"] == 40
+    assert len(report["semantics"]["checked_native_fields"]) == 40
+    assert (
+        report["semantics"]["aggregate_date_conversion_accounting"] == "matched"
+    )
+    assert report["semantics"]["changed_date_fields"] == 6
+    assert report["semantics"]["field_semantics_accepted"] is False
+    assert report["semantics"]["unresolved_conflicts"] == [
+        "EMSNCap",
+        "ItemChange",
+    ]
+    assert len(report["consumers"]["objects"]) == 8
+    assert all(
+        row["prior_silver_admissions_rejected"]
+        and row["rekeyed_silver_identity_rejected"]
+        for row in report["consumers"]["objects"]
+    )
+    assert not any(report["boundaries"].values())
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "state",
+        "date",
+        "field",
+        "history",
+        "admission",
+        "semantics",
+        "transformation",
+        "nondate_conversion",
+        "quality_total",
+    ],
+)
+def test_august_bounded_semantics_rejects_inconsistent_metadata(
+    mutation: str,
+) -> None:
+    evidence = copy.deepcopy(bounded_checks.load())
+    if mutation == "state":
+        evidence["dmy"]["field_presence_diagnostics"][0]["source_null"] += 1
+    elif mutation == "date":
+        evidence["dmy"]["qualification"]["date_format"] = "iso"
+    elif mutation == "field":
+        evidence["baseline"]["field_presence_diagnostics"][0][
+            "native_field"
+        ] = "invented"
+    elif mutation == "history":
+        evidence["history"]["unresolved_history"][
+            "release_semantics_qualified"
+        ] = True
+    elif mutation == "admission":
+        evidence["prior_admission"]["objects"].pop()
+    elif mutation == "transformation":
+        evidence["projection"]["v2"]["records"][0]["transformation_id"] = (
+            "invented"
+        )
+    elif mutation == "nondate_conversion":
+        row = next(
+            row
+            for row in evidence["dmy"]["field_presence_diagnostics"]
+            if row["native_field"] == "AnaesChange"
+        )
+        row["conversion_status_counts"] = {"converted": row["rows"]}
+    elif mutation == "quality_total":
+        evidence["dmy"]["qualification"]["quality"][0]["count"] += 1
+    else:
+        evidence["projection"]["lineage"]["objects"][0][
+            "field_semantics_accepted"
+        ] = True
+    with pytest.raises(ValueError, match="differ"):
+        bounded_checks.reconcile(evidence)
+
+
+def test_august_bounded_checks_do_not_use_network(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def forbidden(*_args: object, **_kwargs: object) -> None:
+        raise AssertionError("bounded checks attempted network access")
+
+    monkeypatch.setattr(socket, "create_connection", forbidden)
+    monkeypatch.setattr(socket, "socket", forbidden)
+    assert len(bounded_checks.build()["consumers"]["objects"]) == 8
