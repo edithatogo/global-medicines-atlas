@@ -3,7 +3,7 @@
   "description": "Adopt the versioned cross-repository medallion JSON Schema vocabulary.",
   "execution_policy": {"mode": "autonomous", "merge_policy": "required_checks_then_merge"},
   "external_gates": [],
-  "github_issue": null,
+  "github_issue": "https://github.com/edithatogo/global-medicines-atlas/issues/318",
   "github_issue_drafts": [],
   "github_subissues": [],
   "requirements": [],
