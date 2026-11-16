@@ -133,6 +133,31 @@ AUSTRALIAN_MBS_HISTORICAL_WORKBOOK_SEMANTICS = (
     "quality/qualifications/"
     "mbs-historical-workbook-source-column-semantics-20261028.json"
 )
+AUSTRALIAN_CURRENT_REQUIREMENT_EVIDENCE = {
+    "M-106": [
+        "quality/qualifications/mbs-annual-public-workbook-qualification-20261115.json",
+    ],
+    "M-107": [
+        "quality/qualifications/australian-pbs-m107-existing-archive-crosswalk-20261115.json",
+        "quality/qualifications/australian-pbs-m107-four-link-metadata-20261115.json",
+    ],
+    "M-108": [
+        "quality/qualifications/australian-mbs-august-projection-field-lineage-qualification-20261115.json",
+        "quality/qualifications/australian-mbs-august-projection-v3-20261115/metadata-replay.json",
+        "quality/qualifications/australian-existing-archive-privacy-batch-20261115.json",
+    ],
+    "M-109": [
+        "docs/qualification/australian-semantic-consumer-safety-20261115.md",
+    ],
+    "M-111": [
+        "docs/qualification/australian-semantic-consumer-safety-20261115.md",
+        "quality/qualifications/australian-mbs-august-projection-consumer-preflight-20261115.json",
+    ],
+    "M-112": [
+        "quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261115-august.json",
+        "quality/qualifications/australian-pbs-acquisition-privacy-coverage-20261115.json",
+    ],
+}
 
 TECHNICAL_GATE_EVIDENCE = {
     "stable-v1-canonical-schema-v2": [
@@ -674,6 +699,10 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
                         AUSTRALIAN_M112_EFFECTIVE_RAW_DELIVERY,
                     ],
                 )
+            requirement["evidence"] = _append_unique(
+                requirement["evidence"],
+                AUSTRALIAN_CURRENT_REQUIREMENT_EVIDENCE.get(requirement_id, []),
+            )
         elif requirement["evidence"] == ["conductor/requirements.md"]:
             requirement["evidence"] = _append_unique(
                 requirement["evidence"], [STABLE_LEDGER]
@@ -781,6 +810,11 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
             AUSTRALIAN_AUGUST_F9F9_DISPOSITION,
             AUSTRALIAN_PBS_RDF_FIELD_STATE,
             AUSTRALIAN_MBS_HISTORICAL_WORKBOOK_SEMANTICS,
+            *(
+                path
+                for paths in AUSTRALIAN_CURRENT_REQUIREMENT_EVIDENCE.values()
+                for path in paths
+            ),
         ],
     )
 

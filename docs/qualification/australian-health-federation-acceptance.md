@@ -1,4 +1,4 @@
-# Australian health federation acceptance, updated 2026-11-15
+# Australian health federation acceptance, updated 2026-11-16
 
 The stable-v1 federation gate remains blocked. Its nine requirements are
 independent: completed donor archival does not qualify the public derived data
@@ -20,6 +20,35 @@ their evidence or change the blocked gate state.
 | M-111 Platinum | Blocked; exact six-table cohort consumer canaries passed | Exact-main run [40664169948](https://github.com/edithatogo/global-medicines-atlas/actions/runs/40664169948) at commit `ec59c2121015093b52dfb8afbd9e05a131321117` passed six pinned-revision remote reads and bounded API, CLI JSON, CLI JSONL, Atlas, and Chromium browser canaries. Each surface returned six two-row responses; rendered-row digests are retained and source completeness remains unestablished. The qualification admits only the six authorized candidate product profiles; it does not promote them to production, publish externally, add sources, establish independent recovery, or close M-112. Other cohorts remain gated by object-specific evidence. See the [exact-main remote-read and consumer receipt](../../quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261028-40664169948/admission-remote-read.json) and [artifact manifest](../../quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261028-40664169948/artifact-manifest.json). |
 | M-112 federation v4 | Blocked; raw delivery increment passed | The frozen denominator remains 1,759 objects across five repositories. The [effective raw-delivery reconciliation](../../quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261115-august.json) records **17 exact raw v4 admissions and 17 admitted-object reader canaries; 1,742 objects remain deferred**. It preserves the earlier eight-object MBS and six-object PBS qualifications and the July 2025 MBS XML, and adds both distinct frozen August 2026 MBS XML paths at approved revision `243f9ff5498816af6e4d9ae4db60528728f01834`. The [August hosted reader](https://github.com/edithatogo/global-medicines-atlas/actions/runs/43705630353) passed receipt closure and exact-path admission and digest checks for both paths; its `current` comparison label is scoped to the documented July–August pair and does not establish current schedule status or August field semantics. The [July hosted admission and reader](https://github.com/edithatogo/global-medicines-atlas/actions/runs/43699976886) passed receipt closure, independent trust, remote and streamed digest checks, and reader-cache cleanup. The earlier six exact PBS raw objects were each dispatched once on exact main `10b104417ccb37da6ec20b8e7151c6486a787eec`. All six passed receipt closure, independently configured trusted admission, remote and streamed digest/byte verification, and zero reader-cache bytes after close, covering 191,047,619 bytes. The [native PBS cohort manifest](../../quality/qualifications/australian-m112-pbs-v4-admission-readers-20261028/manifest.json) binds the retained reports, native runs/jobs and artifact identities. These raw profiles retain unqualified native schemas and null effective dates; they establish no PBS domain meaning, patient rate, vocabulary membership or derived-table admission. The separate 14-object MBS-utilisation lineage overlay proves lineage, not this admission count. The exact July 2025 six-table MBS Silver cohort remains separately scoped and is not added to the raw-object count. Primary restoration and cleanup pass; independent recovery still lacks an approved independent target and authority. Existing exact PBS rights attestations are reused without independently reviewing their instrument or widening scope. Required eligible derived outputs, supported semantics, broader actual consumers and federation acceptance remain incomplete. Earlier eight-admission and six-PBS-deferred reports remain immutable historical snapshots. |
 | M-113 donor archival | Verified | Both separate maintainer approvals, exact public history preservation, anonymous clean restore and unchanged archived Git heads are recorded in the [scraper receipt](../../quality/qualifications/scraper-archival-20260906.json) and [graph receipt](../../quality/qualifications/graph-archival-20260906.json). |
+
+## Existing-archive evidence update — 16 November 2026
+
+The later [PBS metadata crosswalk](../../quality/qualifications/australian-pbs-m107-existing-archive-crosswalk-20261115.json)
+matches 312 of 316 official link occurrences to retained archive identities;
+four remain unmatched. The [bounded four-link observation](../../quality/qualifications/australian-pbs-m107-four-link-metadata-20261115.json)
+did not retain the publisher response bodies or archive tree responses, so it
+does not prove that those objects are absent. Matched PBS objects retain their
+separate unknown privacy and admission dispositions. M-107 remains blocked.
+
+For eight existing August MBS projections, the [field-lineage qualification](../../quality/qualifications/australian-mbs-august-projection-field-lineage-qualification-20261115.json)
+and [metadata replay](../../quality/qualifications/australian-mbs-august-projection-v3-20261115/metadata-replay.json)
+bind source and output identities. Four are inside the frozen M-112 inventory;
+four are outside it and retain the footer-adjusted historical-writer limitation.
+All eight have a source-profile privacy assessment, not an exhaustive screening
+of every possible datum.
+Their [consumer preflight](../../quality/qualifications/australian-mbs-august-projection-consumer-preflight-20261115.json)
+uses synthetic probes and does not create production contracts, admissions or
+actual payload canaries. The two `f9f9` outputs retain their independent-replica
+prerequisite. M-108 and M-112 remain blocked.
+
+The [PBS acquisition privacy coverage](../../quality/qualifications/australian-pbs-acquisition-privacy-coverage-20261115.json)
+matches 1,703 of 1,722 unassessed PBS-related paths by digest to 1,702 retained
+acquisition events; 19 paths did not match that event directory. Those events
+retain unknown sensitivity and personal-data status, and a match does not clear
+the object or its members. The [semantic and consumer-safety checks](australian-semantic-consumer-safety-20261115.md)
+likewise retain unsupported meanings and relationships as unresolved; synthetic
+checks do not establish actual PBS delivery. No payload, participant or
+cohort-derived data was read for these metadata assessments.
 
 The exact 14-object MBS-utilisation manifest retains its existing reuse and
 external-publication permission. Its separate lineage overlay joins each path to its B1/B2 lifecycle and digest evidence,

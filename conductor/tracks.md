@@ -28,12 +28,25 @@ track is not an instruction to extend the current software task. Dataset work
 must close a named capability or gate prerequisite; broader coverage and
 optional experiments remain deferred. This execution order does not change
 track acceptance, rights, admission, recovery, conditional release approval, or
-the current M-105/M-107 dispositions. Read the authoritative Stable contract,
-readiness reconciliation, and bound track receipts for current gate states.
+the current M-105/M-107 dispositions. Read the Stable contract, current
+Australian acceptance register and bound track receipts for current gate states;
+the October readiness reconciliation remains a historical release input.
 
 ---
 
-## Current M-112 raw-object readback (2026-10-28)
+## Current Australian federation readback (2026-11-16)
+
+M-105 is verified under the maintainer's narrow chronology exception and
+M-113 donor archival is verified. M-106 through M-112 and the overall
+Australian federation gate remain blocked. The [current raw-delivery ledger](../quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261115-august.json)
+records **17 raw v4 admissions, 17 admitted-object reader canaries and 1,742
+deferred paths** across the unchanged 1,759-object frozen inventory. The
+separately admitted six-table MBS Silver cohort is not part of these raw counts.
+Deferred paths are not automatically eligible for admission or payload reads.
+Independent recovery remains open. See the [current acceptance register](../docs/qualification/australian-health-federation-acceptance.md)
+for the source-specific limits and newer metadata-only evidence.
+
+## Historical M-112 raw-object readback (2026-10-28)
 
 The [effective raw-delivery reconciliation](../quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261028.json)
 records **14 raw v4 admissions, 14 admitted-object reader canaries and 1,745
