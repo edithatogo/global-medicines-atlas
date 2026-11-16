@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+import scripts.reconcile_australian_historical_coverage as history_coverage
 import scripts.reconcile_pbs_m107_existing_archive as existing_archive
 from scripts.build_pbs_m107_link_crosswalk import validate_public_tree_readback
 from scripts.pbs_m107_receipt_binding import validate_pbs_receipt_binding
@@ -490,3 +491,226 @@ def test_pbs_binding_rejects_rehashed_manifest_receipt_reference(
 
     with pytest.raises(ValueError, match="manifest receipt reference"):
         validate_pbs_receipt_binding(index, identities, m112, readback, rights)
+
+
+def _historical_fixture() -> tuple[
+    list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]
+]:
+    base = "raw/pbs/utilisation/legacy/item/identity/report.zip"
+    version = "a" * 64
+    raw_path = f"raw/pbs/utilisation/legacy/item/identity/versions/{version}/report.zip"
+    receipt_path = raw_path.replace("raw/", "bronze/", 1) + ".receipt.json"
+    resources = [
+        {
+            "source_id": "au-pbs-item",
+            "category": "legacy_pbs_item",
+            "url": "https://example.invalid/report.zip",
+            "filename": "report.zip",
+            "archive_path": base,
+            "period_label": "historical",
+        }
+    ]
+    manifest = [
+        {
+            "kind": "raw_payload",
+            "source_id": "au-pbs-item",
+            "path": raw_path,
+            "sha256": version,
+            "bytes": 10,
+        },
+        {
+            "kind": "b1_receipt",
+            "source_id": "au-pbs-item",
+            "path": receipt_path,
+            "sha256": "b" * 64,
+            "bytes": 2,
+        },
+    ]
+    tree = [
+        {
+            "path": raw_path,
+            "size": 10,
+            "git_oid": "c" * 40,
+            "lfs_sha256": version,
+        },
+        {
+            "path": receipt_path,
+            "size": 2,
+            "git_oid": "d" * 40,
+            "lfs_sha256": None,
+        },
+    ]
+    return resources, manifest, tree
+
+
+def test_historical_resource_reconciliation_preserves_versions_and_evidence() -> (
+    None
+):
+    resources, manifest, tree = _historical_fixture()
+    report = history_coverage.match_pbs_resources(resources, manifest, tree)
+    assert len(report) == 1
+    assert report[0]["match_status"] == "matched_manifest_and_tree"
+    assert (
+        report[0]["matches"][0]["payload_tree_check"] == "lfs_sha256_and_size"
+    )
+    assert report[0]["matches"][0]["receipt_tree_check"] == "git_blob_and_size"
+    assert report[0]["matches"][0]["receipt_content_checked"] is False
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "wrong_source",
+        "wrong_version",
+        "missing_receipt",
+        "wrong_lfs",
+        "missing_tree",
+    ],
+)
+def test_historical_resource_reconciliation_fails_closed(mutation: str) -> None:
+    resources, manifest, tree = _historical_fixture()
+    if mutation == "wrong_source":
+        manifest[0]["source_id"] = "other-source"
+    elif mutation == "wrong_version":
+        manifest[0]["sha256"] = "f" * 64
+    elif mutation == "missing_receipt":
+        manifest.pop()
+    elif mutation == "wrong_lfs":
+        tree[0]["lfs_sha256"] = "0" * 64
+    else:
+        tree.pop()
+    with pytest.raises(ValueError, match=r"differ|missing|unmatched"):
+        history_coverage.match_pbs_resources(resources, manifest, tree)
+
+
+def test_historical_resource_reconciliation_keeps_distinct_versions() -> None:
+    resources, manifest, tree = _historical_fixture()
+    raw_path = resources[0]["archive_path"]
+    receipt_path = raw_path.replace("raw/", "bronze/", 1) + ".receipt.json"
+    manifest.extend([
+        {
+            "kind": "raw_payload",
+            "source_id": "au-pbs-item",
+            "path": raw_path,
+            "sha256": "e" * 64,
+            "bytes": 11,
+        },
+        {
+            "kind": "b1_receipt",
+            "source_id": "au-pbs-item",
+            "path": receipt_path,
+            "sha256": "f" * 64,
+            "bytes": 3,
+        },
+    ])
+    tree.extend([
+        {"path": raw_path, "size": 11, "git_oid": "1" * 40, "lfs_sha256": None},
+        {
+            "path": receipt_path,
+            "size": 3,
+            "git_oid": "2" * 40,
+            "lfs_sha256": None,
+        },
+    ])
+    matches = history_coverage.match_pbs_resources(resources, manifest, tree)[
+        0
+    ]["matches"]
+    assert len(matches) == 2
+    assert {item["sha256"] for item in matches} == {"a" * 64, "e" * 64}
+    assert {item["payload_tree_check"] for item in matches} == {
+        "lfs_sha256_and_size",
+        "git_blob_and_size",
+    }
+
+
+def test_mbs_historical_index_comparison_rejects_changed_git_identity() -> None:
+    resources = [
+        {
+            "current_archive_receipt": True,
+            "source_url": "https://example.invalid/source.xml",
+            "page_label": "fixture",
+            "matching_archive_receipts": [
+                {
+                    "archive_path": "raw/source.xml",
+                    "receipt_path": "bronze/source.json",
+                    "payload_sha256": "a" * 64,
+                }
+            ],
+        }
+    ]
+    old = [
+        {
+            "path": "raw/source.xml",
+            "size": 12,
+            "git_oid": "1" * 40,
+            "lfs_sha256": None,
+        },
+        {
+            "path": "bronze/source.json",
+            "size": 2,
+            "git_oid": "2" * 40,
+            "lfs_sha256": None,
+        },
+    ]
+    current = [dict(row) for row in old]
+    assert history_coverage.match_mbs_resources(resources, current, old)[0][
+        "same_git_objects_and_sizes_at_both_revisions"
+    ]
+    current[0]["git_oid"] = "3" * 40
+    with pytest.raises(ValueError, match="tree identity differs"):
+        history_coverage.match_mbs_resources(resources, current, old)
+
+
+@pytest.mark.parametrize(
+    "match_kind", ["output_id", "lfs_digest", "parquet_size"]
+)
+def test_historical_delta_screen_rejects_possible_matches(
+    match_kind: str,
+) -> None:
+    candidate = {
+        "output_id": "a" * 64,
+        "parquet_sha256": "b" * 64,
+        "parquet_bytes": 101,
+    }
+    changed = {
+        "path": "unrelated/file.txt",
+        "git_oid": "c" * 40,
+        "lfs_sha256": None,
+        "size": 10,
+    }
+    history_coverage.screen_derived_delta([changed], [candidate])
+    if match_kind == "output_id":
+        changed["path"] = f"new/{candidate['output_id']}.parquet"
+    elif match_kind == "lfs_digest":
+        changed["lfs_sha256"] = candidate["parquet_sha256"]
+    else:
+        changed["path"] = "new/file.parquet"
+        changed["size"] = candidate["parquet_bytes"]
+    with pytest.raises(ValueError, match="possible historical workbook output"):
+        history_coverage.screen_derived_delta([changed], [candidate])
+
+
+def test_historical_coverage_report_retains_scope_and_limitations() -> None:
+    report = json.loads(Path(history_coverage.OUTPUT).read_bytes())
+    pbs = report["pbs_utilisation"]
+    assert pbs["discovered_resources"] == pbs["matched_resources"] == 505
+    assert pbs["authorized_additional_subset"] == 120
+    assert pbs["matched_payload_paths"] == pbs["paired_receipts"] == 508
+    assert pbs["payload_lfs_digest_checks"] == 121
+    assert pbs["payload_git_blob_size_checks"] == 387
+    assert pbs["multiple_path_resources"] == 3
+    assert pbs["multiple_path_resources_with_distinct_digests"] == 2
+    assert pbs["multiple_path_resources_with_one_digest"] == 1
+    assert report["mbs_schedule"]["indexed_xml_links"] == 82
+    assert (
+        report["historical_workbook_output_search"]["candidate_outputs"] == 91
+    )
+    assert (
+        report["historical_workbook_output_search"][
+            "new_possible_matches_in_checked_deltas"
+        ]
+        == 0
+    )
+    assert report["open_coverage"]["m107"] == "blocked"
+    assert len(report["open_coverage"]["pbs_schedule_unmatched"]) == 4
+    assert not any(report["boundaries"].values())

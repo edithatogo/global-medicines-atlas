@@ -1841,3 +1841,25 @@ participant or cohort data, acquisition, publication or new admission is in scop
 - [~] Keep actual output privacy, v4 receipt closure, typed admission, payload
   consumer canaries and independent recovery separate. The `f9f9` replica
   prerequisite remains in force; this check changes no federation gate.
+
+### Historical coverage reconciliation — 16 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, managed worktree
+`/Users/doughnut/.codex/worktrees/gma-issue-reconciliation/global-medicines-atlas`,
+branch `codex/australian-historical-coverage-20261116`, base `e55bfb4f`.
+This lane owns the retained PBS/MBS metadata crosswalk, its offline generator,
+focused tests and this handoff. No payload, participant or cohort-derived data
+is read; no dataset acquisition, publication or gate decision is in scope.
+
+- [x] Reconcile all 505 retained PBS discovery resources to 508 archive paths
+  and paired receipt paths, keeping the three multiple-path identities distinct.
+  Separate LFS digest checks from Git blob/size metadata and prior receipts.
+- [x] Compare 82 indexed MBS XML objects and receipts at the two recorded archive
+  revisions, and carry forward the seven-tree search for 91 workbook outputs
+  only across the observed, screened tree deltas.
+- [x] Record the historical period labels, the specific December 1993 evidence,
+  the 1993 age-label uncertainty, the four unresolved PBS schedule occurrences
+  and the unidentified September 2025 AIHW ATC2 edition. M-107 remains blocked.
+- [~] Required hosted checks and integration are recorded at the final PR head;
+  this metadata reconciliation does not establish historical completeness,
+  rights, privacy, admission or independent recovery.

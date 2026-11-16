@@ -19,6 +19,9 @@ The [eight-object admission preparation](../../../docs/qualification/australian-
 assembles draft components without admitting or reading any payload.
 The [bounded semantic and consumer checks](../../../docs/qualification/australian-mbs-august-bounded-semantics-consumers-20261116.md)
 compare retained aggregate profiles and exercise offline admission isolation.
+The [historical coverage reconciliation](../../../docs/qualification/australian-historical-coverage-reconciliation-20261116.md)
+joins retained PBS discovery and MBS index metadata to the observed archive
+revisions without claiming a complete historical denominator.
 The [5 October derived-product reconciliation](../../../docs/qualification/australian-m108-derived-products.md)
 and [inventory](../../../quality/qualifications/australian-m108-derived-products-20261005.json)
 remain historical evidence.
