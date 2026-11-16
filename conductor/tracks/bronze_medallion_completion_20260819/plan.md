@@ -1623,6 +1623,9 @@ scope.
   explicitly record #850 as a completed task subissue of #342, not a phase.
   An initial live invocation crashed; the repaired metadata-only readback
   checked eight registered tracks and 30 linked issues with zero drift.
-- [~] Verify the focused code and context checks, review the exact diff and
-  integrate after the final hosted checks. This does not change any source,
-  admission, recovery, rights, release or federation gate.
+- [x] Verify the focused code and context checks, review the exact diff and
+  integrate PR #1461 after all 28 required check contexts passed on head
+  `d29973aebe120ca9fbba25e886f0cb731fdec292`. The merge commit is
+  `e5ca7e467717ebcbd1b53ad24cf4b55109d657b3`; post-merge checks are pending.
+  This does not change any source, admission, recovery, rights, release or
+  federation gate.
