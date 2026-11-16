@@ -396,6 +396,37 @@ def test_dependency_submission_workflow_keeps_write_scope_off_prs() -> None:
     assert "pull_request" not in job["if"]
 
 
+def test_shared_privacy_workflow_keeps_its_fail_closed_boundary() -> None:
+    workflow = yaml.safe_load(
+        (ROOT / ".github/workflows/privacy-secrets.yml").read_text()
+    )
+    events = workflow.get("on", workflow.get(True))
+    assert set(events) == {
+        "pull_request",
+        "push",
+        "merge_group",
+        "schedule",
+        "workflow_dispatch",
+    }
+    assert events["push"]["branches"] == ["main"]
+    assert workflow["permissions"] == {"contents": "read"}
+
+    job = workflow["jobs"]["privacy-and-secrets"]
+    assert "if" not in job
+    assert not job.get("continue-on-error", False)
+    checkout, scan = job["steps"]
+    assert checkout["with"]["fetch-depth"] == 0
+    assert checkout["with"]["persist-credentials"] is False
+    assert checkout["with"]["submodules"] is False
+    assert re.fullmatch(
+        r"edithatogo/repository-standards/\.github/actions/privacy-secrets@[0-9a-f]{40}",
+        scan["uses"],
+    )
+    assert "if" not in scan
+    assert not scan.get("continue-on-error", False)
+    assert scan["with"]["profile"] == "${{ inputs.profile || 'repository' }}"
+
+
 @pytest.mark.parametrize(
     "tamper", [None, "digest", "continuing", "date", "count"]
 )
