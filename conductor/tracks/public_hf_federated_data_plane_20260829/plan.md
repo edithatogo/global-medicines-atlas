@@ -1713,6 +1713,28 @@ during the preflight and was reconnected before integration.
 - [x] Integrate the replay, PBS metadata and synthetic consumer preflight in
   PR #1458 after Git storage returned, without changing any dataset.
 
+### PBS privacy and provenance continuation — 16 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, managed worktree
+`/Users/doughnut/.codex/worktrees/gma-issue-reconciliation/global-medicines-atlas`,
+branch `codex/pbs-privacy-provenance-20261116`, base `f498a7e5`. This lane owns
+the value-free crosswalk, its focused tests, this handoff and the previous
+privacy-workflow integration receipt. It reads only retained repository
+metadata; no dataset, participant or cohort payload, source acquisition,
+publication, new rights conclusion or admission is in scope.
+
+- [x] Bind the 19 paths unmatched by the earlier `au-pbs` acquisition-event
+  directory to any exact pre-existing archived-PDF, projection or reproduced
+  output evidence: five archived-PDF events, nine byte-identical projections,
+  three layer partitions, one PBS Bronze projection and one reproduced Silver
+  output. Eighteen belong to the frozen inventory and one is outside it. All
+  remain privacy-blocked. Keep historical and current rights/admission records
+  distinct; do not open payloads to resolve the remaining assessment gaps.
+- [~] Deterministic regeneration, scoped review and negative controls passed.
+  The affected and related metadata tests passed in a 157-test selection before
+  the final frozen-membership check; the final 32-test affected file, Ruff,
+  BasedPyright, ty and context checks passed. Integrate after protected checks.
+
 ### Automatic live-check correction — 16 November 2026
 
 The #1457 PR and post-merge Test-Goblin runs executed the existing public MBS

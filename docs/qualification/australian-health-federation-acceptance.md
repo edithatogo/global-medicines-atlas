@@ -45,7 +45,11 @@ The [PBS acquisition privacy coverage](../../quality/qualifications/australian-p
 matches 1,703 of 1,722 unassessed PBS-related paths by digest to 1,702 retained
 acquisition events; 19 paths did not match that event directory. Those events
 retain unknown sensitivity and personal-data status, and a match does not clear
-the object or its members. The [semantic and consumer-safety checks](australian-semantic-consumer-safety-20261115.md)
+the object or its members. A later [metadata-only provenance crosswalk](australian-pbs-unmatched-provenance-20261116.md)
+binds the 19 paths to five separately recorded archived-PDF events, twelve
+reimbursement projection records and two PBS projection/output records. All
+1,722 privacy dispositions remain unassessed; provenance and prior publication
+do not authorize payload reads or admission. The [semantic and consumer-safety checks](australian-semantic-consumer-safety-20261115.md)
 likewise retain unsupported meanings and relationships as unresolved; synthetic
 checks do not establish actual PBS delivery. No payload, participant or
 cohort-derived data was read for these metadata assessments.

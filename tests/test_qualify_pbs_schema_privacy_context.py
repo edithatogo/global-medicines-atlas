@@ -11,6 +11,7 @@ import pytest
 import scripts.qualify_pbs_acquisition_privacy_coverage as coverage
 import scripts.qualify_pbs_member_privacy_triage as triage
 import scripts.qualify_pbs_schema_privacy_context as qualification
+import scripts.reconcile_pbs_privacy_provenance as provenance
 from scripts.qualify_m112_existing_reimbursement_batch import (
     read_bound_metadata,
 )
@@ -191,3 +192,169 @@ def test_acquisition_event_privacy_change_requires_review(
     (event_dir / original.name).write_text(json.dumps(event))
     with pytest.raises(ValueError, match="recorded privacy state differs"):
         coverage._events(tmp_path)  # pyright: ignore[reportPrivateUsage]
+
+
+@pytest.fixture(scope="module")
+def unmatched_provenance_evidence() -> dict[str, Any]:
+    return provenance.load_inputs()
+
+
+def test_unmatched_paths_have_separate_provenance_and_privacy_states() -> None:
+    report = provenance.build()
+    assert report["summary"] == {
+        "prior_unmatched_paths": 19,
+        "frozen_paths": 18,
+        "outside_frozen_paths": 1,
+        "archived_pdf_acquisition_events": 5,
+        "byte_identical_reimbursement_projections": 9,
+        "reimbursement_layer_partitions": 3,
+        "pbs_bronze_projections": 1,
+        "pbs_reproduced_silver_outputs": 1,
+        "privacy_clearances_added": 0,
+    }
+    assert len(report["objects"]) == 19
+    assert all(
+        row["privacy"] == qualification.UNKNOWN
+        and row["ready_for_payload_read"] is False
+        for row in report["objects"]
+    )
+    assert not any(report["boundaries"].values())
+    bronze = next(
+        row
+        for row in report["objects"]
+        if row["kind"] == "pbs_bronze_projection"
+    )
+    silver = next(
+        row
+        for row in report["objects"]
+        if row["kind"] == "pbs_reproduced_silver"
+    )
+    assert bronze["source_archive_sha256"] == silver["source_archive_sha256"]
+    assert bronze["sha256"] != silver["sha256"]
+    assert silver["two_builds_same_algorithm"] is True
+    assert (
+        silver["historical_publication"]
+        == "anonymous_digest_verified_not_v4_admitted"
+    )
+
+
+@pytest.mark.parametrize(
+    ("mutation", "message"),
+    [
+        ("missing_path", "PBS unmatched inventory differs"),
+        ("duplicate_path", "duplicate or invalid evidence path"),
+        (
+            "cleared_privacy",
+            "PBS privacy inventory identity or disposition differs",
+        ),
+        ("frozen_membership", "PBS provenance frozen membership differs"),
+        ("swapped_membership", "PBS provenance frozen membership differs"),
+        ("pdf_digest", "archived PDF provenance or privacy differs"),
+        ("pdf_size", "archived PDF provenance or privacy differs"),
+        ("pdf_privacy", "archived PDF provenance or privacy differs"),
+    ],
+)
+def test_unmatched_provenance_rejects_inventory_or_pdf_drift(
+    unmatched_provenance_evidence: dict[str, Any], mutation: str, message: str
+) -> None:
+    docs = copy.deepcopy(unmatched_provenance_evidence)
+    rows = docs["coverage"]["unmatched_in_scoped_event_directory"]["identities"]
+    if mutation == "missing_path":
+        rows.pop()
+    elif mutation == "duplicate_path":
+        rows[-1] = copy.deepcopy(rows[0])
+    elif mutation == "cleared_privacy":
+        next(
+            row
+            for row in docs["inventory"]["objects"]
+            if row["path"] == rows[0]["path"]
+        )["privacy"] = "cleared"
+    elif mutation == "frozen_membership":
+        next(
+            row
+            for row in docs["inventory"]["objects"]
+            if row["path"] == rows[0]["path"]
+        )["frozen_member"] = False
+    elif mutation == "swapped_membership":
+        cohort = docs["inventory"]["objects"]
+        next(row for row in cohort if row["path"] == rows[0]["path"])[
+            "frozen_member"
+        ] = False
+        next(
+            row
+            for row in cohort
+            if row["batch"] == "pbs_reproduced_silver_unassessed"
+        )["frozen_member"] = True
+    elif mutation.startswith("pdf_"):
+        event = next(iter(docs["events"].values()))
+        if mutation == "pdf_digest":
+            event["payload_sha256"] = "0" * 64
+        elif mutation == "pdf_size":
+            event["retrieval"]["http"]["observed_byte_length"] += 1
+        else:
+            event["sensitivity"]["personal_data"] = "none"
+    with pytest.raises(ValueError, match=message):
+        provenance.reconcile(docs)
+
+
+@pytest.mark.parametrize(
+    ("mutation", "message"),
+    [
+        (
+            "projection_digest",
+            "reimbursement projection identity or lineage differs",
+        ),
+        ("projection_parent", "byte-identical projection source differs"),
+        ("partition_relation", "layer partition source differs"),
+        (
+            "bronze_revision",
+            "PBS Bronze identity, lineage or attestation differs",
+        ),
+        (
+            "silver_revision",
+            "PBS Silver identity, publication or lineage differs",
+        ),
+        (
+            "silver_archive",
+            "PBS Silver identity, publication or lineage differs",
+        ),
+        (
+            "silver_admission",
+            "PBS Silver identity, publication or lineage differs",
+        ),
+    ],
+)
+def test_unmatched_provenance_rejects_projection_drift(
+    unmatched_provenance_evidence: dict[str, Any], mutation: str, message: str
+) -> None:
+    docs = copy.deepcopy(unmatched_provenance_evidence)
+    if mutation.startswith("projection_"):
+        row = next(
+            row
+            for row in docs["projection"]["objects"]
+            if row["projection_relation"]
+            == "byte_identical_to_exact_producer_source_path"
+        )
+        row[
+            "dataset_sha256"
+            if mutation == "projection_digest"
+            else "producer_source_sha256"
+        ] = "0" * 64
+    elif mutation == "partition_relation":
+        row = next(
+            row
+            for row in docs["projection"]["objects"]
+            if row["projection_relation"]
+            == "exact_layer_partition_of_medallion_artifacts"
+        )
+        row["producer_source_sha256"] = "0" * 64
+    elif mutation == "bronze_revision":
+        docs["bronze_rights"]["scope"]["revision"] = "0" * 40
+    elif mutation == "silver_revision":
+        docs["publication"]["revision"] = "0" * 40
+    elif mutation == "silver_archive":
+        docs["silver_rights"]["authorized_output"]["archive_sha256"] = "0" * 64
+    else:
+        docs["publication"]["v4_admission_performed"] = True
+    with pytest.raises(ValueError, match=message):
+        provenance.reconcile(docs)
