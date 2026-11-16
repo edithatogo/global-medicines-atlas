@@ -159,7 +159,7 @@
   "recorded_on": "2026-11-16",
   "schema_id": "global-medicines-atlas.frozen-mbs-projection-role-assessment",
   "schema_version": 1,
-  "v1_limit": "No rebuildable Bronze projection representation in pinned v1; raw B2 is not the projection.",
+  "v1_limit": "Pinned v1 does not distinguish B2 raw from a rebuildable projection or express B2-to-B2 production.",
   "v1_source_receipt": {
     "path": "quality/qualifications/australian-mbs-frozen-raw-lineage-20261115/v1-conformance.json",
     "projection_subject": false,

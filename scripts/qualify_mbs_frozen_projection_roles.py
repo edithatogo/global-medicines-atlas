@@ -123,7 +123,7 @@ def semantic_errors(document: dict[str, Any]) -> list[str]:
 def projection_v1_errors(
     document: dict[str, Any], projection_path: str
 ) -> list[str]:
-    """Fail closed when v1 is asked to represent a Bronze projection."""
+    """Fail closed when v1 alone is asked to qualify a Bronze projection."""
     errors = semantic_errors(document)
     matches = [
         artifact
@@ -136,7 +136,7 @@ def projection_v1_errors(
     elif len(matches) != 1:
         errors.append("projection_subject_ambiguous")
     elif matches[0]["layer"] == "bronze_b2":
-        errors.append("projection_mislabeled_as_raw_b2")
+        errors.append("v1_bronze_b2_lacks_representation_discriminator")
     else:
         errors.append("bronze_projection_layer_unrepresentable_in_v1")
     return errors
@@ -302,7 +302,7 @@ def build(root: Path = ROOT) -> dict[str, bytes]:  # ruff: ignore[too-many-local
             "semantic_errors": errors,
             "projection_subject": False,
         },
-        "v1_limit": "No rebuildable Bronze projection representation in pinned v1; raw B2 is not the projection.",
+        "v1_limit": "Pinned v1 does not distinguish B2 raw from a rebuildable projection or express B2-to-B2 production.",
         "objects": rows,
         "pbs_reproduced_silver": pbs_assessment(root),
         "boundaries": {

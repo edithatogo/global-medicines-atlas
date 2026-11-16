@@ -1903,9 +1903,10 @@ evidence. No source or projection payload, participant or cohort-derived data,
 new acquisition, dataset publication or expanded frozen inventory is in scope.
 
 - [~] Validate and bind the four existing v2 field-lineage sets and reproduce
-  their v3 metadata plans in memory. The pinned v1 cannot represent a Bronze
-  projection; an executable guard rejects raw-B2 mislabelling and the retained
-  source v1 receipt has target-layer mismatches. Projection v1 remains open.
+  their v3 metadata plans in memory. The pinned v1 lacks a
+  representation field and B2-to-B2 transition; an executable guard treats
+  a v1 B2 label alone as insufficient. The retained source v1 receipt has
+  target-layer mismatches. Projection v1 remains open.
 - [x] Assess output privacy from the source schema and fixed producer code;
   native text is retained and all four output clearances remain unknown.
 - [x] Bind the reproduced PBS Silver output to its producer and source-member

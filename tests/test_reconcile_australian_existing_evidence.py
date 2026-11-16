@@ -311,7 +311,7 @@ def test_projection_roles_reject_mutated_v3_plan(
         roles.build()
 
 
-def test_v1_rejects_a_projection_disguised_as_raw_b2() -> None:
+def test_v1_alone_cannot_qualify_a_b2_projection() -> None:
     document = json.loads(
         Path("contracts/medallion/v1/fixtures/valid.json").read_bytes()
     )
@@ -322,6 +322,7 @@ def test_v1_rejects_a_projection_disguised_as_raw_b2() -> None:
     document["artifacts"][0]["artifact_id"] = path
     document["artifacts"][0]["layer"] = "bronze_b2"
     document["promotion_decisions"][0]["subject_artifact_id"] = path
-    assert "projection_mislabeled_as_raw_b2" in roles.projection_v1_errors(
-        document, path
+    assert (
+        "v1_bronze_b2_lacks_representation_discriminator"
+        in roles.projection_v1_errors(document, path)
     )

@@ -22,9 +22,11 @@ a byte-closed v4 plan receipt. Full plan JSON was tested locally but triggered
 the existing generic-secret rule on hash fields, so it was removed and is not
 retained. The scanner was not suppressed or changed.
 
-The pinned v1 schema has no representation for a rebuildable Bronze projection.
-The original XML is raw B2; its derived Parquet projections are not. The new
-v1 semantic checks reject a projection labelled as raw B2. The retained
+The pinned v1 schema has no representation field distinguishing raw B2 from a
+rebuildable B2-associated projection, and its allowed transitions have no
+B2-to-B2 projection-production step. V4 can distinguish these representations.
+The original XML is raw evidence; its derived Parquet projections are not. A
+v1 layer label alone is insufficient to qualify a projection. The retained
 source-side v1 document is schema-valid, but its three blocked promotion
 records name B2 subjects while their target is Silver. They therefore fail the
 repository's target-layer semantic rule. The historical receipt is unchanged;
