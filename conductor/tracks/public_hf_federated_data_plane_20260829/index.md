@@ -15,6 +15,8 @@ publication, rights, sensitivity, and restore evidence independent.
 Current M-108 and M-112 product status is in the
 [Australian federation acceptance register](../../../docs/qualification/australian-health-federation-acceptance.md)
 and the [August projection metadata and privacy update](../../../docs/qualification/australian-mbs-august-projection-replay-pbs-privacy-20261115.md).
+The [eight-object admission preparation](../../../docs/qualification/australian-mbs-august-projection-admission-preparation-20261116.md)
+assembles draft components without admitting or reading any payload.
 The [5 October derived-product reconciliation](../../../docs/qualification/australian-m108-derived-products.md)
 and [inventory](../../../quality/qualifications/australian-m108-derived-products-20261005.json)
 remain historical evidence.
