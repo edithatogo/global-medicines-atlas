@@ -83,13 +83,16 @@ charter sets scheduling priority. It does not change acceptance criteria,
 qualify data, waive requirements, or authorize publication or release.
 
 Use the [Stable v1 contract](../quality/qualifications/stable-v1-contract.json),
-its [readiness reconciliation](../quality/qualifications/stable-v1-release-readiness-reconciliation.json),
+the [current Australian acceptance register](../docs/qualification/australian-health-federation-acceptance.md),
 the owning track receipts, and `scripts/reconcile_stable_v1_contract.py` for
-gate states. Read their bound evidence before choosing work; do not infer
-current status from historical plan sections. Conditional maintainer approval
-remains subject to its recorded conditions. The current M-105 and M-107
-dispositions remain effective until supported by their required evidence and
-any applicable decision.
+current gate states. The [28 October readiness reconciliation](../quality/qualifications/stable-v1-release-readiness-reconciliation.json)
+is a historical snapshot bound to the later scoped software-release approval;
+its earlier M-105 and raw-delivery statements are not current. Preserve its
+bytes and the separately retained original contract. Read the bound evidence
+before choosing work; do not infer current status from historical plan
+sections. Conditional maintainer approval remains subject to its recorded
+conditions. The current M-105 and M-107 dispositions remain effective until
+supported by their required evidence and any applicable decision.
 
 ### Acceptance lanes
 

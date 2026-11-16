@@ -1673,8 +1673,9 @@ unassessed PBS, participant or cohort-derived payloads.
   recorded independent-replica prerequisite; do not waive it.
 - [~] Continue PBS privacy assessments using retained metadata; keep unknown
   objects blocked when source-specific evidence remains insufficient.
-- [ ] Verify focused tests and protected CI, then merge the bounded technical
-  changes without acquiring or publishing data.
+- [x] Merge the field-lineage changes in PR #1457 after focused and protected
+  checks. Its automatic CI also read existing public MBS payloads, as recorded
+  in the later live-check correction; no participant or cohort data was read.
 
 ### August projection replay and PBS acquisition metadata — 15 November 2026
 
@@ -1693,14 +1694,14 @@ retains its own files and checkout.
   preserve all unknown privacy dispositions and the 19 unmatched paths.
 - [~] Prepare and check v4 admissions and consumers only where their exact
   prerequisites can be closed. Metadata replay is not an admission or reader.
-- [ ] Merge after focused checks and protected CI, without dataset acquisition
-  or publication.
+- [x] Merge the metadata replay and PBS assessment in PR #1458 after focused
+  and protected checks. The later bounded public-MBS read had separate approval.
 
 ### Projection offline consumer preflight — 16 November 2026
 
 The same chat owns the scoped consumer-preflight source and tests in the
-worktree above. The PortableSSD holding its shared Git directory is unavailable;
-preserve the worktree, its pushed replay branch and the local preflight edits.
+worktree above. The PortableSSD holding its shared Git directory was unavailable
+during the preflight and was reconnected before integration.
 
 - [x] Exercise synthetic v4-shape and consumer-identity probes for all eight
   projection paths. Verify that each reader rejects an unadmitted probe before
@@ -1709,8 +1710,8 @@ preserve the worktree, its pushed replay branch and the local preflight edits.
 - [~] Complete exact production admission and consumer evidence only when the
   missing roles and the current no-acquisition boundary permit it. The `f9f9`
   independent-replica prerequisites remain unchanged.
-- [ ] Integrate the replay, PBS metadata and consumer checks with protected CI
-  after Git storage is available, keeping all datasets unchanged.
+- [x] Integrate the replay, PBS metadata and synthetic consumer preflight in
+  PR #1458 after Git storage returned, without changing any dataset.
 
 ### Automatic live-check correction — 16 November 2026
 
@@ -1721,11 +1722,13 @@ was previously public MBS data, with no participant or cohort data involved.
 The same integrator owns the Test-Goblin workflow guard and its focused test.
 
 - [x] Add a fail-closed guard requiring explicit manual-dispatch authorization
-  before either public MBS payload check. Automatic runs fail that required
+  before either public MBS payload check. Automatic runs fail that live
   job instead of silently skipping or claiming it passed.
-- [~] The guard exists only on this branch until a protected merge. Keep the
-  PR blocked while no-acquisition is in effect; do not rerun the live check.
-- [~] Remove duplicate serialized replay plans from the PR history after the
+- [x] Merge the guard in PR #1458. Its live job is not among the configured
+  required branch-protection contexts, so its failure alone does not block a
+  merge. The separately authorized run `43772565576` passed both existing
+  public-MBS checks; that authorization does not cover further payload reads.
+- [x] Remove duplicate serialized replay plans from the PR history after the
   secret scanner flagged their deterministic hashes. Preserve in-memory v3
   schema validation and do not add a scanner exception.
 
@@ -1738,11 +1741,37 @@ baseline and synthetic Hudi experiment fixes, their focused tests, and this
 handoff. The parallel bulk-publication lane retains its own checkout and files.
 No dataset acquisition, publication, participant data or cohort data is in scope.
 
-- [~] Investigate and fix the manually dispatched regeneration and synthetic
-  Hudi failures from run 43772565576 without weakening their behavioral gates.
-- [~] Verify the fixes with focused tests and a manual hosted run whose public
-  MBS acquisition input remains false; then integrate after protected checks.
+- [x] Fix the manually dispatched regeneration and synthetic Hudi failures from
+  run `43772565576` without weakening their behavioral gates. The subsequent
+  Hudi schema failure and its correction remain in the evidence log.
+- [x] Verify regeneration and real synthetic Hudi execution in manual run
+  `43776510954` with public MBS acquisition disabled; merge PR #1459 after all
+  configured required checks passed. Its post-merge Test-Goblin run passed 28
+  jobs, skipped the manual-only Hudi job and failed the guarded MBS job before
+  either payload step. Security and Context and the data-layer archive passed.
 - [x] Reconcile the earlier description of the MBS job with the observed
   branch-protection configuration and the separately authorized bounded run.
   That job is not a required context, despite the earlier description; its
   two checks passed in the authorized run, whose other two jobs failed.
+
+### Federation status and evidence reconciliation — 16 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, worktree
+`/Users/doughnut/.codex/worktrees/gma-soupsieve-evidence/global-medicines-atlas`,
+branch `codex/australian-status-reconciliation-20261116`. This lane owns the
+current federation summary, scheduling metadata, Stable contract evidence
+links and their focused validation. The parallel bulk-publication lane retains
+its own checkout and files. No dataset acquisition or publication, payload
+read, participant or cohort-derived data access, rights change, or gate waiver
+is in scope.
+
+- [x] Reconcile current M-105 and M-113 dispositions, the M-106–M-112 blocked
+  states, the 17-object raw-v4 ledger and the latest metadata-only evidence.
+- [x] Preserve the historical October readiness and November software-release
+  approval bytes while making their chronology clear in current summaries.
+- [x] Refresh the hash-bound project overview for 16 November, distinguish the
+  federation gate and Stable qualification from the released software scope,
+  and preserve the separately approved Hub publication packet unchanged.
+- [~] The affected 225 contract, context, federation and release-authority
+  tests pass locally; validate the final patch and integrate after required
+  hosted checks. The public-MBS no-read guard remains unchanged.

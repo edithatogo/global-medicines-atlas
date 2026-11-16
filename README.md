@@ -53,7 +53,7 @@ See the [current architecture and progress](docs/project-overview.md).
 <!-- gma-progress:start -->
 ![Roadmap ledger completion](docs/assets/roadmap.svg)
 
-**14/20 delivery tracks closed (70%); 85/92 tracked Stable v1 requirements verified (92.4%).** Measured on 15 November 2026. 6 tracks and 7 requirements remain open.
+**14/20 delivery tracks closed (70%); 85/92 tracked Stable v1 requirements verified (92.4%).** Measured on 16 November 2026. 6 tracks and 7 requirements remain open.
 
 These are separate, unweighted ledger counts, not worldwide source coverage, effort or release readiness. A single mandatory gate can block release.
 

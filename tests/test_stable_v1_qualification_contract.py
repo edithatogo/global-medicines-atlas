@@ -1777,6 +1777,93 @@ def test_historical_workbook_source_semantics_are_bounded_and_bound() -> None:
     ]
 
 
+def test_current_federation_evidence_is_bound_without_changing_gate_states() -> (
+    None
+):
+    current_evidence = {
+        "M-106": [
+            "quality/qualifications/mbs-annual-public-workbook-qualification-20261115.json",
+        ],
+        "M-107": [
+            "quality/qualifications/australian-pbs-m107-existing-archive-crosswalk-20261115.json",
+            "quality/qualifications/australian-pbs-m107-four-link-metadata-20261115.json",
+        ],
+        "M-108": [
+            "quality/qualifications/australian-mbs-august-projection-field-lineage-qualification-20261115.json",
+            "quality/qualifications/australian-mbs-august-projection-v3-20261115/metadata-replay.json",
+            "quality/qualifications/australian-existing-archive-privacy-batch-20261115.json",
+        ],
+        "M-109": [
+            "docs/qualification/australian-semantic-consumer-safety-20261115.md",
+        ],
+        "M-111": [
+            "docs/qualification/australian-semantic-consumer-safety-20261115.md",
+            "quality/qualifications/australian-mbs-august-projection-consumer-preflight-20261115.json",
+        ],
+        "M-112": [
+            "quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261115-august.json",
+            "quality/qualifications/australian-pbs-acquisition-privacy-coverage-20261115.json",
+        ],
+    }
+    raw = _load(QUALIFICATION)
+    for requirement in raw["requirements"]:
+        requirement["evidence"] = [
+            path
+            for path in requirement["evidence"]
+            if path
+            not in current_evidence.get(requirement["requirement_id"], [])
+        ]
+    federation_gate = next(
+        gate
+        for gate in raw["release_gates"]
+        if gate["gate_id"] == "stable-v1-australian-health-federation"
+    )
+    all_current_paths = {
+        path for paths in current_evidence.values() for path in paths
+    }
+    federation_gate["evidence"] = [
+        path
+        for path in federation_gate["evidence"]
+        if path not in all_current_paths
+    ]
+
+    result = build_contract(raw)
+    requirements = {
+        row["requirement_id"]: row for row in result["requirements"]
+    }
+    for requirement_id, paths in current_evidence.items():
+        assert requirements[requirement_id]["state"] == "blocked"
+        for path in paths:
+            assert (ROOT / path).is_file()
+            assert path in requirements[requirement_id]["evidence"]
+    assert requirements["M-105"]["state"] == "verified"
+    assert requirements["M-110"]["state"] == "blocked"
+    assert requirements["M-113"]["state"] == "verified"
+    gate = next(
+        gate
+        for gate in result["release_gates"]
+        if gate["gate_id"] == "stable-v1-australian-health-federation"
+    )
+    assert gate["state"] == "blocked"
+    assert all_current_paths <= set(gate["evidence"])
+    assert (
+        "quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261028.json"
+        in requirements["M-112"]["evidence"]
+    )
+    ledger = _load(ROOT / current_evidence["M-112"][0])
+    assert ledger["effective_counts"] == {
+        "frozen_objects": 1759,
+        "raw_v4_admissions": 17,
+        "raw_admitted_object_reader_canaries": 17,
+        "deferred_objects": 1742,
+        "frozen_denominator_changed": False,
+    }
+    assert ledger["boundaries"]["federation_gate_closed"] is False
+    crosswalk = _load(ROOT / current_evidence["M-107"][0])["result"]
+    assert crosswalk["matched_occurrences"] == 312
+    assert crosswalk["unmatched_occurrences"] == 4
+
+
 def test_effective_pbs_raw_delivery_counts_do_not_include_silver_or_close_federation() -> (
     None
 ):

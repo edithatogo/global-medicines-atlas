@@ -1,15 +1,17 @@
 {
-  "as_of": "2026-11-15",
+  "as_of": "2026-11-16",
   "inputs": {
-    "conductor/tracks.md": "5181ba8214cfaedc28a42e188286b4633549360f9ec43f1864b566f3d4a4e92b",
-    "quality/qualifications/stable-v1-contract.json": "d1dc3c330eb14faedd1782363b9940ce5fd41896a63740a2b3f62b2dc5588c1e"
+    "conductor/tracks.md": "fbfdbee4cb7fa01325d597658e98cfe14ca220bac8638e0cb4ddd9e605e04e51",
+    "quality/qualifications/stable-v1-contract.json": "192f09386c34e3cbb25d0cbee14c7eab3841a767dd990f957b389cd287fae3f2"
   },
   "measurement": "unweighted_ledger_counts_not_release_readiness",
   "requirements": {
     "total": 92,
     "verified": 85
   },
+  "stable_qualification_state": "blocked",
   "stable_release_state": "blocked",
+  "stable_release_state_meaning": "stable_qualification_not_software_release",
   "tracks": {
     "closed": 14,
     "total": 20

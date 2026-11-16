@@ -231,6 +231,19 @@ def outputs(as_of: date | None = None) -> dict[Path, str]:
         raise ValueError(
             "progress inputs need an explicit supported denominator"
         )
+    federation_gates = [
+        gate
+        for gate in document["release_gates"]
+        if gate["gate_id"] == "stable-v1-australian-health-federation"
+    ]
+    if len(federation_gates) != 1 or federation_gates[0]["state"] not in {
+        "passed",
+        "failed",
+        "unverified",
+        "blocked",
+    }:
+        raise ValueError("federation gate must have one supported state")
+    federation_state = str(federation_gates[0]["state"])
     counts = (
         ("Conductor delivery tracks closed", rows.count("x"), len(rows)),
         (
@@ -257,11 +270,11 @@ def outputs(as_of: date | None = None) -> dict[Path, str]:
         body += box(26, y + 48, round(1048 * done / total), 28, "#277c83")
     for x, title, status in (
         (26, "Software candidate", "Delivered"),
-        (294, "Live federation", "Partial · gate open"),
+        (294, "Federation gate", federation_state.capitalize()),
         (562, "Independent recovery", "Authority gap"),
         (
             830,
-            "Stable v1 release",
+            "Stable qualification",
             str(document["qualification_state"]).capitalize(),
         ),
     ):
@@ -289,13 +302,15 @@ def outputs(as_of: date | None = None) -> dict[Path, str]:
             for p in (tracks, contract)
         },
         "stable_release_state": document["qualification_state"],
+        "stable_release_state_meaning": "stable_qualification_not_software_release",
+        "stable_qualification_state": document["qualification_state"],
     }
     return {
         **progress_documents(snapshot),
         ROOT / "docs/assets/medallion.svg": medallion(),
         ROOT / "docs/assets/roadmap.svg": svg(
             "GMA roadmap progress",
-            f"{counts[0][1]} of {counts[0][2]} tracks closed; {counts[1][1]} of {counts[1][2]} tracked requirements verified. Counts are unweighted. Live federation, independent recovery and Stable v1 remain gated.",
+            f"{counts[0][1]} of {counts[0][2]} tracks closed; {counts[1][1]} of {counts[1][2]} tracked requirements verified. Counts are unweighted. Federation gate: {federation_state}; Stable qualification: {document['qualification_state']}. Independent recovery remains separately gated.",
             570,
             body,
         ),
