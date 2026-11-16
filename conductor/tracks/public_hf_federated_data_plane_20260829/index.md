@@ -17,6 +17,8 @@ Current M-108 and M-112 product status is in the
 and the [August projection metadata and privacy update](../../../docs/qualification/australian-mbs-august-projection-replay-pbs-privacy-20261115.md).
 The [eight-object admission preparation](../../../docs/qualification/australian-mbs-august-projection-admission-preparation-20261116.md)
 assembles draft components without admitting or reading any payload.
+The [bounded semantic and consumer checks](../../../docs/qualification/australian-mbs-august-bounded-semantics-consumers-20261116.md)
+compare retained aggregate profiles and exercise offline admission isolation.
 The [5 October derived-product reconciliation](../../../docs/qualification/australian-m108-derived-products.md)
 and [inventory](../../../quality/qualifications/australian-m108-derived-products-20261005.json)
 remain historical evidence.
