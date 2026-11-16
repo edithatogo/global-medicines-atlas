@@ -13,6 +13,25 @@ separate publication identities.
 | Catalogue metadata and public FDA/EMA/TGA/Medsafe artefacts | Hugging Face | Published at [`edithatogo/global-medicines-atlas-catalogue`](https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue); durable publisher is GitHub Actions `.github/workflows/data-layer-archive.yml`. Credential-gated payloads remain withheld. |
 | Dataset archival record | Zenodo | Separate record, only for assets with explicit redistribution rights |
 
+## Bulk archive identities
+
+Two complete source mirrors are separate publication identities from the
+bounded catalogue. They are dispatched from `main` by
+[`.github/workflows/publish-bulk-archive.yml`](../../.github/workflows/publish-bulk-archive.yml)
+on a dedicated ephemeral self-hosted runner, because the archives are far
+larger than a hosted runner can stage.
+
+| Batch contract | Hugging Face identity | Contents |
+| --- | --- | --- |
+| `quality/source-batches/openfda-all-20261030/` | `edithatogo/global-medicines-atlas-openfda-all-20261030` | Every recorded `download.open.fda.gov` partition across 31 openFDA endpoints, unmodified source JSON zips with per-partition receipts. |
+| `quality/source-batches/faers-live-20260821/` | `edithatogo/global-medicines-atlas-faers-live-20260821` | 90 FAERS/AERS quarterly releases, 2004-Q1 to 2026-Q2, with receipts, lineage and source-faithful Parquet projections. |
+
+Neither identity adds endpoints to the B0 source index, and presence in either
+archive is not Atlas coverage. The FAERS container `faers-history.private.tar`
+is excluded because it duplicates the published corpus byte for byte; the
+`private` marker names the workspace that held the bytes, not a restricted
+classification.
+
 ## Required evidence before publication
 
 Every public dataset artifact must have an artifact-level manifest recording:

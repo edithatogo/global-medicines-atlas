@@ -580,6 +580,38 @@ def test_governed_occurrence_validation_rejects_one_stale_runner() -> None:
         )
 
 
+def test_archive_runner_is_accepted_for_bulk_publication_only() -> None:
+    """The local-disk archive label stays scoped to its dispatch workflow."""
+    versions = {"runner": "ubuntu-24.04"}
+    documents = HARNESS._workflow_documents()
+
+    HARNESS._validate_runners(documents, versions)
+
+    smuggled = dict(documents)
+    smuggled[ROOT / ".github" / "workflows" / "codex-unrelated.yml"] = {
+        "jobs": {"publish": {"runs-on": HARNESS.ARCHIVE_RUNNER}}
+    }
+    with pytest.raises(ValueError, match="workflow runners are not governed"):
+        HARNESS._validate_runners(smuggled, versions)
+
+
+def test_non_string_runner_is_reported_as_drift() -> None:
+    """A label list names its workflow instead of raising TypeError."""
+    versions = {"runner": "ubuntu-24.04"}
+    documents = dict(HARNESS._workflow_documents())
+    documents[ROOT / ".github" / "workflows" / "labels.yml"] = {
+        "jobs": {"publish": {"runs-on": ["self-hosted", "gma-archive"]}}
+    }
+
+    with pytest.raises(
+        ValueError, match="workflow runners are not governed"
+    ) as info:
+        HARNESS._validate_runners(documents, versions)
+
+    assert "labels.yml=" in str(info.value)
+    assert "gma-archive" in str(info.value)
+
+
 def test_measured_receipt_records_artifact_identity(
     tmp_path, monkeypatch
 ) -> None:

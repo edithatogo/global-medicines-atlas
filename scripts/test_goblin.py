@@ -544,6 +544,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_stable_v1_publication_metadata.py",
         "tests/test_stable_v1_release_candidate_reproducibility.py",
         "tests/test_publication_transport.py",
+        "tests/test_publish_bulk_archive.py",
         "tests/test_publish_nzulm_2023.py",
         "tests/test_serving.py",
         "tests/test_data_layer_archive.py",
@@ -799,17 +800,32 @@ def _validate_setup_versions(
         raise ValueError(".python-version differs from governed Python")
 
 
+ARCHIVE_RUNNER = "gma-archive"
+ARCHIVE_WORKFLOW = WORKFLOWS_PATH / "publish-bulk-archive.yml"
+
+
 def _validate_runners(
     documents: dict[Path, object], versions: dict[str, str]
 ) -> None:
     occurrences = [
-        value
-        for document in documents.values()
+        (path, value)
+        for path, document in documents.items()
         for value in recursive_values(document, key="runs-on")
     ]
     matrix_expression = "${{ matrix.runner }}"
     allowed = {versions["runner"], matrix_expression}
-    drift = [value for value in occurrences if value not in allowed]
+    # The dispatch-only bulk publication job needs the archive runner's local
+    # disk. Every other workflow stays on hosted runners, and a non-string
+    # runs-on is drift rather than a crash.
+    drift = [
+        f"{display_path(path)}={value!r}"
+        for path, value in occurrences
+        if not isinstance(value, str)
+        or (
+            value not in allowed
+            and not (path == ARCHIVE_WORKFLOW and value == ARCHIVE_RUNNER)
+        )
+    ]
     if not occurrences or drift:
         raise ValueError(f"workflow runners are not governed: {drift}")
 
