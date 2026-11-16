@@ -1769,6 +1769,9 @@ is in scope.
   states, the 17-object raw-v4 ledger and the latest metadata-only evidence.
 - [x] Preserve the historical October readiness and November software-release
   approval bytes while making their chronology clear in current summaries.
+- [x] Refresh the hash-bound project overview for 16 November, distinguish the
+  federation gate and Stable qualification from the released software scope,
+  and preserve the separately approved Hub publication packet unchanged.
 - [~] The affected 225 contract, context, federation and release-authority
   tests pass locally; validate the final patch and integrate after required
   hosted checks. The public-MBS no-read guard remains unchanged.
