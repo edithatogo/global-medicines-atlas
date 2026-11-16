@@ -1863,3 +1863,31 @@ is read; no dataset acquisition, publication or gate decision is in scope.
 - [~] Required hosted checks and integration are recorded at the final PR head;
   this metadata reconciliation does not establish historical completeness,
   rights, privacy, admission or independent recovery.
+
+### Existing-evidence admission, privacy and recovery — 16 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, managed worktree
+`/Users/doughnut/.codex/worktrees/gma-issue-reconciliation/global-medicines-atlas`,
+branch `codex/australian-evidence-closure-20261116`, base `1d8e699c`.
+This lane owns only the eight existing August projection dossiers, bounded PBS
+privacy metadata, recovery and consumer checks, focused tests and this handoff.
+It must not read participant or cohort-derived data, acquire or publish data,
+change rights or bypass separate admission and independent-recovery gates.
+
+- [x] Reconcile per-object v4 role candidates and gaps for all eight projections
+  against existing receipts. Bind the four frozen projections to the earlier
+  primary full-inventory restore and the four outside projections to their
+  historical publication records without equating them to v4 admissions.
+- [x] Join 312 exact PBS schedule paths to existing official-link and privacy
+  evidence, including the two April XML aliases and September API member-name
+  context. All 1,722 paths in the assessed cohort remain privacy-blocked.
+- [x] Exercise existing synthetic recovery and consumer safeguards and verify
+  fail-closed projection role and privacy behavior. No actual payload canary,
+  independent restore, output privacy clearance or admission is claimed.
+- [x] Check the previous merge's hosted workflows: privacy, security and the
+  archive workflow passed; Test-Goblin passed 28 jobs and its live MBS job
+  stopped at the no-read guard before either payload step. The manual Hudi job
+  was skipped. Required final-head CI for this change remains separate.
+- [x] Register the new reconciliation tests in the unit lane after the first
+  hosted attempt rejected the unassigned test file. The inventory and affected
+  tests passed locally; final-head hosted checks remain required.

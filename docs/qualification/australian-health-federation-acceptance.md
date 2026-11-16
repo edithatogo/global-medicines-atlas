@@ -41,6 +41,14 @@ uses synthetic probes and does not create production contracts, admissions or
 actual payload canaries. The two `f9f9` outputs retain their independent-replica
 prerequisite. M-108 and M-112 remain blocked.
 
+The later [existing-evidence closure](australian-existing-evidence-closure-20261116.md)
+binds the four frozen projection identities to their earlier primary restore
+and the four outside identities to their historical publication receipts.
+The outside paths are not covered by that primary-restore receipt; no path is
+independently recovered or v4-admitted by this reconciliation. It also joins
+312 exact PBS schedule paths to existing official-link and privacy context;
+the 1,722-path privacy cohort remains unassessed.
+
 The [PBS acquisition privacy coverage](../../quality/qualifications/australian-pbs-acquisition-privacy-coverage-20261115.json)
 matches 1,703 of 1,722 unassessed PBS-related paths by digest to 1,702 retained
 acquisition events; 19 paths did not match that event directory. Those events
