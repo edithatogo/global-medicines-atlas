@@ -223,6 +223,46 @@ def _issue_number(reference: object) -> int | None:
     return None
 
 
+def _metadata_subissue_references(
+    metadata: dict[str, object],
+) -> tuple[list[object], list[dict[str, object]], bool]:
+    github_issues = metadata.get("github_issues")
+    issue_map = (
+        cast("dict[str, object]", github_issues)
+        if isinstance(github_issues, dict)
+        else {}
+    )
+    raw = issue_map.get("phases", metadata.get("github_subissues", []))
+    if not isinstance(raw, list):
+        raise TypeError("Track metadata phases must be a list")
+    phases: list[object] = []
+    tasks: list[dict[str, object]] = []
+    for reference in cast("list[object]", raw):
+        if not isinstance(reference, dict):
+            phases.append(reference)
+            continue
+        item = cast("dict[str, object]", reference)
+        kind = item.get("kind", "phase")
+        if kind == "phase":
+            phases.append(item)
+        elif kind == "task":
+            number = _issue_number(item)
+            if number is None:
+                raise TypeError("Every task subissue requires an issue number")
+            task = dict(item)
+            task["number"] = number
+            if "state" in task:
+                task["state"] = _normalise_state(task["state"])
+            tasks.append(task)
+        else:
+            raise ValueError("Subissue kind must be phase or task")
+    numbers = [cast("int", task["number"]) for task in tasks]
+    if len(set(numbers)) != len(numbers):
+        raise ValueError("Task subissue numbers must be unique")
+    declared = "phases" in issue_map or "github_subissues" in metadata
+    return phases, tasks, declared
+
+
 def _metadata_issue_numbers(
     metadata: dict[str, object],
     plan: str,
@@ -242,13 +282,9 @@ def _metadata_issue_numbers(
         raise TypeError("Track metadata requires a numbered parent issue")
 
     plan_phases = _plan_phases(plan)
-    phases_reference = github_issue_map.get(
-        "phases",
-        metadata.get("github_subissues", []),
+    references, _tasks, parent_only_declared = _metadata_subissue_references(
+        metadata
     )
-    if not isinstance(phases_reference, list):
-        raise TypeError("Track metadata phases must be a list")
-    references = cast("list[object]", phases_reference)
     plan_phase_numbers = sorted(plan_phases)
     if references and len(references) != len(plan_phase_numbers):
         raise ValueError(
@@ -273,10 +309,22 @@ def _metadata_issue_numbers(
         phase_entries.append(phase_entry)
 
     if not phase_entries:
-        phase_entries = [
+        linked_phases: list[dict[str, object]] = [
             {"phase": phase, "number": number}
-            for phase, number in sorted(plan_phases.items())
+            for phase, (number, _section) in sorted(plan_phases.items())
+            if number is not None
         ]
+        if not linked_phases:
+            if plan_phases and not parent_only_declared:
+                raise ValueError(
+                    "Track must declare parent-only or map every phase issue"
+                )
+            return parent_number, []
+        if len(linked_phases) != len(plan_phases):
+            raise ValueError(
+                "Plan phase issue links must cover every numbered phase"
+            )
+        phase_entries = linked_phases
     metadata_phases = [cast("int", entry["phase"]) for entry in phase_entries]
     if len(set(metadata_phases)) != len(metadata_phases):
         raise ValueError("Track metadata phase numbers must be unique")
@@ -313,6 +361,21 @@ def _metadata_validation_drift(
             "message": str(error),
         },
     )
+
+
+def _metadata_task_issues(
+    metadata: dict[str, object],
+    parent: int,
+    phases: list[dict[str, object]],
+) -> list[dict[str, object]]:
+    _phase_refs, tasks, _declared = _metadata_subissue_references(metadata)
+    phase_numbers = {cast("int", phase["number"]) for phase in phases}
+    task_numbers = {cast("int", task["number"]) for task in tasks}
+    if parent in phase_numbers | task_numbers or phase_numbers & task_numbers:
+        raise ValueError(
+            "Parent, phase and task issue numbers must be distinct"
+        )
+    return tasks
 
 
 def _best_effort_issue_numbers(
@@ -412,17 +475,22 @@ def synchronise(
                 metadata,
                 plan,
             )
+            task_metadata = _metadata_task_issues(
+                metadata, parent_number, phase_metadata
+            )
         except (TypeError, ValueError) as error:
             drifts.append(_metadata_validation_drift(track_id, error))
             checked_issues.update(_best_effort_issue_numbers(metadata, plan))
             checked_tracks += 1
             continue
+        task_numbers = {cast("int", task["number"]) for task in task_metadata}
         expected_numbers = {parent_number}
         expected_numbers.update(
             cast("int", phase["number"])
             for phase in phase_metadata
             if isinstance(phase.get("number"), int)
         )
+        expected_numbers.update(task_numbers)
         checked_issues.update(expected_numbers)
         missing = sorted(expected_numbers.difference(issues))
         drifts.extend([
@@ -562,6 +630,29 @@ def synchronise(
                         actual=live_issue["parent"],
                     )
                 )
+        for task in task_metadata:
+            issue_number = cast("int", task["number"])
+            live_issue = issues[issue_number]
+            if "state" in task and task["state"] != live_issue["state"]:
+                drifts.append(
+                    _drift(
+                        "github_state_mismatch",
+                        track_id,
+                        issue=issue_number,
+                        expected={"metadata_state": task["state"]},
+                        actual={"github_state": live_issue["state"]},
+                    )
+                )
+            if live_issue["parent"] != parent_number:
+                drifts.append(
+                    _drift(
+                        "github_parent_mismatch",
+                        track_id,
+                        issue=issue_number,
+                        expected=parent_number,
+                        actual=live_issue["parent"],
+                    )
+                )
         checked_tracks += 1
 
     drifts.sort(
@@ -632,6 +723,7 @@ def main() -> int:
             )
             try:
                 parent, phases = _metadata_issue_numbers(metadata, plan)
+                tasks = _metadata_task_issues(metadata, parent, phases)
             except TypeError, ValueError:
                 numbers.update(_best_effort_issue_numbers(metadata, plan))
             else:
@@ -641,6 +733,7 @@ def main() -> int:
                     for phase in phases
                     if isinstance(phase.get("number"), int)
                 )
+                numbers.update(cast("int", task["number"]) for task in tasks)
         issues = load_live_issues(repository, numbers)
 
     receipt = synchronise(root, issues)

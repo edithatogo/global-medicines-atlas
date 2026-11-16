@@ -19,7 +19,13 @@
   "github_issue_drafts": [
     ".github/generated-issues/federated-medicines-platinum-parent.md"
   ],
-  "github_subissues": [],
+  "github_subissues": [
+    {
+      "kind": "task",
+      "url": "https://github.com/edithatogo/global-medicines-atlas/issues/850",
+      "state": "closed"
+    }
+  ],
   "requirements": [
     "M-002", "M-003", "M-005", "M-031", "M-035", "M-073", "M-074",
     "M-076", "M-084", "M-090", "M-092", "M-103", "M-107", "M-111",

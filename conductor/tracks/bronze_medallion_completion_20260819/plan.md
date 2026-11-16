@@ -1599,3 +1599,30 @@ not universal archival, historical completeness or federation acceptance. See
   downloads against all 2,396 unique manifest partitions. The retained receipt
   binds each recorded payload digest and file length in a sorted index digest.
   Public archive verification and current-scope Bronze admission remain open.
+
+## GitHub issue reconciliation — 16 November 2026
+
+Owner: chat `01a1aa8f-ba44-78f1-a79b-e14bd3e07236`, managed worktree
+`/Users/doughnut/.codex/worktrees/gma-issue-reconciliation/global-medicines-atlas`,
+branch `codex/reconcile-github-issues-20261116`, based on main `1478ce1d`.
+Scope is GitHub issue metadata, the read-only issue reconciler and their evidence.
+No issue comments, outbound messages, source acquisition, dataset publication,
+participant or cohort-derived data, rights change, or acceptance waiver is in
+scope.
+
+- [x] Reopen #167 because its full-scope Bronze track and #170 remain open;
+  keep the separately approved bounded 42-source qualification unchanged.
+- [x] Link the ten previously unlinked track issues to programme #44, yielding
+  19 distinct issue nodes for 20 tracks because #167 is shared. Restore the
+  missing track and blocked/external-gate labels; retain unfinished work open.
+- [x] Reconcile titles for the released scoped software, archived donors and
+  excluded accessibility testing. Label older issue descriptions as historical
+  where their original wording no longer describes current scope; do not post
+  issue comments or rewrite their original descriptions.
+- [x] Correct the read-only synchronizer's parent-only phase handling and
+  explicitly record #850 as a completed task subissue of #342, not a phase.
+  An initial live invocation crashed; the repaired metadata-only readback
+  checked eight registered tracks and 30 linked issues with zero drift.
+- [~] Verify the focused code and context checks, review the exact diff and
+  integrate after the final hosted checks. This does not change any source,
+  admission, recovery, rights, release or federation gate.
