@@ -1533,3 +1533,14 @@ and October drift evidence.
   recovery. The reset records the comparison gap and subsequent runs retain
   exact baseline verification and drift escalation. See the
   [monitoring receipt](../../../docs/qualification/stable-v1-evidence-monitoring.md#missing-baseline-recovery).
+
+### Nova Scotia Pharmacare source health — 22 November 2026
+
+Owner: chat `01a1fc13-09a0-7961-8c2d-388111230f3d`, standard Git worktree
+`/Volumes/PortableSSD/GitHub/gma-pr-1469-workflow-receipt`, branch
+`codex/nova-scotia-source-health`.
+
+- [x] Reconcile the October HTML fingerprint mismatch and current CSV
+  header evidence. Correct probe decoding and exclude HTML pages from schema
+  baselines. Verify the original byte bound and retain the comparison gap.
+  See the [monitoring record](../../../docs/qualification/stable-v1-evidence-monitoring.md#nova-scotia-pharmacare-monitoring-finding).
