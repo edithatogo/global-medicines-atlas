@@ -1958,3 +1958,15 @@ new datasets, acquisition, publication, new rights or admission are allowed.
   four projections still require their existing exact-object admission and
   actual consumer evidence. Independent recovery and M-108/M-112 remain
   blocked. The governed recovery CI job records a rehearsal.
+
+### Test-Goblin live MBS dispatch — 22 November 2026
+
+Owner: chat `01a1fc13-09a0-7961-8c2d-388111230f3d`, standard Git worktree
+`/Volumes/PortableSSD/GitHub/gma-pr-1469-workflow-receipt`, branch
+`codex/test-goblin-manual-mbs`. Scope is the live MBS job's scheduling rule,
+its existing test, and the PR #1469 workflow receipt.
+
+- [x] Require manual dispatch with explicit opt-in before scheduling live
+  MBS registration and parity. Focused tests and workflow lint pass. Verify
+  required checks and the skipped live job in hosted CI. Exact admission,
+  actual consumer verification and independent recovery remain required.
