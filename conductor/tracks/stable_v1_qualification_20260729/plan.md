@@ -1554,8 +1554,11 @@ affected tests in the standard Git worktree
 
 - [x] Compare the fully cached 89% result with the 55% result that re-ran
   522 mutants after the source-health edit. Reproduce the CLI mutant's
-  import-time `SystemExit` on the earlier commit.
-- [x] Treat a CLI import that exits as a collection failure and confirm
-  the exact mutant is killed. Reuse cached verdicts within the same
+  import-time `SystemExit` on both commits. The merged source-health run
+  recorded 56% and 380 former kills survived in unchanged modules.
+- [x] Treat a CLI import that exits as a collection failure in the CLI
+  tests and shared product qualification runner. Confirm the exact
+  mutant is killed with the full selection of 369 tests.
+- [x] Reuse cached verdicts within the same
   dependency lock and retain the native per-mutant report. The protected
   check contract still requires all 28 contexts.

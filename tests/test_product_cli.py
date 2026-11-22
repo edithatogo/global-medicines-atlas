@@ -41,7 +41,7 @@ from global_medicines_atlas.query_service import (
 try:
     from global_medicines_atlas import cli
 except SystemExit as error:
-    raise ImportError("Importing the CLI must not exit.") from error
+    raise ImportError("CLI exited during import.") from error
 
 app = cli.app
 
