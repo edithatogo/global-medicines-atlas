@@ -255,6 +255,7 @@ def publish_bulk_archive(
         target=target,
         relative_paths=paths,
         recorded_at=datetime.now(UTC),
+        allow_identical_content=manifest.get("allow_identical_content") is True,
     )
     receipts = output / "publication-receipts"
     receipts.mkdir(parents=True, exist_ok=True)

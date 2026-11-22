@@ -123,6 +123,10 @@ def test_plan_is_deterministic_and_dry_run() -> None:
         {"artifacts": (artifact("z", DIGEST_A), artifact("a", DIGEST_B))},
         {"artifacts": (artifact("a", DIGEST_A), artifact("a", DIGEST_B))},
         {"artifacts": (artifact("a", DIGEST_A), artifact("b", DIGEST_A))},
+        {
+            "allow_identical_content": True,
+            "artifacts": (artifact("a"), artifact("a")),
+        },
     ],
 )
 def test_plan_rejects_unsafe_or_noncanonical_content(
@@ -293,18 +297,24 @@ class _VerifiedUploader:
         )
 
 
+@pytest.mark.parametrize("allow_identical_content", [False, True])
 def test_upload_receipt_is_not_public_until_anonymous_digest_verification(
-    tmp_path: Path,
+    tmp_path: Path, *, allow_identical_content: bool
 ) -> None:
     artifact_path = tmp_path / "data" / "a.parquet"
     artifact_path.parent.mkdir()
     artifact_path.write_bytes(b"abc")
+    paths = ("data/a.parquet",)
+    if allow_identical_content:
+        (tmp_path / "data" / "b.parquet").write_bytes(b"abc")
+        paths = (*paths, "data/b.parquet")
     prepared, _ = prepare_publication(
         root=tmp_path,
         release_version="0.7.0",
         target=target(),
-        relative_paths=("data/a.parquet",),
+        relative_paths=paths,
         recorded_at=NOW,
+        allow_identical_content=allow_identical_content,
     )
     uploader = _VerifiedUploader()
     uploaded = execute_publication(
@@ -327,11 +337,23 @@ def test_upload_receipt_is_not_public_until_anonymous_digest_verification(
     )
 
     assert published.state is PublicationTransportState.PUBLIC
-    assert len(published.verified_artifacts) == 1
+    assert published.allow_identical_content is allow_identical_content
+    assert (
+        tuple(item.relative_path for item in published.verified_artifacts)
+        == paths
+    )
     assert (
         published.verified_artifacts[0].sha256 == prepared.artifacts[0].sha256
     )
     assert published.verified_artifacts[0].size == 3
+    if allow_identical_content:
+        assert len(set(published.artifact_sha256)) == 1
+        receipt = published.model_dump()
+        receipt["verified_artifacts"] = receipt["verified_artifacts"][:1]
+        with pytest.raises(
+            ValidationError, match="digests must match the plan"
+        ):
+            PublicationTransportReceipt.model_validate(receipt)
 
 
 def test_publication_remains_unverified_when_anonymous_digest_differs(
