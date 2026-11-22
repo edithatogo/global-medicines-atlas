@@ -1562,3 +1562,13 @@ affected tests in the standard Git worktree
 - [x] Reuse cached verdicts within the same
   dependency lock and retain the native per-mutant report. The protected
   check contract still requires all 28 contexts.
+
+Chat `01a1fc13-09a0-7961-8c2d-388111230f3d` owns the PR #1476 post-merge
+verification in the same worktree on `codex/gremlins-main-verification`.
+
+- [x] Verify PR #1476 on main at `0d9dea46`. All 26 main-push checks
+  passed and GitHub retains all 28 required PR contexts and app bindings.
+  The cold Gremlins run recorded a 53.2% score, 597 kills, 526 survivors,
+  one mutant timeout and zero errors. It killed the original CLI mutant
+  at collection. Sixteen of 1,124 verdicts differed from the checked PR
+  head. See the [main report](https://github.com/edithatogo/global-medicines-atlas/actions/runs/45010944957/artifacts/14753707597).
