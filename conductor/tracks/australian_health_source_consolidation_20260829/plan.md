@@ -1598,3 +1598,18 @@ cohort-derived data was inspected or published for this check.
   binds the exact main commit and retained metadata. The previously expired
   local attempt remains recorded; no new unique admission or dataset
   publication resulted.
+
+### M-106 annual patient method — 22 November 2026
+
+Chat `01a1fc13-09a0-7961-8c2d-388111230f3d` owns the M-106 evidence in
+`/Volumes/PortableSSD/GitHub/gma-pr-1469-workflow-receipt` on
+`codex/m106-annual-patient-methods`.
+
+- [x] Reconcile the source-owner method with the exact archived annual
+  workbook. Confirm distinct patient counts at the published grain,
+  non-additive groups, independently counted totals and claim-processing dates.
+- [x] Verify the October 2026 public item-data schema with a zero-row query.
+  The published fields include services and benefits.
+- [~] Qualify the annual suppression policy and establish item-level
+  distinct-patient availability, scope and reuse terms. M-106 remains
+  blocked under the existing [domain gate](../../../docs/qualification/australian-mbs-m106-domain.md#current-annual-patient-evidence--22-november-2026).
