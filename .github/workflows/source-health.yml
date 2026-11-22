@@ -5,6 +5,11 @@ on:
     - cron: "23 16 * * 1" # Weekly source-health observation.
     - cron: "41 16 1 * *" # Monthly schema-drift observation.
   workflow_dispatch:
+    inputs:
+      reset_missing_baseline:
+        description: Start a new baseline when the last successful artifact is unavailable
+        type: boolean
+        default: false
 
 # Historical uv builds use the patched, content-bound custom CA store.
 env:
@@ -36,14 +41,15 @@ jobs:
         id: baseline
         env:
           GH_TOKEN: ${{ github.token }}
+          RESET_MISSING_BASELINE: ${{ inputs.reset_missing_baseline }}
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p build/previous
           previous_run_id="$(
             gh api \
-              "repos/${GITHUB_REPOSITORY}/actions/workflows/source-health.yml/runs?branch=main&status=completed&per_page=100" \
-              --jq '[.workflow_runs[] | select(.conclusion == "success" and .head_branch == "main")] | sort_by(.id) | reverse | .[0].id // ""'
+              "repos/${GITHUB_REPOSITORY}/actions/workflows/source-health.yml/runs?branch=main&status=success&per_page=1" \
+              --jq '.workflow_runs[0].id // ""'
           )"
           if [[ -z "${previous_run_id}" ]]; then
             {
@@ -63,7 +69,20 @@ jobs:
             gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${previous_run_id}/artifacts" \
               --jq '[.artifacts[] | select(.name == "source-health-baseline" and .expired == false)] | .[0].archive_download_url // ""'
           )"
-          test -n "${artifact_url}"
+          if [[ -z "${artifact_url}" ]]; then
+            if [[ "$GITHUB_EVENT_NAME" != workflow_dispatch ||
+                  "$GITHUB_REF" != refs/heads/main ||
+                  "$RESET_MISSING_BASELINE" != true ]]; then
+              echo "::error::The baseline artifact from successful run ${previous_run_id} is unavailable. Recover it or explicitly authorize a reset on main."
+              exit 1
+            fi
+            echo "::warning::Resetting the missing baseline from run ${previous_run_id}. This observation cannot compare schemas across the gap."
+            {
+              echo "reset_from_run=${previous_run_id}"
+              echo "reset_from_commit=${previous_commit}"
+            } >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
           gh api "${artifact_url}" > build/previous/baseline.zip
           unzip -q build/previous/baseline.zip -d build/previous
           test -f build/previous/source-health.json
@@ -104,11 +123,31 @@ jobs:
             --observation-id "$GITHUB_RUN_ID"
       - name: Summarize schema drift
         if: always() && hashFiles('build/source-health.json') != ''
+        env:
+          RESET_FROM_RUN: ${{ steps.baseline.outputs.reset_from_run }}
+          RESET_FROM_COMMIT: ${{ steps.baseline.outputs.reset_from_commit }}
         shell: bash
         run: |
+          set -euo pipefail
+          if [[ -n "$RESET_FROM_RUN" ]]; then
+            if ! jq -e '.baseline | length > 0' build/source-health.json > /dev/null; then
+              echo "::error::Cannot reset the baseline without a comparable source fingerprint."
+              exit 1
+            fi
+            jq -n --argjson previous_run "$RESET_FROM_RUN" --arg previous_commit "$RESET_FROM_COMMIT" \
+              --argjson reset_run "$GITHUB_RUN_ID" --arg reset_commit "$GITHUB_SHA" \
+              '{missing_baseline: {run_id: $previous_run, commit: $previous_commit},
+                reset: {run_id: $reset_run, commit: $reset_commit}, comparison_gap: true}' \
+              > build/source-health-baseline-reset.json
+          fi
           {
             echo "## Source health and schema drift"
             echo
+            if [[ -n "$RESET_FROM_RUN" ]]; then
+              echo "Baseline reset after artifact loss from run ${RESET_FROM_RUN}."
+              echo "This observation establishes a new comparison point. Drift during the gap remains unassessed."
+              echo
+            fi
             echo '```json'
             jq '.summary' build/source-health.json
             echo '```'
@@ -121,6 +160,7 @@ jobs:
           path: |
             build/source-health.json
             build/source-health-provenance.json
+            build/source-health-baseline-reset.json
           if-no-files-found: error
           retention-days: 90
           overwrite: true

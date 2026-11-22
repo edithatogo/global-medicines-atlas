@@ -1520,3 +1520,16 @@ outbound message is in scope.
   `f498a7e5a4a270228da333b2b8a42f21025e01ff` has the same tree. Post-merge
   privacy and security passed; the non-required public-MBS job stopped at its
   no-read guard. No audit finding was newly suppressed.
+
+### Source-health baseline recovery — 22 November 2026
+
+Owner: chat `01a1fc13-09a0-7961-8c2d-388111230f3d`, standard Git worktree
+`/Volumes/PortableSSD/GitHub/gma-pr-1469-workflow-receipt`, branch
+`codex/source-health-baseline`. Scope is the existing monitoring workflow
+and October drift evidence.
+
+- [x] Preserve the October drift artifact, confirm the only successful
+  predecessor lacks a retained artifact, and qualify explicit missing-baseline
+  recovery. The reset records the comparison gap and subsequent runs retain
+  exact baseline verification and drift escalation. See the
+  [monitoring receipt](../../../docs/qualification/stable-v1-evidence-monitoring.md#missing-baseline-recovery).
