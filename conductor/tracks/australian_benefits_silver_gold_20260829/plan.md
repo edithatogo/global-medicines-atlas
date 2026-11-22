@@ -6196,3 +6196,11 @@ Chat `01a1fc13-09a0-7961-8c2d-388111230f3d` owns this evidence update in
   August amounts, per-item dates, change indicators and cap semantics still
   need release-specific evidence for any interpreted claims. The candidate
   retains its separate rights, admission, consumer and recovery gates.
+
+The same chat and worktree own the matched-amount investigation on
+`codex/m109-mbs-amount-deltas`.
+
+- [x] Verify both retained hosted comparisons agree and confirm the comparator
+  counts text differences with a synthetic control. The two fee differences
+  and one benefit difference are on matched records. The exact monetary
+  interpretation remains unresolved at the July object read gate.

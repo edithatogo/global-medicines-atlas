@@ -32,13 +32,29 @@ also names the exact August XML and confirms its release and effective dates.
 These dates apply to the edition. Per-item date meanings and cross-era identity
 remain outside this qualification. [XML field guide](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/FAQ-XML_Help) · [August PHI release metadata](https://www.health.gov.au/resources/publications/private-health-insurance-clinical-category-classification-and-definitions-1-august-2026)
 
-The July notice documents Schedule Fee and 100% benefit corrections for five
-items. Its scope is the publisher's statement about that release. The aggregate
-profile cannot confirm those exact cells. The August comparison records two
-`ScheduleFee` differences and one `Benefit75` difference among matched records,
-in addition to change-indicator differences. The cause and item-level amount
-semantics remain unresolved. Retain native amounts, change flags and cap
-fields as `native_unresolved` for the August product. [Release-note reconciliation](../../quality/qualifications/australian-m109-release-note-delta-reconciliation-20261018.json)
+### Matched-record amount differences
+
+The retained reports from both hosted runs agree on the exact release identities
+and every aggregate difference. The two `ScheduleFee` differences and one
+`Benefit75` difference occur across two or three of the 6,045 matched records.
+The added record is counted separately. At least 5,442 of the 5,445 changed
+matched records have only change-indicator differences. `Benefit100` has zero
+differences among matched records. [Original comparison](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39047005443) · [Rerun](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39048554153)
+
+The comparator checks native tag text. A synthetic check confirmed that
+different decimal spellings of the same amount are counted as a difference.
+The reports retain counts without item identifiers or before-and-after values,
+so the monetary effect and affected items remain unresolved. The July notice
+describes corrections to Schedule Fee and the 100% benefit in that July file.
+The August notice describes a new item and says the XML otherwise reflects
+the May publication. Neither statement identifies the three matched-record
+differences. [Release-note reconciliation](../../quality/qualifications/australian-m109-release-note-delta-reconciliation-20261018.json)
+
+The July 2026 archive path lacks qualified privacy and v4 admission. Its
+current read gate leaves a fresh amount comparison pending. When both inputs
+qualify, compare the three cells as exact decimals within the existing matched
+record keys. Retain the native amounts, flags and caps as `native_unresolved`
+for the August product. [July privacy readback](../../quality/qualifications/australian-existing-archive-privacy-batch-20261115.json) · [July lineage and admission reconciliation](../../quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-july-mbs-source-lineage-reviewed.json)
 
 M-109 and the August six-table candidate remain blocked. Further qualification
 needs release-specific evidence for the product's monetary and temporal claims.
