@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import gzip
 import json
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
@@ -425,6 +426,58 @@ def test_unsafe_or_invalid_xml_is_rejected(payload: bytes) -> None:
         match=r"declarations are not fingerprinted|contains no element tags",
     ):
         schema_fingerprint(payload, content_type="application/xml")
+
+
+def test_probe_decodes_gzip_csv_once() -> None:
+    payload = b"id,name\n1,example\n"
+    result = probe_source(
+        source(access_mode=AccessMode.DOWNLOAD),
+        checked_at=NOW,
+        transport=httpx.MockTransport(
+            lambda _request: httpx.Response(
+                200,
+                headers={
+                    "content-type": "text/csv; charset=utf-8",
+                    "content-encoding": "gzip",
+                },
+                stream=httpx.ByteStream(gzip.compress(payload)),
+            )
+        ),
+    )
+
+    assert result.state is ProbeState.AVAILABLE
+    assert result.bytes_sampled == len(payload)
+    assert result.schema_fingerprint == schema_fingerprint(
+        payload, content_type="text/csv"
+    )
+
+
+@pytest.mark.parametrize(
+    "content_type", ["text/html; charset=utf-8", "application/xhtml+xml"]
+)
+def test_html_page_is_unavailable_for_schema_comparison(
+    content_type: str,
+) -> None:
+    result = probe_source(
+        source(),
+        checked_at=NOW,
+        transport=httpx.MockTransport(
+            lambda _request: httpx.Response(
+                200,
+                headers={"content-type": content_type},
+                content=b"<html><body>Dataset landing page</body></html>",
+            )
+        ),
+    )
+
+    assert result.state is ProbeState.AVAILABLE
+    assert result.status_code == 200
+    assert fingerprint_baseline((result,)) == {}
+    baseline = {result.source_id: "a" * 64}
+    assert (
+        assess_schema_drift((result,), baseline)[0].state
+        is SchemaDriftState.UNAVAILABLE
+    )
 
 
 def test_truncated_response_is_available_without_schema_claim() -> None:
