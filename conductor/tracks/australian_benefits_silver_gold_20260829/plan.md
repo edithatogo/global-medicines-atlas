@@ -6178,3 +6178,21 @@ authoritative contract, reconciliation, and bound receipts.
   while the prior exact rights attestation binds `842f4130…17503` /
   `e122b50a…bb1b2`. The old candidate is not independently reproduced.
   No new rights conclusion, admission or consumer success is asserted.
+
+## M-109 August MBS Silver field qualification — 23 November 2026
+
+Chat `01a1fc13-09a0-7961-8c2d-388111230f3d` owns this evidence update in
+`/Volumes/PortableSSD/GitHub/gma-pr-1469-workflow-receipt` on
+`codex/m109-mbs-release-fields`.
+
+- [x] Bind the August Silver candidate and its July 2026 predecessor to the
+  exact M-107 source URLs, B1 receipt paths and archive identities. Reuse the
+  hosted official-byte and comparison receipts.
+- [x] Qualify the native `ItemNum` display role and the two editions' published
+  release and effective dates for the required source-observation contract.
+  Record the observed amount differences and their limits in the
+  [source-era register](../../../docs/qualification/australian-m109-source-era-register.md#august-2026-silver-product-field-qualification--23-november-2026).
+- [~] Keep M-109 blocked on the remaining required source-era evidence. The
+  August amounts, per-item dates, change indicators and cap semantics still
+  need release-specific evidence for any interpreted claims. The candidate
+  retains its separate rights, admission, consumer and recovery gates.
