@@ -37,7 +37,6 @@ else:
 
 from global_medicines_atlas.api import create_app
 from global_medicines_atlas.atlas import create_atlas_app
-from global_medicines_atlas.cli import app as cli_app
 from global_medicines_atlas.historical_change import (
     HistoricalChangePage,
     HistoricalChangeService,
@@ -68,6 +67,11 @@ from global_medicines_atlas.query_service import (
     QueryServiceError,
     ReadOnlyQueryService,
 )
+
+try:
+    from global_medicines_atlas.cli import app as cli_app
+except SystemExit as error:
+    raise ImportError("CLI exited during import.") from error
 
 NOW = datetime(2026, 7, 29, tzinfo=UTC)
 SECRET = b"product-qualification-secret"

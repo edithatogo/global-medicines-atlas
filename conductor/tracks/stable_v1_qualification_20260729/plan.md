@@ -1544,3 +1544,21 @@ Owner: chat `01a1fc13-09a0-7961-8c2d-388111230f3d`, standard Git worktree
   header evidence. Correct probe decoding and exclude HTML pages from schema
   baselines. Verify the original byte bound and retain the comparison gap.
   See the [monitoring record](../../../docs/qualification/stable-v1-evidence-monitoring.md#nova-scotia-pharmacare-monitoring-finding).
+
+### Gremlins verdict verification — 22 November 2026
+
+Chat `01a1fc13-09a0-7961-8c2d-388111230f3d` owns Test-Goblin and its
+affected tests in the standard Git worktree
+`/Volumes/PortableSSD/GitHub/gma-pr-1469-workflow-receipt` on
+`codex/gremlins-result-fidelity`.
+
+- [x] Compare the fully cached 89% result with the 55% result that re-ran
+  522 mutants after the source-health edit. Reproduce the CLI mutant's
+  import-time `SystemExit` on both commits. The merged source-health run
+  recorded 56% and 380 former kills survived in unchanged modules.
+- [x] Treat a CLI import that exits as a collection failure in the CLI
+  tests and shared product qualification runner. Confirm the exact
+  mutant is killed with the full selection of 369 tests.
+- [x] Reuse cached verdicts within the same
+  dependency lock and retain the native per-mutant report. The protected
+  check contract still requires all 28 contexts.
