@@ -11,8 +11,7 @@ import pytest
 from tests import test_query_service as query_service_tests
 from typer.testing import CliRunner
 
-from global_medicines_atlas import cli, platinum_structure
-from global_medicines_atlas.cli import app
+from global_medicines_atlas import platinum_structure
 from global_medicines_atlas.historical_change import (
     compare_historical_snapshots,
 )
@@ -37,6 +36,14 @@ from global_medicines_atlas.query_service import (
     InvalidCursorError,
     QueryServiceError,
 )
+
+# Surface an import-time CLI exit as a pytest collection failure.
+try:
+    from global_medicines_atlas import cli
+except SystemExit as error:
+    raise ImportError("Importing the CLI must not exit.") from error
+
+app = cli.app
 
 NOW = datetime(2026, 7, 29, tzinfo=UTC)
 CLOCK = NOW.isoformat()
