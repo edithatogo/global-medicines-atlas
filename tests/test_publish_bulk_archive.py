@@ -150,6 +150,34 @@ def test_prepare_binds_every_file_without_upload(tmp_path: Path) -> None:
     )
     assert plan["target"]["repository"] == "owner/synthetic"
     assert "ARTIFACT-MANIFEST.json" in bound
+    assert "allow_identical_content" not in plan
+
+
+def test_prepared_bulk_archive_keeps_identical_files_at_distinct_paths(
+    tmp_path: Path,
+) -> None:
+    archive = write_archive(tmp_path)
+    (archive / "second.bin").write_bytes(b"abc")
+    output = tmp_path / "out"
+    manifest = write_contract(tmp_path, allow_identical_content=True)
+
+    assert (
+        publisher.publish_bulk_archive(manifest, archive, output, COMMIT) == 0
+    )
+
+    report = output / "publication-receipts" / "plan.json"
+    plan = json.loads(report.read_text())
+    assert plan["allow_identical_content"] is True
+    payloads = [
+        item
+        for item in plan["artifacts"]
+        if item["relative_path"].endswith(".bin")
+    ]
+    assert [item["relative_path"] for item in payloads] == [
+        "group/first.bin",
+        "second.bin",
+    ]
+    assert payloads[0]["sha256"] == payloads[1]["sha256"]
 
 
 def test_card_records_rights_and_scope(tmp_path: Path) -> None:
