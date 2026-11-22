@@ -45,6 +45,36 @@ windows. Real observations must carry an observation time, domain, durable
 receipt path and receipt SHA-256. A future durable monitoring receipt must add
 those observations without rewriting this candidate receipt.
 
+## Missing baseline recovery
+
+The [3 August successful run](https://github.com/edithatogo/global-medicines-atlas/actions/runs/30840275572)
+was the only trusted predecessor found. Its artifact no longer appears in
+GitHub's inventory. The repository and local build evidence did not contain
+a verified copy. The first observed baseline retrieval failure was in the
+[1 November run](https://github.com/edithatogo/global-medicines-atlas/actions/runs/41348780874)
+(2 November AEST).
+
+The [26 October drift run](https://github.com/edithatogo/global-medicines-atlas/actions/runs/40401370477/artifacts/12688343044)
+reported one changed fingerprint (`ca-nova-scotia-pharmacare`), one unchanged,
+one with no prior baseline, 160 unavailable and 13 blocked. GitHub concluded
+the run failed. Its report remains drift evidence and its schema change
+remains open for review. The original ZIP was retained byte-for-byte in
+local Git-ignored evidence. Artifact SHA-256 is `d5c31c0b91c03a64aa94898f660a7515d73ebf1aeab8fda998fd97811cd9a1bf` and
+report SHA-256 is `26486c94697597a8f5b3ecf55af00a3c805a7f9250dc4b70aee152b293860862`.
+
+A missing predecessor with known history stops automatic runs. A maintainer
+can dispatch **Source health and schema drift** on `main` with
+`reset_missing_baseline=true` after confirming the predecessor is unavailable.
+A retained artifact takes precedence and must pass exact provenance and
+report-digest validation. API, download and format errors stop the run.
+
+An explicit reset must observe at least one comparable fingerprint. Its
+`source-health-baseline-reset.json` records the missing run and commit, the
+new baseline run and commit, and the comparison gap. Drift between the
+26 October comparison and the reset remains unassessed, and the October
+change remains open. A successful reset provides a starting point for
+later comparisons. The existing failure on detected drift stays in force.
+
 ## Authority boundary
 
 `signing_approved`, `publication_approved` and `release_approved` are all
