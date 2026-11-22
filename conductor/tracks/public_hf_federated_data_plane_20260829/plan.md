@@ -1937,5 +1937,36 @@ new datasets, acquisition, publication, new rights or admission are allowed.
 - [x] Review PBS and MBS privacy context using existing source receipts and
   producer code. The PBS readback does not include sensitivity; source rights
   and classifications do not clear any output. Privacy remains unknown.
-- [~] Run affected negative controls and protected CI, record post-merge workflow
-  outcomes and retain all other admission, consumer and recovery gates.
+- [x] Run affected negative controls and protected CI, and record exact
+  post-merge workflow outcomes. The retained focused run passed 154 tests.
+  All 28 required contexts passed on PR #1469 head `cb1a6bb8`. The merge
+  `f79c1137` produced the following terminal outcomes.
+
+  - Push [Test-Goblin](https://github.com/edithatogo/global-medicines-atlas/actions/runs/43883793561)
+    had 28 successful jobs and one skipped job. Existing public Parquet /
+    Iceberg REST failed at the explicit payload authorization guard before
+    any live MBS fetch.
+  - Push Security and Context, Privacy and secrets, and Data-layer Hugging
+    Face archive passed. The archive acquisition job was skipped.
+  - Scheduled Security and Context passed. Scheduled
+    [Source health and schema drift](https://github.com/edithatogo/global-medicines-atlas/actions/runs/43986620240)
+    failed while retrieving the prior metadata baseline, before source
+    observation. The failure step returned exit 1 without a specific cause
+    in the retained log.
+
+  The verification task is complete. Output privacy remains unknown. The
+  four projections still require their existing exact-object admission and
+  actual consumer evidence. Independent recovery and M-108/M-112 remain
+  blocked. The governed recovery CI job records a rehearsal.
+
+### Test-Goblin live MBS dispatch — 22 November 2026
+
+Owner: chat `01a1fc13-09a0-7961-8c2d-388111230f3d`, standard Git worktree
+`/Volumes/PortableSSD/GitHub/gma-pr-1469-workflow-receipt`, branch
+`codex/test-goblin-manual-mbs`. Scope is the live MBS job's scheduling rule,
+its existing test, and the PR #1469 workflow receipt.
+
+- [x] Require manual dispatch with explicit opt-in before scheduling live
+  MBS registration and parity. Focused tests and workflow lint pass. Verify
+  required checks and the skipped live job in hosted CI. Exact admission,
+  actual consumer verification and independent recovery remain required.
