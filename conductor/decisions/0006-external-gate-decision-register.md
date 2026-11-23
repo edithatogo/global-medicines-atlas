@@ -4,6 +4,12 @@ This register implements the decision-request contract in `conductor/autonomy.md
 
 ## D-006-01 — Renovate App authorization
 
+**Current status:** active for this repository. The activation issue is closed,
+the dependency dashboard is live, and the hosted app produced the merged
+qualified update. [Activation issue #14](https://github.com/edithatogo/global-medicines-atlas/issues/14)
+· [Dashboard #491](https://github.com/edithatogo/global-medicines-atlas/issues/491)
+· [PR #1394](https://github.com/edithatogo/global-medicines-atlas/pull/1394)
+
 Decision: authorize the Renovate GitHub App for this repository.
 
 **Recommended:** repository-scoped authorization. It enables the validated `renovate.json` and Dependency Dashboard without adding a second dependency-management system.
@@ -44,11 +50,10 @@ Decision: approve rights disposition per source for current payloads and derived
 
 ## D-006-04 — Stable release signing and attestation
 
-**Status:** pending dependent technical qualification and then an explicit
-maintainer decision. `v1.0.0rc1` is tagged and attested, but its authority is
-prerelease-only. See the
-[candidate handoff](../../docs/qualification/stable-v1-release-approval-handoff.md)
-for the evidence and exact-commit binding required before requesting approval.
+**Current status:** the scoped software-only `v1.0.0` release is published under
+D-006-13. The full federation and any broader stable promotion still require
+their exact qualification and authority. [Software release](https://github.com/edithatogo/global-medicines-atlas/releases/tag/v1.0.0)
+· [Candidate handoff](../../docs/qualification/stable-v1-release-approval-handoff.md)
 
 Decision: authorize signing/attestation of a stable release.
 
@@ -64,9 +69,15 @@ Decision: authorize signing/attestation of a stable release.
 
 ## D-006-05 — Production deployment and accessibility
 
+**Current status:** production deployment and live-data qualification remain
+open under #61. The maintainer withdrew accessibility testing from scope on
+3 November 2026. The applicable deployment scope is the free-only route in
+the [execution charter](../system-completion.md#free-only-61-hosting--3-november-2026).
+
 Decision: authorize a production deployment qualification window.
 
-**Recommended:** use an isolated deployment with public health/readiness, live provenance, and browser accessibility receipts.
+**Recommended:** use the planned free-only deployment route with public
+health, readiness, live coverage, and provenance evidence.
 
 - **Option A — Recommended:** qualify the intended production deployment. Contingency: roll back to the last qualified artifact on failed checks.
 - **Option B:** qualify staging only. Contingency: keep production claims and stable promotion blocked.
