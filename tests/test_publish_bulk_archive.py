@@ -2,21 +2,213 @@
 
 from __future__ import annotations
 
+import hashlib
+import io
 import json
 import sys
 import types
+import zipfile
 from pathlib import Path
 from typing import Any, cast
+from unittest.mock import Mock
 
+import httpx
 import pytest
 from scripts import publish_bulk_archive as publisher
+from scripts import publish_fresh_openfda as fresh
 
 from global_medicines_atlas.federation_metadata_hosted import (
     require_hosted_main as real_require_hosted_main,
 )
+from global_medicines_atlas.publication_transport import ArtifactVerification
 
 COMMIT = "a" * 40
 SYNTHETIC_HF_TOKEN = "synthetic-token"  # ruff: ignore[hardcoded-password-string] -- synthetic fixture, not a credential.
+
+
+def fresh_openfda_fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    first, second = "drug/event/first.json.zip", "drug/event/second.json.zip"
+    with io.BytesIO() as buffer:
+        with zipfile.ZipFile(buffer, "w") as archive:
+            archive.writestr("data.json", "{}")
+        payload = buffer.getvalue()
+    index = fresh.json_bytes({
+        "meta": {"last_updated": "2026-11-20"},
+        "results": {
+            "drug": {
+                "event": {
+                    "partitions": [
+                        {"file": fresh.ZIP_ROOT + path}
+                        for path in (first, second)
+                    ]
+                }
+            },
+            "device": {
+                "udi": {
+                    "partitions": [
+                        {
+                            "file": fresh.ZIP_ROOT
+                            + "device/udi/excluded.json.zip"
+                        }
+                    ]
+                }
+            },
+        },
+    })
+    contract = {
+        "source_index_sha256": hashlib.sha256(index).hexdigest(),
+        "source_index_date": "2026-11-20",
+        "indexed_endpoints": 2,
+        "indexed_payload_count": 3,
+        "expected_endpoints": 1,
+        "expected_payload_count": 2,
+        "excluded_endpoint": "device/udi",
+        "excluded_payload_count": 1,
+        "source_url": fresh.INDEX_URL,
+        "repository": fresh.REPOSITORY,
+        "publication_approved": True,
+        "rights": {},
+    }
+    contract_path = tmp_path / "contract.json"
+    contract_path.write_bytes(fresh.json_bytes(contract))
+    monkeypatch.setattr(fresh, "CONTRACT", contract_path)
+    monkeypatch.setattr(fresh, "BATCH_SIZE", 1)
+    return first, second, index, payload, contract
+
+
+def test_fresh_openfda_publishes_and_verifies_bounded_batches(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    first, second, index, payload, _ = fresh_openfda_fixture(
+        tmp_path, monkeypatch
+    )
+    for name, value in {
+        "GITHUB_ACTIONS": "true",
+        "GITHUB_REPOSITORY": "edithatogo/global-medicines-atlas",
+        "GITHUB_REF": "refs/heads/main",
+        "GITHUB_EVENT_NAME": "workflow_dispatch",
+        "GITHUB_SHA": COMMIT,
+        "GITHUB_RUN_ID": "12345",
+        "GMA_MAINTAINER_PUBLICATION_APPROVED": "yes-i-approve-publication",
+        "GMA_PUBLICATION_ENVIRONMENT": "production",
+        "HF_TOKEN": SYNTHETIC_HF_TOKEN,
+    }.items():
+        monkeypatch.setenv(name, value)
+    requests = []
+
+    def serve(request):
+        url = str(request.url)
+        if url == fresh.INDEX_URL:
+            return httpx.Response(200, content=index)
+        requests.append(url)
+        if len(requests) == 1:
+            return httpx.Response(503)
+        return httpx.Response(
+            200,
+            headers={"Content-Length": str(len(payload)), "ETag": '"source"'},
+            stream=httpx.ByteStream(payload),
+        )
+
+    monkeypatch.setattr(
+        fresh,
+        "BoundIPAddressTransport",
+        lambda **_kw: httpx.MockTransport(serve),
+    )
+    monkeypatch.setattr(fresh.time, "sleep", lambda _delay: None)
+    api = Mock()
+    api.repo_info.return_value = types.SimpleNamespace(
+        private=False, sha=COMMIT
+    )
+    api.list_repo_files.return_value = [".gitattributes"]
+    published = {}
+    scratch_files = []
+    revision = "b" * 40
+
+    def preupload(_repo, *, additions, repo_type):
+        assert repo_type == "dataset"
+        (operation,) = additions
+        path = Path(operation.path_or_fileobj)
+        scratch_files.append(path)
+        if operation.path_in_repo == first:
+            published[first] = path.read_bytes()
+            operation.path_or_fileobj = b""
+
+    def commit(_repo, *, operations, parent_commit, **_kw):
+        assert parent_commit == COMMIT
+        assert all(not path.exists() for path in scratch_files)
+        for operation in operations:
+            if operation.path_or_fileobj != b"":
+                published[operation.path_in_repo] = operation.path_or_fileobj
+        return types.SimpleNamespace(oid=revision)
+
+    api.preupload_lfs_files.side_effect = preupload
+    api.create_commit.side_effect = commit
+    hub = types.SimpleNamespace(
+        HfApi=lambda **_kw: api,
+        CommitOperationAdd=types.SimpleNamespace,
+    )
+    monkeypatch.setattr(fresh, "import_module", lambda _name: hub)
+
+    def readback(*, target, revision, artifact):
+        body = published[artifact.relative_path]
+        return ArtifactVerification(
+            relative_path=artifact.relative_path,
+            sha256=hashlib.sha256(body).hexdigest(),
+            size=len(body),
+            verification_uri=f"{target.public_base_url}/resolve/{revision}/{artifact.relative_path}",
+        )
+
+    monkeypatch.setattr(
+        fresh,
+        "HuggingFaceAnonymousArtifactVerifier",
+        lambda **_kw: types.SimpleNamespace(verify_artifact=readback),
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "publisher",
+            "publish",
+            "--output",
+            str(tmp_path),
+            "--exact-commit",
+            COMMIT,
+        ],
+    )
+    assert fresh.main() == 0
+    sys.argv[1] = "verify"
+    assert fresh.main() == 0
+    assert requests == [fresh.ZIP_ROOT + first] * 2 + [fresh.ZIP_ROOT + second]
+    assert published[first] == published[second] == payload
+    assert (
+        json.loads((tmp_path / "verified.json").read_bytes())["state"]
+        == "public"
+    )
+    manifest = json.loads(published["ARTIFACT-MANIFEST.json"])
+    receipts = {record["path"]: record for record in manifest["artifacts"]}
+    assert receipts[first]["source_etag"] == '"source"'
+    assert manifest["excluded_payload_count"] == 1
+    monkeypatch.setenv("GITHUB_RUN_ID", "54321")
+    with pytest.raises(ValueError, match="receipts do not match"):
+        fresh.verify(tmp_path, COMMIT)
+
+
+def test_fresh_openfda_refuses_local_or_changed_source(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _, _, index, _, contract = fresh_openfda_fixture(tmp_path, monkeypatch)
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    with pytest.raises(ValueError, match="Actions dispatch on main"):
+        fresh.publish(tmp_path, COMMIT)
+    with pytest.raises(ValueError, match="FDA index SHA-256"):
+        fresh.index_paths(index + b" ", contract)
+    foreign_index = index.replace(b"download.open.fda.gov", b"example.test")
+    foreign_contract = {
+        **contract,
+        "source_index_sha256": hashlib.sha256(foreign_index).hexdigest(),
+    }
+    with pytest.raises(ValueError, match="unapproved ZIP URL"):
+        fresh.index_paths(foreign_index, foreign_contract)
 
 
 def write_contract(tmp_path: Path, **overrides: object) -> Path:
