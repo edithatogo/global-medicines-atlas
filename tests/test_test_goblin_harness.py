@@ -564,6 +564,28 @@ def test_tool_versions_match_governed_workflow_literals() -> None:
     assert versions["runner"] == "ubuntu-24.04"
 
 
+def test_setup_uv_versions_are_scoped_to_setup_uv() -> None:
+    """Only explicit setup-uv versions count towards the uv check."""
+    document = {
+        "jobs": {
+            "publish": {
+                "steps": [
+                    {
+                        "uses": "astral-sh/setup-uv@pin",
+                        "with": {"version": "0.13.6"},
+                    },
+                    {
+                        "uses": "tailscale/github-action@pin",
+                        "with": {"version": "1.104.7"},
+                    },
+                    {"uses": "astral-sh/setup-uv@pin"},
+                ]
+            }
+        }
+    }
+    assert HARNESS._uv_step_versions(document) == ["0.13.6"]
+
+
 def test_governed_occurrence_validation_rejects_one_stale_runner() -> None:
     """One correct occurrence cannot hide drift elsewhere."""
     documents = {
