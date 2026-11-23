@@ -18,6 +18,7 @@ concurrency:
 
 jobs:
   publish:
+    name: Publish FDA snapshot
     if: github.ref == 'refs/heads/main' && inputs.publish
     runs-on: ubuntu-24.04
     timeout-minutes: 355
@@ -52,6 +53,7 @@ jobs:
           retention-days: 90
 
   verify:
+    name: Verify FDA snapshot
     needs: publish
     runs-on: ubuntu-24.04
     timeout-minutes: 355

@@ -10,6 +10,7 @@ import re
 import time
 import zipfile
 from datetime import UTC, datetime
+from http import HTTPStatus
 from importlib import import_module
 from itertools import batched
 from operator import itemgetter
@@ -74,7 +75,7 @@ def index_paths(index: bytes, contract: dict[str, Any]) -> tuple[str, ...]:
         raise ValueError(
             "FDA index date or endpoint count differs from approval"
         )
-    paths = []
+    paths: list[str] = []
     for endpoints in domains.values():
         for endpoint in endpoints.values():
             for item in endpoint["partitions"]:
@@ -104,7 +105,7 @@ def download_zip(
         destination.open("wb") as output,
     ):
         response.raise_for_status()
-        if response.status_code != httpx.codes.OK:
+        if response.status_code != HTTPStatus.OK:
             raise ValueError(f"FDA did not return a complete ZIP: {path}")
         length = response.headers.get("Content-Length")
         for block in response.iter_raw():
@@ -150,12 +151,12 @@ def preupload_zips(
     api: Any, hub: Any, client: httpx.Client, paths: tuple[str, ...]
 ) -> tuple[list[Any], list[dict[str, Any]]]:
     """Transfer bounded batches and retain exact commit operations."""
-    operations = []
-    records = []
+    operations: list[Any] = []
+    records: list[dict[str, Any]] = []
     regular_bytes = 0
     for batch in batched(paths, BATCH_SIZE, strict=False):
         with TemporaryDirectory(prefix="openfda-") as scratch:
-            additions = []
+            additions: list[Any] = []
             for position, path in enumerate(batch):
                 destination = Path(scratch) / f"{position}.zip"
                 records.append(fetch_zip(client, path, destination))
