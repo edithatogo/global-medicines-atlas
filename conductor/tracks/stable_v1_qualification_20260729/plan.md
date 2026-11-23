@@ -1592,3 +1592,22 @@ candidate build and the required protected checks before integration.
   All three Docker base image pins match their official multi-platform
   registry manifests. The scoped PR diff retains the existing workflow and
   dependency configuration.
+
+
+### First post-reset source-health comparison — 24 November 2026
+
+- [x] Verify a live comparison against restored baseline run `44984005223`.
+  The maintainer-authorized [manual observation on main](https://github.com/edithatogo/global-medicines-atlas/actions/runs/45268547524)
+  used reset disabled. Eight fingerprints matched and one changed. The drift
+  gate failed the run and preserved the report.
+- [ ] Verify the first scheduled comparison after the reset. GitHub had
+  recorded no scheduled run after the reset when the manual run finished.
+
+The ANVISA medicines endpoint returned partial responses with media type
+`application/octet-stream` on both dates. The monitor hashes the first 4 KiB
+for that media type. The prefix changed, and the reported modification time
+advanced from 20 to 23 November. Whether the CSV schema changed remains open.
+
+The October Nova Scotia Pharmacare finding and comparison gap remain open.
+This observation recorded HTTP 200 for the provincial CSV and withheld a
+schema fingerprint after reaching the sample limit.
