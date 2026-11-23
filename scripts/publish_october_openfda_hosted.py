@@ -9,10 +9,12 @@ import os
 import re
 import time
 from collections.abc import Iterable, Iterator
+from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime
 from http import HTTPStatus
 from importlib import import_module
 from ipaddress import IPv4Address, IPv4Network
+from itertools import repeat
 from operator import attrgetter
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -51,6 +53,9 @@ SOURCE_PORT = 18043
 TAILSCALE_IPV4 = IPv4Network("100.64.0.0/10")
 COMMIT_BYTES = 4 * 1024**3
 COMMIT_FILES = 64
+SOURCE_REQUEST_BYTES = 16 * 1024**2
+SOURCE_REQUEST_SECONDS = 150
+SOURCE_WORKERS = 6
 TRANSIENT_STATUS = {408, 429, 500, 502, 503, 504}
 
 
@@ -114,28 +119,43 @@ def archive_plan(manifest: bytes) -> PublicationPlan:
 def download_once(
     client: httpx.Client, artifact: ArtifactBinding, output: Path
 ) -> None:
-    """Copy one bounded source object and verify its original digest."""
+    """Copy bounded source ranges and verify the original file digest."""
     size = 0
     digest = hashlib.sha256()
-    with (
-        client.stream(
-            "GET", quote(artifact.relative_path, safe="/")
-        ) as response,
-        output.open("wb") as stream,
-    ):
-        response.raise_for_status()
-        if response.status_code != HTTPStatus.OK:
-            raise ValueError(
-                f"Incomplete October source file: {artifact.relative_path}"
-            )
-        for chunk in response.iter_raw():
-            size += len(chunk)
-            if size > artifact.size:
+    path = quote(artifact.relative_path, safe="/")
+    ranged = artifact.size > SOURCE_REQUEST_BYTES
+    expected_status = HTTPStatus.PARTIAL_CONTENT if ranged else HTTPStatus.OK
+    with output.open("wb") as stream:
+        for start in range(0, max(artifact.size, 1), SOURCE_REQUEST_BYTES):
+            end = min(start + SOURCE_REQUEST_BYTES, artifact.size)
+            headers = {"Range": f"bytes={start}-{end - 1}"} if ranged else {}
+            deadline = time.monotonic() + SOURCE_REQUEST_SECONDS
+            with client.stream("GET", path, headers=headers) as response:
+                response.raise_for_status()
+                if response.status_code != expected_status or (
+                    ranged
+                    and response.headers.get("Content-Range")
+                    != f"bytes {start}-{end - 1}/{artifact.size}"
+                ):
+                    raise ValueError(
+                        f"October source range differs: {artifact.relative_path}"
+                    )
+                for chunk in response.iter_raw():
+                    if time.monotonic() > deadline:
+                        raise httpx.ReadTimeout(
+                            "October source request timed out"
+                        )
+                    size += len(chunk)
+                    if size > end:
+                        raise ValueError(
+                            f"October source sent excess bytes: {artifact.relative_path}"
+                        )
+                    digest.update(chunk)
+                    stream.write(chunk)
+            if size != end:
                 raise ValueError(
-                    f"October source file grew: {artifact.relative_path}"
+                    f"Incomplete October source file: {artifact.relative_path}"
                 )
-            digest.update(chunk)
-            stream.write(chunk)
     if size != artifact.size or digest.hexdigest() != artifact.sha256:
         raise ValueError(
             f"October source checksum differs: {artifact.relative_path}"
@@ -243,16 +263,25 @@ def publish_batches(
     count = len(plan.artifacts) - len(remaining)
     for group in commit_groups(remaining):
         with TemporaryDirectory(prefix="openfda-october-") as scratch:
-            additions: list[Any] = []
-            for position, artifact in enumerate(group):
-                source = Path(scratch) / str(position)
-                download_artifact(client, artifact, source)
-                additions.append(
-                    hub.CommitOperationAdd(
-                        path_in_repo=artifact.relative_path,
-                        path_or_fileobj=source,
-                    )
+            sources = [
+                Path(scratch) / str(position) for position in range(len(group))
+            ]
+            with ThreadPoolExecutor(max_workers=SOURCE_WORKERS) as downloads:
+                for _ in downloads.map(
+                    download_artifact,
+                    repeat(client),
+                    group,
+                    sources,
+                    buffersize=SOURCE_WORKERS,
+                ):
+                    pass
+            additions = [
+                hub.CommitOperationAdd(
+                    path_in_repo=artifact.relative_path,
+                    path_or_fileobj=source,
                 )
+                for artifact, source in zip(group, sources, strict=True)
+            ]
             result = api.create_commit(
                 REPOSITORY,
                 repo_type="dataset",
@@ -294,6 +323,9 @@ def publish(output: Path, exact_commit: str) -> None:
             headers={"Accept-Encoding": "identity"},
             follow_redirects=False,
             trust_env=False,
+            limits=httpx.Limits(
+                max_connections=SOURCE_WORKERS, max_keepalive_connections=0
+            ),
             timeout=90,
         ) as client,
         TemporaryDirectory(prefix="openfda-october-manifest-") as scratch,
