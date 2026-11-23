@@ -34,6 +34,50 @@ the October readiness reconciliation remains a historical release input.
 
 ---
 
+## Hosted repository and archive readback (2026-11-24)
+
+The live Conductor dry-run matched eight active tracks and 30 linked GitHub
+issues with zero structural drift. Active and archived track metadata map 81
+of the 91 GitHub issues. All 12 open issues are accounted for. Eight are active
+track issues and four are the [roadmap #44](https://github.com/edithatogo/global-medicines-atlas/issues/44),
+[live source gate #54](https://github.com/edithatogo/global-medicines-atlas/issues/54),
+[deployment gate #61](https://github.com/edithatogo/global-medicines-atlas/issues/61),
+and [Renovate dashboard #491](https://github.com/edithatogo/global-medicines-atlas/issues/491).
+The six closed issues outside track metadata are accounted for in the
+[maintenance reconciliation](../docs/qualification/estate-cleanup-issue-reconciliation-20261102.md)
+and [source-rights decision](./decisions/0008-source-derived-dataset-licensing-batch.md).
+Issue #54 retains the adapter and temporal evidence paths from before archival.
+The current paths are in the registry below. Issue #61 retains an earlier
+accessibility requirement in its historical description. Its current scope is
+recorded in the
+[external gate register](./decisions/0006-external-gate-decision-register.md#d-006-05--production-deployment-and-accessibility).
+
+The 20 November openFDA snapshot is public at
+`d57769fdc1b17f42e57183fbbbbefc917facd608`. The hosted checksum receipt covers
+2,379 payload ZIPs and four companion files; device UDI is outside that approved
+snapshot. The November and October openFDA publishers run on manual dispatch
+for their frozen manifests. The October tree at `7c4ccd820d94066355364fe0384070b74df1975f`
+listed 1,662 of the 2,396 expected ZIP paths while publication was still in
+progress. Its full-file verification receipt remains pending. [November verification](https://github.com/edithatogo/global-medicines-atlas/actions/runs/45098999576)
+· [October tree](https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/tree/7c4ccd820d94066355364fe0384070b74df1975f)
+· [October workflow](https://github.com/edithatogo/global-medicines-atlas/actions/workflows/publish-october-openfda-hosted.yml)
+
+The Australian MBS release, schedule harvest, and utilisation harvest, and the
+PBS utilisation harvest declare monthly triggers. GitHub reports all four
+workflows manually disabled. The active source-health schedule observes source
+health and schema drift. The live four-authority archive and other scoped
+publishers retain their manual gates. [Actions workflows](https://github.com/edithatogo/global-medicines-atlas/actions)
+
+The Renovate configuration migration merged after all 28 required checks
+passed. The tested tree matches the merge at `d91d195f`.
+[Renovate PR #1470](https://github.com/edithatogo/global-medicines-atlas/pull/1470)
+
+The StepSecurity proposal conflicts with main and failed the full-SHA action
+policy. Its new Dependabot configuration overlaps with the existing Renovate
+scope. The offline security caller still depends on the central rollout and
+qualified runner and image. [StepSecurity PR #1468](https://github.com/edithatogo/global-medicines-atlas/pull/1468)
+· [Offline security PR #1426](https://github.com/edithatogo/global-medicines-atlas/pull/1426)
+
 ## Current Australian federation readback (2026-11-16)
 
 M-105 is verified under the maintainer's narrow chronology exception and
@@ -95,9 +139,9 @@ historical snapshots and must not be read as today's totals.
 - [x] **Track: Produce governed reproducible publication packages**
   *Archived: [archive/governed_publication_20260729/index.md](./archive/governed_publication_20260729/index.md); production publication remains externally gated.*
 - [x] **Track: Harden source operations, security, performance and recovery**
-  *Archived: [archive/operational_hardening_20260729/index.md](./archive/operational_hardening_20260729/index.md); production disaster recovery and Renovate activation remain authority-gated.*
+  *Archived: [archive/operational_hardening_20260729/index.md](./archive/operational_hardening_20260729/index.md). Renovate is active. Production disaster recovery remains authority-gated.*
 - [~] **Track: Qualify the v0.9 candidate and stable v1 release**
-  *Link: [tracks/stable_v1_qualification_20260729/index.md](./tracks/stable_v1_qualification_20260729/index.md); the approved bounded Bronze qualification and M5 gates pass. Full Australian federation remains blocked; D-006-13 separately authorizes a scoped software-only v1.0.0 release after exact artifact, security, CI and attestation checks. Production disaster-recovery authority remains separate.*
+  *Link: [tracks/stable_v1_qualification_20260729/index.md](./tracks/stable_v1_qualification_20260729/index.md). The approved bounded Bronze qualification and M5 gates pass. The scoped software-only v1.0.0 release is published under D-006-13. Full Australian federation and production disaster recovery remain gated.*
 - [x] **Track: Develop the academic protocol and preregistration**
   *Link: [tracks/academic_protocol_preregistration_20260729/index.md](./tracks/academic_protocol_preregistration_20260729/index.md); GitHub parent [#66](https://github.com/edithatogo/global-medicines-atlas/issues/66). OSF is deprecated; persistent protocol identity is the in-repo artefacts plus Zenodo `10.5281/zenodo.21734811`.*
 - [~] **Track: Complete bronze medallion landing for current public scope**
