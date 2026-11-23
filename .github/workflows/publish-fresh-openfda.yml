@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       publish:
-        description: Publish the approved November 20 openFDA index
+        description: Publish the approved scope of the November 20 openFDA index
         required: true
         type: boolean
         default: false
@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: publish-openfda-all-20261120
+  group: publish-openfda-20261120
   cancel-in-progress: false
 
 jobs:

@@ -41,7 +41,7 @@ from global_medicines_atlas.publication_transport import (
     verify_publication,
 )
 
-BATCH = "openfda-all-20261120"
+BATCH = "openfda-20261120"
 REPOSITORY = f"edithatogo/global-medicines-atlas-{BATCH}"
 CONTRACT = (
     Path(__file__).resolve().parents[1]
@@ -70,7 +70,7 @@ def index_paths(index: bytes, contract: dict[str, Any]) -> tuple[str, ...]:
     domains = index_data["results"]
     if (
         index_data["meta"]["last_updated"] != contract["source_index_date"]
-        or sum(map(len, domains.values())) != contract["expected_endpoints"]
+        or sum(map(len, domains.values())) != contract["indexed_endpoints"]
     ):
         raise ValueError(
             "FDA index date or endpoint count differs from approval"
@@ -86,11 +86,20 @@ def index_paths(index: bytes, contract: dict[str, Any]) -> tuple[str, ...]:
                 ):
                     raise ValueError("FDA index contains an unapproved ZIP URL")
                 paths.append(ArtifactBinding.path_is_safe(path))
-    if len(paths) != contract["expected_payload_count"] or len(paths) != len(
+    if len(paths) != contract["indexed_payload_count"] or len(paths) != len(
         set(paths)
     ):
         raise ValueError("FDA ZIP paths are incomplete or non-unique")
-    return tuple(sorted(paths))
+    excluded_prefix = f"{contract['excluded_endpoint']}/"
+    selected = tuple(
+        sorted(path for path in paths if not path.startswith(excluded_prefix))
+    )
+    if (
+        len(selected) != contract["expected_payload_count"]
+        or len(paths) - len(selected) != contract["excluded_payload_count"]
+    ):
+        raise ValueError("FDA ZIP paths differ from the approved coverage")
+    return selected
 
 
 def download_zip(
@@ -199,6 +208,9 @@ def add_publication_metadata(
         f"{contract['expected_endpoints']} openFDA endpoints. GitHub Actions "
         "retrieved the files from FDA. The artifact manifest records each "
         "source URL, retrieval time, byte count and SHA-256 digest.\n\n"
+        f"The {contract['excluded_payload_count']} ZIPs from "
+        f"`{contract['excluded_endpoint']}` are omitted because they contain "
+        "separately licensed Global Medical Device Nomenclature data.\n\n"
         "[openFDA downloads](https://open.fda.gov/apis/downloads/) · "
         "[FDA terms](https://open.fda.gov/terms/)\n"
     )

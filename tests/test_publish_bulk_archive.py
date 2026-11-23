@@ -42,14 +42,28 @@ def fresh_openfda_fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
                         for path in (first, second)
                     ]
                 }
-            }
+            },
+            "device": {
+                "udi": {
+                    "partitions": [
+                        {
+                            "file": fresh.ZIP_ROOT
+                            + "device/udi/excluded.json.zip"
+                        }
+                    ]
+                }
+            },
         },
     })
     contract = {
         "source_index_sha256": hashlib.sha256(index).hexdigest(),
         "source_index_date": "2026-11-20",
+        "indexed_endpoints": 2,
+        "indexed_payload_count": 3,
         "expected_endpoints": 1,
         "expected_payload_count": 2,
+        "excluded_endpoint": "device/udi",
+        "excluded_payload_count": 1,
         "source_url": fresh.INDEX_URL,
         "repository": fresh.REPOSITORY,
         "publication_approved": True,
@@ -173,6 +187,7 @@ def test_fresh_openfda_publishes_and_verifies_bounded_batches(
     manifest = json.loads(published["ARTIFACT-MANIFEST.json"])
     receipts = {record["path"]: record for record in manifest["artifacts"]}
     assert receipts[first]["source_etag"] == '"source"'
+    assert manifest["excluded_payload_count"] == 1
     monkeypatch.setenv("GITHUB_RUN_ID", "54321")
     with pytest.raises(ValueError, match="receipts do not match"):
         fresh.verify(tmp_path, COMMIT)
