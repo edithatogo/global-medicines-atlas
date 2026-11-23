@@ -247,9 +247,24 @@ def test_required_checks_match_harness_and_exact_hosted_protection() -> None:
     )
     assert "COVERAGE_CORE: sysmon" in workflow
     assert "pytest -q -n 2 --dist worksteal" in workflow
-    assert "Restore content-validated gremlins cache" in workflow
-    assert "actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9" in workflow
-    assert "gremlins-${{ runner.os }}-py315-" in workflow
+    quality_steps = cast(
+        "list[dict[str, object]]", test_jobs["quality"]["steps"]
+    )
+    cache_step = next(
+        step
+        for step in quality_steps
+        if step.get("name") == "Restore content-validated gremlins cache"
+    )
+    assert (
+        cache_step["uses"]
+        == "actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9"
+    )
+    cache_inputs = cast("dict[str, str]", cache_step["with"])
+    locked_prefix = (
+        "gremlins-${{ runner.os }}-py315-${{ hashFiles('uv.lock') }}-"
+    )
+    assert cache_inputs["key"].startswith(locked_prefix)
+    assert cache_inputs["restore-keys"].splitlines() == [locked_prefix]
     assert "matrix.profile == 'gremlins' && 180 || 45" in workflow
     assert "'scripts/test_goblin.py', 'src/**/*.py', 'tests/**/*'" in workflow
 

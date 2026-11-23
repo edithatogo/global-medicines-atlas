@@ -244,6 +244,7 @@ jobs:
           retention-days: 30
 
   public-parquet-iceberg-registration:
+    if: github.event_name == 'workflow_dispatch' && inputs.acquire_existing_public_mbs == true
     name: Existing public Parquet / Iceberg REST
     runs-on: ubuntu-24.04
     timeout-minutes: 15
@@ -260,11 +261,6 @@ jobs:
           --health-timeout 2s
           --health-retries 20
     steps:
-      - name: Require authorization for public MBS payload reads
-        if: github.event_name != 'workflow_dispatch' || inputs.acquire_existing_public_mbs != true
-        run: |
-          echo '::error::Live public MBS checks require an explicitly authorized workflow dispatch; no payload was fetched.'
-          exit 1
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           persist-credentials: false
@@ -403,9 +399,10 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .gremlins_cache
-          key: gremlins-${{ runner.os }}-py315-${{ hashFiles('uv.lock', 'pyproject.toml', 'scripts/test_goblin.py', 'src/**/*.py', 'tests/**/*') }}
+          # Reuse verdicts only within the same locked dependency environment.
+          key: gremlins-${{ runner.os }}-py315-${{ hashFiles('uv.lock') }}-${{ hashFiles('pyproject.toml', 'scripts/test_goblin.py', 'src/**/*.py', 'tests/**/*') }}
           restore-keys: |
-            gremlins-${{ runner.os }}-py315-
+            gremlins-${{ runner.os }}-py315-${{ hashFiles('uv.lock') }}-
       - name: Run Test-Goblin ${{ matrix.profile }} profile
         if: >-
           (matrix.profile != 'mutation' && matrix.profile != 'gremlins') ||
@@ -446,6 +443,16 @@ jobs:
         with:
           name: quality-receipt-${{ matrix.profile }}
           path: build/quality-receipts/${{ matrix.profile }}.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload Gremlins verdicts
+        if: >-
+          always() && matrix.profile == 'gremlins' &&
+          hashFiles('coverage/gremlins/gremlins.json') != ''
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: gremlins-verdicts
+          path: coverage/gremlins/gremlins.json
           if-no-files-found: error
           retention-days: 30
       - name: Upload authoritative Mutmut statistics

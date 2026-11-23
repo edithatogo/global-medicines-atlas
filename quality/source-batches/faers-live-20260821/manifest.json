@@ -2,6 +2,7 @@
   "batch_id": "faers-live-20260821",
   "repository": "edithatogo/global-medicines-atlas-faers-live-20260821",
   "publication_approved": true,
+  "allow_identical_content": true,
   "approval_reference": "Direct maintainer instruction of 15 November 2026 to upload the faers-live-20260821 corpus to Hugging Face against the Global Medicines Atlas project.",
   "snapshot_id": "faers-live-20260821",
   "source_authority": "U.S. Food and Drug Administration, FAERS/AERS quarterly data files",

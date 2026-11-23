@@ -1,0 +1,84 @@
+name: Publish fresh openFDA snapshot
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish the approved scope of the November 20 openFDA index
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-openfda-20261120
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish FDA snapshot
+    if: github.ref == 'refs/heads/main' && inputs.publish
+    runs-on: ubuntu-24.04
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.13.6"
+      - name: Synchronize Python 3.15
+        run: uv sync --python 3.15.1 --locked
+      - name: Download and publish FDA partitions
+        env:
+          GMA_MAINTAINER_PUBLICATION_APPROVED: yes-i-approve-publication
+          GMA_PUBLICATION_ENVIRONMENT: production
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_HUB_DISABLE_PROGRESS_BARS: "1"
+          HF_XET_CHUNK_CACHE_SIZE_BYTES: "0"
+          HF_XET_SHARD_CACHE_SIZE_LIMIT: "200000000"
+        run: |
+          uv run --python 3.15.1 --no-sync --with huggingface-hub==0.34.4 \
+            python scripts/publish_fresh_openfda.py publish \
+            --output build/openfda-publication --exact-commit "$GITHUB_SHA"
+      - name: Retain the publication receipts
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: openfda-publication
+          path: build/openfda-publication/
+          if-no-files-found: warn
+          retention-days: 90
+
+  verify:
+    name: Verify FDA snapshot
+    needs: publish
+    runs-on: ubuntu-24.04
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.13.6"
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: openfda-publication
+          path: build/openfda-publication/
+      - name: Verify published bytes anonymously
+        run: |
+          uv sync --python 3.15.1 --locked
+          uv run --python 3.15.1 --no-sync \
+            python scripts/publish_fresh_openfda.py verify \
+            --output build/openfda-publication --exact-commit "$GITHUB_SHA"
+      - name: Retain the checksum verification
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: openfda-verification
+          path: build/openfda-publication/verified.json
+          if-no-files-found: warn
+          retention-days: 90

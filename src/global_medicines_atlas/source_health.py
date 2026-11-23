@@ -235,7 +235,7 @@ def _request_sample(
     timeout_seconds: float,
     max_bytes: int,
     max_redirects: int,
-) -> httpx.Response:
+) -> tuple[httpx.Response, bytes]:
     with (
         httpx.Client(
             transport=transport,
@@ -251,12 +251,7 @@ def _request_sample(
             sample.extend(chunk[:remaining])
             if len(sample) > max_bytes:
                 break
-        return httpx.Response(
-            response.status_code,
-            headers=response.headers,
-            content=bytes(sample),
-            request=response.request,
-        )
+        return response, bytes(sample)
 
 
 def _non_probeable_observation(
@@ -289,6 +284,7 @@ def _evaluate_response(
     observed_at: datetime,
     endpoint: str,
     response: httpx.Response,
+    sample: bytes,
     max_bytes: int,
     expected_cadence: timedelta | None,
 ) -> SourceHealthObservation:
@@ -322,27 +318,19 @@ def _evaluate_response(
             detail="redirect refused by bounded probe",
         )
     response.raise_for_status()
-    sample = response.content[:max_bytes]
     content_type = response.headers.get("content-type", "")
-    if len(response.content) > max_bytes:
-        return SourceHealthObservation(
-            source_id=source.source_id,
-            checked_at=observed_at,
-            state=ProbeState.AVAILABLE,
-            endpoint=endpoint,
-            status_code=response.status_code,
-            content_type=content_type or None,
-            bytes_sampled=len(sample),
-            expected_cadence_seconds=cadence_seconds,
-            source_updated_at=source_updated_at,
-            freshness_age_seconds=freshness_age_seconds,
-            is_fresh=is_fresh,
-            detail=(
-                "bounded response sample was truncated; "
-                "schema fingerprint withheld"
-            ),
+    media_type = content_type.partition(";")[0].strip().lower()
+    fingerprint = None
+    if len(sample) > max_bytes:
+        detail = (
+            "bounded response sample was truncated; schema fingerprint withheld"
         )
-    fingerprint = schema_fingerprint(sample, content_type=content_type)
+    elif media_type in {"text/html", "application/xhtml+xml"}:
+        detail = "HTML response cannot establish a dataset schema fingerprint"
+    else:
+        fingerprint = schema_fingerprint(sample, content_type=content_type)
+        detail = "bounded response sampled; payload bytes discarded"
+
     return SourceHealthObservation(
         source_id=source.source_id,
         checked_at=observed_at,
@@ -350,13 +338,13 @@ def _evaluate_response(
         endpoint=endpoint,
         status_code=response.status_code,
         content_type=content_type or None,
-        bytes_sampled=len(sample),
+        bytes_sampled=min(len(sample), max_bytes),
         schema_fingerprint=fingerprint,
         expected_cadence_seconds=cadence_seconds,
         source_updated_at=source_updated_at,
         freshness_age_seconds=freshness_age_seconds,
         is_fresh=is_fresh,
-        detail="bounded response sampled; payload bytes discarded",
+        detail=detail,
     )
 
 
@@ -424,7 +412,7 @@ def probe_source(
             resolver=resolver,
             transport=transport,
         )
-        response = _request_sample(
+        response, sample = _request_sample(
             endpoint,
             headers=headers,
             transport=effective_transport,
@@ -437,6 +425,7 @@ def probe_source(
             observed_at,
             endpoint,
             response,
+            sample,
             max_bytes,
             expected_cadence,
         )

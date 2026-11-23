@@ -3,6 +3,64 @@
 Status: partial qualification; M-109 remains blocked. This register is an
 evidence index and does not expand or silently reduce the approved denominator.
 
+## August 2026 Silver product field qualification — 23 November 2026
+
+The next product assessed is the existing [August six-table Silver candidate](australian-m108-derived-products-20261017.md#august-2026-mbs-six-table-operation-assessment).
+Its source-observation contract needs a native item number and the edition's
+publication and effective dates. Qualify those roles for the exact candidate
+input and its documented predecessor. Claims about amounts, changes or item
+validity require their own evidence. [Release field contract](australian-benefits-release-field-contract.md)
+
+The [M-107 crosswalk](../../quality/qualifications/australian-mbs-official-index-reconciliation-20261017.json)
+joins both official XML links to their B1 receipts and exact paths in
+`edithatogo/australian-mbs-source-archive` at revision
+`da83cad9116e2f9a5b927be7b080e9a5e5ea6998`. The [hosted comparison](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39047005443)
+verified the official and archived bytes, including the August content-addressed
+path and harvest alias.
+
+| Release | Published | Effective | Payload SHA-256 | Bytes |
+| --- | --- | --- | --- | ---: |
+| [July XML](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260701) | 2026-05-28 | 2026-07-01 | `5834d849743a3eab2b8c03e826a5ed6a488a6f65cf4c4148da3ec227e5007805` | 8,291,891 |
+| [August XML](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260801) | 2026-07-29 | 2026-08-01 | `c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565` | 8,293,331 |
+
+Both edition pages link the Department's XML guide, which names `ItemNum` as
+the source item number. The retained profiles show it populated in all 6,045
+July and 6,046 August records. Its qualified role is display of the native MBS
+item number in that edition. The comparator keeps the full native key
+`(ItemNum, SubItemNum, ItemStartDate)`. The Department's dated PHI release page
+also names the exact August XML and confirms its release and effective dates.
+These dates apply to the edition. Per-item date meanings and cross-era identity
+remain outside this qualification. [XML field guide](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/FAQ-XML_Help) · [August PHI release metadata](https://www.health.gov.au/resources/publications/private-health-insurance-clinical-category-classification-and-definitions-1-august-2026)
+
+### Matched-record amount differences
+
+The retained reports from both hosted runs agree on the exact release identities
+and every aggregate difference. The two `ScheduleFee` differences and one
+`Benefit75` difference occur across two or three of the 6,045 matched records.
+The added record is counted separately. At least 5,442 of the 5,445 changed
+matched records have only change-indicator differences. `Benefit100` has zero
+differences among matched records. [Original comparison](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39047005443) · [Rerun](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39048554153)
+
+The comparator checks native tag text. A synthetic check confirmed that
+different decimal spellings of the same amount are counted as a difference.
+The reports retain counts without item identifiers or before-and-after values,
+so the monetary effect and affected items remain unresolved. The July notice
+describes corrections to Schedule Fee and the 100% benefit in that July file.
+The August notice describes a new item and says the XML otherwise reflects
+the May publication. Neither statement identifies the three matched-record
+differences. [Release-note reconciliation](../../quality/qualifications/australian-m109-release-note-delta-reconciliation-20261018.json)
+
+The July 2026 archive path lacks qualified privacy and v4 admission. Its
+current read gate leaves a fresh amount comparison pending. When both inputs
+qualify, compare the three cells as exact decimals within the existing matched
+record keys. Retain the native amounts, flags and caps as `native_unresolved`
+for the August product. [July privacy readback](../../quality/qualifications/australian-existing-archive-privacy-batch-20261115.json) · [July lineage and admission reconciliation](../../quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-july-mbs-source-lineage-reviewed.json)
+
+M-109 and the August six-table candidate remain blocked. Further qualification
+needs release-specific evidence for the product's monetary and temporal claims.
+Product-specific rights, admission, actual consumer checks and independent
+recovery retain their existing requirements.
+
 ## Current denominator definition
 
 The track initialization record defines MBS as the July 2025 XML, July 2024

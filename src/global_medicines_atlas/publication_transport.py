@@ -147,6 +147,9 @@ class PublicationPlan(PublicationTransportModel):
     artifacts: tuple[ArtifactBinding, ...] = Field(min_length=1)
     dry_run: bool = True
     maintainer_approved: bool = False
+    allow_identical_content: bool = Field(
+        default=False, strict=True, exclude_if=lambda allowed: not allowed
+    )
 
     @model_validator(mode="after")
     def plan_is_safe_and_canonical(self) -> Self:
@@ -158,7 +161,9 @@ class PublicationPlan(PublicationTransportModel):
         if paths != tuple(sorted(paths)) or len(paths) != len(set(paths)):
             raise ValueError("artifacts must have unique paths in sorted order")
         digests = tuple(item.sha256 for item in self.artifacts)
-        if len(digests) != len(set(digests)):
+        if not self.allow_identical_content and len(digests) != len(
+            set(digests)
+        ):
             raise ValueError("artifact digests must be unique")
         return self
 
@@ -203,10 +208,15 @@ class PublicationTransportReceipt(PublicationTransportModel):
     verification_uri: NonBlank | None = None
     failure_reason: NonBlank | None = None
     verified_artifacts: tuple[ArtifactVerification, ...] = ()
+    allow_identical_content: bool = Field(
+        default=False, strict=True, exclude_if=lambda allowed: not allowed
+    )
 
     @model_validator(mode="after")
     def state_has_required_evidence(self) -> Self:
-        if len(self.artifact_sha256) != len(set(self.artifact_sha256)):
+        if not self.allow_identical_content and len(
+            self.artifact_sha256
+        ) != len(set(self.artifact_sha256)):
             raise ValueError("receipt artifact digests must be unique")
         has_remote = self.remote_revision is not None
         has_verification = self.verification_uri is not None
@@ -350,6 +360,7 @@ def prepare_publication(
     target: PublicationTarget,
     relative_paths: tuple[str, ...],
     recorded_at: datetime,
+    allow_identical_content: bool = False,
 ) -> tuple[PublicationPlan, PublicationTransportReceipt]:
     """Prepare deterministic upload metadata and a local-only receipt."""
 
@@ -361,6 +372,7 @@ def prepare_publication(
         release_version=release_version,
         target=target,
         artifacts=bind_artifacts(root, relative_paths),
+        allow_identical_content=allow_identical_content,
     )
     receipt = PublicationTransportReceipt(
         plan_sha256=plan.sha256(),
@@ -368,6 +380,7 @@ def prepare_publication(
         target=target,
         state=PublicationTransportState.PREPARED,
         recorded_at=recorded_at,
+        allow_identical_content=plan.allow_identical_content,
     )
     return plan, receipt
 
@@ -438,6 +451,7 @@ def execute_publication(
             state=PublicationTransportState.VERIFICATION_FAILED,
             recorded_at=recorded_at,
             failure_reason="local artifacts no longer match the prepared plan",
+            allow_identical_content=plan.allow_identical_content,
         )
     revision = uploader.upload_folder(
         repository=plan.target.repository,
@@ -451,6 +465,7 @@ def execute_publication(
         state=PublicationTransportState.UPLOADED,
         recorded_at=recorded_at,
         remote_revision=revision,
+        allow_identical_content=plan.allow_identical_content,
     )
 
 
@@ -463,12 +478,16 @@ def verify_publication(
 ) -> PublicationTransportReceipt:
     """Claim public status only after every artifact is anonymously read back."""
 
+    expected_digests = tuple(item.sha256 for item in plan.artifacts)
     if (
         uploaded_receipt.state is not PublicationTransportState.UPLOADED
-        or uploaded_receipt.plan_sha256 != plan.sha256()
+        or (
+            uploaded_receipt.plan_sha256,
+            uploaded_receipt.allow_identical_content,
+        )
+        != (plan.sha256(), plan.allow_identical_content)
         or uploaded_receipt.target != plan.target
-        or uploaded_receipt.artifact_sha256
-        != tuple(item.sha256 for item in plan.artifacts)
+        or uploaded_receipt.artifact_sha256 != expected_digests
         or uploaded_receipt.remote_revision is None
     ):
         raise ValueError("uploaded receipt does not match the publication plan")
@@ -496,7 +515,7 @@ def verify_publication(
         ):
             return PublicationTransportReceipt(
                 plan_sha256=plan.sha256(),
-                artifact_sha256=tuple(item.sha256 for item in plan.artifacts),
+                artifact_sha256=expected_digests,
                 target=plan.target,
                 state=PublicationTransportState.VERIFICATION_FAILED,
                 recorded_at=recorded_at,
@@ -504,6 +523,7 @@ def verify_publication(
                 failure_reason=(
                     "anonymous artifact readback did not match the prepared plan"
                 ),
+                allow_identical_content=plan.allow_identical_content,
             )
         verified.append(result)
 
@@ -513,13 +533,14 @@ def verify_publication(
     )
     return PublicationTransportReceipt(
         plan_sha256=plan.sha256(),
-        artifact_sha256=tuple(item.sha256 for item in plan.artifacts),
+        artifact_sha256=expected_digests,
         target=plan.target,
         state=PublicationTransportState.PUBLIC,
         recorded_at=recorded_at,
         remote_revision=uploaded_receipt.remote_revision,
         verification_uri=verification_uri,
         verified_artifacts=tuple(verified),
+        allow_identical_content=plan.allow_identical_content,
     )
 
 

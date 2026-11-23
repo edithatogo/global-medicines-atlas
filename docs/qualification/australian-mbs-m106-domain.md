@@ -1,33 +1,39 @@
 # M-106 independent MBS domain qualification, 2026-09-27
 
-## Current existing-archive update — 15 November 2026
+## Current annual patient evidence — 22 November 2026
 
-The annual workbook described as unavailable in the historical observations
-below was subsequently preserved in the public MBS utilisation archive. Its
-[exact-source qualification](mbs-annual-public-workbook-20261115.md) verifies
-the archive identity and B1 receipt, five sheet names, the native `Patients`
-definition and 2,202 aggregate table rows with financial-year labels from
-2009–10 through 2025–26. The filename still says `2024-25`; the 2025–26 label
-is observed inside the workbook. Source patient values are not emitted.
+The archive qualification binds the `Patients` sheet and its 2,202 aggregate
+rows to the exact workbook and B1 receipt. The Department confirmed that the
+release covers financial years 2009–10 through 2025–26. The retained filename
+still ends in `2024-25.xlsx`. [Archive qualification](mbs-annual-public-workbook-20261115.md)
 
-This resolves the earlier **availability** observation for this exact workbook,
-not the patient-denominator gate. Cross-group deduplication, item-level patient
-counts, source time basis and suppression semantics remain unqualified. No
-rights decision, new publication, v4 admission or M-106 acceptance follows.
-Earlier dated observations and their receipts remain historical evidence.
+The Department confirmed that each published count is distinct within the
+financial year, Patient State and Broad Type of Service reported in that row.
+Claims are assigned by processing date. Published totals and subtotals count
+people independently. Patients can appear in multiple geographic or service
+groups, so use the published total for its scope and treat the component
+counts as non-additive. The public notes describe the processing date and
+patient geography. [Explanatory notes for Medicare statistics](https://www.health.gov.au/resources/publications/explanatory-notes-for-medicare-statistics?language=en)
 
-M-106 remains **blocked**. The admitted MBS XML establishes an independent
-service-benefit source domain for the retained July 2025 and approved August
-2026 XML snapshots. Their native fields do not contain
-participant counts, and the historical HTML participant probe is synthetic or
-failed-source evidence rather than a live participant denominator.
+**M-106 remains blocked.** The annual workbook's suppression policy still
+needs source evidence. Services Australia referred the item-level inquiry to
+its public catalogue. The October 2026 item schema lists services and benefits.
+The availability and scope of an item-level distinct-patient measure and its
+applicable reuse terms remain unresolved. The Department referred workbook
+reuse to its published copyright terms. Any proposed derived output retains
+its existing rights and admission checks. [October 2026 item schema](https://data.gov.au/data/api/3/action/datastore_search?resource_id=527f7c16-afd5-4e8a-8aa9-ea7520f08aba&limit=0) · [Department copyright terms](https://www.health.gov.au/using-our-websites/copyright?language=en)
+
+The admitted July 2025 and August 2026 XMLs supply the independent
+service-benefit records. The bounded annual evidence supplies the meaning of
+the aggregate patient measure. The dated observations below preserve the
+earlier source checks.
 
 | Dimension | Current evidence | Qualified boundary |
 | --- | --- | --- |
 | Service/item and group | `MbsSourceRecord` retains `ItemNum`, `Category`, `Group`, `SubGroup`, `SubHeading`, and source ordinal. The approved August 2026 XML receipt records 6,046 admitted `Data` records. | Source-native service rows for that exact release; no medicine or PBS assertion. |
 | Fee and benefit | The same source-native records retain `ScheduleFee`, `DerivedFee`, `Benefit75`, `Benefit85`, `Benefit100`, `BenefitType`, and related fields without renaming or imputing missing values. | Field preservation, not a claim that every field is populated in every row or a participant payment total. |
 | Temporal state | `ItemStartDate`, `ItemEndDate`, `FeeStartDate`, `BenefitStartDate`, and other native date/change fields are retained. The receipt pins the August release identity. | Source values and release identity; no inferred effective interval where the source omits one. |
-| Participant count | The XML schema's 40 named fields contain no participant-count measure. The donor's item/participant HTML endpoints have only compatibility fixtures and failed historical requests. | **Unqualified.** No zero count, missing patient inference, or item-level participation claim. |
+| Participant count | The archived annual workbook provides distinct-patient counts at the published financial-year, patient-state and broad-service-type grain. The source-owner definition covers each published total and subtotal. | Annual aggregate definition confirmed. Suppression and item-level distinct-patient evidence remain unresolved. |
 
 The [hosted release and anonymous-verification receipt](https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5467154799) binds the exact August payload, 6,046 rows, manifest, and public revision. The [source rights ledger](../../quality/qualifications/source-rights-review-ledger.json) authorizes only the exact content-addressed payloads named by its approval. It does not extend to another statistics workbook or HTML endpoint.
 

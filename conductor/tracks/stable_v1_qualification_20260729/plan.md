@@ -1520,3 +1520,55 @@ outbound message is in scope.
   `f498a7e5a4a270228da333b2b8a42f21025e01ff` has the same tree. Post-merge
   privacy and security passed; the non-required public-MBS job stopped at its
   no-read guard. No audit finding was newly suppressed.
+
+### Source-health baseline recovery — 22 November 2026
+
+Owner: chat `01a1fc13-09a0-7961-8c2d-388111230f3d`, standard Git worktree
+`/Volumes/PortableSSD/GitHub/gma-pr-1469-workflow-receipt`, branch
+`codex/source-health-baseline`. Scope is the existing monitoring workflow
+and October drift evidence.
+
+- [x] Preserve the October drift artifact, confirm the only successful
+  predecessor lacks a retained artifact, and qualify explicit missing-baseline
+  recovery. The reset records the comparison gap and subsequent runs retain
+  exact baseline verification and drift escalation. See the
+  [monitoring receipt](../../../docs/qualification/stable-v1-evidence-monitoring.md#missing-baseline-recovery).
+
+### Nova Scotia Pharmacare source health — 22 November 2026
+
+Owner: chat `01a1fc13-09a0-7961-8c2d-388111230f3d`, standard Git worktree
+`/Volumes/PortableSSD/GitHub/gma-pr-1469-workflow-receipt`, branch
+`codex/nova-scotia-source-health`.
+
+- [x] Reconcile the October HTML fingerprint mismatch and current CSV
+  header evidence. Correct probe decoding and exclude HTML pages from schema
+  baselines. Verify the original byte bound and retain the comparison gap.
+  See the [monitoring record](../../../docs/qualification/stable-v1-evidence-monitoring.md#nova-scotia-pharmacare-monitoring-finding).
+
+### Gremlins verdict verification — 22 November 2026
+
+Chat `01a1fc13-09a0-7961-8c2d-388111230f3d` owns Test-Goblin and its
+affected tests in the standard Git worktree
+`/Volumes/PortableSSD/GitHub/gma-pr-1469-workflow-receipt` on
+`codex/gremlins-result-fidelity`.
+
+- [x] Compare the fully cached 89% result with the 55% result that re-ran
+  522 mutants after the source-health edit. Reproduce the CLI mutant's
+  import-time `SystemExit` on both commits. The merged source-health run
+  recorded 56% and 380 former kills survived in unchanged modules.
+- [x] Treat a CLI import that exits as a collection failure in the CLI
+  tests and shared product qualification runner. Confirm the exact
+  mutant is killed with the full selection of 369 tests.
+- [x] Reuse cached verdicts within the same
+  dependency lock and retain the native per-mutant report. The protected
+  check contract still requires all 28 contexts.
+
+Chat `01a1fc13-09a0-7961-8c2d-388111230f3d` owns the PR #1476 post-merge
+verification in the same worktree on `codex/gremlins-main-verification`.
+
+- [x] Verify PR #1476 on main at `0d9dea46`. All 26 main-push checks
+  passed and GitHub retains all 28 required PR contexts and app bindings.
+  The cold Gremlins run recorded a 53.2% score, 597 kills, 526 survivors,
+  one mutant timeout and zero errors. It killed the original CLI mutant
+  at collection. Sixteen of 1,124 verdicts differed from the checked PR
+  head. See the [main report](https://github.com/edithatogo/global-medicines-atlas/actions/runs/45010944957/artifacts/14753707597).
