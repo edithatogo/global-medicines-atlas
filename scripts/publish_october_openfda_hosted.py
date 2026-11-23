@@ -312,7 +312,7 @@ def publish(output: Path, exact_commit: str) -> None:
                 indent=2,
             )
         )
-        hub = cast("Any", import_module("huggingface_hub"))
+        hub = cast("Any", import_module("huggingface_hub.hf_api"))
         api = hub.HfApi(token=os.environ["HF_TOKEN"])
         revision = publish_batches(api, hub, client, plan)
     receipt = PublicationTransportReceipt(
