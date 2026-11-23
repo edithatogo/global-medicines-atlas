@@ -2,7 +2,7 @@
   "batch_id": "openfda-all-20261030",
   "repository": "edithatogo/global-medicines-atlas-openfda-all-20261030",
   "publication_approved": true,
-  "approval_reference": "Direct maintainer instruction of 15 November 2026 to upload the openfda-all snapshot to Hugging Face against the Global Medicines Atlas project.",
+  "approval_reference": "The maintainer approved this archive on 15 November 2026 and confirmed permission for public redistribution of its GMDN material on 23 November 2026.",
   "snapshot_id": "openfda-all-20261030T130532Z",
   "source_authority": "U.S. Food and Drug Administration, openFDA",
   "source_url": "https://open.fda.gov/apis/",
@@ -15,12 +15,13 @@
   "expected_payload_count": 2396,
   "expected_payload_bytes": 137529793516,
   "rights": {
-    "licence": "U.S. federal government work; public domain in the United States under 17 U.S.C. 105",
+    "licence": "CC0 1.0 for content covered by the openFDA dedication. Global Medical Device Nomenclature (GMDN) material in the device identifier ZIPs is separately licensed by The GMDN Agency.",
     "terms": "https://open.fda.gov/terms/",
     "attribution": "U.S. Food and Drug Administration, openFDA (https://open.fda.gov/apis/)",
-    "redistribution": "Permitted for unmodified source bytes; retain attribution and source URLs.",
+    "redistribution": "The maintainer confirmed permission to publish the unmodified GMDN material in this archive. Downstream use of GMDN material is subject to its separate licence. Retain FDA attribution and the source URLs.",
     "fda_website_policies": "https://www.fda.gov/about-fda/about-website/website-policies",
-    "rights_family": "fda-website-public-domain"
+    "gmdn_fields": "https://open.fda.gov/fields/deviceudi_reference.pdf",
+    "rights_family": "openfda-cc0-and-separately-licensed-gmdn"
   },
   "endpoint_coverage": {
     "endpoints": 31,
@@ -35,7 +36,7 @@
     "No parsing, reshaping, harmonisation or cross-source matching; these are raw source partitions.",
     "No claim that these 31 endpoints form part of the Atlas B0 source index; presence in this archive is not coverage.",
     "No FAERS quarterly history; that corpus is published separately as faers-live-20260821.",
-    "No credential-gated, restricted or personal source bytes."
+    "No credential-gated or private source files."
   ],
   "default_archive_root": "/Volumes/PortableSSD/GMA-downloads/openfda-all-20261030T130532Z"
 }

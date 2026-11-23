@@ -52,6 +52,8 @@ jobs:
           GMA_MAINTAINER_PUBLICATION_APPROVED: ${{ inputs.publish && 'yes-i-approve-publication' || 'unset' }}
           GMA_PUBLICATION_ENVIRONMENT: ${{ inputs.publish && 'production' || 'unset' }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          # Use the Git LFS client after the October archive's Xet connection failure.
+          HF_HUB_DISABLE_XET: ${{ inputs.batch == 'openfda-all-20261030' && '1' || '0' }}
         run: |
           set -euo pipefail
           args=(
