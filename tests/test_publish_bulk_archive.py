@@ -16,14 +16,98 @@ import httpx
 import pytest
 from scripts import publish_bulk_archive as publisher
 from scripts import publish_fresh_openfda as fresh
+from scripts import publish_october_openfda_hosted as october
 
 from global_medicines_atlas.federation_metadata_hosted import (
     require_hosted_main as real_require_hosted_main,
 )
-from global_medicines_atlas.publication_transport import ArtifactVerification
+from global_medicines_atlas.publication_transport import (
+    ArtifactBinding,
+    ArtifactVerification,
+    PublicationDestination,
+    PublicationPlan,
+    PublicationTarget,
+)
 
 COMMIT = "a" * 40
 SYNTHETIC_HF_TOKEN = "synthetic-token"  # ruff: ignore[hardcoded-password-string] -- synthetic fixture, not a credential.
+
+
+def test_october_hosted_resume_uses_verified_batches() -> None:
+    files = {
+        "first.zip": b"first",
+        "second.zip": b"second",
+        "third.zip": b"third",
+    }
+    artifacts = tuple(
+        ArtifactBinding(
+            relative_path=path,
+            size=len(body),
+            sha256=hashlib.sha256(body).hexdigest(),
+        )
+        for path, body in files.items()
+    )
+    plan = PublicationPlan(
+        release_version=october.BATCH,
+        target=PublicationTarget(
+            destination=PublicationDestination.HUGGING_FACE,
+            repository=october.REPOSITORY,
+            revision="main",
+            public_base_url=f"https://huggingface.co/datasets/{october.REPOSITORY}",
+        ),
+        artifacts=artifacts,
+    )
+    api = Mock()
+    api.repo_info.return_value = types.SimpleNamespace(
+        sha=COMMIT, private=False
+    )
+    first = artifacts[0]
+    remote = types.SimpleNamespace(
+        path=first.relative_path,
+        size=first.size,
+        lfs=types.SimpleNamespace(sha256=first.sha256, size=first.size),
+    )
+    api.list_repo_tree.return_value = [remote]
+    api.list_repo_files.return_value = [".gitattributes", *files]
+    committed = "b" * 40
+    scratch_files = []
+
+    def commit(_repo, *, parent_commit, operations, **_kw):
+        assert parent_commit == COMMIT
+        assert [operation.path_in_repo for operation in operations] == [
+            "second.zip",
+            "third.zip",
+        ]
+        for operation in operations:
+            scratch_files.append(operation.path_or_fileobj)
+            assert (
+                operation.path_or_fileobj.read_bytes()
+                == files[operation.path_in_repo]
+            )
+        return types.SimpleNamespace(oid=committed)
+
+    api.create_commit.side_effect = commit
+    hub = types.SimpleNamespace(
+        RepoFile=types.SimpleNamespace, CommitOperationAdd=types.SimpleNamespace
+    )
+    requests = []
+
+    def serve(request):
+        path = request.url.path.removeprefix("/")
+        requests.append(path)
+        return httpx.Response(200, stream=httpx.ByteStream(files[path]))
+
+    with httpx.Client(
+        base_url=october.source_origin("http://100.64.1.2:18043/"),
+        transport=httpx.MockTransport(serve),
+    ) as client:
+        assert october.publish_batches(api, hub, client, plan) == committed
+    assert requests == ["second.zip", "third.zip"]
+    assert scratch_files
+    assert all(not path.exists() for path in scratch_files)
+    remote.lfs.sha256 = "0" * 64
+    with pytest.raises(ValueError, match="destination checksum differs"):
+        october.remaining_artifacts(api, hub, plan)
 
 
 def fresh_openfda_fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):

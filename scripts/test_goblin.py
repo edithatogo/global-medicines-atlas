@@ -764,9 +764,9 @@ def _validate_setup_versions(
     workflow_text: str,
 ) -> None:
     setup_versions = [
-        str(value)
+        str(version)
         for document_value in documents.values()
-        for value in recursive_values(document_value, key="version")
+        for version in _uv_step_versions(document_value)
     ]
     if not setup_versions or any(
         value != versions["uv"] for value in setup_versions
@@ -800,6 +800,25 @@ def _validate_setup_versions(
     )
     if python_file != versions["python"]:
         raise ValueError(".python-version differs from governed Python")
+
+
+def _uv_step_versions(document: object) -> list[object]:
+    """Collect the version input only from setup-uv steps."""
+    versions: list[object] = []
+    for steps in recursive_values(document, key="steps"):
+        if not isinstance(steps, list):
+            continue
+        for entry in cast("list[object]", steps):
+            if not isinstance(entry, dict):
+                continue
+            step = cast("dict[str, object]", entry)
+            uses = step.get("uses")
+            if not isinstance(uses, str) or not uses.startswith(
+                "astral-sh/setup-uv@"
+            ):
+                continue
+            versions.extend(recursive_values(step.get("with"), key="version"))
+    return versions
 
 
 ARCHIVE_RUNNER = "gma-archive"
