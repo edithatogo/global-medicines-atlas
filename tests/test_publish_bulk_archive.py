@@ -102,12 +102,49 @@ def test_october_hosted_resume_uses_verified_batches() -> None:
         transport=httpx.MockTransport(serve),
     ) as client:
         assert october.publish_batches(api, hub, client, plan) == committed
-    assert requests == ["second.zip", "third.zip"]
+    assert sorted(requests) == ["second.zip", "third.zip"]
     assert scratch_files
     assert all(not path.exists() for path in scratch_files)
     remote.lfs.sha256 = "0" * 64
     with pytest.raises(ValueError, match="destination checksum differs"):
         october.remaining_artifacts(api, hub, plan)
+
+
+def test_october_hosted_download_checks_each_source_range(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    parts = {"0-3": b"abcd", "4-7": b"efgh", "8-9": b"ij"}
+    body = b"".join(parts.values())
+    artifact = ArtifactBinding(
+        relative_path="archive.zip",
+        size=len(body),
+        sha256=hashlib.sha256(body).hexdigest(),
+    )
+    output = tmp_path / artifact.relative_path
+    monkeypatch.setattr(october, "SOURCE_REQUEST_BYTES", 4)
+    ranges_seen = []
+    corrupt_range = False
+
+    def serve(request):
+        requested = request.headers["Range"].removeprefix("bytes=")
+        ranges_seen.append(requested)
+        returned = "0-3" if corrupt_range and requested == "4-7" else requested
+        return httpx.Response(
+            206,
+            headers={"Content-Range": f"bytes {returned}/{len(body)}"},
+            stream=httpx.ByteStream(parts[requested]),
+        )
+
+    with httpx.Client(
+        base_url="http://100.64.1.2:18043/",
+        transport=httpx.MockTransport(serve),
+    ) as client:
+        october.download_artifact(client, artifact, output)
+        assert output.read_bytes() == body
+        assert ranges_seen == list(parts)
+        corrupt_range = True
+        with pytest.raises(ValueError, match="source range differs"):
+            october.download_artifact(client, artifact, output)
 
 
 def fresh_openfda_fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
