@@ -2,6 +2,7 @@
   "batch_id": "ema-tables-20261124",
   "repository": "edithatogo/global-medicines-atlas-ema-tables-20261124",
   "publication_approved": true,
+  "resume_empty_revision": "af0bf3c17e7109e92014472c53dcf0aebb260beb",
   "approval_reference": "Maintainer directed publication of EMA medicines, referrals and orphan designation workbooks, 24 November 2026 on 24 November 2026 using GitHub-hosted Actions.",
   "source_verification": {
     "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/45386463258",

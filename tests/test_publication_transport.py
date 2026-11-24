@@ -6,6 +6,8 @@ import subprocess  # ruff: ignore[suspicious-subprocess-import] - local script
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import Mock
 
 import pytest
 import scripts.publish_source_batch as source_publisher
@@ -818,6 +820,68 @@ def test_preparation_script_emits_local_dry_run_only(tmp_path: Path) -> None:
     assert output["plan"]["maintainer_approved"] is False
     assert output["receipt"]["state"] == "prepared"
     assert "token" not in result.stdout.casefold()
+
+
+@pytest.mark.parametrize(
+    ("private", "head", "files", "error"),
+    [
+        (False, "a" * 40, [".gitattributes"], None),
+        (True, "a" * 40, [".gitattributes"], "recovery revision"),
+        (False, "b" * 40, [".gitattributes"], "recovery revision"),
+        (
+            False,
+            "a" * 40,
+            [".gitattributes", "already-published.bin"],
+            "empty dataset",
+        ),
+    ],
+)
+def test_snapshot_recovery_binds_the_empty_public_revision(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    *,
+    private: bool,
+    head: str,
+    files: list[str],
+    error: str | None,
+) -> None:
+    api = Mock()
+    api.dataset_info.return_value = SimpleNamespace(private=private, sha=head)
+    api.list_repo_files.return_value = files
+    api.upload_folder.return_value = SimpleNamespace(oid="c" * 40)
+    monkeypatch.setattr(ema_snapshot, "require_hosted_main", Mock())
+    monkeypatch.setattr(
+        ema_snapshot,
+        "import_module",
+        Mock(return_value=SimpleNamespace(HfApi=Mock(return_value=api))),
+    )
+    monkeypatch.setenv("HF_TOKEN", "synthetic-fixture")
+    repository = "maintainer/approved"
+    uploader = ema_snapshot.SnapshotUploader(
+        repository, resume_empty_revision="a" * 40
+    )
+    message = "Archive the approved snapshot"
+    if error is None:
+        assert (
+            uploader.upload_folder(
+                repository=repository, folder=tmp_path, commit_message=message
+            )
+            == "c" * 40
+        )
+        api.upload_folder.assert_called_once_with(
+            repo_id=repository,
+            repo_type="dataset",
+            folder_path=tmp_path,
+            commit_message=message,
+            parent_commit="a" * 40,
+        )
+    else:
+        with pytest.raises(ValueError, match=error):
+            uploader.upload_folder(
+                repository=repository, folder=tmp_path, commit_message=message
+            )
+        api.upload_folder.assert_not_called()
+    api.create_repo.assert_not_called()
 
 
 def test_ema_snapshot_rejects_local_publication(tmp_path: Path) -> None:

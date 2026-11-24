@@ -1,8 +1,6 @@
 ---
 pretty_name: EMA medicines, referrals and orphan designation workbooks, 24 November 2026
 license: other
-license_name: EMA attribution reuse terms
-license_link: https://www.ema.europa.eu/en/about-us/about-website/legal-notice
 language:
 - en
 ---

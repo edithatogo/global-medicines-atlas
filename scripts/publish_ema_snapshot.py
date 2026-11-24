@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import shutil
 from datetime import UTC, datetime
 from importlib import import_module
@@ -33,10 +34,20 @@ PAYLOAD = "payloads/eu-ema-json/medicines-output-medicines_json-report_en.json"
 
 
 class SnapshotUploader:
-    """One new public dataset and one content-bound commit; no upload retries."""
+    """Publish one content-bound commit to an empty public dataset."""
 
-    def __init__(self, repository: str = DATASET) -> None:
+    def __init__(
+        self,
+        repository: str = DATASET,
+        *,
+        resume_empty_revision: str | None = None,
+    ) -> None:
+        if resume_empty_revision is not None and not re.fullmatch(
+            r"[0-9a-f]{40}", resume_empty_revision
+        ):
+            raise ValueError("Snapshot recovery requires a pinned Git revision")
         self.repository = repository
+        self.resume_empty_revision = resume_empty_revision
 
     def upload_folder(
         self, *, repository: str, folder: Path, commit_message: str
@@ -46,13 +57,26 @@ class SnapshotUploader:
             raise ValueError("EMA publication target differs")
         hub = cast("Any", import_module("huggingface_hub"))
         api = hub.HfApi(token=os.environ["HF_TOKEN"])
-        api.create_repo(
-            repo_id=repository,
-            repo_type="dataset",
-            private=False,
-            exist_ok=False,
-        )
-        parent = api.dataset_info(repository).sha
+        if self.resume_empty_revision is None:
+            api.create_repo(
+                repo_id=repository,
+                repo_type="dataset",
+                private=False,
+                exist_ok=False,
+            )
+            parent = api.dataset_info(repository).sha
+        else:
+            parent = self.resume_empty_revision
+            info = api.dataset_info(repository, revision="main")
+            if info.private is not False or info.sha != parent:
+                raise ValueError(
+                    "Public snapshot no longer matches the recovery revision"
+                )
+            files = api.list_repo_files(
+                repository, repo_type="dataset", revision=parent
+            )
+            if set(files) != {".gitattributes"}:
+                raise ValueError("Snapshot recovery requires an empty dataset")
         result = api.upload_folder(
             repo_id=repository,
             repo_type="dataset",
