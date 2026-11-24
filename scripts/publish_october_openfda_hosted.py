@@ -14,6 +14,7 @@ from datetime import UTC, datetime
 from http import HTTPStatus
 from importlib import import_module
 from ipaddress import IPv4Address, IPv4Network
+from itertools import chain
 from operator import attrgetter
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -21,6 +22,12 @@ from typing import Any, BinaryIO, cast
 from urllib.parse import quote, urlsplit
 
 import httpx
+from scripts.publish_bulk_archive import (
+    CARD_NAME,
+    MANIFEST_NAME,
+    artifact_manifest_bytes,
+    build_card,
+)
 
 from global_medicines_atlas.acquisition import (
     AcquisitionPolicy,
@@ -60,6 +67,7 @@ ONLINE_SOURCES = (
     / BATCH
     / "online-sources.json"
 )
+COMPLETION_PATHS = frozenset({CARD_NAME, MANIFEST_NAME})
 WAYBACK_CAPTURES = {
     "other/historicaldocument/other-historicaldocument-0001-of-0001.json.zip": (
         "20260501030408",
@@ -228,7 +236,7 @@ def publication_order(artifact: ArtifactBinding) -> tuple[int, str]:
     path = artifact.relative_path
     if path == "rights.json":
         return 0, path
-    if path in {"README.md", MANIFEST.relative_path}:
+    if path in COMPLETION_PATHS:
         return 2, path
     return 1, path
 
@@ -370,20 +378,54 @@ def reviewed_sources(path: Path, plan: PublicationPlan) -> dict[str, str]:
     return sources
 
 
+def rebuild_completion_metadata(plan: PublicationPlan) -> dict[str, bytes]:
+    """Reproduce the final card and manifest from committed October evidence."""
+    contract = json.loads(
+        ONLINE_SOURCES.with_name("manifest.json").read_bytes()
+    )
+    artifacts: list[dict[str, Any]] = [
+        {
+            "path": artifact.relative_path,
+            "size": artifact.size,
+            "sha256": artifact.sha256,
+        }
+        for artifact in plan.artifacts
+        if artifact.relative_path != MANIFEST_NAME
+    ]
+    return {
+        CARD_NAME: build_card(contract).encode(),
+        MANIFEST_NAME: artifact_manifest_bytes(contract, artifacts),
+    }
+
+
 def check_online_groups(
     client: httpx.Client,
     missing: Iterable[ArtifactBinding],
     sources: Mapping[str, str],
+    prepared: Mapping[str, bytes] | None = None,
 ) -> Iterator[
     tuple[dict[str, dict[str, str | int]], list[tuple[ArtifactBinding, Path]]]
 ]:
     """Stage a bounded group and yield only exact bytes for possible upload."""
+    prepared = prepared or {}
     for group in commit_groups(missing):
         with TemporaryDirectory(prefix="openfda-october-online-") as scratch:
             results: dict[str, dict[str, str | int]] = {}
             matched: list[tuple[ArtifactBinding, Path]] = []
             for index, artifact in enumerate(group):
                 destination = Path(scratch) / str(index)
+                if (body := prepared.get(artifact.relative_path)) is not None:
+                    sha256 = hashlib.sha256(body).hexdigest()
+                    if (len(body), sha256) == (artifact.size, artifact.sha256):
+                        destination.write_bytes(body)
+                        matched.append((artifact, destination))
+                        results[artifact.relative_path] = {
+                            "status": "match",
+                            "bytes": len(body),
+                            "sha256": sha256,
+                            "source": "committed October plan and publication contract",
+                        }
+                        continue
                 path = quote(artifact.relative_path, safe="/")
                 url = FDA_ZIP_ORIGIN + path
                 reviewed = sources.get(artifact.relative_path)
@@ -471,6 +513,7 @@ def recover_online(
         hub,
         exact_commit,
         sources=sources,
+        prepared=rebuild_completion_metadata(plan),
     )
     if writer is not None and set(
         writer.list_repo_files(
@@ -492,17 +535,21 @@ def recover_fda_zips(
     exact_commit: str,
     *,
     sources: Mapping[str, str] | None = None,
+    prepared: Mapping[str, bytes] | None = None,
 ) -> str:
     """Save the observed availability and the anonymous readback of each appended batch."""
     mirrors = sources or {}
+    prepared = prepared or {}
     candidates = [
         artifact
         for artifact in missing
         if artifact.relative_path.endswith(".json.zip")
         or artifact.relative_path in mirrors
+        or artifact.relative_path in prepared
     ]
+    pending = {artifact.relative_path for artifact in missing}
     print(
-        f"Checking {len(candidates)} October files with available URLs",
+        f"Checking {len(candidates)} October recovery candidates",
         flush=True,
     )
     results: dict[str, dict[str, str | int]] = {}
@@ -539,13 +586,36 @@ def recover_fda_zips(
         trust_env=False,
         timeout=30,
     ) as client:
-        for checked, matched in check_online_groups(
-            client, candidates, mirrors
+        for checked, matched in chain(
+            check_online_groups(
+                client,
+                (
+                    item
+                    for item in candidates
+                    if item.relative_path not in COMPLETION_PATHS
+                ),
+                mirrors,
+            ),
+            check_online_groups(
+                client,
+                (
+                    item
+                    for item in candidates
+                    if item.relative_path in COMPLETION_PATHS
+                ),
+                mirrors,
+                prepared,
+            ),
         ):
             for path, result in checked.items():
                 (results if path.endswith(".json.zip") else sidecars)[path] = (
                     result
                 )
+            if (
+                checked.keys() <= COMPLETION_PATHS
+                and pending - COMPLETION_PATHS
+            ):
+                continue
             if writer is not None and matched:
                 head = commit_artifacts(writer, hub, head, matched)
                 batch: dict[str, object] = {
@@ -564,6 +634,9 @@ def recover_fda_zips(
                     ).model_dump(mode="json")
                     for artifact, _ in matched
                 ]
+                pending.difference_update(
+                    artifact.relative_path for artifact, _ in matched
+                )
                 report_path.write_text(
                     json.dumps(report, indent=2) + "\n", encoding="utf-8"
                 )
@@ -573,17 +646,19 @@ def recover_fda_zips(
                 )
     counts = Counter(result["status"] for result in results.values())
     report["zip_counts"] = counts
-    verified_paths = {
-        path
-        for path, result in sidecars.items()
-        if writer is not None and result["status"] == "match"
-    }
     report["missing_metadata"] = [
         artifact.relative_path
         for artifact in missing
         if not artifact.relative_path.endswith(".json.zip")
-        and artifact.relative_path not in verified_paths
+        and artifact.relative_path in pending
     ]
+    report["completion_metadata_held"] = sorted(
+        path
+        for path, result in sidecars.items()
+        if path in COMPLETION_PATHS
+        and result["status"] == "match"
+        and pending - COMPLETION_PATHS
+    )
     report["resulting_revision"] = head
     report["recorded_at"] = datetime.now(UTC).isoformat()
     report_path.write_text(

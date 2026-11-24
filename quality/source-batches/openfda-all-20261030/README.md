@@ -41,6 +41,9 @@ with explicit `publish=true` to append files that match. The workflow verifies e
 published batch anonymously and retains its immutable revision and digests
 in Actions. The October acquisition receipts remain part of the frozen
 inventory and require their original bytes.
+The runner can reproduce the original dataset README and artifact manifest
+from the saved contract and plan. It checks both original hashes and holds
+these two files until the rest of the inventory has been restored.
 
 The committed [publication plan](publication-plan.json) is the unchanged
 `plan.json` from [Actions artifact 14882420929](https://github.com/edithatogo/global-medicines-atlas/actions/runs/45306884017/artifacts/14882420929).

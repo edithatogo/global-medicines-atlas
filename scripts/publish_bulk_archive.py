@@ -150,6 +150,33 @@ def build_card(manifest: Mapping[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def artifact_manifest_bytes(
+    manifest: Mapping[str, Any], artifacts: list[dict[str, Any]]
+) -> bytes:
+    """Render the original bulk archive manifest from its artifact bindings."""
+    return (
+        json.dumps(
+            {
+                "schema_id": "global-medicines-atlas.published-artifact-manifest",
+                "schema_version": 1,
+                "batch_id": manifest["batch_id"],
+                "repository": manifest["repository"],
+                "snapshot_id": manifest["snapshot_id"],
+                "source_authority": manifest["source_authority"],
+                "source_url": manifest["source_url"],
+                "retrieval_date": manifest["retrieval_date"],
+                "rights": manifest["rights"],
+                "artifact_count": len(artifacts),
+                "artifact_bytes": sum(item["size"] for item in artifacts),
+                "artifacts": artifacts,
+            },
+            indent=1,
+            sort_keys=True,
+        )
+        + "\n"
+    ).encode()
+
+
 def write_publication_metadata(
     root: Path, manifest: Mapping[str, Any]
 ) -> tuple[str, ...]:
@@ -175,35 +202,16 @@ def write_publication_metadata(
         for path in inventory_publication_files(root)
         if path != MANIFEST_NAME
     )
-    sizes = [(root / path).stat().st_size for path in body_paths]
-    artifacts = [
-        {"path": path, "size": size, "sha256": digest(root / path)}
-        for path, size in zip(body_paths, sizes, strict=True)
+    artifacts: list[dict[str, Any]] = [
+        {
+            "path": path,
+            "size": (root / path).stat().st_size,
+            "sha256": digest(root / path),
+        }
+        for path in body_paths
     ]
-    (root / MANIFEST_NAME).write_text(
-        json.dumps(
-            {
-                "schema_id": (
-                    "global-medicines-atlas.published-artifact-manifest"
-                ),
-                "schema_version": 1,
-                "batch_id": manifest["batch_id"],
-                "repository": manifest["repository"],
-                "snapshot_id": manifest["snapshot_id"],
-                "source_authority": manifest["source_authority"],
-                "source_url": manifest["source_url"],
-                "retrieval_date": manifest["retrieval_date"],
-                "rights": manifest["rights"],
-                "artifact_count": len(artifacts),
-                "artifact_bytes": sum(sizes),
-                "artifacts": artifacts,
-            },
-            indent=1,
-            sort_keys=True,
-        )
-        + "\n",
-        encoding="utf-8",
-        newline="\n",
+    (root / MANIFEST_NAME).write_bytes(
+        artifact_manifest_bytes(manifest, artifacts)
     )
     return inventory_publication_files(root)
 

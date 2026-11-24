@@ -316,6 +316,12 @@ def test_october_online_only_appends_exact_matches_and_reads_them_back(
         )
         for name, body in (("matched", b"data"), ("updated", b"test"))
     )
+    card = b"original README"
+    final_card = ArtifactBinding(
+        relative_path="README.md",
+        size=len(card),
+        sha256=hashlib.sha256(card).hexdigest(),
+    )
     plan = PublicationPlan(
         release_version=october.BATCH,
         target=PublicationTarget(
@@ -324,7 +330,7 @@ def test_october_online_only_appends_exact_matches_and_reads_them_back(
             public_base_url=f"https://huggingface.co/datasets/{october.REPOSITORY}",
             revision="main",
         ),
-        artifacts=(matched, updated),
+        artifacts=(final_card, matched, updated),
     )
     revision = "b" * 40
     hub = types.SimpleNamespace(CommitOperationAdd=types.SimpleNamespace)
@@ -364,7 +370,14 @@ def test_october_online_only_appends_exact_matches_and_reads_them_back(
     report_path = tmp_path / "online.json"
     assert (
         october.recover_fda_zips(
-            report_path, plan, COMMIT, [matched, updated], writer, hub, COMMIT
+            report_path,
+            plan,
+            COMMIT,
+            [final_card, matched, updated],
+            writer,
+            hub,
+            COMMIT,
+            prepared={final_card.relative_path: card},
         )
         == revision
     )
@@ -372,6 +385,9 @@ def test_october_online_only_appends_exact_matches_and_reads_them_back(
         target=plan.target, revision=revision, artifact=matched
     )
     report = json.loads(report_path.read_text())
+    assert report["metadata_results"]["README.md"]["status"] == "match"
+    assert report["completion_metadata_held"] == ["README.md"]
+    assert report["missing_metadata"] == ["README.md"]
     assert report["zip_counts"] == {"match": 1, "digest_mismatch": 1}
     assert report["zip_results"][matched.relative_path][
         "source_url"
@@ -380,6 +396,24 @@ def test_october_online_only_appends_exact_matches_and_reads_them_back(
         report["published_batches"][0]["verified"][0]["sha256"]
         == matched.sha256
     )
+
+
+def test_october_rebuilds_exact_completion_metadata_from_conserved_evidence() -> (
+    None
+):
+    frozen = PublicationPlan.model_validate_json(
+        (october.ONLINE_SOURCES.parent / "publication-plan.json").read_bytes()
+    )
+    rebuilt = october.rebuild_completion_metadata(frozen)
+    assert set(rebuilt) == {"README.md", "ARTIFACT-MANIFEST.json"}
+    for artifact in frozen.artifacts:
+        if artifact.relative_path in rebuilt:
+            body = rebuilt[artifact.relative_path]
+            assert (len(body), hashlib.sha256(body).hexdigest()) == (
+                artifact.size,
+                artifact.sha256,
+            )
+    assert october.archive_plan(rebuilt["ARTIFACT-MANIFEST.json"]) == frozen
 
 
 def test_october_online_upload_requires_approval(
