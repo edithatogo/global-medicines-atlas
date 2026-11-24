@@ -1572,3 +1572,42 @@ verification in the same worktree on `codex/gremlins-main-verification`.
   one mutant timeout and zero errors. It killed the original CLI mutant
   at collection. Sixteen of 1,124 verdicts differed from the checked PR
   head. See the [main report](https://github.com/edithatogo/global-medicines-atlas/actions/runs/45010944957/artifacts/14753707597).
+
+
+### Repository maintenance — 24 November 2026
+
+Chat `01a1fc13-09a0-7961-8c2d-388111230f3d` owns the StepSecurity PR and
+technical issue metadata for this batch in the standard Git worktree
+`/Volumes/PortableSSD/GitHub/gma-pr-1469-workflow-receipt` on
+`codex/stepsecurity-image-pins-20261124`. GitHub CI runs the existing Docker
+candidate build and the required protected checks before integration.
+
+- [x] Correct the archived track links in issue #54 and reconcile issue #61
+  with the free-only hosting route and 3 November accessibility decision.
+  GitHub confirms both external gates remain open.
+- [x] Reconcile the state of PR #1426 with its rollout prerequisites.
+  GitHub shows the PR as draft. The central reusable workflow, approved
+  runner and image, and scanner and agent qualification remain pending.
+- [x] Resolve the conflicting StepSecurity proposal against current main.
+  All three Docker base image pins match their official multi-platform
+  registry manifests. The scoped PR diff retains the existing workflow and
+  dependency configuration.
+
+
+### First post-reset source-health comparison — 24 November 2026
+
+- [x] Verify a live comparison against restored baseline run `44984005223`.
+  The maintainer-authorized [manual observation on main](https://github.com/edithatogo/global-medicines-atlas/actions/runs/45268547524)
+  used reset disabled. Eight fingerprints matched and one changed. The drift
+  gate failed the run and preserved the report.
+- [ ] Verify the first scheduled comparison after the reset. GitHub had
+  recorded no scheduled run after the reset when the manual run finished.
+
+The ANVISA medicines endpoint returned partial responses with media type
+`application/octet-stream` on both dates. The monitor hashes the first 4 KiB
+for that media type. The prefix changed, and the reported modification time
+advanced from 20 to 23 November. Whether the CSV schema changed remains open.
+
+The October Nova Scotia Pharmacare finding and comparison gap remain open.
+This observation recorded HTTP 200 for the provincial CSV and withheld a
+schema fingerprint after reaching the sample limit.
