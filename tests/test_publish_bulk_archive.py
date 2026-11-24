@@ -125,14 +125,24 @@ def test_october_hosted_download_checks_each_source_range(
     ranges_seen = []
     corrupt_range = False
 
+    class InterruptedStream(httpx.SyncByteStream):
+        def __iter__(self):
+            yield b"zz"
+            raise httpx.ReadError("interrupted range")
+
     def serve(request):
         requested = request.headers["Range"].removeprefix("bytes=")
         ranges_seen.append(requested)
         returned = "0-3" if corrupt_range and requested == "4-7" else requested
+        stream = (
+            InterruptedStream()
+            if requested == "4-7" and ranges_seen.count(requested) == 1
+            else httpx.ByteStream(parts[requested])
+        )
         return httpx.Response(
             206,
             headers={"Content-Range": f"bytes {returned}/{len(body)}"},
-            stream=httpx.ByteStream(parts[requested]),
+            stream=stream,
         )
 
     with httpx.Client(
@@ -141,7 +151,7 @@ def test_october_hosted_download_checks_each_source_range(
     ) as client:
         october.download_artifact(client, artifact, output)
         assert output.read_bytes() == body
-        assert ranges_seen == list(parts)
+        assert ranges_seen == ["0-3", "4-7", "4-7", "8-9"]
         corrupt_range = True
         with pytest.raises(ValueError, match="source range differs"):
             october.download_artifact(client, artifact, output)
