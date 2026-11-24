@@ -1,0 +1,378 @@
+[
+  {
+    "source_id": "eu-ema-medicines",
+    "expected_url": "https://www.ema.europa.eu/en/documents/report/medicines-output-medicines-report_en.xlsx",
+    "retention_authority_reference": "quality/source-batches/ema-tables-20261124/rights.json",
+    "reuse_decision": {
+      "source_id": "eu-ema-medicines",
+      "disposition": "acquire-new",
+      "searched_surfaces": [
+        "local_clones",
+        "github",
+        "hugging_face",
+        "source_registry"
+      ],
+      "candidates": [
+        {
+          "surface": "local_clones",
+          "locator": "quality/source-batches/ema-tables-20261030/verified.json",
+          "source_id": "eu-ema-medicines",
+          "kind": "related",
+          "digest": "159a4c86de848450e992fbdf6c454d914cea70fc2af17e0aa1e46edec8c0f6d6",
+          "revision": "0e30cd8e49fe8a108b5ea10e7c1fcf4deac0eed3"
+        },
+        {
+          "surface": "local_clones",
+          "locator": "tests/fixtures/native/eu/ema_medicines.csv",
+          "source_id": "eu-ema-medicines",
+          "kind": "related",
+          "digest": "5e0c9f7077f55f5f8bf675c8c84dee9e7dc9ad97816ed6237ce40f72f5053430",
+          "revision": "0e30cd8e49fe8a108b5ea10e7c1fcf4deac0eed3"
+        },
+        {
+          "surface": "github",
+          "locator": "https://github.com/edithatogo/global-medicines-atlas/blob/0e30cd8e49fe8a108b5ea10e7c1fcf4deac0eed3/quality/source-batches/ema-tables-20261030/verified.json",
+          "source_id": "eu-ema-medicines",
+          "kind": "related",
+          "digest": "159a4c86de848450e992fbdf6c454d914cea70fc2af17e0aa1e46edec8c0f6d6",
+          "revision": "0e30cd8e49fe8a108b5ea10e7c1fcf4deac0eed3"
+        },
+        {
+          "surface": "hugging_face",
+          "locator": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-tables-20261030/tree/cd49b21eb14e6549c563b56371bc320b25c58d41/eu-ema-medicines",
+          "source_id": "eu-ema-medicines",
+          "kind": "related",
+          "digest": "159a4c86de848450e992fbdf6c454d914cea70fc2af17e0aa1e46edec8c0f6d6",
+          "revision": "cd49b21eb14e6549c563b56371bc320b25c58d41"
+        },
+        {
+          "surface": "source_registry",
+          "locator": "https://www.ema.europa.eu/en/documents/report/medicines-output-medicines-report_en.xlsx",
+          "source_id": "eu-ema-medicines",
+          "kind": "registry"
+        }
+      ],
+      "rationale": "The dated official payload differs from the earlier published edition. The scoped searches found no identical archived copy.",
+      "discovery_snapshot": {
+        "snapshot_id": "sha256:e69c32acbf1eb8aa6f22b1924e760716c4c43df3e9c3cd6c5eff86e3cd4ddd1f",
+        "source_id": "eu-ema-medicines",
+        "generated_at": "2026-11-24T12:50:07.465922Z",
+        "freshness_seconds": 86400,
+        "expires_at": "2026-11-25T12:50:07.465922Z",
+        "tool_version": "dated-source-batch-publication/v1",
+        "surfaces": [
+          {
+            "name": "local_clones",
+            "state": "success",
+            "query": "Exact eu-ema-medicines edition at https://www.ema.europa.eu/en/documents/report/medicines-output-medicines-report_en.xlsx with SHA-256 943d605bc138b74fe254f8c32dc55948f7616e8f9e8fc5f7ab8fbbe02318c2d1",
+            "candidates": [
+              {
+                "surface": "local_clones",
+                "locator": "quality/source-batches/ema-tables-20261030/verified.json",
+                "source_id": "eu-ema-medicines",
+                "kind": "related",
+                "digest": "159a4c86de848450e992fbdf6c454d914cea70fc2af17e0aa1e46edec8c0f6d6",
+                "revision": "0e30cd8e49fe8a108b5ea10e7c1fcf4deac0eed3"
+              },
+              {
+                "surface": "local_clones",
+                "locator": "tests/fixtures/native/eu/ema_medicines.csv",
+                "source_id": "eu-ema-medicines",
+                "kind": "related",
+                "digest": "5e0c9f7077f55f5f8bf675c8c84dee9e7dc9ad97816ed6237ce40f72f5053430",
+                "revision": "0e30cd8e49fe8a108b5ea10e7c1fcf4deac0eed3"
+              }
+            ],
+            "detail": "Searched the checkout and tracked publication evidence for the exact edition. Related receipts or a fixture have different hashes."
+          },
+          {
+            "name": "github",
+            "state": "success",
+            "query": "Exact eu-ema-medicines edition at https://www.ema.europa.eu/en/documents/report/medicines-output-medicines-report_en.xlsx with SHA-256 943d605bc138b74fe254f8c32dc55948f7616e8f9e8fc5f7ab8fbbe02318c2d1",
+            "candidates": [
+              {
+                "surface": "github",
+                "locator": "https://github.com/edithatogo/global-medicines-atlas/blob/0e30cd8e49fe8a108b5ea10e7c1fcf4deac0eed3/quality/source-batches/ema-tables-20261030/verified.json",
+                "source_id": "eu-ema-medicines",
+                "kind": "related",
+                "digest": "159a4c86de848450e992fbdf6c454d914cea70fc2af17e0aa1e46edec8c0f6d6",
+                "revision": "0e30cd8e49fe8a108b5ea10e7c1fcf4deac0eed3"
+              }
+            ],
+            "detail": "Searched the complete GitHub main tree at the pinned commit. Matching source batch paths are earlier edition metadata."
+          },
+          {
+            "name": "hugging_face",
+            "state": "success",
+            "query": "Exact eu-ema-medicines edition at https://www.ema.europa.eu/en/documents/report/medicines-output-medicines-report_en.xlsx with SHA-256 943d605bc138b74fe254f8c32dc55948f7616e8f9e8fc5f7ab8fbbe02318c2d1",
+            "candidates": [
+              {
+                "surface": "hugging_face",
+                "locator": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-tables-20261030/tree/cd49b21eb14e6549c563b56371bc320b25c58d41/eu-ema-medicines",
+                "source_id": "eu-ema-medicines",
+                "kind": "related",
+                "digest": "159a4c86de848450e992fbdf6c454d914cea70fc2af17e0aa1e46edec8c0f6d6",
+                "revision": "cd49b21eb14e6549c563b56371bc320b25c58d41"
+              }
+            ],
+            "detail": "Searched the maintainer public catalogue and relevant CMS and EMA dataset inventories. The earlier archived payload has a different SHA-256."
+          },
+          {
+            "name": "source_registry",
+            "state": "success",
+            "query": "Exact eu-ema-medicines edition at https://www.ema.europa.eu/en/documents/report/medicines-output-medicines-report_en.xlsx with SHA-256 943d605bc138b74fe254f8c32dc55948f7616e8f9e8fc5f7ab8fbbe02318c2d1",
+            "candidates": [
+              {
+                "surface": "source_registry",
+                "locator": "https://www.ema.europa.eu/en/documents/report/medicines-output-medicines-report_en.xlsx",
+                "source_id": "eu-ema-medicines",
+                "kind": "registry"
+              }
+            ],
+            "detail": "Official source registry https://www.ema.europa.eu/en/medicines/download-medicine-data and exact hosted checksum observation https://github.com/edithatogo/global-medicines-atlas/actions/runs/45386463258"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "source_id": "eu-ema-referrals",
+    "expected_url": "https://www.ema.europa.eu/en/documents/report/medicines-output-referrals-report_en.xlsx",
+    "retention_authority_reference": "quality/source-batches/ema-tables-20261124/rights.json",
+    "reuse_decision": {
+      "source_id": "eu-ema-referrals",
+      "disposition": "acquire-new",
+      "searched_surfaces": [
+        "local_clones",
+        "github",
+        "hugging_face",
+        "source_registry"
+      ],
+      "candidates": [
+        {
+          "surface": "local_clones",
+          "locator": "quality/source-batches/ema-tables-20261030/verified.json",
+          "source_id": "eu-ema-referrals",
+          "kind": "related",
+          "digest": "29493767d251004fc7c39e317717a69c8e243e17b3de0cf0d0e32fd5e6ddad5a",
+          "revision": "0e30cd8e49fe8a108b5ea10e7c1fcf4deac0eed3"
+        },
+        {
+          "surface": "github",
+          "locator": "https://github.com/edithatogo/global-medicines-atlas/blob/0e30cd8e49fe8a108b5ea10e7c1fcf4deac0eed3/quality/source-batches/ema-tables-20261030/verified.json",
+          "source_id": "eu-ema-referrals",
+          "kind": "related",
+          "digest": "29493767d251004fc7c39e317717a69c8e243e17b3de0cf0d0e32fd5e6ddad5a",
+          "revision": "0e30cd8e49fe8a108b5ea10e7c1fcf4deac0eed3"
+        },
+        {
+          "surface": "hugging_face",
+          "locator": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-tables-20261030/tree/cd49b21eb14e6549c563b56371bc320b25c58d41/eu-ema-referrals",
+          "source_id": "eu-ema-referrals",
+          "kind": "related",
+          "digest": "29493767d251004fc7c39e317717a69c8e243e17b3de0cf0d0e32fd5e6ddad5a",
+          "revision": "cd49b21eb14e6549c563b56371bc320b25c58d41"
+        },
+        {
+          "surface": "source_registry",
+          "locator": "https://www.ema.europa.eu/en/documents/report/medicines-output-referrals-report_en.xlsx",
+          "source_id": "eu-ema-referrals",
+          "kind": "registry"
+        }
+      ],
+      "rationale": "The dated official payload differs from the earlier published edition. The scoped searches found no identical archived copy.",
+      "discovery_snapshot": {
+        "snapshot_id": "sha256:ebcb45cbf94d422d760f86b7065f58c745459b6fba792356451e796da5045311",
+        "source_id": "eu-ema-referrals",
+        "generated_at": "2026-11-24T12:50:07.465922Z",
+        "freshness_seconds": 86400,
+        "expires_at": "2026-11-25T12:50:07.465922Z",
+        "tool_version": "dated-source-batch-publication/v1",
+        "surfaces": [
+          {
+            "name": "local_clones",
+            "state": "success",
+            "query": "Exact eu-ema-referrals edition at https://www.ema.europa.eu/en/documents/report/medicines-output-referrals-report_en.xlsx with SHA-256 a70f92d4021259b3e2f0112caefab723a080a4f84160c55245e9a69def85f5b8",
+            "candidates": [
+              {
+                "surface": "local_clones",
+                "locator": "quality/source-batches/ema-tables-20261030/verified.json",
+                "source_id": "eu-ema-referrals",
+                "kind": "related",
+                "digest": "29493767d251004fc7c39e317717a69c8e243e17b3de0cf0d0e32fd5e6ddad5a",
+                "revision": "0e30cd8e49fe8a108b5ea10e7c1fcf4deac0eed3"
+              }
+            ],
+            "detail": "Searched the checkout and tracked publication evidence for the exact edition. Related receipts or a fixture have different hashes."
+          },
+          {
+            "name": "github",
+            "state": "success",
+            "query": "Exact eu-ema-referrals edition at https://www.ema.europa.eu/en/documents/report/medicines-output-referrals-report_en.xlsx with SHA-256 a70f92d4021259b3e2f0112caefab723a080a4f84160c55245e9a69def85f5b8",
+            "candidates": [
+              {
+                "surface": "github",
+                "locator": "https://github.com/edithatogo/global-medicines-atlas/blob/0e30cd8e49fe8a108b5ea10e7c1fcf4deac0eed3/quality/source-batches/ema-tables-20261030/verified.json",
+                "source_id": "eu-ema-referrals",
+                "kind": "related",
+                "digest": "29493767d251004fc7c39e317717a69c8e243e17b3de0cf0d0e32fd5e6ddad5a",
+                "revision": "0e30cd8e49fe8a108b5ea10e7c1fcf4deac0eed3"
+              }
+            ],
+            "detail": "Searched the complete GitHub main tree at the pinned commit. Matching source batch paths are earlier edition metadata."
+          },
+          {
+            "name": "hugging_face",
+            "state": "success",
+            "query": "Exact eu-ema-referrals edition at https://www.ema.europa.eu/en/documents/report/medicines-output-referrals-report_en.xlsx with SHA-256 a70f92d4021259b3e2f0112caefab723a080a4f84160c55245e9a69def85f5b8",
+            "candidates": [
+              {
+                "surface": "hugging_face",
+                "locator": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-tables-20261030/tree/cd49b21eb14e6549c563b56371bc320b25c58d41/eu-ema-referrals",
+                "source_id": "eu-ema-referrals",
+                "kind": "related",
+                "digest": "29493767d251004fc7c39e317717a69c8e243e17b3de0cf0d0e32fd5e6ddad5a",
+                "revision": "cd49b21eb14e6549c563b56371bc320b25c58d41"
+              }
+            ],
+            "detail": "Searched the maintainer public catalogue and relevant CMS and EMA dataset inventories. The earlier archived payload has a different SHA-256."
+          },
+          {
+            "name": "source_registry",
+            "state": "success",
+            "query": "Exact eu-ema-referrals edition at https://www.ema.europa.eu/en/documents/report/medicines-output-referrals-report_en.xlsx with SHA-256 a70f92d4021259b3e2f0112caefab723a080a4f84160c55245e9a69def85f5b8",
+            "candidates": [
+              {
+                "surface": "source_registry",
+                "locator": "https://www.ema.europa.eu/en/documents/report/medicines-output-referrals-report_en.xlsx",
+                "source_id": "eu-ema-referrals",
+                "kind": "registry"
+              }
+            ],
+            "detail": "Official source registry https://www.ema.europa.eu/en/medicines/download-medicine-data and exact hosted checksum observation https://github.com/edithatogo/global-medicines-atlas/actions/runs/45386463258"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "source_id": "eu-ema-orphan",
+    "expected_url": "https://www.ema.europa.eu/en/documents/report/medicines-output-orphan_designations-report_en.xlsx",
+    "retention_authority_reference": "quality/source-batches/ema-tables-20261124/rights.json",
+    "reuse_decision": {
+      "source_id": "eu-ema-orphan",
+      "disposition": "acquire-new",
+      "searched_surfaces": [
+        "local_clones",
+        "github",
+        "hugging_face",
+        "source_registry"
+      ],
+      "candidates": [
+        {
+          "surface": "local_clones",
+          "locator": "quality/source-batches/ema-tables-20261030/verified.json",
+          "source_id": "eu-ema-orphan",
+          "kind": "related",
+          "digest": "d6ba7b81647de83364596ca8c0c107acf19071396219e16a987d0f4aa62a6235",
+          "revision": "0e30cd8e49fe8a108b5ea10e7c1fcf4deac0eed3"
+        },
+        {
+          "surface": "github",
+          "locator": "https://github.com/edithatogo/global-medicines-atlas/blob/0e30cd8e49fe8a108b5ea10e7c1fcf4deac0eed3/quality/source-batches/ema-tables-20261030/verified.json",
+          "source_id": "eu-ema-orphan",
+          "kind": "related",
+          "digest": "d6ba7b81647de83364596ca8c0c107acf19071396219e16a987d0f4aa62a6235",
+          "revision": "0e30cd8e49fe8a108b5ea10e7c1fcf4deac0eed3"
+        },
+        {
+          "surface": "hugging_face",
+          "locator": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-tables-20261030/tree/cd49b21eb14e6549c563b56371bc320b25c58d41/eu-ema-orphan",
+          "source_id": "eu-ema-orphan",
+          "kind": "related",
+          "digest": "d6ba7b81647de83364596ca8c0c107acf19071396219e16a987d0f4aa62a6235",
+          "revision": "cd49b21eb14e6549c563b56371bc320b25c58d41"
+        },
+        {
+          "surface": "source_registry",
+          "locator": "https://www.ema.europa.eu/en/documents/report/medicines-output-orphan_designations-report_en.xlsx",
+          "source_id": "eu-ema-orphan",
+          "kind": "registry"
+        }
+      ],
+      "rationale": "The dated official payload differs from the earlier published edition. The scoped searches found no identical archived copy.",
+      "discovery_snapshot": {
+        "snapshot_id": "sha256:4b2a5f38e3ed0de4ab05c8f2ae859734117ea0d6ab0dbb9e9ee34a1ae3235b73",
+        "source_id": "eu-ema-orphan",
+        "generated_at": "2026-11-24T12:50:07.465922Z",
+        "freshness_seconds": 86400,
+        "expires_at": "2026-11-25T12:50:07.465922Z",
+        "tool_version": "dated-source-batch-publication/v1",
+        "surfaces": [
+          {
+            "name": "local_clones",
+            "state": "success",
+            "query": "Exact eu-ema-orphan edition at https://www.ema.europa.eu/en/documents/report/medicines-output-orphan_designations-report_en.xlsx with SHA-256 a6a2cfb886364d37e7a0aecf60ee9b41645cbbd28a0e4c6a83b4ceebdac89bd4",
+            "candidates": [
+              {
+                "surface": "local_clones",
+                "locator": "quality/source-batches/ema-tables-20261030/verified.json",
+                "source_id": "eu-ema-orphan",
+                "kind": "related",
+                "digest": "d6ba7b81647de83364596ca8c0c107acf19071396219e16a987d0f4aa62a6235",
+                "revision": "0e30cd8e49fe8a108b5ea10e7c1fcf4deac0eed3"
+              }
+            ],
+            "detail": "Searched the checkout and tracked publication evidence for the exact edition. Related receipts or a fixture have different hashes."
+          },
+          {
+            "name": "github",
+            "state": "success",
+            "query": "Exact eu-ema-orphan edition at https://www.ema.europa.eu/en/documents/report/medicines-output-orphan_designations-report_en.xlsx with SHA-256 a6a2cfb886364d37e7a0aecf60ee9b41645cbbd28a0e4c6a83b4ceebdac89bd4",
+            "candidates": [
+              {
+                "surface": "github",
+                "locator": "https://github.com/edithatogo/global-medicines-atlas/blob/0e30cd8e49fe8a108b5ea10e7c1fcf4deac0eed3/quality/source-batches/ema-tables-20261030/verified.json",
+                "source_id": "eu-ema-orphan",
+                "kind": "related",
+                "digest": "d6ba7b81647de83364596ca8c0c107acf19071396219e16a987d0f4aa62a6235",
+                "revision": "0e30cd8e49fe8a108b5ea10e7c1fcf4deac0eed3"
+              }
+            ],
+            "detail": "Searched the complete GitHub main tree at the pinned commit. Matching source batch paths are earlier edition metadata."
+          },
+          {
+            "name": "hugging_face",
+            "state": "success",
+            "query": "Exact eu-ema-orphan edition at https://www.ema.europa.eu/en/documents/report/medicines-output-orphan_designations-report_en.xlsx with SHA-256 a6a2cfb886364d37e7a0aecf60ee9b41645cbbd28a0e4c6a83b4ceebdac89bd4",
+            "candidates": [
+              {
+                "surface": "hugging_face",
+                "locator": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-ema-tables-20261030/tree/cd49b21eb14e6549c563b56371bc320b25c58d41/eu-ema-orphan",
+                "source_id": "eu-ema-orphan",
+                "kind": "related",
+                "digest": "d6ba7b81647de83364596ca8c0c107acf19071396219e16a987d0f4aa62a6235",
+                "revision": "cd49b21eb14e6549c563b56371bc320b25c58d41"
+              }
+            ],
+            "detail": "Searched the maintainer public catalogue and relevant CMS and EMA dataset inventories. The earlier archived payload has a different SHA-256."
+          },
+          {
+            "name": "source_registry",
+            "state": "success",
+            "query": "Exact eu-ema-orphan edition at https://www.ema.europa.eu/en/documents/report/medicines-output-orphan_designations-report_en.xlsx with SHA-256 a6a2cfb886364d37e7a0aecf60ee9b41645cbbd28a0e4c6a83b4ceebdac89bd4",
+            "candidates": [
+              {
+                "surface": "source_registry",
+                "locator": "https://www.ema.europa.eu/en/documents/report/medicines-output-orphan_designations-report_en.xlsx",
+                "source_id": "eu-ema-orphan",
+                "kind": "registry"
+              }
+            ],
+            "detail": "Official source registry https://www.ema.europa.eu/en/medicines/download-medicine-data and exact hosted checksum observation https://github.com/edithatogo/global-medicines-atlas/actions/runs/45386463258"
+          }
+        ]
+      }
+    }
+  }
+]

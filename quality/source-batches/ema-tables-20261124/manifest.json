@@ -1,0 +1,26 @@
+{
+  "batch_id": "ema-tables-20261124",
+  "repository": "edithatogo/global-medicines-atlas-ema-tables-20261124",
+  "publication_approved": true,
+  "approval_reference": "Maintainer directed publication of EMA medicines, referrals and orphan designation workbooks, 24 November 2026 on 24 November 2026 using GitHub-hosted Actions.",
+  "source_verification": {
+    "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/45386463258",
+    "artifact_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/45386463258/artifacts/14916267279",
+    "observed_at": "2026-11-24T11:41:41.713378+00:00",
+    "evidence_sha256": "383e8ec25cf1078ea0f1c3c4af62b7789643404a0854f312fd787b1eba31f00c"
+  },
+  "expected_payloads": {
+    "eu-ema-medicines": {
+      "sha256": "943d605bc138b74fe254f8c32dc55948f7616e8f9e8fc5f7ab8fbbe02318c2d1",
+      "byte_count": 907869
+    },
+    "eu-ema-referrals": {
+      "sha256": "a70f92d4021259b3e2f0112caefab723a080a4f84160c55245e9a69def85f5b8",
+      "byte_count": 158833
+    },
+    "eu-ema-orphan": {
+      "sha256": "a6a2cfb886364d37e7a0aecf60ee9b41645cbbd28a0e4c6a83b4ceebdac89bd4",
+      "byte_count": 352812
+    }
+  }
+}

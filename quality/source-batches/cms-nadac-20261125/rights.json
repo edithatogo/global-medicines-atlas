@@ -1,0 +1,12 @@
+{
+  "issuer": "Centers for Medicare & Medicaid Services",
+  "licence": "CMS public domain label",
+  "terms": "https://www.usa.gov/publicdomain/label/1.0/",
+  "source_registry": "https://data.medicaid.gov/api/1/metastore/schemas/dataset/items/fbb83258-11c7-47f5-8b18-5f8e79f7e704",
+  "attribution": "Source: Centers for Medicare & Medicaid Services",
+  "scope": "The named unmodified official source files and their acquisition receipts.",
+  "sources": {
+    "us-cms-nadac": "https://download.medicaid.gov/data/nadac-national-average-drug-acquisition-cost-11-25-2026.csv"
+  },
+  "authority": "Maintainer directed publication of CMS NADAC 25 November 2026 on 24 November 2026 using GitHub-hosted Actions."
+}

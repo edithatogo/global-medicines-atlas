@@ -1,0 +1,123 @@
+[
+  {
+    "source_id": "us-cms-nadac",
+    "expected_url": "https://download.medicaid.gov/data/nadac-national-average-drug-acquisition-cost-11-25-2026.csv",
+    "retention_authority_reference": "quality/source-batches/cms-nadac-20261125/rights.json",
+    "reuse_decision": {
+      "source_id": "us-cms-nadac",
+      "disposition": "acquire-new",
+      "searched_surfaces": [
+        "local_clones",
+        "github",
+        "hugging_face",
+        "source_registry"
+      ],
+      "candidates": [
+        {
+          "surface": "local_clones",
+          "locator": "quality/source-batches/cms-medicaid-20261030/verified.json",
+          "source_id": "us-cms-nadac",
+          "kind": "related",
+          "digest": "252ec94cae41bfbfa30ad5523aeb352cbf84e35e0720bf631e1ef95d1edca2e9",
+          "revision": "0e30cd8e49fe8a108b5ea10e7c1fcf4deac0eed3"
+        },
+        {
+          "surface": "github",
+          "locator": "https://github.com/edithatogo/global-medicines-atlas/blob/0e30cd8e49fe8a108b5ea10e7c1fcf4deac0eed3/quality/source-batches/cms-medicaid-20261030/verified.json",
+          "source_id": "us-cms-nadac",
+          "kind": "related",
+          "digest": "252ec94cae41bfbfa30ad5523aeb352cbf84e35e0720bf631e1ef95d1edca2e9",
+          "revision": "0e30cd8e49fe8a108b5ea10e7c1fcf4deac0eed3"
+        },
+        {
+          "surface": "hugging_face",
+          "locator": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-cms-medicaid-20261030/tree/16e3c22b082e05c2435d5b49bfb3331e700925b9/us-cms-nadac",
+          "source_id": "us-cms-nadac",
+          "kind": "related",
+          "digest": "252ec94cae41bfbfa30ad5523aeb352cbf84e35e0720bf631e1ef95d1edca2e9",
+          "revision": "16e3c22b082e05c2435d5b49bfb3331e700925b9"
+        },
+        {
+          "surface": "source_registry",
+          "locator": "https://download.medicaid.gov/data/nadac-national-average-drug-acquisition-cost-11-25-2026.csv",
+          "source_id": "us-cms-nadac",
+          "kind": "registry"
+        }
+      ],
+      "rationale": "The dated official payload differs from the earlier published edition. The scoped searches found no identical archived copy.",
+      "discovery_snapshot": {
+        "snapshot_id": "sha256:6ce1a79be68d097df10afe0f15ab24a507e6ca54ae2ced69095964069bb074a8",
+        "source_id": "us-cms-nadac",
+        "generated_at": "2026-11-24T12:50:07.465922Z",
+        "freshness_seconds": 86400,
+        "expires_at": "2026-11-25T12:50:07.465922Z",
+        "tool_version": "dated-source-batch-publication/v1",
+        "surfaces": [
+          {
+            "name": "local_clones",
+            "state": "success",
+            "query": "Exact us-cms-nadac edition at https://download.medicaid.gov/data/nadac-national-average-drug-acquisition-cost-11-25-2026.csv with SHA-256 72935b1eabee841e0797feebcf5079a1b7a6275653d188818b6b85b2ee01fa1d",
+            "candidates": [
+              {
+                "surface": "local_clones",
+                "locator": "quality/source-batches/cms-medicaid-20261030/verified.json",
+                "source_id": "us-cms-nadac",
+                "kind": "related",
+                "digest": "252ec94cae41bfbfa30ad5523aeb352cbf84e35e0720bf631e1ef95d1edca2e9",
+                "revision": "0e30cd8e49fe8a108b5ea10e7c1fcf4deac0eed3"
+              }
+            ],
+            "detail": "Searched the checkout and tracked publication evidence for the exact edition. Related receipts or a fixture have different hashes."
+          },
+          {
+            "name": "github",
+            "state": "success",
+            "query": "Exact us-cms-nadac edition at https://download.medicaid.gov/data/nadac-national-average-drug-acquisition-cost-11-25-2026.csv with SHA-256 72935b1eabee841e0797feebcf5079a1b7a6275653d188818b6b85b2ee01fa1d",
+            "candidates": [
+              {
+                "surface": "github",
+                "locator": "https://github.com/edithatogo/global-medicines-atlas/blob/0e30cd8e49fe8a108b5ea10e7c1fcf4deac0eed3/quality/source-batches/cms-medicaid-20261030/verified.json",
+                "source_id": "us-cms-nadac",
+                "kind": "related",
+                "digest": "252ec94cae41bfbfa30ad5523aeb352cbf84e35e0720bf631e1ef95d1edca2e9",
+                "revision": "0e30cd8e49fe8a108b5ea10e7c1fcf4deac0eed3"
+              }
+            ],
+            "detail": "Searched the complete GitHub main tree at the pinned commit. Matching source batch paths are earlier edition metadata."
+          },
+          {
+            "name": "hugging_face",
+            "state": "success",
+            "query": "Exact us-cms-nadac edition at https://download.medicaid.gov/data/nadac-national-average-drug-acquisition-cost-11-25-2026.csv with SHA-256 72935b1eabee841e0797feebcf5079a1b7a6275653d188818b6b85b2ee01fa1d",
+            "candidates": [
+              {
+                "surface": "hugging_face",
+                "locator": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-cms-medicaid-20261030/tree/16e3c22b082e05c2435d5b49bfb3331e700925b9/us-cms-nadac",
+                "source_id": "us-cms-nadac",
+                "kind": "related",
+                "digest": "252ec94cae41bfbfa30ad5523aeb352cbf84e35e0720bf631e1ef95d1edca2e9",
+                "revision": "16e3c22b082e05c2435d5b49bfb3331e700925b9"
+              }
+            ],
+            "detail": "Searched the maintainer public catalogue and relevant CMS and EMA dataset inventories. The earlier archived payload has a different SHA-256."
+          },
+          {
+            "name": "source_registry",
+            "state": "success",
+            "query": "Exact us-cms-nadac edition at https://download.medicaid.gov/data/nadac-national-average-drug-acquisition-cost-11-25-2026.csv with SHA-256 72935b1eabee841e0797feebcf5079a1b7a6275653d188818b6b85b2ee01fa1d",
+            "candidates": [
+              {
+                "surface": "source_registry",
+                "locator": "https://download.medicaid.gov/data/nadac-national-average-drug-acquisition-cost-11-25-2026.csv",
+                "source_id": "us-cms-nadac",
+                "kind": "registry"
+              }
+            ],
+            "detail": "Official source registry https://data.medicaid.gov/api/1/metastore/schemas/dataset/items/fbb83258-11c7-47f5-8b18-5f8e79f7e704 and exact hosted checksum observation https://github.com/edithatogo/global-medicines-atlas/actions/runs/45396910741"
+          }
+        ]
+      }
+    },
+    "max_bytes": 536870912
+  }
+]
