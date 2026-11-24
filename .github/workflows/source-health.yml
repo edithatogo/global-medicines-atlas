@@ -1,195 +1,82 @@
-name: Source health and schema drift
+name: Capture approved NADAC and EMA checksums
 
 on:
-  schedule:
-    - cron: "23 16 * * 1" # Weekly source-health observation.
-    - cron: "41 16 1 * *" # Monthly schema-drift observation.
   workflow_dispatch:
-    inputs:
-      reset_missing_baseline:
-        description: Start a new baseline when the last successful artifact is unavailable
-        type: boolean
-        default: false
-
-# Historical uv builds use the patched, content-bound custom CA store.
-env:
-  SSL_CERT_FILE: ${{ github.workspace }}/.ci/trust/cacert.pem
 
 permissions:
-  actions: read # Required to retrieve the prior fingerprint artifact.
-  contents: read # Required by actions/checkout.
-
-concurrency:
-  group: source-health-${{ github.ref }}
-  cancel-in-progress: true
+  contents: read
 
 jobs:
-  observe:
-    name: Bounded source observation
+  capture:
+    name: Hash the four official source files
+    if: github.ref == 'refs/heads/codex/hosted-nadac-ema-checksums-20261124'
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
           version: "0.13.6"
           enable-cache: true
-      - run: uv sync --python 3.15.1 --locked
-      - name: Retrieve previous metadata baseline
-        id: baseline
-        env:
-          GH_TOKEN: ${{ github.token }}
-          RESET_MISSING_BASELINE: ${{ inputs.reset_missing_baseline }}
-        shell: bash
+      - name: Capture only the source digests and sizes
         run: |
-          set -euo pipefail
-          mkdir -p build/previous
-          previous_run_id="$(
-            gh api \
-              "repos/${GITHUB_REPOSITORY}/actions/workflows/source-health.yml/runs?branch=main&status=success&per_page=1" \
-              --jq '.workflow_runs[0].id // ""'
-          )"
-          if [[ -z "${previous_run_id}" ]]; then
-            {
-              echo "path="
-              echo "provenance="
-              echo "run_id="
-              echo "commit="
-            } >> "${GITHUB_OUTPUT}"
-            echo "No previous metadata baseline is available."
-            exit 0
-          fi
-          previous_commit="$(
-            gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${previous_run_id}" \
-              --jq '.head_sha'
-          )"
-          artifact_url="$(
-            gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${previous_run_id}/artifacts" \
-              --jq '[.artifacts[] | select(.name == "source-health-baseline" and .expired == false)] | .[0].archive_download_url // ""'
-          )"
-          if [[ -z "${artifact_url}" ]]; then
-            if [[ "$GITHUB_EVENT_NAME" != workflow_dispatch ||
-                  "$GITHUB_REF" != refs/heads/main ||
-                  "$RESET_MISSING_BASELINE" != true ]]; then
-              echo "::error::The baseline artifact from successful run ${previous_run_id} is unavailable. Recover it or explicitly authorize a reset on main."
-              exit 1
-            fi
-            echo "::warning::Resetting the missing baseline from run ${previous_run_id}. This observation cannot compare schemas across the gap."
-            {
-              echo "reset_from_run=${previous_run_id}"
-              echo "reset_from_commit=${previous_commit}"
-            } >> "${GITHUB_OUTPUT}"
-            exit 0
-          fi
-          gh api "${artifact_url}" > build/previous/baseline.zip
-          unzip -q build/previous/baseline.zip -d build/previous
-          test -f build/previous/source-health.json
-          test -f build/previous/source-health-provenance.json
-          {
-            echo "path=build/previous/source-health.json"
-            echo "provenance=build/previous/source-health-provenance.json"
-            echo "run_id=${previous_run_id}"
-            echo "commit=${previous_commit}"
-          } >> "${GITHUB_OUTPUT}"
-      - name: Run bounded metadata-only probes
-        id: probe
-        continue-on-error: true
-        env:
-          BASELINE_PATH: ${{ steps.baseline.outputs.path }}
-          BASELINE_PROVENANCE: ${{ steps.baseline.outputs.provenance }}
-          BASELINE_RUN_ID: ${{ steps.baseline.outputs.run_id }}
-          BASELINE_COMMIT: ${{ steps.baseline.outputs.commit }}
-        shell: bash
-        run: |
-          baseline_args=()
-          if [[ -n "${BASELINE_PATH}" ]]; then
-            baseline_args=(
-              --baseline "${BASELINE_PATH}"
-              --baseline-provenance "${BASELINE_PROVENANCE}"
-              --baseline-run-id "${BASELINE_RUN_ID}"
-              --baseline-commit "${BASELINE_COMMIT}"
-            )
-          fi
-          uv run --python 3.15.1 python scripts/check_source_health.py \
-            "${baseline_args[@]}" \
-            --repository "$GITHUB_REPOSITORY" \
-            --workflow ".github/workflows/source-health.yml" \
-            --branch "$GITHUB_REF_NAME" \
-            --conclusion success \
-            --run-id "$GITHUB_RUN_ID" \
-            --commit "$GITHUB_SHA" \
-            --observation-id "$GITHUB_RUN_ID"
-      - name: Summarize source fingerprints
-        if: always() && hashFiles('build/source-health.json') != ''
-        env:
-          RESET_FROM_RUN: ${{ steps.baseline.outputs.reset_from_run }}
-          RESET_FROM_COMMIT: ${{ steps.baseline.outputs.reset_from_commit }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [[ -n "$RESET_FROM_RUN" ]]; then
-            if ! jq -e '.baseline | length > 0' build/source-health.json > /dev/null; then
-              echo "::error::Cannot reset the baseline without a comparable source fingerprint."
-              exit 1
-            fi
-            jq -n --argjson previous_run "$RESET_FROM_RUN" --arg previous_commit "$RESET_FROM_COMMIT" \
-              --argjson reset_run "$GITHUB_RUN_ID" --arg reset_commit "$GITHUB_SHA" \
-              '{missing_baseline: {run_id: $previous_run, commit: $previous_commit},
-                reset: {run_id: $reset_run, commit: $reset_commit}, comparison_gap: true}' \
-              > build/source-health-baseline-reset.json
-          fi
-          {
-            echo "## Source health and fingerprint comparison"
-            echo
-            if [[ -n "$RESET_FROM_RUN" ]]; then
-              echo "Baseline reset after artifact loss from run ${RESET_FROM_RUN}."
-              echo "This observation establishes a new comparison point. Drift during the gap remains unassessed."
-              echo
-            fi
-            echo '```json'
-            jq '.summary' build/source-health.json
-            echo '```'
-          } >> "${GITHUB_STEP_SUMMARY}"
-      - name: Upload durable metadata baseline
-        if: always() && hashFiles('build/source-health.json') != ''
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+          test "$RUNNER_ENVIRONMENT" = github-hosted
+          uv run --locked --python 3.15.1 python - <<'PY'
+          import csv
+          import hashlib
+          import json
+          import os
+          import platform
+          from datetime import UTC, datetime
+          from pathlib import Path
+          import httpx
+          from scripts.check_archive_status import ema_status, nadac_status, response_chunks
+          from global_medicines_atlas.acquisition import AcquisitionPolicy, BoundIPAddressTransport
+
+          nadac_url = "https://download.medicaid.gov/data/nadac-national-average-drug-acquisition-cost-11-25-2026.csv"
+          allowed_hosts = ("data.medicaid.gov", "download.medicaid.gov", "www.ema.europa.eu")
+          policy = AcquisitionPolicy(allowed_hosts=allowed_hosts, max_redirects=0)
+          checksum = hashlib.sha256()
+          size = 0
+          with httpx.Client(transport=BoundIPAddressTransport(policy=policy), timeout=45, trust_env=False) as client:
+              nadac = nadac_status(client)
+              if nadac["source_url"] != nadac_url:
+                  raise ValueError("CMS metadata does not identify the approved November 25 CSV")
+              for chunk in response_chunks(client, nadac_url, 512 * 1024**2):
+                  if size == 0:
+                      header = next(csv.reader([chunk.split(b"\n", 1)[0].decode("utf-8-sig")]))
+                      if not {"ndc", "nadac per unit"} <= {value.strip().lower() for value in header}:
+                          raise ValueError("CMS did not return the expected NADAC CSV header")
+                  checksum.update(chunk)
+                  size += len(chunk)
+              if size == 0:
+                  raise ValueError("CMS returned an empty CSV")
+              ema = ema_status(client)
+              if len(ema) != 3 or any(row["state"] != "candidate" for row in ema.values()):
+                  raise ValueError("The three EMA workbook candidates could not be confirmed")
+
+          evidence = {
+              "observed_at": datetime.now(UTC).isoformat(),
+              "run_id": os.environ["GITHUB_RUN_ID"],
+              "commit": os.environ["GITHUB_SHA"],
+              "python": platform.python_version(),
+              "runner_environment": os.environ["RUNNER_ENVIRONMENT"],
+              "sources": {
+                  "us-cms-nadac": {
+                      "source_url": nadac_url,
+                      "size": size,
+                      "sha256": checksum.hexdigest(),
+                  },
+                  **ema,
+              },
+          }
+          Path("source-checksums.json").write_text(json.dumps(evidence, indent=2) + "\n", encoding="utf-8")
+          PY
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
-          name: source-health-baseline
-          path: |
-            build/source-health.json
-            build/source-health-provenance.json
-            build/source-health-baseline-reset.json
-          if-no-files-found: error
-          retention-days: 90
-          overwrite: true
-      - name: Escalate source-health probe failure
-        if: steps.probe.outcome == 'failure'
-        run: |
-          echo "::error title=Source health check failed::Review the metadata-only report for fingerprint changes. For opaque responses the monitor compares up to the first 4 KiB of the sample."
-          exit 1
-  archive-status:
-    name: Public archive status
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 12
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-        with:
-          persist-credentials: false
-      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
-        with:
-          version: "0.13.6"
-          enable-cache: true
-      - name: Check source editions and pinned archive inventories
-        run: uv run --locked --python 3.15.1 python -m scripts.check_archive_status --output build/archive-status.json
-      - name: Retain archive status
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
-        with:
-          name: archive-status
-          path: build/archive-status.json
+          name: source-checksums
+          path: source-checksums.json
           if-no-files-found: error
           retention-days: 90
