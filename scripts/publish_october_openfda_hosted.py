@@ -316,7 +316,7 @@ def publish(output: Path, exact_commit: str) -> None:
             headers={"Accept-Encoding": "identity"},
             follow_redirects=False,
             trust_env=False,
-            limits=httpx.Limits(max_connections=1, max_keepalive_connections=0),
+            limits=httpx.Limits(max_connections=1, max_keepalive_connections=1),
             timeout=90,
         ) as client,
         TemporaryDirectory(prefix="openfda-october-manifest-") as scratch,

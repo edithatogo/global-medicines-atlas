@@ -1600,8 +1600,10 @@ candidate build and the required protected checks before integration.
   The maintainer-authorized [manual observation on main](https://github.com/edithatogo/global-medicines-atlas/actions/runs/45268547524)
   used reset disabled. Eight fingerprints matched and one changed. The drift
   gate failed the run and preserved the report.
-- [ ] Verify the first scheduled comparison after the reset. GitHub had
-  recorded no scheduled run after the reset when the manual run finished.
+- [x] Verify the first scheduled comparison after the reset. The
+  [scheduled run](https://github.com/edithatogo/global-medicines-atlas/actions/runs/45316071883)
+  used the restored baseline, matched eight fingerprints, and failed at
+  the drift gate for the ANVISA byte-prefix change.
 
 The ANVISA medicines endpoint returned partial responses with media type
 `application/octet-stream` on both dates. The monitor hashes the first 4 KiB
@@ -1626,3 +1628,10 @@ owns publication and anonymous verification of the frozen inventory.
 - [~] Read one 1 MiB range at a time and save checkpoints of at most four
   files. Verify that the hosted runner can advance the pinned public tree.
   Completion requires anonymous byte verification of the entire inventory.
+
+The serial retry read the first 1 MiB, then timed out opening a new
+connection for the next range. The same chat owns the follow-up in this
+worktree on `codex/october-relay-connection-reuse-20261124`. The
+served partition passed all five range and SHA-256 checks both locally
+and through Tailscale Serve. One idle connection reduced the number of
+connections for those reads from five to one.
