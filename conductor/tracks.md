@@ -46,21 +46,21 @@ and [Renovate dashboard #491](https://github.com/edithatogo/global-medicines-atl
 The six closed issues outside track metadata are accounted for in the
 [maintenance reconciliation](../docs/qualification/estate-cleanup-issue-reconciliation-20261102.md)
 and [source-rights decision](./decisions/0008-source-derived-dataset-licensing-batch.md).
-Issue #54 retains the adapter and temporal evidence paths from before archival.
-The current paths are in the registry below. Issue #61 retains an earlier
-accessibility requirement in its historical description. Its current scope is
-recorded in the
+Issue #54 links to the archived adapter and temporal evidence tracks. Issue
+#61 tracks deployment and live data with accessibility testing excluded. Its
+scope is recorded in the
 [external gate register](./decisions/0006-external-gate-decision-register.md#d-006-05--production-deployment-and-accessibility).
 
 The 20 November openFDA snapshot is public at
 `d57769fdc1b17f42e57183fbbbbefc917facd608`. The hosted checksum receipt covers
-2,379 payload ZIPs and four companion files; device UDI is outside that approved
-snapshot. The November and October openFDA publishers run on manual dispatch
-for their frozen manifests. The October tree at `7c4ccd820d94066355364fe0384070b74df1975f`
-listed 1,662 of the 2,396 expected ZIP paths while publication was still in
-progress. Its full-file verification receipt remains pending. [November verification](https://github.com/edithatogo/global-medicines-atlas/actions/runs/45098999576)
-· [October tree](https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/tree/7c4ccd820d94066355364fe0384070b74df1975f)
-· [October workflow](https://github.com/edithatogo/global-medicines-atlas/actions/workflows/publish-october-openfda-hosted.yml)
+2,379 payload ZIPs and four companion files. The approved snapshot excluded
+device UDI. The November and October openFDA publishers run on manual dispatch
+for their frozen manifests. The [hosted October recovery](https://github.com/edithatogo/global-medicines-atlas/actions/runs/45348112303)
+added 65 ZIPs and verified their SHA-256 anonymously. The public October
+revision contains 2,046 of 2,396 ZIPs. Whole-archive verification requires
+the remaining 350 original ZIPs and 420 receipt and metadata files.
+[November verification](https://github.com/edithatogo/global-medicines-atlas/actions/runs/45098999576)
+· [October tree](https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/tree/f0d60240cb55fa591ad6cf15540a0c2ce0a2eab8)
 
 The Australian MBS release, schedule harvest, and utilisation harvest, and the
 PBS utilisation harvest declare monthly triggers. GitHub reports all four
@@ -72,10 +72,9 @@ The Renovate configuration migration merged after all 28 required checks
 passed. The tested tree matches the merge at `d91d195f`.
 [Renovate PR #1470](https://github.com/edithatogo/global-medicines-atlas/pull/1470)
 
-The StepSecurity proposal conflicts with main and failed the full-SHA action
-policy. Its new Dependabot configuration overlaps with the existing Renovate
-scope. The offline security caller still depends on the central rollout and
-qualified runner and image. [StepSecurity PR #1468](https://github.com/edithatogo/global-medicines-atlas/pull/1468)
+The StepSecurity PR merged with scoped base image pins at `5be9ec38`. The
+offline security draft still depends on the central rollout and qualified
+runner and image. [StepSecurity PR #1468](https://github.com/edithatogo/global-medicines-atlas/pull/1468)
 · [Offline security PR #1426](https://github.com/edithatogo/global-medicines-atlas/pull/1426)
 
 ## Current Australian federation readback (2026-11-16)
