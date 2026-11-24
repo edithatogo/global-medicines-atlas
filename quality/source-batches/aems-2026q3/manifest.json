@@ -1,0 +1,29 @@
+{
+  "batch_id": "aems-2026q3",
+  "repository": "edithatogo/global-medicines-atlas-aems-2026q3",
+  "publication_approved": true,
+  "approval_reference": "Maintainer direction to proceed with the FDA AEMS 2026-Q3 ASCII quarterly archival recommendation, 24 November 2026.",
+  "pretty_name": "Global Medicines Atlas AEMS 2026 Q3 ASCII archive",
+  "description": "FDA's source-native July–September 2026 adverse-event quarterly ASCII ZIP, issued on 28 October 2026. This is a dated addition to the earlier FAERS quarterly corpus.",
+  "source_authority": "U.S. Food and Drug Administration, FDA Adverse Event Monitoring System",
+  "source_url": "https://fis.fda.gov/content/Exports/faers_ascii_2026q3.zip",
+  "source_index": "https://fis.fda.gov/extensions/fpd-qde-faers/fpd-qde-faers.html",
+  "source_release_date": "2026-10-28",
+  "snapshot_id": "aems-2026q3",
+  "schema_version": "global-medicines-atlas.aems-quarterly/v1",
+  "payload_suffix": ".zip",
+  "expected_payload_count": 1,
+  "expected_payload_bytes": 62624514,
+  "fields_and_transformations": "Original FDA ZIP and acquisition receipt. No source fields are transformed.",
+  "not_included": [
+    "XML release, analytical projections, and other quarters.",
+    "Clinical interpretation of reported events."
+  ],
+  "rights": {
+    "licence": "U.S. federal government work; public domain in the United States under 17 U.S.C. 105",
+    "terms": "https://www.fda.gov/about-fda/about-website/website-policies",
+    "attribution": "U.S. Food and Drug Administration, FDA Adverse Event Monitoring System",
+    "redistribution": "The unmodified FDA ASCII quarterly extract, with its source URL and attribution.",
+    "rights_family": "fda-website-public-domain"
+  }
+}

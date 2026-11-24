@@ -34,6 +34,105 @@ FRESH_BATCH = "openfda-20261120"
 SYNTHETIC_HF_TOKEN = "synthetic-token"  # ruff: ignore[hardcoded-password-string] -- synthetic fixture, not a credential.
 
 
+def test_aems_stages_only_the_approved_ascii_zip(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    contract = (
+        Path(__file__).resolve().parents[1]
+        / "quality/source-batches/aems-2026q3/manifest.json"
+    )
+    manifest = json.loads(contract.read_bytes())
+    file = io.BytesIO()
+    with zipfile.ZipFile(file, "w") as package:
+        package.writestr("source.txt", "synthetic")
+    body = file.getvalue()
+    manifest["expected_payload_bytes"] = len(body)
+
+    def serve(request: httpx.Request) -> httpx.Response:
+        assert request.method == "GET"
+        assert str(request.url) == manifest["source_url"]
+        return httpx.Response(200, stream=httpx.ByteStream(body))
+
+    monkeypatch.setattr(
+        publisher,
+        "BoundIPAddressTransport",
+        Mock(return_value=httpx.MockTransport(serve)),
+    )
+    monkeypatch.delenv("RUNNER_ENVIRONMENT", raising=False)
+    with pytest.raises(ValueError, match="GitHub-hosted"):
+        publisher.stage_aems(tmp_path / "local", manifest)
+    monkeypatch.setenv("RUNNER_ENVIRONMENT", "github-hosted")
+    root = tmp_path / "approved"
+    publisher.stage_aems(root, manifest)
+    [filename] = publisher.assert_archive_matches_contract(root, manifest)
+    assert (root / filename).read_bytes() == body
+    receipt = json.loads((root / f"{filename}.receipt.json").read_text())
+    assert receipt["sha256"] == hashlib.sha256(body).hexdigest()
+    assert receipt["size"] == len(body)
+    assert receipt["source_url"] == manifest["source_url"]
+    with pytest.raises(ValueError, match="exact official ASCII ZIP"):
+        publisher.stage_aems(
+            tmp_path / "wrong-quarter",
+            manifest
+            | {"source_url": manifest["source_url"].replace("q3", "q2")},
+        )
+
+
+def test_october_reviewed_receipt_requires_the_original_bytes(
+    tmp_path: Path,
+) -> None:
+    plan = PublicationPlan.model_validate_json(
+        (october.ONLINE_SOURCES.parent / "publication-plan.json").read_bytes()
+    )
+    receipt = next(
+        artifact
+        for artifact in plan.artifacts
+        if artifact.relative_path.endswith(".receipt.json")
+    )
+    url = "https://archive.example.org/original-receipt.json"
+    configured = tmp_path / "sources.json"
+    configured.write_text(
+        json.dumps({receipt.relative_path: url + "?token=example"})
+    )
+    with pytest.raises(ValueError, match="direct HTTPS"):
+        october.reviewed_sources(configured, plan)
+    configured.write_text(json.dumps({"unrecorded.json": url}))
+    with pytest.raises(ValueError, match="outside the frozen plan"):
+        october.reviewed_sources(configured, plan)
+    configured.write_text(json.dumps({receipt.relative_path: url}))
+    assert october.reviewed_sources(configured, plan) == {
+        receipt.relative_path: url
+    }
+
+    exact = b'{"recorded":true}'
+    artifact = ArtifactBinding(
+        relative_path=receipt.relative_path,
+        sha256=hashlib.sha256(exact).hexdigest(),
+        size=len(exact),
+    )
+
+    def serve(request: httpx.Request) -> httpx.Response:
+        assert request.method == "GET"
+        assert str(request.url) == url
+        return httpx.Response(200, stream=httpx.ByteStream(exact))
+
+    with httpx.Client(transport=httpx.MockTransport(serve)) as client:
+        for checked, matched in october.check_online_groups(
+            client, [artifact], {artifact.relative_path: url}
+        ):
+            assert checked[artifact.relative_path]["status"] == "match"
+            assert matched[0][1].read_bytes() == exact
+        for checked, matched in october.check_online_groups(
+            client,
+            [artifact.model_copy(update={"sha256": "0" * 64})],
+            {artifact.relative_path: url},
+        ):
+            assert (
+                checked[artifact.relative_path]["status"] == "digest_mismatch"
+            )
+            assert matched == []
+
+
 def test_october_hosted_resume_uses_verified_batches() -> None:
     files = {
         "first.zip": b"first",

@@ -7,6 +7,7 @@ from pathlib import Path
 
 import httpx
 import pytest
+from scripts import check_archive_status as archives
 from scripts.check_source_health import (
     BaselineProvenance,
     load_trusted_baseline,
@@ -19,6 +20,7 @@ from global_medicines_atlas.acquisition import (
     Resolver,
 )
 from global_medicines_atlas.countries import SourceDimension
+from global_medicines_atlas.publication_transport import ArtifactBinding
 from global_medicines_atlas.source_catalog import (
     AccessMode,
     MedicineDataSource,
@@ -1120,3 +1122,69 @@ def test_receipt_contract_matches_committed_golden_fixture() -> None:
     assert actual == (FIXTURES / "unavailable-escalation-v1.json").read_text(
         encoding="utf-8"
     )
+
+
+def test_archive_status_requires_pinned_inventory_and_reports_checksum_drift() -> (
+    None
+):
+    entries = tuple(
+        ArtifactBinding(relative_path=f"{name}.zip", size=100, sha256="a" * 64)
+        for name in ("matching", "wrong", "missing")
+    )
+    repository = "maintainer/approved"
+    revision = "b" * 40
+
+    def serve(request: httpx.Request) -> httpx.Response:
+        assert (
+            request.url.path
+            == f"/api/datasets/{repository}/revision/{revision}"
+        )
+        assert request.url.params["blobs"] == "true"
+        return httpx.Response(
+            200,
+            json={
+                "private": False,
+                "sha": revision,
+                "siblings": [
+                    {
+                        "rfilename": item.relative_path,
+                        "size": item.size,
+                        "lfs": {"sha256": digest, "size": item.size},
+                    }
+                    for item, digest in zip(
+                        entries[:2], ("a" * 64, "c" * 64), strict=True
+                    )
+                ],
+            },
+        )
+
+    with httpx.Client(transport=httpx.MockTransport(serve)) as client:
+        info = archives.hub_info(client, repository, revision)
+        assert archives.compare_inventory(info, entries) == {
+            "revision": revision,
+            "missing": ["missing.zip"],
+            "drifted": ["wrong.zip"],
+            "hub_digests_matched": 1,
+        }
+
+
+def test_archive_status_surfaces_nadac_candidate_from_official_metadata() -> (
+    None
+):
+    candidate = "https://download.medicaid.gov/data/nadac-national-average-drug-acquisition-cost-11-25-2026.csv"
+
+    def serve(request: httpx.Request) -> httpx.Response:
+        assert str(request.url) == archives.NADAC_INDEX
+        return httpx.Response(
+            200,
+            json={
+                "distribution": [{"downloadURL": candidate}],
+                "modified": "2026-11-20T14:26:02Z",
+            },
+        )
+
+    with httpx.Client(transport=httpx.MockTransport(serve)) as client:
+        result = archives.nadac_status(client)
+    assert result["state"] == "candidate"
+    assert result["source_url"] == candidate
+    assert result["baseline_url"].endswith("10-28-2026.csv")

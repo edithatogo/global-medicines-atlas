@@ -44,6 +44,15 @@ jobs:
           GMA_MAINTAINER_PUBLICATION_APPROVED: yes-i-approve-publication
         run: |
           [[ "$BATCH_ID" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]] || exit 1
+          if [[ "$BATCH_ID" =~ ^aems-[0-9]{4}q[1-4]$ ]]; then
+            uv run --locked --python 3.15.1 --with huggingface-hub==1.19.0 \
+              python -m scripts.publish_bulk_archive \
+              --manifest "quality/source-batches/$BATCH_ID/manifest.json" \
+              --archive-root "$RUNNER_TEMP/$BATCH_ID" \
+              --output "build/source-publication/$BATCH_ID" \
+              --exact-commit "$EXACT_COMMIT" --online --publish
+            exit
+          fi
           uv run --locked --python 3.15.1 --with huggingface-hub==1.19.0 \
             python -m scripts.publish_source_batch \
             --manifest "quality/source-batches/$BATCH_ID/manifest.json" \
