@@ -15,7 +15,7 @@ separate publication identities.
 
 ## Bulk archive identities
 
-Two complete source mirrors are separate publication identities from the
+The bulk archives are separate publication identities from the
 bounded catalogue. They are dispatched from `main` by
 [`.github/workflows/publish-bulk-archive.yml`](../../.github/workflows/publish-bulk-archive.yml)
 for the original source-backed archives. Direct online openFDA transfers now
@@ -57,6 +57,32 @@ recorded in its contract.
 The distinct [October historical recovery](../../quality/source-batches/openfda-all-20261030/README.md)
 uses its committed original checksums and runs on demand when an online
 copy is available.
+
+## Hosted AEMS and edition discovery
+
+The approved AEMS 2026 Q3 ASCII ZIP has its own
+[batch contract](../../quality/source-batches/aems-2026q3/manifest.json).
+Dispatch [Publish approved source batch](../../.github/workflows/source-batch-publication.yml)
+on `main` with `batch_id=aems-2026q3`, the exact main commit and
+`confirmation=publish-approved-source-batch`. The hosted job reads the
+original FDA ZIP, records its checksum, verifies the published revision
+anonymously and assigns the `archive-verified` tag.
+
+[Source health](../../.github/workflows/source-health.yml) reports the latest
+AEMS ASCII quarter, the CMS NADAC edition URL and the current digests of three
+EMA workbooks on its existing schedule. The `archive-status` artifact contains
+the candidate observations, the exact paths missing from October openFDA and
+the inventory comparison for previous checksum-verified batches. Inventory
+checks use the public Hub metadata and prior receipts. Publication workflows
+perform the full byte readback.
+
+A future publication requires an approved dated manifest, source-scoped rights,
+fresh reuse evidence, and the observed size and checksum for each selected
+payload. For a single NADAC edition use `cms-nadac-YYYYMMDD` and its matching
+official CSV URL. For EMA use the exact catalogue workbook URLs and put their
+observed digests and sizes in `expected_payloads`. Dispatch the existing
+publisher from the approved main commit. If the source has changed since
+review, acquire a new candidate for approval.
 
 ## Required evidence before publication
 

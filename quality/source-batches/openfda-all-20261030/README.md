@@ -32,11 +32,18 @@ with the default `publish=false` to check online availability. The
 GitHub-hosted runner validates the committed frozen plan, pins the
 public Hugging Face revision, and compares missing ZIPs with the FDA copies
 and pinned Internet Archive captures where available.
+Add a reviewed direct public HTTPS URL to [online-sources.json](online-sources.json)
+under its exact archived path to check another copy of a ZIP or original receipt.
+The runner bounds the download to the original size and requires the frozen
+SHA-256. Temporary links, redirects and credentials are excluded.
 The run retains the checksum results and missing metadata inventory. Dispatch
-with explicit `publish=true` to append exact ZIPs. The workflow verifies each
+with explicit `publish=true` to append files that match. The workflow verifies each
 published batch anonymously and retains its immutable revision and digests
 in Actions. The October acquisition receipts remain part of the frozen
 inventory and require their original bytes.
+The runner can reproduce the original dataset README and artifact manifest
+from the saved contract and plan. It checks both original hashes and holds
+these two files until the rest of the inventory has been restored.
 
 The committed [publication plan](publication-plan.json) is the unchanged
 `plan.json` from [Actions artifact 14882420929](https://github.com/edithatogo/global-medicines-atlas/actions/runs/45306884017/artifacts/14882420929).

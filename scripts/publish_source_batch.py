@@ -5,10 +5,13 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import shutil
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from pathlib import Path
+from typing import Any
 
+from pydantic import HttpUrl
 from scripts.publish_ema_snapshot import SnapshotUploader
 from scripts.source_download_batch import DownloadSelection, run_batch
 
@@ -26,9 +29,66 @@ from global_medicines_atlas.publication_transport import (
     prepare_publication,
     verify_publication,
 )
-from global_medicines_atlas.source_catalog import load_source_catalog
+from global_medicines_atlas.source_catalog import (
+    MedicineDataSource,
+    load_source_catalog,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def batch_catalog(
+    manifest_path: Path,
+    manifest: dict[str, Any],
+    selections: tuple[DownloadSelection, ...],
+) -> tuple[MedicineDataSource, ...]:
+    """Allow one exact, approved dated NADAC CSV without changing the catalogue."""
+    sources = load_source_catalog()
+    batch = manifest_path.parent.name
+    if not batch.startswith("cms-nadac-"):
+        return sources
+    match = re.fullmatch(r"cms-nadac-([0-9]{8})", batch)
+    if match is None or len(selections) != 1:
+        raise ValueError("Expected one dated CMS NADAC selection")
+    edition = date.fromisoformat(match[1])
+    url = (
+        "https://download.medicaid.gov/data/"
+        f"nadac-national-average-drug-acquisition-cost-{edition:%m-%d-%Y}.csv"
+    )
+    approval = manifest.get("approval_reference")
+    if (
+        manifest["batch_id"] != batch
+        or manifest["repository"]
+        != f"edithatogo/global-medicines-atlas-{batch}"
+        or not isinstance(approval, str)
+        or not approval.strip()
+    ):
+        raise ValueError("The NADAC manifest must bind the approved edition")
+    selection = selections[0]
+    if (
+        selection.source_id != "us-cms-nadac"
+        or selection.surface != "download"
+        or selection.expected_url != url
+        or selection.additional_download_urls
+        or selection.redirect_hosts
+    ):
+        raise ValueError("The NADAC batch must bind the exact official CSV")
+    payload = manifest.get("expected_payloads", {}).get(selection.source_id, {})
+    size = payload.get("byte_count")
+    if (
+        type(size) is not int
+        or not 0 < size <= selection.max_bytes
+        or not re.fullmatch(r"[0-9a-f]{64}", str(payload.get("sha256", "")))
+    ):
+        raise ValueError(
+            "The NADAC edition requires an approved size and SHA-256"
+        )
+    return tuple(
+        s.model_copy(update={"download_url": HttpUrl(url)})
+        if s.source_id == selection.source_id
+        else s
+        for s in sources
+    )
 
 
 def copy_source_objects(source: Path, target: Path, count: int) -> None:
@@ -57,7 +117,7 @@ def publish_batch(manifest_path: Path, output: Path, exact_commit: str) -> int:
     )
     results = run_batch(
         selections,
-        sources=load_source_catalog(),
+        sources=batch_catalog(manifest_path, manifest, selections),
         output=output / "acquisition",
         repository_root=ROOT,
         execute=True,

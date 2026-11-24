@@ -2,9 +2,51 @@ from __future__ import annotations
 
 import hashlib
 import json
+from pathlib import Path
 
 import httpx
+import pytest
 import scripts.structured_source_batch as batch
+from scripts.publish_source_batch import batch_catalog
+from scripts.source_download_batch import DownloadSelection
+
+
+def test_dated_nadac_requires_an_exact_approved_csv(tmp_path: Path) -> None:
+    batch_id = "cms-nadac-20261125"
+    path = tmp_path / batch_id / "manifest.json"
+    manifest = {
+        "batch_id": batch_id,
+        "repository": f"edithatogo/global-medicines-atlas-{batch_id}",
+        "approval_reference": "Synthetic test approval",
+        "expected_payloads": {
+            "us-cms-nadac": {"sha256": "a" * 64, "byte_count": 100}
+        },
+    }
+    url = "https://download.medicaid.gov/data/nadac-national-average-drug-acquisition-cost-11-25-2026.csv"
+    selection = DownloadSelection(source_id="us-cms-nadac", expected_url=url)
+    selected = batch_catalog(path, manifest, (selection,))
+    assert (
+        str(
+            next(
+                s.download_url
+                for s in selected
+                if s.source_id == selection.source_id
+            )
+        )
+        == url
+    )
+    with pytest.raises(ValueError, match="exact official CSV"):
+        batch_catalog(
+            path,
+            manifest,
+            (
+                selection.model_copy(
+                    update={"expected_url": url.replace("11-25", "11-18")}
+                ),
+            ),
+        )
+    with pytest.raises(ValueError, match="approved size and SHA-256"):
+        batch_catalog(path, manifest | {"expected_payloads": {}}, (selection,))
 
 
 def test_tables_ignore_single_column_navigation():

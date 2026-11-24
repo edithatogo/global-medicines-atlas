@@ -6,12 +6,21 @@ import argparse
 import hashlib
 import json
 import os
+import re
+import zipfile
 from collections.abc import Mapping
 from datetime import UTC, datetime
+from http import HTTPStatus
 from importlib import import_module
 from pathlib import Path
 from typing import Any, cast
 
+import httpx
+
+from global_medicines_atlas.acquisition import (
+    AcquisitionPolicy,
+    BoundIPAddressTransport,
+)
 from global_medicines_atlas.data_layer_archive import (
     HuggingFaceAnonymousArtifactVerifier,
 )
@@ -35,6 +44,8 @@ RIGHTS_NAME = "rights.json"
 MANIFEST_NAME = "ARTIFACT-MANIFEST.json"
 CHUNK_BYTES = 8 * 1024 * 1024
 DEFAULT_VERIFICATION_TIMEOUT_SECONDS = 3600
+FDA_QUARTERS = "https://fis.fda.gov/content/Exports/"
+ARCHIVE_TAG = "archive-verified"
 
 
 def digest(path: Path) -> str:
@@ -139,6 +150,33 @@ def build_card(manifest: Mapping[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def artifact_manifest_bytes(
+    manifest: Mapping[str, Any], artifacts: list[dict[str, Any]]
+) -> bytes:
+    """Render the original bulk archive manifest from its artifact bindings."""
+    return (
+        json.dumps(
+            {
+                "schema_id": "global-medicines-atlas.published-artifact-manifest",
+                "schema_version": 1,
+                "batch_id": manifest["batch_id"],
+                "repository": manifest["repository"],
+                "snapshot_id": manifest["snapshot_id"],
+                "source_authority": manifest["source_authority"],
+                "source_url": manifest["source_url"],
+                "retrieval_date": manifest["retrieval_date"],
+                "rights": manifest["rights"],
+                "artifact_count": len(artifacts),
+                "artifact_bytes": sum(item["size"] for item in artifacts),
+                "artifacts": artifacts,
+            },
+            indent=1,
+            sort_keys=True,
+        )
+        + "\n"
+    ).encode()
+
+
 def write_publication_metadata(
     root: Path, manifest: Mapping[str, Any]
 ) -> tuple[str, ...]:
@@ -164,35 +202,16 @@ def write_publication_metadata(
         for path in inventory_publication_files(root)
         if path != MANIFEST_NAME
     )
-    sizes = [(root / path).stat().st_size for path in body_paths]
-    artifacts = [
-        {"path": path, "size": size, "sha256": digest(root / path)}
-        for path, size in zip(body_paths, sizes, strict=True)
+    artifacts: list[dict[str, Any]] = [
+        {
+            "path": path,
+            "size": (root / path).stat().st_size,
+            "sha256": digest(root / path),
+        }
+        for path in body_paths
     ]
-    (root / MANIFEST_NAME).write_text(
-        json.dumps(
-            {
-                "schema_id": (
-                    "global-medicines-atlas.published-artifact-manifest"
-                ),
-                "schema_version": 1,
-                "batch_id": manifest["batch_id"],
-                "repository": manifest["repository"],
-                "snapshot_id": manifest["snapshot_id"],
-                "source_authority": manifest["source_authority"],
-                "source_url": manifest["source_url"],
-                "retrieval_date": manifest["retrieval_date"],
-                "rights": manifest["rights"],
-                "artifact_count": len(artifacts),
-                "artifact_bytes": sum(sizes),
-                "artifacts": artifacts,
-            },
-            indent=1,
-            sort_keys=True,
-        )
-        + "\n",
-        encoding="utf-8",
-        newline="\n",
+    (root / MANIFEST_NAME).write_bytes(
+        artifact_manifest_bytes(manifest, artifacts)
     )
     return inventory_publication_files(root)
 
@@ -200,8 +219,9 @@ def write_publication_metadata(
 class HuggingFaceFolderUploader:
     """Create the public dataset and upload one prepared folder."""
 
-    def __init__(self, repository: str) -> None:
+    def __init__(self, repository: str, *, new_dataset: bool = False) -> None:
         self.repository = repository
+        self.new_dataset = new_dataset
 
     def upload_folder(
         self, *, repository: str, folder: Path, commit_message: str
@@ -216,15 +236,109 @@ class HuggingFaceFolderUploader:
             repo_id=repository,
             repo_type="dataset",
             private=False,
-            exist_ok=True,
+            exist_ok=not self.new_dataset,
         )
+        options: dict[str, str] = {}
+        if self.new_dataset:
+            info = api.dataset_info(repository)
+            parent = str(info.sha)
+            if info.private is not False or not re.fullmatch(
+                r"[0-9a-f]{40}", parent
+            ):
+                raise ValueError("AEMS destination must be a public dataset")
+            if api.list_repo_files(
+                repository, repo_type="dataset", revision=parent
+            ) != [".gitattributes"]:
+                raise ValueError("New AEMS destination is not empty")
+            options["parent_commit"] = parent
         result = api.upload_folder(
             repo_id=repository,
             repo_type="dataset",
             folder_path=folder,
             commit_message=commit_message,
+            **options,
         )
         return str(result.oid)
+
+
+def stage_aems(root: Path, manifest: dict[str, Any]) -> None:
+    """Stage and receipt the exact approved quarterly FDA ZIP on a hosted runner."""
+    if os.environ.get("RUNNER_ENVIRONMENT") != "github-hosted":
+        raise ValueError("Online AEMS staging requires a GitHub-hosted runner")
+    batch = str(manifest["batch_id"])
+    match = re.fullmatch(r"aems-([0-9]{4}q[1-4])", batch)
+    if (
+        match is None
+        or manifest["repository"]
+        != f"edithatogo/global-medicines-atlas-{batch}"
+    ):
+        raise ValueError("Invalid AEMS quarterly batch identity")
+    filename = f"faers_ascii_{match[1]}.zip"
+    source = manifest["source_url"]
+    if source != FDA_QUARTERS + filename:
+        raise ValueError("AEMS archive requires the exact official ASCII ZIP")
+    expected = int(manifest["expected_payload_bytes"])
+    if not 0 < expected <= 512 * 1024**2:
+        raise ValueError("AEMS ZIP exceeds the approved runner bound")
+    root.mkdir(parents=True)
+    path = root / filename
+    total = 0
+    policy = AcquisitionPolicy(
+        allowed_hosts=("fis.fda.gov",), timeout_seconds=120
+    )
+    with (
+        httpx.Client(
+            transport=BoundIPAddressTransport(policy=policy),
+            timeout=120,
+            trust_env=False,
+        ) as client,
+        client.stream(
+            "GET", source, headers={"Accept-Encoding": "identity"}
+        ) as response,
+        path.open("xb") as stream,
+    ):
+        response.raise_for_status()
+        if response.status_code != HTTPStatus.OK:
+            raise ValueError("FDA did not return the complete ZIP")
+        for block in response.iter_raw():
+            total += len(block)
+            if total > expected:
+                raise ValueError("FDA quarterly ZIP exceeds the approved size")
+            stream.write(block)
+    if total != expected or not zipfile.is_zipfile(path):
+        raise ValueError(
+            "FDA quarterly ZIP differs from the approved inventory"
+        )
+    acquired = datetime.now(UTC)
+    manifest["retrieval_date"] = acquired.date().isoformat()
+    (root / f"{filename}.receipt.json").write_text(
+        json.dumps(
+            {
+                "source_url": source,
+                "source_index": manifest["source_index"],
+                "source_release_date": manifest["source_release_date"],
+                "retrieved_at": acquired.isoformat(),
+                "relative_path": filename,
+                "size": total,
+                "sha256": digest(path),
+            },
+            indent=2,
+        )
+        + "\n"
+    )
+
+
+def mark_verified_archive(repository: str, revision: str) -> None:
+    """Pin the verified data revision for the read-only archive report."""
+    hub = cast("Any", import_module("huggingface_hub"))
+    hub.HfApi(token=os.environ["HF_TOKEN"]).create_tag(
+        repository, repo_type="dataset", tag=ARCHIVE_TAG, revision=revision
+    )
+    public = hub.HfApi(token=False).dataset_info(
+        repository, revision=ARCHIVE_TAG
+    )
+    if public.private is not False or public.sha != revision:
+        raise ValueError("The archive verification tag could not be confirmed")
 
 
 def publish_bulk_archive(
@@ -234,11 +348,14 @@ def publish_bulk_archive(
     exact_commit: str,
     *,
     publish: bool = False,
+    online: bool = False,
     verification_timeout_seconds: int = DEFAULT_VERIFICATION_TIMEOUT_SECONDS,
 ) -> int:
     """Prepare, then optionally upload, one approved bulk archive."""
     require_hosted_main(exact_commit)
     manifest = load_contract(manifest_path)
+    if online:
+        stage_aems(archive_root, manifest)
     assert_archive_matches_contract(archive_root, manifest)
     paths = write_publication_metadata(archive_root, manifest)
     target = PublicationTarget(
@@ -282,7 +399,9 @@ def publish_bulk_archive(
         plan=plan,
         authorization=authorization_from_environment(dict(os.environ)),
         root=archive_root,
-        uploader=HuggingFaceFolderUploader(repository=target.repository),
+        uploader=HuggingFaceFolderUploader(
+            repository=target.repository, new_dataset=online
+        ),
         recorded_at=datetime.now(UTC),
     )
     (receipts / "uploaded.json").write_text(
@@ -299,6 +418,12 @@ def publish_bulk_archive(
     (receipts / "verified.json").write_text(
         verified.model_dump_json(indent=2) + "\n", encoding="utf-8"
     )
+    if (
+        online
+        and verified.state.value == "public"
+        and verified.remote_revision is not None
+    ):
+        mark_verified_archive(target.repository, verified.remote_revision)
     return int(verified.state.value != "public")
 
 
@@ -310,6 +435,7 @@ def main() -> int:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--exact-commit", required=True)
     parser.add_argument("--publish", action="store_true")
+    parser.add_argument("--online", action="store_true")
     parser.add_argument(
         "--verification-timeout-seconds",
         type=int,
@@ -318,10 +444,11 @@ def main() -> int:
     args = parser.parse_args()
     return publish_bulk_archive(
         args.manifest,
-        args.archive_root.resolve(strict=True),
+        args.archive_root.resolve(strict=not args.online),
         args.output,
         args.exact_commit,
         publish=args.publish,
+        online=args.online,
         verification_timeout_seconds=args.verification_timeout_seconds,
     )
 

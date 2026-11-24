@@ -53,7 +53,7 @@ jobs:
             phase=publish-online
           fi
           uv run --python 3.15.1 --no-sync --with huggingface-hub==0.34.4 \
-            python scripts/publish_october_openfda_hosted.py "$phase" \
+            python -m scripts.publish_october_openfda_hosted "$phase" \
             --output build/openfda-october --exact-commit "$GITHUB_SHA"
       - name: Check whether the full inventory is ready for readback
         id: completion
@@ -94,7 +94,7 @@ jobs:
         run: |
           uv sync --python 3.15.1 --locked
           uv run --python 3.15.1 --no-sync \
-            python scripts/publish_october_openfda_hosted.py verify \
+            python -m scripts.publish_october_openfda_hosted verify \
             --output build/openfda-october --exact-commit "$GITHUB_SHA"
       - name: Retain the October checksum receipt
         if: always()

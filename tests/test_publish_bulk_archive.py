@@ -14,6 +14,7 @@ from unittest.mock import Mock
 
 import httpx
 import pytest
+from scripts import check_archive_status as archives
 from scripts import publish_bulk_archive as publisher
 from scripts import publish_fresh_openfda as fresh
 from scripts import publish_october_openfda_hosted as october
@@ -32,6 +33,105 @@ from global_medicines_atlas.publication_transport import (
 COMMIT = "a" * 40
 FRESH_BATCH = "openfda-20261120"
 SYNTHETIC_HF_TOKEN = "synthetic-token"  # ruff: ignore[hardcoded-password-string] -- synthetic fixture, not a credential.
+
+
+def test_aems_stages_only_the_approved_ascii_zip(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    contract = (
+        Path(__file__).resolve().parents[1]
+        / "quality/source-batches/aems-2026q3/manifest.json"
+    )
+    manifest = json.loads(contract.read_bytes())
+    file = io.BytesIO()
+    with zipfile.ZipFile(file, "w") as package:
+        package.writestr("source.txt", "synthetic")
+    body = file.getvalue()
+    manifest["expected_payload_bytes"] = len(body)
+
+    def serve(request: httpx.Request) -> httpx.Response:
+        assert request.method == "GET"
+        assert str(request.url) == manifest["source_url"]
+        return httpx.Response(200, stream=httpx.ByteStream(body))
+
+    monkeypatch.setattr(
+        publisher,
+        "BoundIPAddressTransport",
+        Mock(return_value=httpx.MockTransport(serve)),
+    )
+    monkeypatch.delenv("RUNNER_ENVIRONMENT", raising=False)
+    with pytest.raises(ValueError, match="GitHub-hosted"):
+        publisher.stage_aems(tmp_path / "local", manifest)
+    monkeypatch.setenv("RUNNER_ENVIRONMENT", "github-hosted")
+    root = tmp_path / "approved"
+    publisher.stage_aems(root, manifest)
+    [filename] = publisher.assert_archive_matches_contract(root, manifest)
+    assert (root / filename).read_bytes() == body
+    receipt = json.loads((root / f"{filename}.receipt.json").read_text())
+    assert receipt["sha256"] == hashlib.sha256(body).hexdigest()
+    assert receipt["size"] == len(body)
+    assert receipt["source_url"] == manifest["source_url"]
+    with pytest.raises(ValueError, match="exact official ASCII ZIP"):
+        publisher.stage_aems(
+            tmp_path / "wrong-quarter",
+            manifest
+            | {"source_url": manifest["source_url"].replace("q3", "q2")},
+        )
+
+
+def test_october_reviewed_receipt_requires_the_original_bytes(
+    tmp_path: Path,
+) -> None:
+    plan = PublicationPlan.model_validate_json(
+        (october.ONLINE_SOURCES.parent / "publication-plan.json").read_bytes()
+    )
+    receipt = next(
+        artifact
+        for artifact in plan.artifacts
+        if artifact.relative_path.endswith(".receipt.json")
+    )
+    url = "https://archive.example.org/original-receipt.json"
+    configured = tmp_path / "sources.json"
+    configured.write_text(
+        json.dumps({receipt.relative_path: url + "?token=example"})
+    )
+    with pytest.raises(ValueError, match="direct HTTPS"):
+        october.reviewed_sources(configured, plan)
+    configured.write_text(json.dumps({"unrecorded.json": url}))
+    with pytest.raises(ValueError, match="outside the frozen plan"):
+        october.reviewed_sources(configured, plan)
+    configured.write_text(json.dumps({receipt.relative_path: url}))
+    assert october.reviewed_sources(configured, plan) == {
+        receipt.relative_path: url
+    }
+
+    exact = b'{"recorded":true}'
+    artifact = ArtifactBinding(
+        relative_path=receipt.relative_path,
+        sha256=hashlib.sha256(exact).hexdigest(),
+        size=len(exact),
+    )
+
+    def serve(request: httpx.Request) -> httpx.Response:
+        assert request.method == "GET"
+        assert str(request.url) == url
+        return httpx.Response(200, stream=httpx.ByteStream(exact))
+
+    with httpx.Client(transport=httpx.MockTransport(serve)) as client:
+        for checked, matched in october.check_online_groups(
+            client, [artifact], {artifact.relative_path: url}
+        ):
+            assert checked[artifact.relative_path]["status"] == "match"
+            assert matched[0][1].read_bytes() == exact
+        for checked, matched in october.check_online_groups(
+            client,
+            [artifact.model_copy(update={"sha256": "0" * 64})],
+            {artifact.relative_path: url},
+        ):
+            assert (
+                checked[artifact.relative_path]["status"] == "digest_mismatch"
+            )
+            assert matched == []
 
 
 def test_october_hosted_resume_uses_verified_batches() -> None:
@@ -217,6 +317,12 @@ def test_october_online_only_appends_exact_matches_and_reads_them_back(
         )
         for name, body in (("matched", b"data"), ("updated", b"test"))
     )
+    card = b"original README"
+    final_card = ArtifactBinding(
+        relative_path="README.md",
+        size=len(card),
+        sha256=hashlib.sha256(card).hexdigest(),
+    )
     plan = PublicationPlan(
         release_version=october.BATCH,
         target=PublicationTarget(
@@ -225,7 +331,7 @@ def test_october_online_only_appends_exact_matches_and_reads_them_back(
             public_base_url=f"https://huggingface.co/datasets/{october.REPOSITORY}",
             revision="main",
         ),
-        artifacts=(matched, updated),
+        artifacts=(final_card, matched, updated),
     )
     revision = "b" * 40
     hub = types.SimpleNamespace(CommitOperationAdd=types.SimpleNamespace)
@@ -265,7 +371,14 @@ def test_october_online_only_appends_exact_matches_and_reads_them_back(
     report_path = tmp_path / "online.json"
     assert (
         october.recover_fda_zips(
-            report_path, plan, COMMIT, [matched, updated], writer, hub, COMMIT
+            report_path,
+            plan,
+            COMMIT,
+            [final_card, matched, updated],
+            writer,
+            hub,
+            COMMIT,
+            prepared={final_card.relative_path: card},
         )
         == revision
     )
@@ -273,6 +386,9 @@ def test_october_online_only_appends_exact_matches_and_reads_them_back(
         target=plan.target, revision=revision, artifact=matched
     )
     report = json.loads(report_path.read_text())
+    assert report["metadata_results"]["README.md"]["status"] == "match"
+    assert report["completion_metadata_held"] == ["README.md"]
+    assert report["missing_metadata"] == ["README.md"]
     assert report["zip_counts"] == {"match": 1, "digest_mismatch": 1}
     assert report["zip_results"][matched.relative_path][
         "source_url"
@@ -281,6 +397,24 @@ def test_october_online_only_appends_exact_matches_and_reads_them_back(
         report["published_batches"][0]["verified"][0]["sha256"]
         == matched.sha256
     )
+
+
+def test_october_rebuilds_exact_completion_metadata_from_conserved_evidence() -> (
+    None
+):
+    frozen = PublicationPlan.model_validate_json(
+        (october.ONLINE_SOURCES.parent / "publication-plan.json").read_bytes()
+    )
+    rebuilt = october.rebuild_completion_metadata(frozen)
+    assert set(rebuilt) == {"README.md", "ARTIFACT-MANIFEST.json"}
+    for artifact in frozen.artifacts:
+        if artifact.relative_path in rebuilt:
+            body = rebuilt[artifact.relative_path]
+            assert (len(body), hashlib.sha256(body).hexdigest()) == (
+                artifact.size,
+                artifact.sha256,
+            )
+    assert october.archive_plan(rebuilt["ARTIFACT-MANIFEST.json"]) == frozen
 
 
 def test_october_online_upload_requires_approval(
@@ -870,3 +1004,69 @@ def test_uploader_refuses_a_different_repository(
             folder=write_archive(tmp_path),
             commit_message="Archive other",
         )
+
+
+def test_archive_status_requires_pinned_inventory_and_reports_checksum_drift() -> (
+    None
+):
+    entries = tuple(
+        ArtifactBinding(relative_path=f"{name}.zip", size=100, sha256="a" * 64)
+        for name in ("matching", "wrong", "missing")
+    )
+    repository = "maintainer/approved"
+    revision = "b" * 40
+
+    def serve(request: httpx.Request) -> httpx.Response:
+        assert (
+            request.url.path
+            == f"/api/datasets/{repository}/revision/{revision}"
+        )
+        assert request.url.params["blobs"] == "true"
+        return httpx.Response(
+            200,
+            json={
+                "private": False,
+                "sha": revision,
+                "siblings": [
+                    {
+                        "rfilename": item.relative_path,
+                        "size": item.size,
+                        "lfs": {"sha256": digest, "size": item.size},
+                    }
+                    for item, digest in zip(
+                        entries[:2], ("a" * 64, "c" * 64), strict=True
+                    )
+                ],
+            },
+        )
+
+    with httpx.Client(transport=httpx.MockTransport(serve)) as client:
+        info = archives.hub_info(client, repository, revision)
+        assert archives.compare_inventory(info, entries) == {
+            "revision": revision,
+            "missing": ["missing.zip"],
+            "drifted": ["wrong.zip"],
+            "hub_digests_matched": 1,
+        }
+
+
+def test_archive_status_surfaces_nadac_candidate_from_official_metadata() -> (
+    None
+):
+    candidate = "https://download.medicaid.gov/data/nadac-national-average-drug-acquisition-cost-11-25-2026.csv"
+
+    def serve(request: httpx.Request) -> httpx.Response:
+        assert str(request.url) == archives.NADAC_INDEX
+        return httpx.Response(
+            200,
+            json={
+                "distribution": [{"downloadURL": candidate}],
+                "modified": "2026-11-20T14:26:02Z",
+            },
+        )
+
+    with httpx.Client(transport=httpx.MockTransport(serve)) as client:
+        result = archives.nadac_status(client)
+    assert result["state"] == "candidate"
+    assert result["source_url"] == candidate
+    assert result["baseline_url"].endswith("10-28-2026.csv")
