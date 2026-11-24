@@ -1,0 +1,18 @@
+{
+  "batch_id": "cms-nadac-20261125",
+  "repository": "edithatogo/global-medicines-atlas-cms-nadac-20261125",
+  "publication_approved": true,
+  "approval_reference": "Maintainer directed publication of CMS NADAC 25 November 2026 on 24 November 2026 using GitHub-hosted Actions.",
+  "source_verification": {
+    "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/45396910741",
+    "artifact_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/45396910741/artifacts/14920987576",
+    "observed_at": "2026-11-24T12:47:45.876625+00:00",
+    "evidence_sha256": "24a3312cd234a3387b1cd895e0ebe603de313ff31422fb023ec3af35bef9cf3b"
+  },
+  "expected_payloads": {
+    "us-cms-nadac": {
+      "sha256": "72935b1eabee841e0797feebcf5079a1b7a6275653d188818b6b85b2ee01fa1d",
+      "byte_count": 123018477
+    }
+  }
+}
