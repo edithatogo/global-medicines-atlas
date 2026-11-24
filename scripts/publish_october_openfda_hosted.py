@@ -9,12 +9,10 @@ import os
 import re
 import time
 from collections.abc import Iterable, Iterator
-from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime
 from http import HTTPStatus
 from importlib import import_module
 from ipaddress import IPv4Address, IPv4Network
-from itertools import repeat
 from operator import attrgetter
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -52,10 +50,9 @@ PLAN_SHA256 = "1c63f597717bcbcb4753a644f7e7d07387e6f9cac9740833fb7c915ad1456ed0"
 SOURCE_PORT = 18043
 TAILSCALE_IPV4 = IPv4Network("100.64.0.0/10")
 COMMIT_BYTES = 512 * 1024**2
-COMMIT_FILES = 64
-SOURCE_REQUEST_BYTES = 4 * 1024**2
+COMMIT_FILES = 4
+SOURCE_REQUEST_BYTES = 1024**2
 SOURCE_REQUEST_SECONDS = 150
-SOURCE_WORKERS = 6
 TRANSIENT_STATUS = {408, 429, 500, 502, 503, 504}
 
 
@@ -269,15 +266,8 @@ def publish_batches(
             sources = [
                 Path(scratch) / str(position) for position in range(len(group))
             ]
-            with ThreadPoolExecutor(max_workers=SOURCE_WORKERS) as downloads:
-                for _ in downloads.map(
-                    download_artifact,
-                    repeat(client),
-                    group,
-                    sources,
-                    buffersize=SOURCE_WORKERS,
-                ):
-                    pass
+            for artifact, source in zip(group, sources, strict=True):
+                download_artifact(client, artifact, source)
             additions = [
                 hub.CommitOperationAdd(
                     path_in_repo=artifact.relative_path,
@@ -326,9 +316,7 @@ def publish(output: Path, exact_commit: str) -> None:
             headers={"Accept-Encoding": "identity"},
             follow_redirects=False,
             trust_env=False,
-            limits=httpx.Limits(
-                max_connections=SOURCE_WORKERS, max_keepalive_connections=0
-            ),
+            limits=httpx.Limits(max_connections=1, max_keepalive_connections=0),
             timeout=90,
         ) as client,
         TemporaryDirectory(prefix="openfda-october-manifest-") as scratch,
