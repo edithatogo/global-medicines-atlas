@@ -167,7 +167,11 @@ def test_october_hosted_download_checks_each_source_range(
     ],
 )
 def test_october_online_checks_the_frozen_digest(
-    head_status: int, size: int, body: bytes | None, expected: str
+    tmp_path: Path,
+    head_status: int,
+    size: int,
+    body: bytes | None,
+    expected: str,
 ) -> None:
     artifact = ArtifactBinding(
         relative_path="drug/event/sample.json.zip",
@@ -191,7 +195,99 @@ def test_october_online_checks_the_frozen_digest(
     with httpx.Client(
         base_url=october.FDA_ZIP_ORIGIN, transport=httpx.MockTransport(serve)
     ) as client:
-        assert october.check_fda_zip(client, artifact)["status"] == expected
+        path = tmp_path / "candidate"
+        url = october.FDA_ZIP_ORIGIN + artifact.relative_path
+        assert (
+            october.check_fda_zip(client, artifact, path, url)["status"]
+            == expected
+        )
+        if expected == "match":
+            assert path.read_bytes() == body
+
+
+def test_october_online_only_appends_exact_matches_and_reads_them_back(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    matched, updated = (
+        ArtifactBinding(
+            relative_path=f"{name}.json.zip",
+            size=4,
+            sha256=hashlib.sha256(body).hexdigest(),
+        )
+        for name, body in (("matched", b"data"), ("updated", b"test"))
+    )
+    plan = PublicationPlan(
+        release_version=october.BATCH,
+        target=PublicationTarget(
+            destination=PublicationDestination.HUGGING_FACE,
+            repository=october.REPOSITORY,
+            public_base_url=f"https://huggingface.co/datasets/{october.REPOSITORY}",
+            revision="main",
+        ),
+        artifacts=(matched, updated),
+    )
+    revision = "b" * 40
+    hub = types.SimpleNamespace(CommitOperationAdd=types.SimpleNamespace)
+    writer = Mock()
+
+    def commit(_repo, *, parent_commit, operations, **_options):
+        assert parent_commit == COMMIT
+        [addition] = operations
+        assert addition.path_in_repo == matched.relative_path
+        assert addition.path_or_fileobj.read_bytes() == b"data"
+        return types.SimpleNamespace(oid=revision)
+
+    writer.create_commit.side_effect = commit
+    verifier = Mock()
+    verifier.verify_artifact.return_value = ArtifactVerification(
+        relative_path=matched.relative_path,
+        size=matched.size,
+        sha256=matched.sha256,
+        verification_uri=f"{plan.target.public_base_url}/resolve/{revision}/{matched.relative_path}",
+    )
+    monkeypatch.setattr(october, "OctoberReadback", Mock(return_value=verifier))
+    monkeypatch.setenv("GITHUB_RUN_ID", "123")
+    monkeypatch.setitem(
+        october.WAYBACK_CAPTURES, matched.relative_path, ("20260501030408",)
+    )
+
+    def serve(request: httpx.Request) -> httpx.Response:
+        if request.method == "HEAD":
+            return httpx.Response(200, headers={"Content-Length": "4"})
+        body = b"data" if request.url.host == "web.archive.org" else b"date"
+        return httpx.Response(200, stream=httpx.ByteStream(body))
+
+    client = httpx.Client(
+        base_url=october.FDA_ZIP_ORIGIN, transport=httpx.MockTransport(serve)
+    )
+    monkeypatch.setattr(october.httpx, "Client", Mock(return_value=client))
+    report_path = tmp_path / "online.json"
+    assert (
+        october.recover_fda_zips(
+            report_path, plan, COMMIT, [matched, updated], writer, hub, COMMIT
+        )
+        == revision
+    )
+    verifier.verify_artifact.assert_called_once_with(
+        target=plan.target, revision=revision, artifact=matched
+    )
+    report = json.loads(report_path.read_text())
+    assert report["zip_counts"] == {"match": 1, "digest_mismatch": 1}
+    assert report["zip_results"][matched.relative_path][
+        "source_url"
+    ].startswith("https://web.archive.org/")
+    assert (
+        report["published_batches"][0]["verified"][0]["sha256"]
+        == matched.sha256
+    )
+
+
+def test_october_online_upload_requires_approval(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.delenv("GMA_MAINTAINER_PUBLICATION_APPROVED", raising=False)
+    with pytest.raises(PermissionError, match="requires approval"):
+        october.recover_online(tmp_path, COMMIT, publish_matches=True)
 
 
 def fresh_openfda_fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
