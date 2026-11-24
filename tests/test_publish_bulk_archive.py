@@ -157,6 +157,43 @@ def test_october_hosted_download_checks_each_source_range(
             october.download_artifact(client, artifact, output)
 
 
+@pytest.mark.parametrize(
+    ("head_status", "size", "body", "expected"),
+    [
+        (200, 4, b"data", "match"),
+        (200, 4, b"date", "digest_mismatch"),
+        (200, 20, None, "size_mismatch"),
+        (404, 0, None, "unavailable"),
+    ],
+)
+def test_october_online_checks_the_frozen_digest(
+    head_status: int, size: int, body: bytes | None, expected: str
+) -> None:
+    artifact = ArtifactBinding(
+        relative_path="drug/event/sample.json.zip",
+        size=4,
+        sha256=hashlib.sha256(b"data").hexdigest(),
+    )
+
+    def serve(request: httpx.Request) -> httpx.Response:
+        assert (
+            str(request.url) == october.FDA_ZIP_ORIGIN + artifact.relative_path
+        )
+        if request.method == "HEAD":
+            return httpx.Response(
+                head_status, headers={"Content-Length": str(size)}
+            )
+        assert body is not None, (
+            "Only size-matched candidates should be fetched"
+        )
+        return httpx.Response(200, stream=httpx.ByteStream(body))
+
+    with httpx.Client(
+        base_url=october.FDA_ZIP_ORIGIN, transport=httpx.MockTransport(serve)
+    ) as client:
+        assert october.check_fda_zip(client, artifact)["status"] == expected
+
+
 def fresh_openfda_fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     first, second = "drug/event/first.json.zip", "drug/event/second.json.zip"
     with io.BytesIO() as buffer:

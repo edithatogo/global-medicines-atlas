@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       publish:
-        description: Publish the exact approved October archive
+        description: Resume publication from the original private archive source
         type: boolean
         required: true
         default: false
@@ -17,6 +17,44 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  check-online:
+    name: Check online October files
+    if: github.ref == 'refs/heads/main' && !inputs.publish
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    permissions:
+      contents: read
+      actions: read # Read the retained frozen plan without a publication credential.
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.13.6"
+      - name: Retrieve the frozen plan from GitHub Actions
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          test "$RUNNER_ENVIRONMENT" = github-hosted
+          mkdir -p build/openfda-october-online
+          gh api repos/edithatogo/global-medicines-atlas/actions/artifacts/14882420929/zip > "$RUNNER_TEMP/october-plan.zip"
+          echo "a8d637a2d9b0ade2aaf452d0141c6818133b60065a284b8f74446da80bbe1d34  $RUNNER_TEMP/october-plan.zip" | sha256sum --check --strict
+          unzip -p "$RUNNER_TEMP/october-plan.zip" plan.json > build/openfda-october-online/plan.json
+      - name: Compare the missing ZIPs with the FDA copies
+        run: |
+          uv sync --python 3.15.1 --locked --no-default-groups
+          uv run --python 3.15.1 --no-sync --with huggingface-hub==0.34.4 \
+            python scripts/publish_october_openfda_hosted.py verify-online \
+            --output build/openfda-october-online --exact-commit "$GITHUB_SHA"
+      - name: Retain the online availability results
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: openfda-october-online-${{ github.run_attempt }}
+          path: build/openfda-october-online/online.json
+          if-no-files-found: error
+          retention-days: 90
+
   publish:
     name: Publish October archive
     if: github.ref == 'refs/heads/main' && inputs.publish
