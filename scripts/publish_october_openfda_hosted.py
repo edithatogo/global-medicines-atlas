@@ -18,7 +18,7 @@ from itertools import repeat
 from operator import attrgetter
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Any, cast
+from typing import Any, BinaryIO, cast
 from urllib.parse import quote, urlsplit
 
 import httpx
@@ -51,9 +51,9 @@ MANIFEST = ArtifactBinding(
 PLAN_SHA256 = "1c63f597717bcbcb4753a644f7e7d07387e6f9cac9740833fb7c915ad1456ed0"
 SOURCE_PORT = 18043
 TAILSCALE_IPV4 = IPv4Network("100.64.0.0/10")
-COMMIT_BYTES = 4 * 1024**3
+COMMIT_BYTES = 512 * 1024**2
 COMMIT_FILES = 64
-SOURCE_REQUEST_BYTES = 16 * 1024**2
+SOURCE_REQUEST_BYTES = 4 * 1024**2
 SOURCE_REQUEST_SECONDS = 150
 SOURCE_WORKERS = 6
 TRANSIENT_STATUS = {408, 429, 500, 502, 503, 504}
@@ -116,70 +116,73 @@ def archive_plan(manifest: bytes) -> PublicationPlan:
     return plan
 
 
-def download_once(
-    client: httpx.Client, artifact: ArtifactBinding, output: Path
+def download_range_once(
+    client: httpx.Client,
+    artifact: ArtifactBinding,
+    stream: BinaryIO,
+    start: int,
+    end: int,
 ) -> None:
-    """Copy bounded source ranges and verify the original file digest."""
-    size = 0
-    digest = hashlib.sha256()
+    """Read a source range into its exact position in the staging file."""
     path = quote(artifact.relative_path, safe="/")
-    ranged = artifact.size > SOURCE_REQUEST_BYTES
+    ranged = (start, end) != (0, artifact.size)
     expected_status = HTTPStatus.PARTIAL_CONTENT if ranged else HTTPStatus.OK
-    with output.open("wb") as stream:
-        for start in range(0, max(artifact.size, 1), SOURCE_REQUEST_BYTES):
-            end = min(start + SOURCE_REQUEST_BYTES, artifact.size)
-            headers = {"Range": f"bytes={start}-{end - 1}"} if ranged else {}
-            deadline = time.monotonic() + SOURCE_REQUEST_SECONDS
-            with client.stream("GET", path, headers=headers) as response:
-                response.raise_for_status()
-                if response.status_code != expected_status or (
-                    ranged
-                    and response.headers.get("Content-Range")
-                    != f"bytes {start}-{end - 1}/{artifact.size}"
-                ):
-                    raise ValueError(
-                        f"October source range differs: {artifact.relative_path}"
-                    )
-                for chunk in response.iter_raw():
-                    if time.monotonic() > deadline:
-                        raise httpx.ReadTimeout(
-                            "October source request timed out"
-                        )
-                    size += len(chunk)
-                    if size > end:
-                        raise ValueError(
-                            f"October source sent excess bytes: {artifact.relative_path}"
-                        )
-                    digest.update(chunk)
-                    stream.write(chunk)
-            if size != end:
+    headers = {"Range": f"bytes={start}-{end - 1}"} if ranged else {}
+    deadline = time.monotonic() + SOURCE_REQUEST_SECONDS
+    position = stream.seek(start)
+    with client.stream("GET", path, headers=headers) as response:
+        response.raise_for_status()
+        if response.status_code != expected_status or (
+            ranged
+            and response.headers.get("Content-Range")
+            != f"bytes {start}-{end - 1}/{artifact.size}"
+        ):
+            raise ValueError(
+                f"October source range differs: {artifact.relative_path}"
+            )
+        for chunk in response.iter_raw():
+            if time.monotonic() > deadline:
+                raise httpx.ReadTimeout("October source request timed out")
+            position += len(chunk)
+            if position > end:
                 raise ValueError(
-                    f"Incomplete October source file: {artifact.relative_path}"
+                    f"October source sent excess bytes: {artifact.relative_path}"
                 )
-    if size != artifact.size or digest.hexdigest() != artifact.sha256:
+            stream.write(chunk)
+    if position != end:
         raise ValueError(
-            f"October source checksum differs: {artifact.relative_path}"
+            f"Incomplete October source file: {artifact.relative_path}"
         )
 
 
 def download_artifact(
     client: httpx.Client, artifact: ArtifactBinding, output: Path
 ) -> None:
-    """Retry transient source reads without writing to the archive."""
-    for wait in (2, 4, 0):
-        try:
-            download_once(client, artifact, output)
-        except httpx.HTTPError as error:
-            if not wait or (
-                isinstance(error, httpx.HTTPStatusError)
-                and error.response.status_code not in TRANSIENT_STATUS
-            ):
-                raise ValueError(
-                    f"October source read failed: {artifact.relative_path}"
-                ) from None
-            time.sleep(wait)
-        else:
-            return
+    """Retry the interrupted range and verify the assembled file SHA-256."""
+    with output.open("wb") as stream:
+        for start in range(0, max(artifact.size, 1), SOURCE_REQUEST_BYTES):
+            end = min(start + SOURCE_REQUEST_BYTES, artifact.size)
+            for wait in (2, 4, 0):
+                try:
+                    download_range_once(client, artifact, stream, start, end)
+                except httpx.HTTPError as error:
+                    if not wait or (
+                        isinstance(error, httpx.HTTPStatusError)
+                        and error.response.status_code not in TRANSIENT_STATUS
+                    ):
+                        raise ValueError(
+                            f"October source read failed: {artifact.relative_path} "
+                            f"at byte {start} ({type(error).__name__})"
+                        ) from None
+                    time.sleep(wait)
+                else:
+                    break
+    with output.open("rb") as stream:
+        digest = hashlib.file_digest(stream, "sha256").hexdigest()
+    if digest != artifact.sha256:
+        raise ValueError(
+            f"October source checksum differs: {artifact.relative_path}"
+        )
 
 
 def commit_groups(
