@@ -49,6 +49,13 @@ MANIFEST = ArtifactBinding(
 )
 PLAN_SHA256 = "1c63f597717bcbcb4753a644f7e7d07387e6f9cac9740833fb7c915ad1456ed0"
 FDA_ZIP_ORIGIN = "https://download.open.fda.gov/"
+WAYBACK_CAPTURES = {
+    "other/historicaldocument/other-historicaldocument-0001-of-0001.json.zip": (
+        "20260501030408",
+        "20250629204308",
+        "20250602082201",
+    ),
+}
 SOURCE_PORT = 18043
 TAILSCALE_IPV4 = IPv4Network("100.64.0.0/10")
 COMMIT_BYTES = 512 * 1024**2
@@ -264,11 +271,10 @@ def remaining_artifacts(
 
 
 def check_fda_zip(
-    client: httpx.Client, artifact: ArtifactBinding
+    client: httpx.Client, artifact: ArtifactBinding, destination: Path, url: str
 ) -> dict[str, str | int]:
-    """Compare an FDA ZIP to the frozen binding without retaining the bytes."""
-    path = quote(artifact.relative_path, safe="/")
-    header = client.head(path)
+    """Compare a candidate in runner scratch space to its frozen binding."""
+    header = client.head(url)
     length = header.headers.get("Content-Length")
     if (
         header.status_code != HTTPStatus.OK
@@ -284,7 +290,10 @@ def check_fda_zip(
         return {"status": "size_mismatch", "bytes": size}
     size = 0
     digest = hashlib.sha256()
-    with client.stream("GET", path) as response:
+    with (
+        client.stream("GET", url) as response,
+        destination.open("wb") as stream,
+    ):
         if response.status_code != HTTPStatus.OK:
             return {
                 "status": "unavailable",
@@ -295,6 +304,7 @@ def check_fda_zip(
             if size > artifact.size:
                 return {"status": "size_mismatch", "bytes_at_least": size}
             digest.update(block)
+            stream.write(block)
     if size != artifact.size:
         return {"status": "size_mismatch", "bytes": size}
     sha256 = digest.hexdigest()
@@ -302,33 +312,146 @@ def check_fda_zip(
     return {"status": status, "bytes": size, "sha256": sha256}
 
 
-def verify_online(output: Path, exact_commit: str) -> None:
-    """Record online availability against the immutable October inventory."""
+def probe_online_zip(
+    client: httpx.Client, artifact: ArtifactBinding, destination: Path, url: str
+) -> dict[str, str | int]:
+    """Record the exact public source and transport outcome for the candidate."""
+    result: dict[str, str | int]
+    try:
+        result = check_fda_zip(client, artifact, destination, url)
+    except httpx.TransportError as error:
+        result = {"status": "unavailable", "reason": type(error).__name__}
+    return result | {"source_url": url}
+
+
+def check_online_groups(
+    client: httpx.Client, missing: Iterable[ArtifactBinding]
+) -> Iterator[
+    tuple[dict[str, dict[str, str | int]], list[tuple[ArtifactBinding, Path]]]
+]:
+    """Stage a bounded group and yield only exact bytes for possible upload."""
+    for group in commit_groups(missing):
+        with TemporaryDirectory(prefix="openfda-october-online-") as scratch:
+            results: dict[str, dict[str, str | int]] = {}
+            matched: list[tuple[ArtifactBinding, Path]] = []
+            for index, artifact in enumerate(group):
+                destination = Path(scratch) / str(index)
+                path = quote(artifact.relative_path, safe="/")
+                url = FDA_ZIP_ORIGIN + path
+                result = probe_online_zip(client, artifact, destination, url)
+                for stamp in WAYBACK_CAPTURES.get(artifact.relative_path, ()):
+                    if result["status"] == "match":
+                        break
+                    alternate = f"https://web.archive.org/web/{stamp}id_/{url}"
+                    archived = probe_online_zip(
+                        client, artifact, destination, alternate
+                    )
+                    print(
+                        f"October archive capture {stamp} for {path} {archived['status']}",
+                        flush=True,
+                    )
+                    if archived["status"] == "match":
+                        result = archived
+                results[artifact.relative_path] = result
+                if result["status"] == "match":
+                    matched.append((artifact, destination))
+            yield results, matched
+
+
+def commit_artifacts(
+    api: Any, hub: Any, head: str, files: list[tuple[ArtifactBinding, Path]]
+) -> str:
+    """Append approved files while holding the observed destination revision."""
+    operations = [
+        hub.CommitOperationAdd(
+            path_in_repo=artifact.relative_path, path_or_fileobj=source
+        )
+        for artifact, source in files
+    ]
+    result = api.create_commit(
+        REPOSITORY,
+        repo_type="dataset",
+        revision="main",
+        parent_commit=head,
+        operations=operations,
+        commit_message=f"Archive {len(files)} verified October openFDA files",
+    )
+    revision = str(result.oid)
+    if not re.fullmatch(r"[0-9a-f]{40}", revision):
+        raise ValueError(
+            "Hugging Face did not return an immutable October revision"
+        )
+    return revision
+
+
+def recover_online(
+    output: Path, exact_commit: str, *, publish_matches: bool
+) -> None:
+    """Check FDA copies and optionally append verified bytes under the existing approval."""
+    if (
+        publish_matches
+        and not authorization_from_environment(
+            dict(os.environ)
+        ).permits_external_write
+    ):
+        raise PermissionError("October archive publication requires approval")
     plan = PublicationPlan.model_validate_json(
         (output / "plan.json").read_bytes()
     )
     if plan.sha256() != PLAN_SHA256:
         raise ValueError("October plan differs from the approved inventory")
     hub = cast("Any", import_module("huggingface_hub.hf_api"))
-    api = hub.HfApi(token=False)
-    revision = public_revision(api)
-    public_paths = set(
-        api.list_repo_files(REPOSITORY, repo_type="dataset", revision=revision)
-    ) - {".gitattributes"}
-    planned_paths = {artifact.relative_path for artifact in plan.artifacts}
-    if public_paths - planned_paths:
-        raise ValueError("October destination contains unplanned files")
-    missing_zips: list[ArtifactBinding] = []
-    missing_metadata: list[str] = []
-    for artifact in plan.artifacts:
-        if artifact.relative_path in public_paths:
-            continue
-        if artifact.relative_path.endswith(".json.zip"):
-            missing_zips.append(artifact)
-        else:
-            missing_metadata.append(artifact.relative_path)
-    print(f"Checking {len(missing_zips)} missing October ZIPs", flush=True)
+    head, missing = remaining_artifacts(hub.HfApi(token=False), hub, plan)
+    writer = (
+        hub.HfApi(token=os.environ["HF_TOKEN"]) if publish_matches else None
+    )
+    record_intent(output, plan, exact_commit)
+    final_revision = recover_fda_zips(
+        output / "online.json", plan, head, missing, writer, hub, exact_commit
+    )
+    if writer is not None and set(
+        writer.list_repo_files(
+            REPOSITORY, repo_type="dataset", revision=final_revision
+        )
+    ) == {".gitattributes"} | {
+        artifact.relative_path for artifact in plan.artifacts
+    }:
+        record_upload(output, plan, final_revision)
+
+
+def recover_fda_zips(
+    report_path: Path,
+    plan: PublicationPlan,
+    head: str,
+    missing: list[ArtifactBinding],
+    writer: Any,
+    hub: Any,
+    exact_commit: str,
+) -> str:
+    """Save the observed availability and the anonymous readback of each appended batch."""
+    zips = [
+        artifact
+        for artifact in missing
+        if artifact.relative_path.endswith(".json.zip")
+    ]
+    print(f"Checking {len(zips)} missing October ZIPs", flush=True)
     results: dict[str, dict[str, str | int]] = {}
+    batches: list[dict[str, object]] = []
+    report: dict[str, object] = {
+        "commit": exact_commit,
+        "run_id": os.environ["GITHUB_RUN_ID"],
+        "plan_sha256": PLAN_SHA256,
+        "public_revision": head,
+        "public_paths": len(plan.artifacts) - len(missing),
+        "missing_metadata": [
+            artifact.relative_path
+            for artifact in missing
+            if not artifact.relative_path.endswith(".json.zip")
+        ],
+        "zip_results": results,
+        "published_batches": batches,
+    }
+    verifier = OctoberReadback(timeout_seconds=120)
     with httpx.Client(
         base_url=FDA_ZIP_ORIGIN,
         headers={"Accept-Encoding": "identity"},
@@ -336,29 +459,42 @@ def verify_online(output: Path, exact_commit: str) -> None:
         trust_env=False,
         timeout=30,
     ) as client:
-        for artifact in missing_zips:
-            path = artifact.relative_path
-            try:
-                results[path] = check_fda_zip(client, artifact)
-            except httpx.TransportError as error:
-                results[path] = {
-                    "status": "unavailable",
-                    "reason": type(error).__name__,
+        for checked, matched in check_online_groups(client, zips):
+            results.update(checked)
+            if writer is not None and matched:
+                head = commit_artifacts(writer, hub, head, matched)
+                batch: dict[str, object] = {
+                    "revision": head,
+                    "paths": [
+                        artifact.relative_path for artifact, _ in matched
+                    ],
                 }
+                batches.append(batch)
+                report_path.write_text(
+                    json.dumps(report, indent=2) + "\n", encoding="utf-8"
+                )
+                batch["verified"] = [
+                    verifier.verify_artifact(
+                        target=plan.target, revision=head, artifact=artifact
+                    ).model_dump(mode="json")
+                    for artifact, _ in matched
+                ]
+                report_path.write_text(
+                    json.dumps(report, indent=2) + "\n", encoding="utf-8"
+                )
+                print(
+                    f"Verified {len(matched)} October files at {head}",
+                    flush=True,
+                )
     counts = Counter(result["status"] for result in results.values())
-    report = {
-        "commit": exact_commit,
-        "run_id": os.environ["GITHUB_RUN_ID"],
-        "plan_sha256": PLAN_SHA256,
-        "public_revision": revision,
-        "recorded_at": datetime.now(UTC).isoformat(),
-        "public_paths": len(public_paths),
-        "missing_metadata": missing_metadata,
-        "zip_results": results,
-        "zip_counts": counts,
-    }
-    (output / "online.json").write_text(json.dumps(report, indent=2) + "\n")
+    report["zip_counts"] = counts
+    report["resulting_revision"] = head
+    report["recorded_at"] = datetime.now(UTC).isoformat()
+    report_path.write_text(
+        json.dumps(report, indent=2) + "\n", encoding="utf-8"
+    )
     print(f"October FDA ZIP results {dict(counts)}", flush=True)
+    return head
 
 
 def publish_batches(
@@ -374,25 +510,8 @@ def publish_batches(
             ]
             for artifact, source in zip(group, sources, strict=True):
                 download_artifact(client, artifact, source)
-            additions = [
-                hub.CommitOperationAdd(
-                    path_in_repo=artifact.relative_path,
-                    path_or_fileobj=source,
-                )
-                for artifact, source in zip(group, sources, strict=True)
-            ]
-            result = api.create_commit(
-                REPOSITORY,
-                repo_type="dataset",
-                revision="main",
-                parent_commit=head,
-                operations=additions,
-                commit_message=f"Archive October openFDA files {count + 1} to {count + len(group)}",
-            )
-        head = str(result.oid)
-        if not re.fullmatch(r"[0-9a-f]{40}", head):
-            raise ValueError(
-                "Hugging Face did not return an immutable October revision"
+            head = commit_artifacts(
+                api, hub, head, list(zip(group, sources, strict=True))
             )
         count += len(group)
         print(
@@ -430,20 +549,32 @@ def publish(output: Path, exact_commit: str) -> None:
         path = Path(scratch) / MANIFEST.relative_path
         download_artifact(client, MANIFEST, path)
         plan = archive_plan(path.read_bytes())
-        (output / "plan.json").write_text(plan.model_dump_json(indent=2))
-        (output / "intent.json").write_text(
-            json.dumps(
-                {
-                    "commit": exact_commit,
-                    "run_id": os.environ["GITHUB_RUN_ID"],
-                    "plan_sha256": plan.sha256(),
-                },
-                indent=2,
-            )
-        )
+        record_intent(output, plan, exact_commit)
         hub = cast("Any", import_module("huggingface_hub.hf_api"))
         api = hub.HfApi(token=os.environ["HF_TOKEN"])
         revision = publish_batches(api, hub, client, plan)
+    record_upload(output, plan, revision)
+
+
+def record_intent(
+    output: Path, plan: PublicationPlan, exact_commit: str
+) -> None:
+    """Bind a run to the full frozen plan before committing any bytes."""
+    (output / "plan.json").write_text(plan.model_dump_json(indent=2))
+    (output / "intent.json").write_text(
+        json.dumps(
+            {
+                "commit": exact_commit,
+                "run_id": os.environ["GITHUB_RUN_ID"],
+                "plan_sha256": plan.sha256(),
+            },
+            indent=2,
+        )
+    )
+
+
+def record_upload(output: Path, plan: PublicationPlan, revision: str) -> None:
+    """Record a complete uploaded revision ready for independent readback."""
     receipt = PublicationTransportReceipt(
         plan_sha256=plan.sha256(),
         artifact_sha256=tuple(artifact.sha256 for artifact in plan.artifacts),
@@ -512,7 +643,10 @@ def verify(output: Path, exact_commit: str) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("phase", choices=("publish", "verify", "verify-online"))
+    parser.add_argument(
+        "phase",
+        choices=("publish", "verify", "verify-online", "publish-online"),
+    )
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--exact-commit", required=True)
     args = parser.parse_args()
@@ -522,8 +656,12 @@ def main() -> int:
     args.output.mkdir(parents=True, exist_ok=True)
     if args.phase == "verify":
         return verify(args.output, args.exact_commit)
-    if args.phase == "verify-online":
-        verify_online(args.output, args.exact_commit)
+    if args.phase in {"verify-online", "publish-online"}:
+        recover_online(
+            args.output,
+            args.exact_commit,
+            publish_matches=args.phase == "publish-online",
+        )
         return 0
     publish(args.output, args.exact_commit)
     return 0

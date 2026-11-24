@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       publish:
-        description: Resume publication from the original private archive source
+        description: Upload SHA-256-matched October files available online
         type: boolean
         required: true
         default: false
@@ -17,14 +17,17 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  check-online:
-    name: Check online October files
-    if: github.ref == 'refs/heads/main' && !inputs.publish
+  recover:
+    name: Recover October files online
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    timeout-minutes: 355
     permissions:
       contents: read
       actions: read # Read the retained frozen plan without a publication credential.
+    outputs:
+      archive-complete: ${{ steps.completion.outputs.archive-complete }}
+      artifact-id: ${{ steps.receipts.outputs.artifact-id }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
@@ -37,79 +40,49 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           test "$RUNNER_ENVIRONMENT" = github-hosted
-          mkdir -p build/openfda-october-online
+          mkdir -p build/openfda-october
           gh api repos/edithatogo/global-medicines-atlas/actions/artifacts/14882420929/zip > "$RUNNER_TEMP/october-plan.zip"
           echo "a8d637a2d9b0ade2aaf452d0141c6818133b60065a284b8f74446da80bbe1d34  $RUNNER_TEMP/october-plan.zip" | sha256sum --check --strict
-          unzip -p "$RUNNER_TEMP/october-plan.zip" plan.json > build/openfda-october-online/plan.json
-      - name: Compare the missing ZIPs with the FDA copies
-        run: |
-          uv sync --python 3.15.1 --locked --no-default-groups
-          uv run --python 3.15.1 --no-sync --with huggingface-hub==0.34.4 \
-            python scripts/publish_october_openfda_hosted.py verify-online \
-            --output build/openfda-october-online --exact-commit "$GITHUB_SHA"
-      - name: Retain the online availability results
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
-        with:
-          name: openfda-october-online-${{ github.run_attempt }}
-          path: build/openfda-october-online/online.json
-          if-no-files-found: error
-          retention-days: 90
-
-  publish:
-    name: Publish October archive
-    if: github.ref == 'refs/heads/main' && inputs.publish
-    runs-on: ubuntu-24.04
-    timeout-minutes: 355
-    permissions:
-      contents: read
-      id-token: write # Tailscale exchanges this job's identity for temporary archive access.
-    steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-        with:
-          persist-credentials: false
-      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
-        with:
-          version: "0.13.6"
-      - name: Synchronize Python 3.15
-        run: |
-          test "$RUNNER_ENVIRONMENT" = github-hosted
-          uv sync --python 3.15.1 --locked
-      - name: Join the archive tailnet for this job
-        uses: tailscale/github-action@064b10558093f38325e838ddea35486bdc6b1d5c # v4.4.0
-        with:
-          oauth-client-id: ${{ secrets.GMA_OCTOBER_TS_CLIENT_ID }}
-          audience: ${{ secrets.GMA_OCTOBER_TS_AUDIENCE }}
-          tags: tag:gma-fda-october
-          version: "1.104.7"
-          sha256sum: e56693ff74a64f2591b7e819c280635a100aae1ddfb0ef058fcd052b7cd8d16c
-          use-cache: "false"
-          args: --accept-dns=false
-      - name: Transfer validated batches to Hugging Face
+          unzip -p "$RUNNER_TEMP/october-plan.zip" plan.json > build/openfda-october/plan.json
+      - name: Check FDA copies and publish any authorized exact matches
         env:
-          GMA_MAINTAINER_PUBLICATION_APPROVED: yes-i-approve-publication
-          GMA_PUBLICATION_ENVIRONMENT: production
-          GMA_OCTOBER_SOURCE_URL: ${{ secrets.GMA_OCTOBER_SOURCE_URL }}
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          PUBLISH_REQUESTED: ${{ inputs.publish }}
+          GMA_MAINTAINER_PUBLICATION_APPROVED: ${{ inputs.publish && 'yes-i-approve-publication' || 'unset' }}
+          GMA_PUBLICATION_ENVIRONMENT: ${{ inputs.publish && 'production' || 'unset' }}
+          HF_TOKEN: ${{ inputs.publish && secrets.HF_TOKEN || '' }}
           HF_HUB_DISABLE_PROGRESS_BARS: "1"
-          HF_XET_CHUNK_CACHE_SIZE_BYTES: "0"
-          HF_XET_SHARD_CACHE_SIZE_LIMIT: "200000000"
+          # Reuse the upload mode that committed the existing October files.
+          HF_HUB_DISABLE_XET: "1"
         run: |
-          sudo tailscale set --accept-routes=false
+          uv sync --python 3.15.1 --locked
+          phase=verify-online
+          if [[ "$PUBLISH_REQUESTED" == true ]]; then
+            phase=publish-online
+          fi
           uv run --python 3.15.1 --no-sync --with huggingface-hub==0.34.4 \
-            python scripts/publish_october_openfda_hosted.py publish \
+            python scripts/publish_october_openfda_hosted.py "$phase" \
             --output build/openfda-october --exact-commit "$GITHUB_SHA"
-      - name: Retain October publication receipts
+      - name: Check whether the full inventory is ready for readback
+        id: completion
+        if: inputs.publish
+        run: |
+          if [[ -s build/openfda-october/uploaded.json ]]; then
+            echo 'archive-complete=true' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Retain October recovery receipts
+        id: receipts
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
-          name: openfda-october-publication
+          name: openfda-october-online-${{ github.run_attempt }}
           path: build/openfda-october/
-          if-no-files-found: warn
+          if-no-files-found: error
           retention-days: 90
 
   verify:
     name: Verify October archive
-    needs: publish
+    needs: recover
+    if: needs.recover.outputs.archive-complete == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 355
     steps:
@@ -121,8 +94,9 @@ jobs:
           version: "0.13.6"
       - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
         with:
-          name: openfda-october-publication
+          artifact-ids: ${{ needs.recover.outputs.artifact-id }}
           path: build/openfda-october/
+          merge-multiple: true
       - name: Verify every public file anonymously
         run: |
           uv sync --python 3.15.1 --locked

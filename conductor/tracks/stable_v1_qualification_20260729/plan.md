@@ -1646,7 +1646,12 @@ metadata. The original acquisition receipts and ZIPs are separate files.
 
 - [x] Pin the published checkpoint and the retained plan from run
   `45306884017`. The checkpoint has 3,968 files including 1,981 ZIPs.
-- [~] Check openFDA copies from a GitHub-hosted runner against the frozen
-  checksums and retain the missing metadata inventory.
+- [x] Record the first hosted attempt, run `45330688783`. The runner read
+  the pinned plan and failed on a missing `jsonschema` import before reading
+  the FDA ZIPs. Publication was skipped.
+- [~] Use the locked publisher environment to check and append available exact
+  ZIPs from the FDA on GitHub-hosted Actions. On branch
+  `codex/october-online-exact-upload-20261124`, retain a receipt with
+  anonymous SHA-256 verification for every published batch.
 - [ ] Restore any remaining original files from an online copy, complete the
   publication, and verify all 4,803 files anonymously at one public revision.

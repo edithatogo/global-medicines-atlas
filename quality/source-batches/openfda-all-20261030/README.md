@@ -30,12 +30,16 @@ inventory was frozen. The snapshot is now complete at 2,396 payloads.
 Dispatch `.github/workflows/publish-october-openfda-hosted.yml` on `main`
 with the default `publish=false` to check online availability. The
 GitHub-hosted runner reads the frozen plan retained by Actions, pins the
-public Hugging Face revision, and compares missing ZIPs with the FDA copies.
-The run retains the checksum results and missing metadata inventory.
+public Hugging Face revision, and compares missing ZIPs with the FDA copies
+and pinned Internet Archive captures where available.
+The run retains the checksum results and missing metadata inventory. Dispatch
+with explicit `publish=true` to append exact ZIPs. The workflow verifies each
+published batch anonymously and retains its immutable revision and digests
+in Actions. The October acquisition receipts remain part of the frozen
+inventory and require their original bytes.
 
-The earlier upload used the exact archive on a workstation. The hosted
-workflow's explicit `publish=true` route resumes from that private source.
-The maintainer paused that route on 24 November in favor of online recovery.
+The maintainer stopped the earlier source route on 24 November. The current
+October workflow reads from online services on GitHub-hosted runners.
 Publication requires the production environment and explicit maintainer
-approval. Completion requires anonymous checksum verification of all 4,803
-files at one public revision.
+approval. Completion requires a separate job to verify the checksums of all
+4,803 files anonymously at one public revision.
