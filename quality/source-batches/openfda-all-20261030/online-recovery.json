@@ -1,0 +1,3190 @@
+{
+  "commit": "3814245e81ca19d942880ddebcac588764bdde74",
+  "run_id": "45348112303",
+  "plan_sha256": "1c63f597717bcbcb4753a644f7e7d07387e6f9cac9740833fb7c915ad1456ed0",
+  "public_revision": "c0866e66e2e45e0f78b81ed5844760847c0dd598",
+  "public_paths": 3968,
+  "missing_metadata": [
+    "drug/event/2023q2/drug-event-0010-of-0029.json.zip.receipt.json",
+    "drug/event/2023q2/drug-event-0011-of-0029.json.zip.receipt.json",
+    "drug/event/2023q2/drug-event-0012-of-0029.json.zip.receipt.json",
+    "drug/event/2023q2/drug-event-0013-of-0029.json.zip.receipt.json",
+    "drug/event/2023q2/drug-event-0014-of-0029.json.zip.receipt.json",
+    "drug/event/2023q2/drug-event-0015-of-0029.json.zip.receipt.json",
+    "drug/event/2023q2/drug-event-0016-of-0029.json.zip.receipt.json",
+    "drug/event/2023q2/drug-event-0017-of-0029.json.zip.receipt.json",
+    "drug/event/2023q2/drug-event-0018-of-0029.json.zip.receipt.json",
+    "drug/event/2023q2/drug-event-0019-of-0029.json.zip.receipt.json",
+    "drug/event/2023q2/drug-event-0020-of-0029.json.zip.receipt.json",
+    "drug/event/2023q2/drug-event-0021-of-0029.json.zip.receipt.json",
+    "drug/event/2023q2/drug-event-0022-of-0029.json.zip.receipt.json",
+    "drug/event/2023q2/drug-event-0023-of-0029.json.zip.receipt.json",
+    "drug/event/2023q2/drug-event-0024-of-0029.json.zip.receipt.json",
+    "drug/event/2023q2/drug-event-0025-of-0029.json.zip.receipt.json",
+    "drug/event/2023q2/drug-event-0026-of-0029.json.zip.receipt.json",
+    "drug/event/2023q2/drug-event-0027-of-0029.json.zip.receipt.json",
+    "drug/event/2023q2/drug-event-0028-of-0029.json.zip.receipt.json",
+    "drug/event/2023q2/drug-event-0029-of-0029.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0001-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0002-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0003-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0004-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0005-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0006-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0007-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0008-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0009-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0010-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0011-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0012-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0013-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0014-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0015-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0016-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0017-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0018-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0019-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0020-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0021-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0022-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0023-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0024-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0025-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0026-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0027-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0028-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0029-of-0030.json.zip.receipt.json",
+    "drug/event/2023q3/drug-event-0030-of-0030.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0001-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0002-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0003-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0004-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0005-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0006-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0007-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0008-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0009-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0010-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0011-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0012-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0013-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0014-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0015-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0016-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0017-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0018-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0019-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0020-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0021-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0022-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0023-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0024-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0025-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0026-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0027-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0028-of-0029.json.zip.receipt.json",
+    "drug/event/2023q4/drug-event-0029-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0001-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0002-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0003-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0004-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0005-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0006-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0007-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0008-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0009-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0010-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0011-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0012-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0013-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0014-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0015-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0016-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0017-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0018-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0019-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0020-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0021-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0022-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0023-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0024-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0025-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0026-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0027-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0028-of-0029.json.zip.receipt.json",
+    "drug/event/2024q1/drug-event-0029-of-0029.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0001-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0002-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0003-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0004-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0005-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0006-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0007-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0008-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0009-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0010-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0011-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0012-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0013-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0014-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0015-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0016-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0017-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0018-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0019-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0020-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0021-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0022-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0023-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0024-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0025-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0026-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0027-of-0028.json.zip.receipt.json",
+    "drug/event/2024q2/drug-event-0028-of-0028.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0001-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0002-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0003-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0004-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0005-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0006-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0007-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0008-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0009-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0010-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0011-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0012-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0013-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0014-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0015-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0016-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0017-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0018-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0019-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0020-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0021-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0022-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0023-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0024-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0025-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0026-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0027-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0028-of-0029.json.zip.receipt.json",
+    "drug/event/2024q3/drug-event-0029-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0001-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0002-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0003-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0004-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0005-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0006-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0007-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0008-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0009-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0010-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0011-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0012-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0013-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0014-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0015-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0016-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0017-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0018-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0019-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0020-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0021-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0022-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0023-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0024-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0025-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0026-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0027-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0028-of-0029.json.zip.receipt.json",
+    "drug/event/2024q4/drug-event-0029-of-0029.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0001-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0002-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0003-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0004-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0005-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0006-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0007-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0008-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0009-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0010-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0011-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0012-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0013-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0014-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0015-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0016-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0017-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0018-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0019-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0020-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0021-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0022-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0023-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0024-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0025-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0026-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0027-of-0028.json.zip.receipt.json",
+    "drug/event/2025q1/drug-event-0028-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0001-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0002-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0003-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0004-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0005-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0006-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0007-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0008-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0009-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0010-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0011-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0012-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0013-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0014-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0015-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0016-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0017-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0018-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0019-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0020-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0021-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0022-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0023-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0024-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0025-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0026-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0027-of-0028.json.zip.receipt.json",
+    "drug/event/2025q2/drug-event-0028-of-0028.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0001-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0002-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0003-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0004-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0005-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0006-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0007-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0008-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0009-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0010-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0011-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0012-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0013-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0014-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0015-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0016-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0017-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0018-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0019-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0020-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0021-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0022-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0023-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0024-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0025-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0026-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0027-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0028-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0029-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0030-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0031-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0032-of-0033.json.zip.receipt.json",
+    "drug/event/2025q3/drug-event-0033-of-0033.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0001-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0002-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0003-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0004-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0005-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0006-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0007-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0008-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0009-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0010-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0011-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0012-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0013-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0014-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0015-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0016-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0017-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0018-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0019-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0020-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0021-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0022-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0023-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0024-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0025-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0026-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0027-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0028-of-0029.json.zip.receipt.json",
+    "drug/event/2025q4/drug-event-0029-of-0029.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0001-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0002-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0003-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0004-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0005-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0006-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0007-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0008-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0009-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0010-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0011-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0012-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0013-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0014-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0015-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0016-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0017-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0018-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0019-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0020-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0021-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0022-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0023-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0024-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0025-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0026-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0027-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0028-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0029-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0030-of-0031.json.zip.receipt.json",
+    "drug/event/2026q1/drug-event-0031-of-0031.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0001-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0002-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0003-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0004-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0005-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0006-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0007-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0008-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0009-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0010-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0011-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0012-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0013-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0014-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0015-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0016-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0017-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0018-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0019-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0020-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0021-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0022-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0023-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0024-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0025-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0026-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0027-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0028-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0029-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0030-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0031-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0032-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0033-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0034-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0035-of-0036.json.zip.receipt.json",
+    "drug/event/2026q2/drug-event-0036-of-0036.json.zip.receipt.json",
+    "drug/event/all_other/drug-event-0001-of-0004.json.zip.receipt.json",
+    "drug/event/all_other/drug-event-0002-of-0004.json.zip.receipt.json",
+    "drug/event/all_other/drug-event-0003-of-0004.json.zip.receipt.json",
+    "drug/event/all_other/drug-event-0004-of-0004.json.zip.receipt.json",
+    "drug/label/drug-label-0001-of-0014.json.zip.receipt.json",
+    "drug/label/drug-label-0002-of-0014.json.zip.receipt.json",
+    "drug/label/drug-label-0003-of-0014.json.zip.receipt.json",
+    "drug/label/drug-label-0004-of-0014.json.zip.receipt.json",
+    "drug/label/drug-label-0005-of-0014.json.zip.receipt.json",
+    "drug/label/drug-label-0006-of-0014.json.zip.receipt.json",
+    "drug/label/drug-label-0007-of-0014.json.zip.receipt.json",
+    "drug/label/drug-label-0008-of-0014.json.zip.receipt.json",
+    "drug/label/drug-label-0009-of-0014.json.zip.receipt.json",
+    "drug/label/drug-label-0010-of-0014.json.zip.receipt.json",
+    "drug/label/drug-label-0011-of-0014.json.zip.receipt.json",
+    "drug/label/drug-label-0012-of-0014.json.zip.receipt.json",
+    "drug/label/drug-label-0013-of-0014.json.zip.receipt.json",
+    "drug/label/drug-label-0014-of-0014.json.zip.receipt.json",
+    "drug/ndc/drug-ndc-0001-of-0001.json.zip.receipt.json",
+    "drug/orangebook/drug-orangebook-0001-of-0001.json.zip.receipt.json",
+    "drug/shortages/drug-shortages-0001-of-0001.json.zip.receipt.json",
+    "food/enforcement/food-enforcement-0001-of-0001.json.zip.receipt.json",
+    "food/event/food-event-0001-of-0001.json.zip.receipt.json",
+    "launch.json",
+    "manifest.json",
+    "other/historicaldocument/other-historicaldocument-0001-of-0001.json.zip.receipt.json",
+    "other/nsde/other-nsde-0001-of-0003.json.zip.receipt.json",
+    "other/nsde/other-nsde-0002-of-0003.json.zip.receipt.json",
+    "other/nsde/other-nsde-0003-of-0003.json.zip.receipt.json",
+    "other/substance/other-substance-0001-of-0001.json.zip.receipt.json",
+    "other/unii/other-unii-0001-of-0001.json.zip.receipt.json",
+    "research/covidmirnaandproteomics/research-covidmirnaandproteomics-0001-of-0001.json.zip.receipt.json",
+    "research/tobaccodigitalads/research-tobaccodigitalads-0001-of-0001.json.zip.receipt.json",
+    "research/tobaccoharmmenthol/research-tobaccoharmmenthol-0001-of-0001.json.zip.receipt.json",
+    "research/tobaccopreventionads/research-tobaccopreventionads-0001-of-0001.json.zip.receipt.json",
+    "research/tobaccosmokefree/research-tobaccosmokefree-0001-of-0001.json.zip.receipt.json",
+    "terminal.json",
+    "tobacco/problem/tobacco-problem-0001-of-0001.json.zip.receipt.json",
+    "transparency/crl/transparency-crl-0001-of-0001.json.zip.receipt.json",
+    "ARTIFACT-MANIFEST.json",
+    "README.md"
+  ],
+  "zip_results": {
+    "drug/event/2023q2/drug-event-0010-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 126577831,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q2/drug-event-0010-of-0029.json.zip"
+    },
+    "drug/event/2023q2/drug-event-0011-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 136752821,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q2/drug-event-0011-of-0029.json.zip"
+    },
+    "drug/event/2023q2/drug-event-0012-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 145506422,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q2/drug-event-0012-of-0029.json.zip"
+    },
+    "drug/event/2023q2/drug-event-0013-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 149552386,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q2/drug-event-0013-of-0029.json.zip"
+    },
+    "drug/event/2023q2/drug-event-0014-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 128229720,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q2/drug-event-0014-of-0029.json.zip"
+    },
+    "drug/event/2023q2/drug-event-0015-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 114846193,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q2/drug-event-0015-of-0029.json.zip"
+    },
+    "drug/event/2023q2/drug-event-0016-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 61310338,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q2/drug-event-0016-of-0029.json.zip"
+    },
+    "drug/event/2023q2/drug-event-0017-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4977262,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q2/drug-event-0017-of-0029.json.zip"
+    },
+    "drug/event/2023q2/drug-event-0018-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4271781,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q2/drug-event-0018-of-0029.json.zip"
+    },
+    "drug/event/2023q2/drug-event-0019-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4496871,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q2/drug-event-0019-of-0029.json.zip"
+    },
+    "drug/event/2023q2/drug-event-0020-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4081842,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q2/drug-event-0020-of-0029.json.zip"
+    },
+    "drug/event/2023q2/drug-event-0021-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 3528321,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q2/drug-event-0021-of-0029.json.zip"
+    },
+    "drug/event/2023q2/drug-event-0022-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 44588103,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q2/drug-event-0022-of-0029.json.zip"
+    },
+    "drug/event/2023q2/drug-event-0023-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 121490905,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q2/drug-event-0023-of-0029.json.zip"
+    },
+    "drug/event/2023q2/drug-event-0024-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 93377368,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q2/drug-event-0024-of-0029.json.zip"
+    },
+    "drug/event/2023q2/drug-event-0025-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 68858020,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q2/drug-event-0025-of-0029.json.zip"
+    },
+    "drug/event/2023q2/drug-event-0026-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 121801226,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q2/drug-event-0026-of-0029.json.zip"
+    },
+    "drug/event/2023q2/drug-event-0027-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 85227363,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q2/drug-event-0027-of-0029.json.zip"
+    },
+    "drug/event/2023q2/drug-event-0028-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 139017087,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q2/drug-event-0028-of-0029.json.zip"
+    },
+    "drug/event/2023q2/drug-event-0029-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 106902752,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q2/drug-event-0029-of-0029.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0001-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 143712035,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0001-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0002-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 146067255,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0002-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0003-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 116810998,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0003-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0004-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 97863663,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0004-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0005-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4219049,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0005-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0006-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 2631720,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0006-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0007-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 56766435,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0007-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0008-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 142175819,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0008-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0009-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 138912430,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0009-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0010-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 131775502,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0010-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0011-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 150360949,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0011-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0012-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 144091406,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0012-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0013-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 139127485,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0013-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0014-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 123066202,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0014-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0015-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 135156758,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0015-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0016-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 57494564,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0016-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0017-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 5030263,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0017-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0018-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4139452,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0018-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0019-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 3200244,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0019-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0020-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 3553139,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0020-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0021-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 3996856,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0021-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0022-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4964466,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0022-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0023-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 118348376,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0023-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0024-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 67771330,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0024-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0025-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 104260178,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0025-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0026-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 116431358,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0026-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0027-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 86927056,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0027-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0028-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 128719245,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0028-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0029-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 142623532,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0029-of-0030.json.zip"
+    },
+    "drug/event/2023q3/drug-event-0030-of-0030.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 10544776,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q3/drug-event-0030-of-0030.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0001-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 150064170,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0001-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0002-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 150303815,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0002-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0003-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 77408275,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0003-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0004-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 135208464,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0004-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0005-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4581224,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0005-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0006-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 3647374,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0006-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0007-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 112706590,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0007-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0008-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 121798410,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0008-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0009-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 127369325,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0009-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0010-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 128803104,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0010-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0011-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 138342747,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0011-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0012-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 139969847,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0012-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0013-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 141472869,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0013-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0014-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 144287319,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0014-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0015-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 83905549,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0015-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0016-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 5474234,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0016-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0017-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4195472,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0017-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0018-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4264841,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0018-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0019-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 5464050,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0019-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0020-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 17927639,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0020-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0021-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 32153242,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0021-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0022-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 30017401,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0022-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0023-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 151019948,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0023-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0024-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 129515982,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0024-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0025-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 83228890,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0025-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0026-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 92105048,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0026-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0027-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 136464495,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0027-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0028-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 145241472,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0028-of-0029.json.zip"
+    },
+    "drug/event/2023q4/drug-event-0029-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 60761105,
+      "source_url": "https://download.open.fda.gov/drug/event/2023q4/drug-event-0029-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0001-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 147417152,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0001-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0002-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 147612928,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0002-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0003-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 107105705,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0003-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0004-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 132881669,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0004-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0005-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 93083046,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0005-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0006-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 3823016,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0006-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0007-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4087886,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0007-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0008-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 125371928,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0008-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0009-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 140537581,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0009-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0010-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 130715953,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0010-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0011-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 144427258,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0011-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0012-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 159235872,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0012-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0013-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 137433518,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0013-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0014-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 131994870,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0014-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0015-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 6826950,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0015-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0016-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4702979,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0016-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0017-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4265821,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0017-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0018-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 29657941,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0018-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0019-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 8085141,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0019-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0020-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 39586810,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0020-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0021-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4867216,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0021-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0022-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 97857502,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0022-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0023-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 27180857,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0023-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0024-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 142005763,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0024-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0025-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 141019003,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0025-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0026-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 144116371,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0026-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0027-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 147456418,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0027-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0028-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 147141065,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0028-of-0029.json.zip"
+    },
+    "drug/event/2024q1/drug-event-0029-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 6796182,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q1/drug-event-0029-of-0029.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0001-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 149015655,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0001-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0002-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 154496985,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0002-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0003-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 147338028,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0003-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0004-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 52489911,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0004-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0005-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 5212636,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0005-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0006-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4314807,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0006-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0007-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 70988517,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0007-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0008-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 40075895,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0008-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0009-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 5016846,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0009-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0010-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4207243,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0010-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0011-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4743391,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0011-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0012-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 115593504,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0012-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0013-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 136541088,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0013-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0014-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 48076557,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0014-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0015-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 116580706,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0015-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0016-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 87609960,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0016-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0017-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4766658,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0017-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0018-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 5785205,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0018-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0019-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 120563597,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0019-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0020-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 146335020,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0020-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0021-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 152677856,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0021-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0022-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 150447199,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0022-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0023-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 159519280,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0023-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0024-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 159714457,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0024-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0025-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 146887706,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0025-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0026-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 153374588,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0026-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0027-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 158353000,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0027-of-0028.json.zip"
+    },
+    "drug/event/2024q2/drug-event-0028-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 87934541,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q2/drug-event-0028-of-0028.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0001-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 158189957,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0001-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0002-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 148604773,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0002-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0003-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 142545251,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0003-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0004-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 59339099,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0004-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0005-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 5442295,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0005-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0006-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4395546,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0006-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0007-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4464554,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0007-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0008-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 6905475,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0008-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0009-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4552603,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0009-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0010-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4316296,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0010-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0011-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 9700525,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0011-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0012-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 119131331,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0012-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0013-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 138531733,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0013-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0014-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 22643942,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0014-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0015-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 119345310,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0015-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0016-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 116277863,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0016-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0017-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4670232,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0017-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0018-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4285134,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0018-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0019-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 58183237,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0019-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0020-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 153219014,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0020-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0021-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 150005181,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0021-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0022-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 156214336,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0022-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0023-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 162672051,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0023-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0024-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 150299571,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0024-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0025-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 154783788,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0025-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0026-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 144910046,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0026-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0027-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 152447300,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0027-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0028-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 152145553,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0028-of-0029.json.zip"
+    },
+    "drug/event/2024q3/drug-event-0029-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 115551997,
+      "source_url": "https://download.open.fda.gov/drug/event/2024q3/drug-event-0029-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0001-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 224363221,
+      "sha256": "3bbd3beeda0dc95025eda836698d49e22e09f224056421df2542492881dcb416",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0001-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0002-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 212483904,
+      "sha256": "58f3bbb8be08191eeaed9f06a50ac84cdd6d2462616c4b9b607d6aa64a6f65ad",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0002-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0003-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 149070969,
+      "sha256": "5ec538ea215d58bcc6bf4f3667a09745437ce37a6ebd16255746f4d4ad0cc18c",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0003-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0004-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 210261374,
+      "sha256": "aeb62060e733fd1014d8a502988735998d8d8cf0e83b6a440500aca2c400aafc",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0004-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0005-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 225580455,
+      "sha256": "578c53dc999dafd6d75051fb3d551283e690d9deeac39b2b94de24c6e23d1d58",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0005-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0006-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 123140084,
+      "sha256": "dde2e3c501aa472ab4725725a496eb748883852a97b1cc60dfa609fb0b5cb68b",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0006-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0007-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 153663546,
+      "sha256": "729e7ea24f2a2c8faeec268378ef84d856d765e1a193648fb7079e1744b20efe",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0007-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0008-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 147116485,
+      "sha256": "476fc8e1fd20828589fa09f47a20502e0b667c0a825c67ae32f4984645d2d1a6",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0008-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0009-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 42609653,
+      "sha256": "f7c84c552b007d7c937a610ad3180b420fe1b708f6baff8234d9fb060d36bbc2",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0009-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0010-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 42393844,
+      "sha256": "2ba2bf96eeec9f450fc8af946dff1068e895b0d53995135fd8c33021dc8d5a08",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0010-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0011-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 5790467,
+      "sha256": "585ea33ed1d9f69b36cb773d77b659faf3b4657ab33b86c3864ec43e5f15e02b",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0011-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0012-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 4382822,
+      "sha256": "d780ee214a9f1f0d1891e7fdb5ab66694f7a52fb69bc6b1c8e3d0c37164f5ab0",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0012-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0013-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 8123244,
+      "sha256": "88f7843f552681ca8d5e824971cdb6c05d4a65bdd82730f2b7754ec7915f5d60",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0013-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0014-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 5080336,
+      "sha256": "45ca9b0d371b998936c161b5f70ecafa75de6052194db193d68f09645c5bec3a",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0014-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0015-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 3952161,
+      "sha256": "ccda24954c2b48ff3e7aa6142643607bf50547e3f026ff5d2d10333a3eb06538",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0015-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0016-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 3626128,
+      "sha256": "df382f8bd0e5cb11ad30551a58c43a90f505df0abd10c80e7eb22cb89aa72eef",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0016-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0017-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 4594944,
+      "sha256": "858371fed68a2c1199971efc19b66106d95d6ca2dc6fa86f20cc51d5b4414f9c",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0017-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0018-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 4922839,
+      "sha256": "ac4044b4d0e4354ed7cc0a25885d5732c6ce2d0f093c12c2a937b1ef1d119eb7",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0018-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0019-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 9781652,
+      "sha256": "5607a36f7e85a43a59eb42230fb971d1d646cbedba1bdca1437e5a0f40ffed3b",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0019-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0020-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 11171221,
+      "sha256": "2adeb5366c6d10b8fd30fc7e1f9be1bd86e795a53e005b0145612c58dbfc61b0",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0020-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0021-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 18487408,
+      "sha256": "97b9ff6c64c1c92d08f7e765a902183ed0cb30e2cb61e64d14926e7094ed5a80",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0021-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0022-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 27704559,
+      "sha256": "30d9cb2d89512be29ae8bdafbf8d7401697e8e860dbb2205bfdd87d9783b66be",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0022-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0023-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 112183342,
+      "sha256": "8fbaabfd071e694ccee59849e570d26c0987559666bf9638c744c0770929cd31",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0023-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0024-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 130251469,
+      "sha256": "68d28e71351d029390299a3becc0c2a0a29e918b133d58682702b27a562c383f",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0024-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0025-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 131490449,
+      "sha256": "c8177985fdba73adc2fd939227073756577c641ef3f2abaa426aa21abea90d06",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0025-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0026-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 184045439,
+      "sha256": "3b6b9bee74b63224b1c06e39e715b598dd4334454a55567cd786651273d910de",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0026-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0027-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 222076635,
+      "sha256": "0a9de15b37ef6592ecde1c3ee72507bbfed249146b5eb8c69ffa418b6026de19",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0027-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0028-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 251987552,
+      "sha256": "e1e58a8103676642ae2399c344688d05172abd19df14cc5209935cdebf9f99a6",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0028-of-0029.json.zip"
+    },
+    "drug/event/2024q4/drug-event-0029-of-0029.json.zip": {
+      "status": "match",
+      "bytes": 6118905,
+      "sha256": "88d21bc1e44a0ad897c4959b17d5b0cfc8aec249fbc483151a971f326c09f0bb",
+      "source_url": "https://download.open.fda.gov/drug/event/2024q4/drug-event-0029-of-0029.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0001-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 177526902,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0001-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0002-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 160442263,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0002-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0003-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 180268452,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0003-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0004-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 64073911,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0004-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0005-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 5148000,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0005-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0006-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4509427,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0006-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0007-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 6343321,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0007-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0008-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 5241408,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0008-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0009-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 3882765,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0009-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0010-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4382967,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0010-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0011-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 119424242,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0011-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0012-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 153425045,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0012-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0013-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 57263266,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0013-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0014-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 165822579,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0014-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0015-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 89165565,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0015-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0016-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 14132201,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0016-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0017-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4073933,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0017-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0018-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 98758828,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0018-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0019-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 174441567,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0019-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0020-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 178738341,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0020-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0021-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 177667670,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0021-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0022-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 179528313,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0022-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0023-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 173592545,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0023-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0024-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 178590713,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0024-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0025-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 187777909,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0025-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0026-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 167744795,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0026-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0027-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 166858111,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0027-of-0028.json.zip"
+    },
+    "drug/event/2025q1/drug-event-0028-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 30745694,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q1/drug-event-0028-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0001-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 174728098,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0001-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0002-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 164716944,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0002-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0003-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 153170127,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0003-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0004-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 42265110,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0004-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0005-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4945846,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0005-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0006-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4815245,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0006-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0007-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 6168604,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0007-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0008-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 5907458,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0008-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0009-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 3856642,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0009-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0010-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4299548,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0010-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0011-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 101639134,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0011-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0012-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 119028945,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0012-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0013-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 59174873,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0013-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0014-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 126320704,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0014-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0015-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 115012552,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0015-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0016-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 29506705,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0016-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0017-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4056875,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0017-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0018-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 83691333,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0018-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0019-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 163397111,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0019-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0020-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 160321796,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0020-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0021-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 169993399,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0021-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0022-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 176773852,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0022-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0023-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 161125226,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0023-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0024-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 168467043,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0024-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0025-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 173242628,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0025-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0026-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 167620716,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0026-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0027-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 167504121,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0027-of-0028.json.zip"
+    },
+    "drug/event/2025q2/drug-event-0028-of-0028.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 35213653,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q2/drug-event-0028-of-0028.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0001-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 166383617,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0001-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0002-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 176473470,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0002-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0003-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 142331832,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0003-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0004-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 162551794,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0004-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0005-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 6107417,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0005-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0006-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4748833,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0006-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0007-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4577782,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0007-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0008-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 5113224,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0008-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0009-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 6618002,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0009-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0010-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4478481,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0010-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0011-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 3776436,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0011-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0012-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4337435,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0012-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0013-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 47108757,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0013-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0014-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 170358300,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0014-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0015-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 138388174,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0015-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0016-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 42058509,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0016-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0017-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 136240703,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0017-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0018-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 137892838,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0018-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0019-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 10141493,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0019-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0020-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4259360,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0020-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0021-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 70551680,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0021-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0022-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 168592838,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0022-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0023-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 172842609,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0023-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0024-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 165399902,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0024-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0025-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 177212946,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0025-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0026-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 171011706,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0026-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0027-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 175034847,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0027-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0028-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 169833613,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0028-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0029-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 192726503,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0029-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0030-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 172087757,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0030-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0031-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 162338558,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0031-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0032-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 170204498,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0032-of-0033.json.zip"
+    },
+    "drug/event/2025q3/drug-event-0033-of-0033.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 82610288,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q3/drug-event-0033-of-0033.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0001-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 189985155,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0001-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0002-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 165331734,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0002-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0003-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 8875664,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0003-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0004-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 5018502,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0004-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0005-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4666134,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0005-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0006-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4152245,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0006-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0007-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 7195451,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0007-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0008-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4616209,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0008-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0009-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4015682,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0009-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0010-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4253717,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0010-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0011-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 83736265,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0011-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0012-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 179722182,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0012-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0013-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 183219949,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0013-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0014-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 84359718,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0014-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0015-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 15958197,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0015-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0016-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 76589771,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0016-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0017-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 5131447,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0017-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0018-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 110517613,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0018-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0019-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 193957420,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0019-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0020-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 183525844,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0020-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0021-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 168647969,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0021-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0022-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 173503862,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0022-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0023-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 186342292,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0023-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0024-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 173721769,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0024-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0025-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 185244451,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0025-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0026-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 191392964,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0026-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0027-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 187154518,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0027-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0028-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 194375047,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0028-of-0029.json.zip"
+    },
+    "drug/event/2025q4/drug-event-0029-of-0029.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 110386466,
+      "source_url": "https://download.open.fda.gov/drug/event/2025q4/drug-event-0029-of-0029.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0001-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 183448358,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0001-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0002-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 174281427,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0002-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0003-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 14529849,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0003-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0004-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 5158547,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0004-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0005-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 5005913,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0005-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0006-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4584145,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0006-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0007-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 7180001,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0007-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0008-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4705525,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0008-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0009-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4393485,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0009-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0010-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4599864,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0010-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0011-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 5253711,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0011-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0012-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 158480686,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0012-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0013-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 168964693,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0013-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0014-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 166282318,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0014-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0015-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 141581050,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0015-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0016-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 4576073,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0016-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0017-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 5267090,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0017-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0018-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 86885812,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0018-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0019-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 171085914,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0019-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0020-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 169193380,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0020-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0021-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 177567131,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0021-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0022-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 177896546,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0022-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0023-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 169969911,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0023-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0024-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 188408888,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0024-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0025-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 174681993,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0025-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0026-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 162033100,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0026-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0027-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 168116982,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0027-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0028-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 176239769,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0028-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0029-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 170844051,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0029-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0030-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 171486778,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0030-of-0031.json.zip"
+    },
+    "drug/event/2026q1/drug-event-0031-of-0031.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 11774190,
+      "source_url": "https://download.open.fda.gov/drug/event/2026q1/drug-event-0031-of-0031.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0001-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 227756862,
+      "sha256": "94686e353be84e3e1fe8218f25e2a8dc257704e21f8e915f39e7f2983e907865",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0001-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0002-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 258542700,
+      "sha256": "edd84857156d4532c20b8a1a86424b0b0f42919d14ccf461bb2630646dbbc057",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0002-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0003-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 238377089,
+      "sha256": "fe8efe64c11cf1b2da55be3f6b7d47577a20bf2b5aa968999f5e89f022489e78",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0003-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0004-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 271120893,
+      "sha256": "a211b0a1bbe2abc14eecc2b92a64cb410578c5dabeab1397f8ad4a4f076df721",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0004-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0005-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 208728383,
+      "sha256": "745082c78b4a675576f2e6efc78720233c852244b07d75b29f41f0f9e91b4970",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0005-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0006-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 110024711,
+      "sha256": "1499d0c41aa543f328bb5b6e18793f152fdd4c32e787dacab8d821f8481afff2",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0006-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0007-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 109838574,
+      "sha256": "fbd518edee1a610daa4207f76406e73478c61f5fd727738e9d72e3b38891ab6f",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0007-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0008-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 62014678,
+      "sha256": "aebfee5ec9989127dc6ad9853766387409635c414203fa35b46cf4c12f9ef331",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0008-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0009-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 52093266,
+      "sha256": "61853d4a5494dd7d23470f570b73e4fad90ee8665dd6cb47c519b867e1d825f1",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0009-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0010-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 99687039,
+      "sha256": "c5e6654c061203cf5492995e5ec2bde4168c2f228caac10b0d7ae2f8fc711d2e",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0010-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0011-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 251541945,
+      "sha256": "e752292c81e088da1dbfcdd9420d59b7352d9e511fac5c2bbf6f836978651af9",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0011-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0012-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 238590752,
+      "sha256": "5028365f1c945bd288843227267118e390fe3b00fa6a88ffcfcc4ca8fb4618c9",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0012-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0013-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 114905153,
+      "sha256": "2c69e78e66d0cd56e2cada522168e55f0b97fddfb9b08eccfc32d73a404632c1",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0013-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0014-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 7909258,
+      "sha256": "39ab363c0ef525afae92f48b14f8427bfe3f884eef931fa8b35086ba17fdcf91",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0014-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0015-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 194148068,
+      "sha256": "16e2dca41f674fcc0249d4a802bc3e9c14220de2b52fb564683f763ab7f76284",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0015-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0016-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 41493997,
+      "sha256": "b3de0a1d77f0efe88a5f7e8b0b88b8dfed8073bc2324162ac5eeadd886241c9d",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0016-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0017-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 9097769,
+      "sha256": "6b079ba706dead8a1439357dec7bff038f755e00401618f4466cc61e26abb4c3",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0017-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0018-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 8263020,
+      "sha256": "800d8d3d14d7fca77d7cb7349fffb8c6a9311195d004ef6768bb1287e1f91704",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0018-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0019-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 3954964,
+      "sha256": "8d4a06b519ba0b5394eefc5715cddbaedcc7a6acaa4bfd102b3a0db13ca300c9",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0019-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0020-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 12051729,
+      "sha256": "3efc3e64b8ab8a931c687d8fc956af16e0820409c17b0f97bdc8fd160e040f96",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0020-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0021-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 9994936,
+      "sha256": "91e6de51ebcbf5d87d702ab62120b63e6bbc11a4cc21daf848d4a546db47874c",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0021-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0022-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 5187379,
+      "sha256": "4edd04f32bf2c4d31bcb981abce4cbf51110e20a280888266717fb37ffd72652",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0022-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0023-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 4327538,
+      "sha256": "ce2981a29f0ceabf83ca063cdf6992c74d7d9d70b9533cef706c9f8e209636c4",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0023-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0024-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 6029416,
+      "sha256": "4501a32b6274f64a8a82060f5a62349f83581bfe7a7aec76a44b659456af9b2e",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0024-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0025-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 8957823,
+      "sha256": "913f83de4f4bcf71fe71257de7bb77009828f78b55a4bd7c979e35384e1d3d57",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0025-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0026-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 7324217,
+      "sha256": "a990aaffc86aa45cd024ed3f7ea722b1cfca68b0a5afb20b8321aa129c0b7f3b",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0026-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0027-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 10616343,
+      "sha256": "990a55d462076939b6cdae70ae054d7c58d20fdebd864fba58d75f08b46d359a",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0027-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0028-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 15187900,
+      "sha256": "19ee3040d9034f5f7112b41f479e27aa6af62e5efd49757318f2c438fe2db1b4",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0028-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0029-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 15468698,
+      "sha256": "53e6b4a07b966bacfc37daafb0413f2f21c9b3aa5cb9dcb5ec4f20f7d8439c9f",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0029-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0030-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 29953284,
+      "sha256": "598d0bc4e36cd42744ca3bb46e5fa3ea0e616c0b1a9ad966c413ccb3243ec07d",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0030-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0031-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 21147019,
+      "sha256": "79b009b4cd4e51f70323d35f67e1508f9545a77907d11fa93065ff37974866c9",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0031-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0032-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 45179777,
+      "sha256": "00470f116b86ab6426e0b18f3576800e0a03bda203481fce8b059ee3165c212f",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0032-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0033-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 191673974,
+      "sha256": "c277370d7bf23609a037f728bd85a12c9a72d3a25df29fe911511ef6e749b208",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0033-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0034-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 199705786,
+      "sha256": "46e54bfcd40a35a62d609ff419c3b9086999d50a4a9483cb7dba45b8fde00387",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0034-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0035-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 262166709,
+      "sha256": "63b361f25b64aa2dad07bb586a130f69f63464ff30973ee68235c39350889afc",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0035-of-0036.json.zip"
+    },
+    "drug/event/2026q2/drug-event-0036-of-0036.json.zip": {
+      "status": "match",
+      "bytes": 55792967,
+      "sha256": "1b309e514eb6b626357d86fbd2f0e2f8903c0a4538a0b5d266c22e53ed336e6f",
+      "source_url": "https://download.open.fda.gov/drug/event/2026q2/drug-event-0036-of-0036.json.zip"
+    },
+    "drug/event/all_other/drug-event-0001-of-0004.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 106726302,
+      "source_url": "https://download.open.fda.gov/drug/event/all_other/drug-event-0001-of-0004.json.zip"
+    },
+    "drug/event/all_other/drug-event-0002-of-0004.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 43105673,
+      "source_url": "https://download.open.fda.gov/drug/event/all_other/drug-event-0002-of-0004.json.zip"
+    },
+    "drug/event/all_other/drug-event-0003-of-0004.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 3056660,
+      "source_url": "https://download.open.fda.gov/drug/event/all_other/drug-event-0003-of-0004.json.zip"
+    },
+    "drug/event/all_other/drug-event-0004-of-0004.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 41657197,
+      "source_url": "https://download.open.fda.gov/drug/event/all_other/drug-event-0004-of-0004.json.zip"
+    },
+    "drug/label/drug-label-0001-of-0014.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 137051874,
+      "source_url": "https://download.open.fda.gov/drug/label/drug-label-0001-of-0014.json.zip"
+    },
+    "drug/label/drug-label-0002-of-0014.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 150738939,
+      "source_url": "https://download.open.fda.gov/drug/label/drug-label-0002-of-0014.json.zip"
+    },
+    "drug/label/drug-label-0003-of-0014.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 142494579,
+      "source_url": "https://download.open.fda.gov/drug/label/drug-label-0003-of-0014.json.zip"
+    },
+    "drug/label/drug-label-0004-of-0014.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 143905694,
+      "source_url": "https://download.open.fda.gov/drug/label/drug-label-0004-of-0014.json.zip"
+    },
+    "drug/label/drug-label-0005-of-0014.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 131377232,
+      "source_url": "https://download.open.fda.gov/drug/label/drug-label-0005-of-0014.json.zip"
+    },
+    "drug/label/drug-label-0006-of-0014.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 143473764,
+      "source_url": "https://download.open.fda.gov/drug/label/drug-label-0006-of-0014.json.zip"
+    },
+    "drug/label/drug-label-0007-of-0014.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 147721556,
+      "source_url": "https://download.open.fda.gov/drug/label/drug-label-0007-of-0014.json.zip"
+    },
+    "drug/label/drug-label-0008-of-0014.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 144415501,
+      "source_url": "https://download.open.fda.gov/drug/label/drug-label-0008-of-0014.json.zip"
+    },
+    "drug/label/drug-label-0009-of-0014.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 132337112,
+      "source_url": "https://download.open.fda.gov/drug/label/drug-label-0009-of-0014.json.zip"
+    },
+    "drug/label/drug-label-0010-of-0014.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 139670400,
+      "source_url": "https://download.open.fda.gov/drug/label/drug-label-0010-of-0014.json.zip"
+    },
+    "drug/label/drug-label-0011-of-0014.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 147146433,
+      "source_url": "https://download.open.fda.gov/drug/label/drug-label-0011-of-0014.json.zip"
+    },
+    "drug/label/drug-label-0012-of-0014.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 141888084,
+      "source_url": "https://download.open.fda.gov/drug/label/drug-label-0012-of-0014.json.zip"
+    },
+    "drug/label/drug-label-0013-of-0014.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 132631064,
+      "source_url": "https://download.open.fda.gov/drug/label/drug-label-0013-of-0014.json.zip"
+    },
+    "drug/label/drug-label-0014-of-0014.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 41546512,
+      "source_url": "https://download.open.fda.gov/drug/label/drug-label-0014-of-0014.json.zip"
+    },
+    "drug/ndc/drug-ndc-0001-of-0001.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 28251502,
+      "source_url": "https://download.open.fda.gov/drug/ndc/drug-ndc-0001-of-0001.json.zip"
+    },
+    "drug/orangebook/drug-orangebook-0001-of-0001.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 2469977,
+      "source_url": "https://download.open.fda.gov/drug/orangebook/drug-orangebook-0001-of-0001.json.zip"
+    },
+    "drug/shortages/drug-shortages-0001-of-0001.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 444729,
+      "source_url": "https://download.open.fda.gov/drug/shortages/drug-shortages-0001-of-0001.json.zip"
+    },
+    "food/enforcement/food-enforcement-0001-of-0001.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 5883666,
+      "source_url": "https://download.open.fda.gov/food/enforcement/food-enforcement-0001-of-0001.json.zip"
+    },
+    "food/event/food-event-0001-of-0001.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 9158171,
+      "source_url": "https://download.open.fda.gov/food/event/food-event-0001-of-0001.json.zip"
+    },
+    "other/historicaldocument/other-historicaldocument-0001-of-0001.json.zip": {
+      "status": "digest_mismatch",
+      "bytes": 13869827,
+      "sha256": "e7addd69e7d7c3d710d9178507299af2c8152f4db482bd672c19344274722209",
+      "source_url": "https://download.open.fda.gov/other/historicaldocument/other-historicaldocument-0001-of-0001.json.zip"
+    },
+    "other/nsde/other-nsde-0001-of-0003.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 11983095,
+      "source_url": "https://download.open.fda.gov/other/nsde/other-nsde-0001-of-0003.json.zip"
+    },
+    "other/nsde/other-nsde-0002-of-0003.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 11999874,
+      "source_url": "https://download.open.fda.gov/other/nsde/other-nsde-0002-of-0003.json.zip"
+    },
+    "other/nsde/other-nsde-0003-of-0003.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 8305024,
+      "source_url": "https://download.open.fda.gov/other/nsde/other-nsde-0003-of-0003.json.zip"
+    },
+    "other/substance/other-substance-0001-of-0001.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 332281910,
+      "source_url": "https://download.open.fda.gov/other/substance/other-substance-0001-of-0001.json.zip"
+    },
+    "other/unii/other-unii-0001-of-0001.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 3689043,
+      "source_url": "https://download.open.fda.gov/other/unii/other-unii-0001-of-0001.json.zip"
+    },
+    "research/covidmirnaandproteomics/research-covidmirnaandproteomics-0001-of-0001.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 15703636,
+      "source_url": "https://download.open.fda.gov/research/covidmirnaandproteomics/research-covidmirnaandproteomics-0001-of-0001.json.zip"
+    },
+    "research/tobaccodigitalads/research-tobaccodigitalads-0001-of-0001.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 1130,
+      "source_url": "https://download.open.fda.gov/research/tobaccodigitalads/research-tobaccodigitalads-0001-of-0001.json.zip"
+    },
+    "research/tobaccoharmmenthol/research-tobaccoharmmenthol-0001-of-0001.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 105737,
+      "source_url": "https://download.open.fda.gov/research/tobaccoharmmenthol/research-tobaccoharmmenthol-0001-of-0001.json.zip"
+    },
+    "research/tobaccopreventionads/research-tobaccopreventionads-0001-of-0001.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 63061,
+      "source_url": "https://download.open.fda.gov/research/tobaccopreventionads/research-tobaccopreventionads-0001-of-0001.json.zip"
+    },
+    "research/tobaccosmokefree/research-tobaccosmokefree-0001-of-0001.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 1744,
+      "source_url": "https://download.open.fda.gov/research/tobaccosmokefree/research-tobaccosmokefree-0001-of-0001.json.zip"
+    },
+    "tobacco/problem/tobacco-problem-0001-of-0001.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 54058,
+      "source_url": "https://download.open.fda.gov/tobacco/problem/tobacco-problem-0001-of-0001.json.zip"
+    },
+    "transparency/crl/transparency-crl-0001-of-0001.json.zip": {
+      "status": "size_mismatch",
+      "bytes": 1078050,
+      "source_url": "https://download.open.fda.gov/transparency/crl/transparency-crl-0001-of-0001.json.zip"
+    }
+  },
+  "published_batches": [
+    {
+      "revision": "f59481291040c0358f05986617b68e78931c7bc9",
+      "paths": [
+        "drug/event/2024q4/drug-event-0001-of-0029.json.zip"
+      ],
+      "verified": [
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0001-of-0029.json.zip",
+          "sha256": "3bbd3beeda0dc95025eda836698d49e22e09f224056421df2542492881dcb416",
+          "size": 224363221,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/f59481291040c0358f05986617b68e78931c7bc9/drug/event/2024q4/drug-event-0001-of-0029.json.zip"
+        }
+      ]
+    },
+    {
+      "revision": "fba0db131e4371aa62b8c9e202d2b76580b4d773",
+      "paths": [
+        "drug/event/2024q4/drug-event-0002-of-0029.json.zip",
+        "drug/event/2024q4/drug-event-0003-of-0029.json.zip"
+      ],
+      "verified": [
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0002-of-0029.json.zip",
+          "sha256": "58f3bbb8be08191eeaed9f06a50ac84cdd6d2462616c4b9b607d6aa64a6f65ad",
+          "size": 212483904,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/fba0db131e4371aa62b8c9e202d2b76580b4d773/drug/event/2024q4/drug-event-0002-of-0029.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0003-of-0029.json.zip",
+          "sha256": "5ec538ea215d58bcc6bf4f3667a09745437ce37a6ebd16255746f4d4ad0cc18c",
+          "size": 149070969,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/fba0db131e4371aa62b8c9e202d2b76580b4d773/drug/event/2024q4/drug-event-0003-of-0029.json.zip"
+        }
+      ]
+    },
+    {
+      "revision": "20ff9fb11d76ebdd4221c7a9430f65f7e77ffa50",
+      "paths": [
+        "drug/event/2024q4/drug-event-0004-of-0029.json.zip",
+        "drug/event/2024q4/drug-event-0005-of-0029.json.zip"
+      ],
+      "verified": [
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0004-of-0029.json.zip",
+          "sha256": "aeb62060e733fd1014d8a502988735998d8d8cf0e83b6a440500aca2c400aafc",
+          "size": 210261374,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/20ff9fb11d76ebdd4221c7a9430f65f7e77ffa50/drug/event/2024q4/drug-event-0004-of-0029.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0005-of-0029.json.zip",
+          "sha256": "578c53dc999dafd6d75051fb3d551283e690d9deeac39b2b94de24c6e23d1d58",
+          "size": 225580455,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/20ff9fb11d76ebdd4221c7a9430f65f7e77ffa50/drug/event/2024q4/drug-event-0005-of-0029.json.zip"
+        }
+      ]
+    },
+    {
+      "revision": "639686b0b8f34cabcb1757b5a8b4ce299b2f7cfb",
+      "paths": [
+        "drug/event/2024q4/drug-event-0006-of-0029.json.zip",
+        "drug/event/2024q4/drug-event-0007-of-0029.json.zip",
+        "drug/event/2024q4/drug-event-0008-of-0029.json.zip",
+        "drug/event/2024q4/drug-event-0009-of-0029.json.zip"
+      ],
+      "verified": [
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0006-of-0029.json.zip",
+          "sha256": "dde2e3c501aa472ab4725725a496eb748883852a97b1cc60dfa609fb0b5cb68b",
+          "size": 123140084,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/639686b0b8f34cabcb1757b5a8b4ce299b2f7cfb/drug/event/2024q4/drug-event-0006-of-0029.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0007-of-0029.json.zip",
+          "sha256": "729e7ea24f2a2c8faeec268378ef84d856d765e1a193648fb7079e1744b20efe",
+          "size": 153663546,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/639686b0b8f34cabcb1757b5a8b4ce299b2f7cfb/drug/event/2024q4/drug-event-0007-of-0029.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0008-of-0029.json.zip",
+          "sha256": "476fc8e1fd20828589fa09f47a20502e0b667c0a825c67ae32f4984645d2d1a6",
+          "size": 147116485,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/639686b0b8f34cabcb1757b5a8b4ce299b2f7cfb/drug/event/2024q4/drug-event-0008-of-0029.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0009-of-0029.json.zip",
+          "sha256": "f7c84c552b007d7c937a610ad3180b420fe1b708f6baff8234d9fb060d36bbc2",
+          "size": 42609653,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/639686b0b8f34cabcb1757b5a8b4ce299b2f7cfb/drug/event/2024q4/drug-event-0009-of-0029.json.zip"
+        }
+      ]
+    },
+    {
+      "revision": "c11feb8bbd26ad09268a689b78b1d546b1370307",
+      "paths": [
+        "drug/event/2024q4/drug-event-0010-of-0029.json.zip",
+        "drug/event/2024q4/drug-event-0011-of-0029.json.zip",
+        "drug/event/2024q4/drug-event-0012-of-0029.json.zip",
+        "drug/event/2024q4/drug-event-0013-of-0029.json.zip"
+      ],
+      "verified": [
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0010-of-0029.json.zip",
+          "sha256": "2ba2bf96eeec9f450fc8af946dff1068e895b0d53995135fd8c33021dc8d5a08",
+          "size": 42393844,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/c11feb8bbd26ad09268a689b78b1d546b1370307/drug/event/2024q4/drug-event-0010-of-0029.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0011-of-0029.json.zip",
+          "sha256": "585ea33ed1d9f69b36cb773d77b659faf3b4657ab33b86c3864ec43e5f15e02b",
+          "size": 5790467,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/c11feb8bbd26ad09268a689b78b1d546b1370307/drug/event/2024q4/drug-event-0011-of-0029.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0012-of-0029.json.zip",
+          "sha256": "d780ee214a9f1f0d1891e7fdb5ab66694f7a52fb69bc6b1c8e3d0c37164f5ab0",
+          "size": 4382822,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/c11feb8bbd26ad09268a689b78b1d546b1370307/drug/event/2024q4/drug-event-0012-of-0029.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0013-of-0029.json.zip",
+          "sha256": "88f7843f552681ca8d5e824971cdb6c05d4a65bdd82730f2b7754ec7915f5d60",
+          "size": 8123244,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/c11feb8bbd26ad09268a689b78b1d546b1370307/drug/event/2024q4/drug-event-0013-of-0029.json.zip"
+        }
+      ]
+    },
+    {
+      "revision": "426480a1112e883140956a3521ffb22b53f77844",
+      "paths": [
+        "drug/event/2024q4/drug-event-0014-of-0029.json.zip",
+        "drug/event/2024q4/drug-event-0015-of-0029.json.zip",
+        "drug/event/2024q4/drug-event-0016-of-0029.json.zip",
+        "drug/event/2024q4/drug-event-0017-of-0029.json.zip"
+      ],
+      "verified": [
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0014-of-0029.json.zip",
+          "sha256": "45ca9b0d371b998936c161b5f70ecafa75de6052194db193d68f09645c5bec3a",
+          "size": 5080336,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/426480a1112e883140956a3521ffb22b53f77844/drug/event/2024q4/drug-event-0014-of-0029.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0015-of-0029.json.zip",
+          "sha256": "ccda24954c2b48ff3e7aa6142643607bf50547e3f026ff5d2d10333a3eb06538",
+          "size": 3952161,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/426480a1112e883140956a3521ffb22b53f77844/drug/event/2024q4/drug-event-0015-of-0029.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0016-of-0029.json.zip",
+          "sha256": "df382f8bd0e5cb11ad30551a58c43a90f505df0abd10c80e7eb22cb89aa72eef",
+          "size": 3626128,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/426480a1112e883140956a3521ffb22b53f77844/drug/event/2024q4/drug-event-0016-of-0029.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0017-of-0029.json.zip",
+          "sha256": "858371fed68a2c1199971efc19b66106d95d6ca2dc6fa86f20cc51d5b4414f9c",
+          "size": 4594944,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/426480a1112e883140956a3521ffb22b53f77844/drug/event/2024q4/drug-event-0017-of-0029.json.zip"
+        }
+      ]
+    },
+    {
+      "revision": "f724d3530e39f9857762fb127b7a9377e18d7f10",
+      "paths": [
+        "drug/event/2024q4/drug-event-0018-of-0029.json.zip",
+        "drug/event/2024q4/drug-event-0019-of-0029.json.zip",
+        "drug/event/2024q4/drug-event-0020-of-0029.json.zip",
+        "drug/event/2024q4/drug-event-0021-of-0029.json.zip"
+      ],
+      "verified": [
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0018-of-0029.json.zip",
+          "sha256": "ac4044b4d0e4354ed7cc0a25885d5732c6ce2d0f093c12c2a937b1ef1d119eb7",
+          "size": 4922839,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/f724d3530e39f9857762fb127b7a9377e18d7f10/drug/event/2024q4/drug-event-0018-of-0029.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0019-of-0029.json.zip",
+          "sha256": "5607a36f7e85a43a59eb42230fb971d1d646cbedba1bdca1437e5a0f40ffed3b",
+          "size": 9781652,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/f724d3530e39f9857762fb127b7a9377e18d7f10/drug/event/2024q4/drug-event-0019-of-0029.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0020-of-0029.json.zip",
+          "sha256": "2adeb5366c6d10b8fd30fc7e1f9be1bd86e795a53e005b0145612c58dbfc61b0",
+          "size": 11171221,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/f724d3530e39f9857762fb127b7a9377e18d7f10/drug/event/2024q4/drug-event-0020-of-0029.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0021-of-0029.json.zip",
+          "sha256": "97b9ff6c64c1c92d08f7e765a902183ed0cb30e2cb61e64d14926e7094ed5a80",
+          "size": 18487408,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/f724d3530e39f9857762fb127b7a9377e18d7f10/drug/event/2024q4/drug-event-0021-of-0029.json.zip"
+        }
+      ]
+    },
+    {
+      "revision": "aae4caccaf0ee8b75fbadb59d1604acaa08ccaa0",
+      "paths": [
+        "drug/event/2024q4/drug-event-0022-of-0029.json.zip",
+        "drug/event/2024q4/drug-event-0023-of-0029.json.zip",
+        "drug/event/2024q4/drug-event-0024-of-0029.json.zip",
+        "drug/event/2024q4/drug-event-0025-of-0029.json.zip"
+      ],
+      "verified": [
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0022-of-0029.json.zip",
+          "sha256": "30d9cb2d89512be29ae8bdafbf8d7401697e8e860dbb2205bfdd87d9783b66be",
+          "size": 27704559,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/aae4caccaf0ee8b75fbadb59d1604acaa08ccaa0/drug/event/2024q4/drug-event-0022-of-0029.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0023-of-0029.json.zip",
+          "sha256": "8fbaabfd071e694ccee59849e570d26c0987559666bf9638c744c0770929cd31",
+          "size": 112183342,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/aae4caccaf0ee8b75fbadb59d1604acaa08ccaa0/drug/event/2024q4/drug-event-0023-of-0029.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0024-of-0029.json.zip",
+          "sha256": "68d28e71351d029390299a3becc0c2a0a29e918b133d58682702b27a562c383f",
+          "size": 130251469,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/aae4caccaf0ee8b75fbadb59d1604acaa08ccaa0/drug/event/2024q4/drug-event-0024-of-0029.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0025-of-0029.json.zip",
+          "sha256": "c8177985fdba73adc2fd939227073756577c641ef3f2abaa426aa21abea90d06",
+          "size": 131490449,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/aae4caccaf0ee8b75fbadb59d1604acaa08ccaa0/drug/event/2024q4/drug-event-0025-of-0029.json.zip"
+        }
+      ]
+    },
+    {
+      "revision": "4f49500a692ce7bdb84eda93e5fbb5f3223c33a8",
+      "paths": [
+        "drug/event/2024q4/drug-event-0026-of-0029.json.zip",
+        "drug/event/2024q4/drug-event-0027-of-0029.json.zip"
+      ],
+      "verified": [
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0026-of-0029.json.zip",
+          "sha256": "3b6b9bee74b63224b1c06e39e715b598dd4334454a55567cd786651273d910de",
+          "size": 184045439,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/4f49500a692ce7bdb84eda93e5fbb5f3223c33a8/drug/event/2024q4/drug-event-0026-of-0029.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0027-of-0029.json.zip",
+          "sha256": "0a9de15b37ef6592ecde1c3ee72507bbfed249146b5eb8c69ffa418b6026de19",
+          "size": 222076635,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/4f49500a692ce7bdb84eda93e5fbb5f3223c33a8/drug/event/2024q4/drug-event-0027-of-0029.json.zip"
+        }
+      ]
+    },
+    {
+      "revision": "f11335b45e16b24dcab75691c63b329dc6ceda67",
+      "paths": [
+        "drug/event/2024q4/drug-event-0028-of-0029.json.zip",
+        "drug/event/2024q4/drug-event-0029-of-0029.json.zip"
+      ],
+      "verified": [
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0028-of-0029.json.zip",
+          "sha256": "e1e58a8103676642ae2399c344688d05172abd19df14cc5209935cdebf9f99a6",
+          "size": 251987552,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/f11335b45e16b24dcab75691c63b329dc6ceda67/drug/event/2024q4/drug-event-0028-of-0029.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2024q4/drug-event-0029-of-0029.json.zip",
+          "sha256": "88d21bc1e44a0ad897c4959b17d5b0cfc8aec249fbc483151a971f326c09f0bb",
+          "size": 6118905,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/f11335b45e16b24dcab75691c63b329dc6ceda67/drug/event/2024q4/drug-event-0029-of-0029.json.zip"
+        }
+      ]
+    },
+    {
+      "revision": "d498d8c2732f36b4b171841cc4d6f0fef94db7b9",
+      "paths": [
+        "drug/event/2026q2/drug-event-0001-of-0036.json.zip"
+      ],
+      "verified": [
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0001-of-0036.json.zip",
+          "sha256": "94686e353be84e3e1fe8218f25e2a8dc257704e21f8e915f39e7f2983e907865",
+          "size": 227756862,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/d498d8c2732f36b4b171841cc4d6f0fef94db7b9/drug/event/2026q2/drug-event-0001-of-0036.json.zip"
+        }
+      ]
+    },
+    {
+      "revision": "4cd466fc7534006651b991436ad1e944c1d06245",
+      "paths": [
+        "drug/event/2026q2/drug-event-0002-of-0036.json.zip",
+        "drug/event/2026q2/drug-event-0003-of-0036.json.zip"
+      ],
+      "verified": [
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0002-of-0036.json.zip",
+          "sha256": "edd84857156d4532c20b8a1a86424b0b0f42919d14ccf461bb2630646dbbc057",
+          "size": 258542700,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/4cd466fc7534006651b991436ad1e944c1d06245/drug/event/2026q2/drug-event-0002-of-0036.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0003-of-0036.json.zip",
+          "sha256": "fe8efe64c11cf1b2da55be3f6b7d47577a20bf2b5aa968999f5e89f022489e78",
+          "size": 238377089,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/4cd466fc7534006651b991436ad1e944c1d06245/drug/event/2026q2/drug-event-0003-of-0036.json.zip"
+        }
+      ]
+    },
+    {
+      "revision": "6dfb4ce3e2d31db05d7a2e113c0a5fb4804abb69",
+      "paths": [
+        "drug/event/2026q2/drug-event-0004-of-0036.json.zip",
+        "drug/event/2026q2/drug-event-0005-of-0036.json.zip"
+      ],
+      "verified": [
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0004-of-0036.json.zip",
+          "sha256": "a211b0a1bbe2abc14eecc2b92a64cb410578c5dabeab1397f8ad4a4f076df721",
+          "size": 271120893,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/6dfb4ce3e2d31db05d7a2e113c0a5fb4804abb69/drug/event/2026q2/drug-event-0004-of-0036.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0005-of-0036.json.zip",
+          "sha256": "745082c78b4a675576f2e6efc78720233c852244b07d75b29f41f0f9e91b4970",
+          "size": 208728383,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/6dfb4ce3e2d31db05d7a2e113c0a5fb4804abb69/drug/event/2026q2/drug-event-0005-of-0036.json.zip"
+        }
+      ]
+    },
+    {
+      "revision": "5eb0d207727bc96527ddeb6ec28a8a6973c5cb00",
+      "paths": [
+        "drug/event/2026q2/drug-event-0006-of-0036.json.zip",
+        "drug/event/2026q2/drug-event-0007-of-0036.json.zip",
+        "drug/event/2026q2/drug-event-0008-of-0036.json.zip",
+        "drug/event/2026q2/drug-event-0009-of-0036.json.zip"
+      ],
+      "verified": [
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0006-of-0036.json.zip",
+          "sha256": "1499d0c41aa543f328bb5b6e18793f152fdd4c32e787dacab8d821f8481afff2",
+          "size": 110024711,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/5eb0d207727bc96527ddeb6ec28a8a6973c5cb00/drug/event/2026q2/drug-event-0006-of-0036.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0007-of-0036.json.zip",
+          "sha256": "fbd518edee1a610daa4207f76406e73478c61f5fd727738e9d72e3b38891ab6f",
+          "size": 109838574,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/5eb0d207727bc96527ddeb6ec28a8a6973c5cb00/drug/event/2026q2/drug-event-0007-of-0036.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0008-of-0036.json.zip",
+          "sha256": "aebfee5ec9989127dc6ad9853766387409635c414203fa35b46cf4c12f9ef331",
+          "size": 62014678,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/5eb0d207727bc96527ddeb6ec28a8a6973c5cb00/drug/event/2026q2/drug-event-0008-of-0036.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0009-of-0036.json.zip",
+          "sha256": "61853d4a5494dd7d23470f570b73e4fad90ee8665dd6cb47c519b867e1d825f1",
+          "size": 52093266,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/5eb0d207727bc96527ddeb6ec28a8a6973c5cb00/drug/event/2026q2/drug-event-0009-of-0036.json.zip"
+        }
+      ]
+    },
+    {
+      "revision": "af3242484bbacd19bb38e9e829acd66b4bd64a41",
+      "paths": [
+        "drug/event/2026q2/drug-event-0010-of-0036.json.zip",
+        "drug/event/2026q2/drug-event-0011-of-0036.json.zip"
+      ],
+      "verified": [
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0010-of-0036.json.zip",
+          "sha256": "c5e6654c061203cf5492995e5ec2bde4168c2f228caac10b0d7ae2f8fc711d2e",
+          "size": 99687039,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/af3242484bbacd19bb38e9e829acd66b4bd64a41/drug/event/2026q2/drug-event-0010-of-0036.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0011-of-0036.json.zip",
+          "sha256": "e752292c81e088da1dbfcdd9420d59b7352d9e511fac5c2bbf6f836978651af9",
+          "size": 251541945,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/af3242484bbacd19bb38e9e829acd66b4bd64a41/drug/event/2026q2/drug-event-0011-of-0036.json.zip"
+        }
+      ]
+    },
+    {
+      "revision": "4a31dd464c619e5e13f0225fd4936ee51868c7a9",
+      "paths": [
+        "drug/event/2026q2/drug-event-0012-of-0036.json.zip",
+        "drug/event/2026q2/drug-event-0013-of-0036.json.zip",
+        "drug/event/2026q2/drug-event-0014-of-0036.json.zip"
+      ],
+      "verified": [
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0012-of-0036.json.zip",
+          "sha256": "5028365f1c945bd288843227267118e390fe3b00fa6a88ffcfcc4ca8fb4618c9",
+          "size": 238590752,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/4a31dd464c619e5e13f0225fd4936ee51868c7a9/drug/event/2026q2/drug-event-0012-of-0036.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0013-of-0036.json.zip",
+          "sha256": "2c69e78e66d0cd56e2cada522168e55f0b97fddfb9b08eccfc32d73a404632c1",
+          "size": 114905153,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/4a31dd464c619e5e13f0225fd4936ee51868c7a9/drug/event/2026q2/drug-event-0013-of-0036.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0014-of-0036.json.zip",
+          "sha256": "39ab363c0ef525afae92f48b14f8427bfe3f884eef931fa8b35086ba17fdcf91",
+          "size": 7909258,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/4a31dd464c619e5e13f0225fd4936ee51868c7a9/drug/event/2026q2/drug-event-0014-of-0036.json.zip"
+        }
+      ]
+    },
+    {
+      "revision": "e1530b2a1fb2f0ff17fa16743b2ca7580b7a9ee6",
+      "paths": [
+        "drug/event/2026q2/drug-event-0015-of-0036.json.zip",
+        "drug/event/2026q2/drug-event-0016-of-0036.json.zip",
+        "drug/event/2026q2/drug-event-0017-of-0036.json.zip",
+        "drug/event/2026q2/drug-event-0018-of-0036.json.zip"
+      ],
+      "verified": [
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0015-of-0036.json.zip",
+          "sha256": "16e2dca41f674fcc0249d4a802bc3e9c14220de2b52fb564683f763ab7f76284",
+          "size": 194148068,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/e1530b2a1fb2f0ff17fa16743b2ca7580b7a9ee6/drug/event/2026q2/drug-event-0015-of-0036.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0016-of-0036.json.zip",
+          "sha256": "b3de0a1d77f0efe88a5f7e8b0b88b8dfed8073bc2324162ac5eeadd886241c9d",
+          "size": 41493997,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/e1530b2a1fb2f0ff17fa16743b2ca7580b7a9ee6/drug/event/2026q2/drug-event-0016-of-0036.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0017-of-0036.json.zip",
+          "sha256": "6b079ba706dead8a1439357dec7bff038f755e00401618f4466cc61e26abb4c3",
+          "size": 9097769,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/e1530b2a1fb2f0ff17fa16743b2ca7580b7a9ee6/drug/event/2026q2/drug-event-0017-of-0036.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0018-of-0036.json.zip",
+          "sha256": "800d8d3d14d7fca77d7cb7349fffb8c6a9311195d004ef6768bb1287e1f91704",
+          "size": 8263020,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/e1530b2a1fb2f0ff17fa16743b2ca7580b7a9ee6/drug/event/2026q2/drug-event-0018-of-0036.json.zip"
+        }
+      ]
+    },
+    {
+      "revision": "c835cfe53e8799fd6a02d4c7ae95ce504bb3b4fa",
+      "paths": [
+        "drug/event/2026q2/drug-event-0019-of-0036.json.zip",
+        "drug/event/2026q2/drug-event-0020-of-0036.json.zip",
+        "drug/event/2026q2/drug-event-0021-of-0036.json.zip",
+        "drug/event/2026q2/drug-event-0022-of-0036.json.zip"
+      ],
+      "verified": [
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0019-of-0036.json.zip",
+          "sha256": "8d4a06b519ba0b5394eefc5715cddbaedcc7a6acaa4bfd102b3a0db13ca300c9",
+          "size": 3954964,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/c835cfe53e8799fd6a02d4c7ae95ce504bb3b4fa/drug/event/2026q2/drug-event-0019-of-0036.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0020-of-0036.json.zip",
+          "sha256": "3efc3e64b8ab8a931c687d8fc956af16e0820409c17b0f97bdc8fd160e040f96",
+          "size": 12051729,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/c835cfe53e8799fd6a02d4c7ae95ce504bb3b4fa/drug/event/2026q2/drug-event-0020-of-0036.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0021-of-0036.json.zip",
+          "sha256": "91e6de51ebcbf5d87d702ab62120b63e6bbc11a4cc21daf848d4a546db47874c",
+          "size": 9994936,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/c835cfe53e8799fd6a02d4c7ae95ce504bb3b4fa/drug/event/2026q2/drug-event-0021-of-0036.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0022-of-0036.json.zip",
+          "sha256": "4edd04f32bf2c4d31bcb981abce4cbf51110e20a280888266717fb37ffd72652",
+          "size": 5187379,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/c835cfe53e8799fd6a02d4c7ae95ce504bb3b4fa/drug/event/2026q2/drug-event-0022-of-0036.json.zip"
+        }
+      ]
+    },
+    {
+      "revision": "4a8d0787abbf2e47d6de85136212a0dc80d33b1f",
+      "paths": [
+        "drug/event/2026q2/drug-event-0023-of-0036.json.zip",
+        "drug/event/2026q2/drug-event-0024-of-0036.json.zip",
+        "drug/event/2026q2/drug-event-0025-of-0036.json.zip",
+        "drug/event/2026q2/drug-event-0026-of-0036.json.zip"
+      ],
+      "verified": [
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0023-of-0036.json.zip",
+          "sha256": "ce2981a29f0ceabf83ca063cdf6992c74d7d9d70b9533cef706c9f8e209636c4",
+          "size": 4327538,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/4a8d0787abbf2e47d6de85136212a0dc80d33b1f/drug/event/2026q2/drug-event-0023-of-0036.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0024-of-0036.json.zip",
+          "sha256": "4501a32b6274f64a8a82060f5a62349f83581bfe7a7aec76a44b659456af9b2e",
+          "size": 6029416,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/4a8d0787abbf2e47d6de85136212a0dc80d33b1f/drug/event/2026q2/drug-event-0024-of-0036.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0025-of-0036.json.zip",
+          "sha256": "913f83de4f4bcf71fe71257de7bb77009828f78b55a4bd7c979e35384e1d3d57",
+          "size": 8957823,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/4a8d0787abbf2e47d6de85136212a0dc80d33b1f/drug/event/2026q2/drug-event-0025-of-0036.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0026-of-0036.json.zip",
+          "sha256": "a990aaffc86aa45cd024ed3f7ea722b1cfca68b0a5afb20b8321aa129c0b7f3b",
+          "size": 7324217,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/4a8d0787abbf2e47d6de85136212a0dc80d33b1f/drug/event/2026q2/drug-event-0026-of-0036.json.zip"
+        }
+      ]
+    },
+    {
+      "revision": "934224badeeb3b2f7765583ce67d6206f459edff",
+      "paths": [
+        "drug/event/2026q2/drug-event-0027-of-0036.json.zip",
+        "drug/event/2026q2/drug-event-0028-of-0036.json.zip",
+        "drug/event/2026q2/drug-event-0029-of-0036.json.zip",
+        "drug/event/2026q2/drug-event-0030-of-0036.json.zip"
+      ],
+      "verified": [
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0027-of-0036.json.zip",
+          "sha256": "990a55d462076939b6cdae70ae054d7c58d20fdebd864fba58d75f08b46d359a",
+          "size": 10616343,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/934224badeeb3b2f7765583ce67d6206f459edff/drug/event/2026q2/drug-event-0027-of-0036.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0028-of-0036.json.zip",
+          "sha256": "19ee3040d9034f5f7112b41f479e27aa6af62e5efd49757318f2c438fe2db1b4",
+          "size": 15187900,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/934224badeeb3b2f7765583ce67d6206f459edff/drug/event/2026q2/drug-event-0028-of-0036.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0029-of-0036.json.zip",
+          "sha256": "53e6b4a07b966bacfc37daafb0413f2f21c9b3aa5cb9dcb5ec4f20f7d8439c9f",
+          "size": 15468698,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/934224badeeb3b2f7765583ce67d6206f459edff/drug/event/2026q2/drug-event-0029-of-0036.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0030-of-0036.json.zip",
+          "sha256": "598d0bc4e36cd42744ca3bb46e5fa3ea0e616c0b1a9ad966c413ccb3243ec07d",
+          "size": 29953284,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/934224badeeb3b2f7765583ce67d6206f459edff/drug/event/2026q2/drug-event-0030-of-0036.json.zip"
+        }
+      ]
+    },
+    {
+      "revision": "409f7465a6a1e00785972c1123ddaa1cd3570fde",
+      "paths": [
+        "drug/event/2026q2/drug-event-0031-of-0036.json.zip",
+        "drug/event/2026q2/drug-event-0032-of-0036.json.zip",
+        "drug/event/2026q2/drug-event-0033-of-0036.json.zip",
+        "drug/event/2026q2/drug-event-0034-of-0036.json.zip"
+      ],
+      "verified": [
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0031-of-0036.json.zip",
+          "sha256": "79b009b4cd4e51f70323d35f67e1508f9545a77907d11fa93065ff37974866c9",
+          "size": 21147019,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/409f7465a6a1e00785972c1123ddaa1cd3570fde/drug/event/2026q2/drug-event-0031-of-0036.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0032-of-0036.json.zip",
+          "sha256": "00470f116b86ab6426e0b18f3576800e0a03bda203481fce8b059ee3165c212f",
+          "size": 45179777,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/409f7465a6a1e00785972c1123ddaa1cd3570fde/drug/event/2026q2/drug-event-0032-of-0036.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0033-of-0036.json.zip",
+          "sha256": "c277370d7bf23609a037f728bd85a12c9a72d3a25df29fe911511ef6e749b208",
+          "size": 191673974,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/409f7465a6a1e00785972c1123ddaa1cd3570fde/drug/event/2026q2/drug-event-0033-of-0036.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0034-of-0036.json.zip",
+          "sha256": "46e54bfcd40a35a62d609ff419c3b9086999d50a4a9483cb7dba45b8fde00387",
+          "size": 199705786,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/409f7465a6a1e00785972c1123ddaa1cd3570fde/drug/event/2026q2/drug-event-0034-of-0036.json.zip"
+        }
+      ]
+    },
+    {
+      "revision": "f0d60240cb55fa591ad6cf15540a0c2ce0a2eab8",
+      "paths": [
+        "drug/event/2026q2/drug-event-0035-of-0036.json.zip",
+        "drug/event/2026q2/drug-event-0036-of-0036.json.zip"
+      ],
+      "verified": [
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0035-of-0036.json.zip",
+          "sha256": "63b361f25b64aa2dad07bb586a130f69f63464ff30973ee68235c39350889afc",
+          "size": 262166709,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/f0d60240cb55fa591ad6cf15540a0c2ce0a2eab8/drug/event/2026q2/drug-event-0035-of-0036.json.zip"
+        },
+        {
+          "relative_path": "drug/event/2026q2/drug-event-0036-of-0036.json.zip",
+          "sha256": "1b309e514eb6b626357d86fbd2f0e2f8903c0a4538a0b5d266c22e53ed336e6f",
+          "size": 55792967,
+          "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/resolve/f0d60240cb55fa591ad6cf15540a0c2ce0a2eab8/drug/event/2026q2/drug-event-0036-of-0036.json.zip"
+        }
+      ]
+    }
+  ],
+  "zip_counts": {
+    "size_mismatch": 349,
+    "match": 65,
+    "digest_mismatch": 1
+  },
+  "resulting_revision": "f0d60240cb55fa591ad6cf15540a0c2ce0a2eab8",
+  "recorded_at": "2026-11-24T07:33:52.952010+00:00"
+}

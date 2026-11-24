@@ -3,6 +3,7 @@
   "repository": "edithatogo/global-medicines-atlas-openfda-20261120",
   "publication_approved": true,
   "approval_reference": "Maintainer direction on 23 November 2026 to publish a fresh FDA snapshot in a separate Hugging Face dataset.",
+  "verified_revision": "d57769fdc1b17f42e57183fbbbbefc917facd608",
   "source_authority": "U.S. Food and Drug Administration, openFDA",
   "source_url": "https://api.fda.gov/download.json",
   "source_index_date": "2026-11-20",

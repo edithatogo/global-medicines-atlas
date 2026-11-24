@@ -9,7 +9,7 @@ import os
 import re
 import time
 import zipfile
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from http import HTTPStatus
 from importlib import import_module
 from itertools import batched
@@ -41,25 +41,72 @@ from global_medicines_atlas.publication_transport import (
     verify_publication,
 )
 
-BATCH = "openfda-20261120"
-REPOSITORY = f"edithatogo/global-medicines-atlas-{BATCH}"
-CONTRACT = (
-    Path(__file__).resolve().parents[1]
-    / "quality/source-batches"
-    / BATCH
-    / "manifest.json"
-)
+BATCHES = Path(__file__).resolve().parents[1] / "quality/source-batches"
+BATCH_PATTERN = re.compile(r"openfda-([0-9]{8})")
 INDEX_URL = "https://api.fda.gov/download.json"
 ZIP_ROOT = "https://download.open.fda.gov/"
 BATCH_SIZE = 8
+CHECKPOINT_SIZE = 128
 MAX_ZIP_BYTES = 512 * 1024 * 1024
 MAX_REGULAR_BYTES = 256 * 1024 * 1024
 SOURCE_TIMEOUT = 90
 TRANSIENT_STATUSES = {408, 429, 500, 502, 503, 504}
+PROGRESS = "ARCHIVE-PROGRESS.json"
+MANIFEST = "ARTIFACT-MANIFEST.json"
+INDEX_FILE = "FDA-DOWNLOAD-INDEX.json"
+METADATA = {INDEX_FILE, "README.md", "rights.json"}
+VERIFIED_TAG = "archive-verified"
 
 
 def json_bytes(value: object) -> bytes:
     return (json.dumps(value, indent=2, sort_keys=True) + "\n").encode()
+
+
+def require_archive_run(exact_commit: str) -> None:
+    """Restrict the publisher to the hosted default branch and its two triggers."""
+    require_hosted_main(exact_commit, events=("workflow_dispatch", "schedule"))
+    if os.environ.get("RUNNER_ENVIRONMENT") != "github-hosted":
+        raise ValueError("openFDA publication requires a GitHub-hosted runner")
+
+
+def approved_contract(batch: str) -> dict[str, Any]:
+    """Load a dated, explicitly approved batch from the workflow commit."""
+    parsed = BATCH_PATTERN.fullmatch(batch)
+    if parsed is None:
+        raise ValueError("openFDA batch must have the form openfda-YYYYMMDD")
+    contract = json.loads((BATCHES / batch / "manifest.json").read_bytes())
+    scope = {
+        "batch_id": batch,
+        "repository": f"edithatogo/global-medicines-atlas-{batch}",
+        "source_url": INDEX_URL,
+        "source_index_date": date.fromisoformat(parsed[1]).isoformat(),
+        "excluded_endpoint": "device/udi",
+    }
+    if (
+        contract.get("publication_approved") is not True
+        or not contract.get("approval_reference")
+        or any(contract.get(key) != value for key, value in scope.items())
+        or re.fullmatch(
+            r"[0-9a-f]{64}", contract.get("source_index_sha256", "")
+        )
+        is None
+    ):
+        raise ValueError("openFDA batch lacks a matching publication approval")
+    return contract
+
+
+def fda_client() -> httpx.Client:
+    """Read the index and original ZIPs from FDA over the qualified transport."""
+    policy = AcquisitionPolicy(
+        allowed_hosts=("api.fda.gov", "download.open.fda.gov"),
+        timeout_seconds=SOURCE_TIMEOUT,
+    )
+    return httpx.Client(
+        transport=BoundIPAddressTransport(policy=policy),
+        follow_redirects=False,
+        timeout=SOURCE_TIMEOUT,
+        headers={"Accept-Encoding": "identity"},
+    )
 
 
 def index_paths(index: bytes, contract: dict[str, Any]) -> tuple[str, ...]:
@@ -157,7 +204,11 @@ def fetch_zip(
 
 
 def preupload_zips(
-    api: Any, hub: Any, client: httpx.Client, paths: tuple[str, ...]
+    api: Any,
+    hub: Any,
+    client: httpx.Client,
+    repository: str,
+    paths: tuple[str, ...],
 ) -> tuple[list[Any], list[dict[str, Any]]]:
     """Transfer bounded batches and retain exact commit operations."""
     operations: list[Any] = []
@@ -175,7 +226,7 @@ def preupload_zips(
                     )
                 )
             api.preupload_lfs_files(
-                REPOSITORY, additions=additions, repo_type="dataset"
+                repository, additions=additions, repo_type="dataset"
             )
             # The SDK drops uploaded LFS input paths. Preserve small regular
             # Git files before releasing this batch's scratch directory.
@@ -215,7 +266,7 @@ def add_publication_metadata(
         "[FDA terms](https://open.fda.gov/terms/)\n"
     )
     metadata = {
-        "FDA-DOWNLOAD-INDEX.json": index,
+        INDEX_FILE: index,
         "README.md": card.encode(),
         "rights.json": json_bytes(contract["rights"]),
     }
@@ -233,9 +284,9 @@ def add_publication_metadata(
         "artifact_bytes": sum(record["size"] for record in records),
         "artifacts": sorted(records, key=itemgetter("path")),
     })
-    metadata["ARTIFACT-MANIFEST.json"] = manifest
+    metadata[MANIFEST] = manifest
     records.append({
-        "path": "ARTIFACT-MANIFEST.json",
+        "path": MANIFEST,
         "sha256": hashlib.sha256(manifest).hexdigest(),
         "size": len(manifest),
     })
@@ -243,13 +294,21 @@ def add_publication_metadata(
         hub.CommitOperationAdd(path_in_repo=path, path_or_fileobj=body)
         for path, body in metadata.items()
     )
+    return publication_plan(contract, records)
+
+
+def publication_plan(
+    contract: dict[str, Any], records: list[dict[str, Any]]
+) -> PublicationPlan:
+    """Bind observed path, length and SHA-256 to the approved destination."""
+    repository = contract["repository"]
     return PublicationPlan(
-        release_version=BATCH,
+        release_version=contract["batch_id"],
         target=PublicationTarget(
             destination=PublicationDestination.HUGGING_FACE,
-            repository=REPOSITORY,
+            repository=repository,
             revision="main",
-            public_base_url=f"https://huggingface.co/datasets/{REPOSITORY}",
+            public_base_url=f"https://huggingface.co/datasets/{repository}",
         ),
         artifacts=tuple(
             ArtifactBinding(
@@ -263,90 +322,369 @@ def add_publication_metadata(
     )
 
 
-def publish(output: Path, exact_commit: str) -> None:
-    """Publish only the pinned, approved snapshot from a protected dispatch."""
-    require_hosted_main(exact_commit)
-    contract = json.loads(CONTRACT.read_bytes())
+def public_head(api: Any, repository: str) -> str | None:
+    """Read the public default revision, or an as-yet unpublished destination."""
+    try:
+        info = api.repo_info(repository, repo_type="dataset")
+    except import_module("huggingface_hub.errors").RepositoryNotFoundError:
+        return None
     if (
-        contract["publication_approved"] is not True
-        or contract["repository"] != REPOSITORY
-        or contract["source_url"] != INDEX_URL
-        or not authorization_from_environment(
-            dict(os.environ)
-        ).permits_external_write
+        info.private is not False
+        or getattr(info, "gated", False)
+        or not re.fullmatch(r"[0-9a-f]{40}", info.sha or "")
     ):
-        raise PermissionError("Fresh FDA snapshot publication is not approved")
-    policy = AcquisitionPolicy(
-        allowed_hosts=("api.fda.gov", "download.open.fda.gov"),
-        timeout_seconds=SOURCE_TIMEOUT,
+        raise ValueError(
+            "Destination must be a public FDA dataset at an exact revision"
+        )
+    return str(info.sha)
+
+
+def is_verified(api: Any, contract: dict[str, Any], head: str | None) -> bool:
+    """Recognize the immutable verified revision without redownloading its ZIPs."""
+    verified = contract.get("verified_revision")
+    if verified is None and head is not None:
+        refs = api.list_repo_refs(contract["repository"], repo_type="dataset")
+        verified = next(
+            (
+                tag.target_commit
+                for tag in refs.tags
+                if tag.name == VERIFIED_TAG
+            ),
+            None,
+        )
+    if verified is not None and verified != head:
+        raise ValueError(
+            "The public FDA dataset moved away from its verified revision"
+        )
+    return verified is not None
+
+
+def index_scope(document: dict[str, Any], excluded_endpoint: str) -> str:
+    """Summarize the online candidate without downloading any ZIPs."""
+    partitions = {
+        f"{domain}/{endpoint}": details["partitions"]
+        for domain, endpoints in document["results"].items()
+        for endpoint, details in endpoints.items()
+    }
+    return (
+        f"The index lists {sum(map(len, partitions.values()))} ZIPs across "
+        f"{len(partitions)} endpoints. The publisher excludes "
+        f"{len(partitions.get(excluded_endpoint, ()))} device UDI ZIPs."
     )
-    with httpx.Client(
-        transport=BoundIPAddressTransport(policy=policy),
-        follow_redirects=False,
-        timeout=SOURCE_TIMEOUT,
-        headers={"Accept-Encoding": "identity"},
-    ) as client:
+
+
+def plan_run(output: Path, exact_commit: str, requested: str) -> None:
+    """Report the current FDA index and select at most one approved batch."""
+    require_archive_run(exact_commit)
+    batch = requested or max(
+        path.parent.name
+        for path in BATCHES.glob("openfda-*/manifest.json")
+        if BATCH_PATTERN.fullmatch(path.parent.name)
+        and json.loads(path.read_bytes()).get("publication_approved") is True
+    )
+    contract = approved_contract(batch)
+    hub = cast("Any", import_module("huggingface_hub"))
+    api = hub.HfApi(token=False)
+    repository = contract["repository"]
+    head = public_head(api, repository)
+    verified = is_verified(api, contract, head)
+    with fda_client() as client:
+        index = client.get(INDEX_URL).raise_for_status().content
+    digest = hashlib.sha256(index).hexdigest()
+    document = json.loads(index)
+    index_date = date.fromisoformat(document["meta"]["last_updated"])
+    matches = digest == contract["source_index_sha256"]
+    if not matches:
+        (output / "candidate-index.json").write_bytes(index)
+    eligible = not verified and (
+        matches
+        or (
+            head is not None
+            and MANIFEST
+            in api.list_repo_files(
+                repository, repo_type="dataset", revision=head
+            )
+        )
+    )
+    status = (
+        "Already verified"
+        if verified
+        else "Ready to resume"
+        if eligible
+        else "Waiting for the approved FDA index"
+    )
+    with Path(os.environ["GITHUB_STEP_SUMMARY"]).open(
+        "a", encoding="utf-8"
+    ) as summary:
+        summary.write(
+            f"### openFDA archive\n\nFDA index {index_date}, SHA-256 `{digest}`.\n\n"
+        )
+        summary.write(f"Approved batch `{batch}`. {status}.\n")
+        summary.write(
+            f"\n{index_scope(document, contract['excluded_endpoint'])}\n"
+        )
+        if not matches:
+            summary.write(
+                "\nThe current index differs from this approval and is retained for review.\n"
+            )
+    with Path(os.environ["GITHUB_OUTPUT"]).open(
+        "a", encoding="utf-8"
+    ) as outputs:
+        outputs.write(f"batch={batch}\neligible={str(eligible).lower()}\n")
+
+
+def archived_bytes(
+    hub: Any, repository: str, revision: str, path: str
+) -> bytes:
+    """Read small publication metadata anonymously at a fixed Hub revision."""
+    return Path(
+        hub.hf_hub_download(
+            repo_id=repository,
+            filename=path,
+            revision=revision,
+            repo_type="dataset",
+            token=False,
+        )
+    ).read_bytes()
+
+
+def recover_plan(
+    hub: Any, contract: dict[str, Any], head: str, files: set[str]
+) -> PublicationPlan:
+    """Recover the final inventory for verification without fetching from FDA."""
+    repository = contract["repository"]
+    index = archived_bytes(hub, repository, head, INDEX_FILE)
+    expected = set(index_paths(index, contract)) | METADATA | {MANIFEST}
+    body = archived_bytes(hub, repository, head, MANIFEST)
+    document = json.loads(body)
+    if any(
+        document[key] != contract[key]
+        for key in ("batch_id", "repository", "rights", "source_index_sha256")
+    ):
+        raise ValueError(
+            "Published manifest differs from the approved FDA batch"
+        )
+    records = [
+        *document["artifacts"],
+        {
+            "path": MANIFEST,
+            "size": len(body),
+            "sha256": hashlib.sha256(body).hexdigest(),
+        },
+    ]
+    plan = publication_plan(contract, records)
+    if {
+        item.relative_path for item in plan.artifacts
+    } != expected or files != expected:
+        raise ValueError(
+            "Published FDA inventory differs from the approved index"
+        )
+    return plan
+
+
+def checkpoint_records(
+    api: Any,
+    hub: Any,
+    contract: dict[str, Any],
+    head: str,
+    paths: tuple[str, ...],
+) -> list[dict[str, Any]]:
+    """Check an interrupted upload's committed path, size and digest inventory."""
+    repository = contract["repository"]
+    repo_file = import_module("huggingface_hub.hf_api").RepoFile
+    entries = {
+        entry.path: entry
+        for entry in api.list_repo_tree(
+            repository, repo_type="dataset", revision=head, recursive=True
+        )
+        if isinstance(entry, repo_file) and entry.path != ".gitattributes"
+    }
+    if not entries:
+        return []
+    if entries.pop(PROGRESS, None) is None:
+        raise ValueError("The FDA destination has files without a checkpoint")
+    progress = json.loads(archived_bytes(hub, repository, head, PROGRESS))
+    records = progress["artifacts"]
+    plan = publication_plan(contract, records)
+    if (
+        progress["source_index_sha256"] != contract["source_index_sha256"]
+        or {item.relative_path for item in plan.artifacts} != entries.keys()
+        or not entries.keys() <= set(paths)
+    ):
+        raise ValueError(
+            "The FDA checkpoint differs from its approved inventory"
+        )
+    verifier = HuggingFaceAnonymousArtifactVerifier()
+    for item in plan.artifacts:
+        entry = entries[item.relative_path]
+        if entry.size != item.size:
+            raise ValueError(
+                f"FDA checkpoint size differs for {item.relative_path}"
+            )
+        if entry.lfs is None:
+            verifier.verify_artifact(
+                target=plan.target, revision=head, artifact=item
+            )
+        elif (entry.lfs.sha256, entry.lfs.size) != (item.sha256, item.size):
+            raise ValueError(
+                f"FDA checkpoint checksum differs for {item.relative_path}"
+            )
+    return records
+
+
+def commit_batch(
+    api: Any, repository: str, head: str, operations: list[Any], message: str
+) -> str:
+    """Append to the inspected Hub revision with server-side parent protection."""
+    result = api.create_commit(
+        repository,
+        repo_type="dataset",
+        parent_commit=head,
+        operations=operations,
+        commit_message=message,
+    )
+    revision = str(result.oid)
+    if not re.fullmatch(r"[0-9a-f]{40}", revision):
+        raise ValueError(
+            "Hugging Face did not return an immutable FDA revision"
+        )
+    return revision
+
+
+def upload_remaining(
+    api: Any, hub: Any, contract: dict[str, Any], head: str | None
+) -> tuple[PublicationPlan, str]:
+    """Commit small groups and retain their checkpoints on Hugging Face."""
+    repository = contract["repository"]
+    with fda_client() as client:
         index = client.get(INDEX_URL).raise_for_status().content
         paths = index_paths(index, contract)
-        intent = {
-            "commit": exact_commit,
-            "run_id": os.environ["GITHUB_RUN_ID"],
-            "repository": REPOSITORY,
-            "source_index_sha256": contract["source_index_sha256"],
-        }
-        (output / "source-intent.json").write_bytes(json_bytes(intent))
-        hub = cast("Any", import_module("huggingface_hub"))
-        api = hub.HfApi(token=os.environ["HF_TOKEN"])
-        api.create_repo(
-            REPOSITORY, repo_type="dataset", private=False, exist_ok=True
-        )
-        repo = api.repo_info(REPOSITORY, repo_type="dataset")
-        if (
-            repo.private
-            or not repo.sha
-            or api.list_repo_files(
-                REPOSITORY, repo_type="dataset", revision=repo.sha
+        if head is None:
+            api.create_repo(
+                repository, repo_type="dataset", private=False, exist_ok=True
             )
-            != [".gitattributes"]
+            head = public_head(hub.HfApi(token=False), repository)
+            if head is None:
+                raise ValueError(
+                    "The new FDA dataset is not yet publicly readable"
+                )
+        records = checkpoint_records(
+            hub.HfApi(token=False), hub, contract, head, paths
+        )
+        existing = {record["path"] for record in records}
+        for group in batched(
+            (path for path in paths if path not in existing),
+            CHECKPOINT_SIZE,
+            strict=False,
         ):
-            raise ValueError("Destination must be the new public FDA dataset")
-        operations, records = preupload_zips(api, hub, client, paths)
+            operations, additions = preupload_zips(
+                api, hub, client, repository, group
+            )
+            index_paths(
+                client.get(INDEX_URL).raise_for_status().content, contract
+            )
+            records.extend(additions)
+            operations.append(
+                hub.CommitOperationAdd(
+                    path_in_repo=PROGRESS,
+                    path_or_fileobj=json_bytes({
+                        "source_index_sha256": contract["source_index_sha256"],
+                        "rights": contract["rights"],
+                        "artifacts": records,
+                    }),
+                )
+            )
+            head = commit_batch(
+                api,
+                repository,
+                head,
+                operations,
+                f"Archive {len(records)}/{len(paths)} FDA ZIPs",
+            )
+            print(
+                f"Archived {len(records)}/{len(paths)} FDA ZIPs at {head}",
+                flush=True,
+            )
         index_paths(client.get(INDEX_URL).raise_for_status().content, contract)
-    plan = add_publication_metadata(hub, operations, records, contract, index)
+    final_operations = [hub.CommitOperationDelete(path_in_repo=PROGRESS)]
+    plan = add_publication_metadata(
+        hub, final_operations, records, contract, index
+    )
+    revision = commit_batch(
+        api,
+        repository,
+        head,
+        final_operations,
+        f"Complete {plan.release_version}",
+    )
+    return plan, revision
+
+
+def publish(output: Path, exact_commit: str, batch: str) -> None:
+    """Resume an approved upload or rebuild the receipt for an uploaded batch."""
+    require_archive_run(exact_commit)
+    if not authorization_from_environment(
+        dict(os.environ)
+    ).permits_external_write:
+        raise PermissionError("Fresh FDA snapshot publication is not approved")
+    contract = approved_contract(batch)
+    repository = contract["repository"]
+    hub = cast("Any", import_module("huggingface_hub"))
+    reader = hub.HfApi(token=False)
+    head = public_head(reader, repository)
+    if is_verified(reader, contract, head):
+        return
+    intent = {
+        "commit": exact_commit,
+        "run_id": os.environ["GITHUB_RUN_ID"],
+        "repository": repository,
+        "source_index_sha256": contract["source_index_sha256"],
+    }
+    (output / "source-intent.json").write_bytes(json_bytes(intent))
+    files: set[str] = (
+        set()
+        if head is None
+        else set(
+            reader.list_repo_files(
+                repository, repo_type="dataset", revision=head
+            )
+        )
+        - {".gitattributes"}
+    )
+    if head is not None and MANIFEST in files:
+        plan, revision = recover_plan(hub, contract, head, files), head
+    else:
+        api = hub.HfApi(token=os.environ["HF_TOKEN"])
+        plan, revision = upload_remaining(api, hub, contract, head)
     (output / "plan.json").write_text(plan.model_dump_json(indent=2))
     intent["plan_sha256"] = plan.sha256()
     (output / "intent.json").write_bytes(json_bytes(intent))
-    result = api.create_commit(
-        REPOSITORY,
-        repo_type="dataset",
-        parent_commit=repo.sha,
-        operations=operations,
-        commit_message=f"Archive {BATCH}",
-    )
     uploaded = PublicationTransportReceipt(
         plan_sha256=plan.sha256(),
         artifact_sha256=tuple(item.sha256 for item in plan.artifacts),
         target=plan.target,
         state=PublicationTransportState.UPLOADED,
         recorded_at=datetime.now(UTC),
-        remote_revision=result.oid,
+        remote_revision=revision,
         allow_identical_content=plan.allow_identical_content,
     )
     (output / "uploaded.json").write_text(uploaded.model_dump_json(indent=2))
 
 
-def verify(output: Path, exact_commit: str) -> int:
+def verify(output: Path, exact_commit: str, batch: str) -> int:
     """Read back the exact published revision with no Hub credentials."""
-    require_hosted_main(exact_commit)
+    require_archive_run(exact_commit)
+    contract = approved_contract(batch)
     plan = PublicationPlan.model_validate_json(
         (output / "plan.json").read_bytes()
     )
     intent = json.loads((output / "intent.json").read_bytes())
     if (
-        plan.target.repository != REPOSITORY
+        plan.target.repository != contract["repository"]
         or intent["commit"] != exact_commit
         or intent["run_id"] != os.environ["GITHUB_RUN_ID"]
         or intent["plan_sha256"] != plan.sha256()
+        or intent["source_index_sha256"] != contract["source_index_sha256"]
     ):
         raise ValueError("Publication receipts do not match this Actions run")
     uploaded = PublicationTransportReceipt.model_validate_json(
@@ -362,16 +700,70 @@ def verify(output: Path, exact_commit: str) -> int:
     return int(verified.state is not PublicationTransportState.PUBLIC)
 
 
+def mark_verified(output: Path, exact_commit: str, batch: str) -> None:
+    """Keep the verified commit discoverable by future scheduled runs."""
+    require_archive_run(exact_commit)
+    if not authorization_from_environment(
+        dict(os.environ)
+    ).permits_external_write:
+        raise PermissionError("Fresh FDA snapshot publication is not approved")
+    contract = approved_contract(batch)
+    receipt = PublicationTransportReceipt.model_validate_json(
+        (output / "verified.json").read_bytes()
+    )
+    repository = contract["repository"]
+    plan = PublicationPlan.model_validate_json(
+        (output / "plan.json").read_bytes()
+    )
+    if (
+        receipt.state is not PublicationTransportState.PUBLIC
+        or receipt.target != plan.target
+        or receipt.target.repository != repository
+        or receipt.plan_sha256 != plan.sha256()
+    ):
+        raise ValueError(
+            "A matching anonymous FDA verification receipt is required"
+        )
+    hub = cast("Any", import_module("huggingface_hub"))
+    api = hub.HfApi(token=os.environ["HF_TOKEN"])
+    reader = hub.HfApi(token=False)
+    head = public_head(reader, repository)
+    if head is None or head != receipt.remote_revision:
+        raise ValueError(
+            "Hugging Face moved before the verified revision could be marked"
+        )
+    api.create_tag(
+        repository,
+        repo_type="dataset",
+        tag=VERIFIED_TAG,
+        revision=head,
+        exist_ok=True,
+    )
+    if not is_verified(reader, contract, head):
+        raise ValueError("The verified FDA archive tag could not be read back")
+    print(
+        f"Verified {len(receipt.verified_artifacts)} artifacts at {receipt.verification_uri}"
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("phase", choices=("publish", "verify"))
+    parser.add_argument(
+        "phase", choices=("plan", "publish", "verify", "mark-verified")
+    )
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--exact-commit", required=True)
+    parser.add_argument("--batch", default="")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
-    if args.phase == "verify":
-        return verify(args.output, args.exact_commit)
-    publish(args.output, args.exact_commit)
+    if args.phase == "plan":
+        plan_run(args.output, args.exact_commit, args.batch)
+    elif args.phase == "verify":
+        return verify(args.output, args.exact_commit, args.batch)
+    elif args.phase == "mark-verified":
+        mark_verified(args.output, args.exact_commit, args.batch)
+    else:
+        publish(args.output, args.exact_commit, args.batch)
     return 0
 
 

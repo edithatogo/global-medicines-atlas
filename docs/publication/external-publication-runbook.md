@@ -18,8 +18,8 @@ separate publication identities.
 Two complete source mirrors are separate publication identities from the
 bounded catalogue. They are dispatched from `main` by
 [`.github/workflows/publish-bulk-archive.yml`](../../.github/workflows/publish-bulk-archive.yml)
-on a dedicated ephemeral self-hosted runner, because the archives are far
-larger than a hosted runner can stage.
+for the original source-backed archives. Direct online openFDA transfers now
+use GitHub-hosted runners and stage only a small group of ZIPs at a time.
 
 | Batch contract | Hugging Face identity | Contents |
 | --- | --- | --- |
@@ -31,6 +31,32 @@ archive is not Atlas coverage. The FAERS container `faers-history.private.tar`
 is excluded because it duplicates the published corpus byte for byte; the
 `private` marker names the workspace that held the bytes, not a restricted
 classification.
+
+## Hosted openFDA snapshots
+
+[`publish-fresh-openfda.yml`](../../.github/workflows/publish-fresh-openfda.yml)
+checks FDA's download index daily at 16:17 UTC. A different index is retained
+as a candidate for review. An approved batch is identified by a committed
+`quality/source-batches/openfda-YYYYMMDD/manifest.json` with an explicit
+maintainer approval, the exact index SHA-256, the approved endpoint counts,
+the UDI exclusion and the corresponding Hugging Face dataset. Unapproved
+indexes get a summary and an artifact and have no publication job.
+
+The schedule checks the newest approved edition. Dispatch with
+`publish=false` for a preview or with `batch` and `publish=true` for an approved
+edition. Publication resumes from `ARCHIVE-PROGRESS.json` and verifies its
+committed file inventory before retrieving any missing ZIPs. If FDA changes
+the approved index during capture, the run stops and retains its checkpoint.
+The final commit replaces the checkpoint with the full artifact manifest.
+The verifier can rerun against that revision without reacquiring FDA data.
+Only a successful anonymous readback marks the immutable revision
+`archive-verified`. The November 20 edition's prior verified revision is
+recorded in its contract.
+[November verification](https://github.com/edithatogo/global-medicines-atlas/actions/runs/45098999576)
+
+The distinct [October historical recovery](../../quality/source-batches/openfda-all-20261030/README.md)
+uses its committed original checksums and runs on demand when an online
+copy is available.
 
 ## Required evidence before publication
 

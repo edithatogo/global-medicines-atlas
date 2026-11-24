@@ -29,7 +29,7 @@ inventory was frozen. The snapshot is now complete at 2,396 payloads.
 
 Dispatch `.github/workflows/publish-october-openfda-hosted.yml` on `main`
 with the default `publish=false` to check online availability. The
-GitHub-hosted runner reads the frozen plan retained by Actions, pins the
+GitHub-hosted runner validates the committed frozen plan, pins the
 public Hugging Face revision, and compares missing ZIPs with the FDA copies
 and pinned Internet Archive captures where available.
 The run retains the checksum results and missing metadata inventory. Dispatch
@@ -37,6 +37,15 @@ with explicit `publish=true` to append exact ZIPs. The workflow verifies each
 published batch anonymously and retains its immutable revision and digests
 in Actions. The October acquisition receipts remain part of the frozen
 inventory and require their original bytes.
+
+The committed [publication plan](publication-plan.json) is the unchanged
+`plan.json` from [Actions artifact 14882420929](https://github.com/edithatogo/global-medicines-atlas/actions/runs/45306884017/artifacts/14882420929).
+Its canonical plan SHA-256 is
+`1c63f597717bcbcb4753a644f7e7d07387e6f9cac9740833fb7c915ad1456ed0`.
+The committed [recovery receipt](online-recovery.json) is the unchanged
+`online.json` from [Actions artifact 14898987896](https://github.com/edithatogo/global-medicines-atlas/actions/runs/45348112303/artifacts/14898987896).
+It records the 65 new anonymous readbacks and the still-incomplete dataset
+at `f0d60240cb55fa591ad6cf15540a0c2ce0a2eab8`.
 
 The maintainer stopped the earlier source route on 24 November. The current
 October workflow reads from online services on GitHub-hosted runners.

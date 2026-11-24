@@ -1,10 +1,16 @@
 name: Publish fresh openFDA snapshot
 
 on:
+  schedule:
+    - cron: "17 16 * * *" # 02:17 Brisbane time
   workflow_dispatch:
     inputs:
+      batch:
+        description: Approved openfda-YYYYMMDD batch (default is the latest approval)
+        type: string
+        required: false
       publish:
-        description: Publish the approved scope of the November 20 openFDA index
+        description: Resume the approved batch after checking the index
         required: true
         type: boolean
         default: false
@@ -13,15 +19,50 @@ permissions:
   contents: read
 
 concurrency:
-  group: publish-openfda-20261120
+  group: publish-openfda-snapshot
   cancel-in-progress: false
 
 jobs:
+  plan:
+    name: Check the FDA index and public archive
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    outputs:
+      batch: ${{ steps.plan.outputs.batch }}
+      eligible: ${{ steps.plan.outputs.eligible }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.13.6"
+      - name: Compare the official index with the latest approval
+        id: plan
+        env:
+          REQUESTED_BATCH: ${{ inputs.batch }}
+        run: |
+          uv sync --python 3.15.1 --locked
+          uv run --python 3.15.1 --no-sync --with huggingface-hub==0.34.4 \
+            python scripts/publish_fresh_openfda.py plan \
+            --output build/openfda-plan --exact-commit "$GITHUB_SHA" --batch "$REQUESTED_BATCH"
+      - name: Retain an index that differs from the approval
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: openfda-candidate-index
+          path: build/openfda-plan/candidate-index.json
+          if-no-files-found: ignore
+          retention-days: 90
+
   publish:
     name: Publish FDA snapshot
-    if: github.ref == 'refs/heads/main' && inputs.publish
+    needs: plan
+    if: needs.plan.outputs.eligible == 'true' && (github.event_name == 'schedule' || inputs.publish)
     runs-on: ubuntu-24.04
     timeout-minutes: 355
+    outputs:
+      artifact-id: ${{ steps.receipts.outputs.artifact-id }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
@@ -33,6 +74,7 @@ jobs:
         run: uv sync --python 3.15.1 --locked
       - name: Download and publish FDA partitions
         env:
+          BATCH: ${{ needs.plan.outputs.batch }}
           GMA_MAINTAINER_PUBLICATION_APPROVED: yes-i-approve-publication
           GMA_PUBLICATION_ENVIRONMENT: production
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
@@ -42,19 +84,21 @@ jobs:
         run: |
           uv run --python 3.15.1 --no-sync --with huggingface-hub==0.34.4 \
             python scripts/publish_fresh_openfda.py publish \
-            --output build/openfda-publication --exact-commit "$GITHUB_SHA"
+            --output build/openfda-publication --exact-commit "$GITHUB_SHA" --batch "$BATCH"
       - name: Retain the publication receipts
         if: always()
+        id: receipts
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
-          name: openfda-publication
+          name: openfda-publication-${{ github.run_attempt }}
           path: build/openfda-publication/
           if-no-files-found: warn
           retention-days: 90
 
   verify:
     name: Verify FDA snapshot
-    needs: publish
+    needs: [plan, publish]
+    if: needs.publish.outputs.artifact-id != ''
     runs-on: ubuntu-24.04
     timeout-minutes: 355
     steps:
@@ -66,19 +110,32 @@ jobs:
           version: "0.13.6"
       - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
         with:
-          name: openfda-publication
+          artifact-ids: ${{ needs.publish.outputs.artifact-id }}
           path: build/openfda-publication/
+          merge-multiple: true
       - name: Verify published bytes anonymously
+        env:
+          BATCH: ${{ needs.plan.outputs.batch }}
         run: |
           uv sync --python 3.15.1 --locked
           uv run --python 3.15.1 --no-sync \
             python scripts/publish_fresh_openfda.py verify \
-            --output build/openfda-publication --exact-commit "$GITHUB_SHA"
+            --output build/openfda-publication --exact-commit "$GITHUB_SHA" --batch "$BATCH"
       - name: Retain the checksum verification
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
-          name: openfda-verification
+          name: openfda-verification-${{ github.run_attempt }}
           path: build/openfda-publication/verified.json
           if-no-files-found: warn
           retention-days: 90
+      - name: Mark the anonymously verified revision
+        env:
+          BATCH: ${{ needs.plan.outputs.batch }}
+          GMA_MAINTAINER_PUBLICATION_APPROVED: yes-i-approve-publication
+          GMA_PUBLICATION_ENVIRONMENT: production
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          uv run --python 3.15.1 --no-sync --with huggingface-hub==0.34.4 \
+            python scripts/publish_fresh_openfda.py mark-verified \
+            --output build/openfda-publication --exact-commit "$GITHUB_SHA" --batch "$BATCH"

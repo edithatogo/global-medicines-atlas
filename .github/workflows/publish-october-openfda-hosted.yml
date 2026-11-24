@@ -22,9 +22,6 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 355
-    permissions:
-      contents: read
-      actions: read # Read the retained frozen plan without a publication credential.
     outputs:
       archive-complete: ${{ steps.completion.outputs.archive-complete }}
       artifact-id: ${{ steps.receipts.outputs.artifact-id }}
@@ -35,15 +32,11 @@ jobs:
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
           version: "0.13.6"
-      - name: Retrieve the frozen plan from GitHub Actions
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Load the frozen October plan from this commit
         run: |
           test "$RUNNER_ENVIRONMENT" = github-hosted
           mkdir -p build/openfda-october
-          gh api repos/edithatogo/global-medicines-atlas/actions/artifacts/14882420929/zip > "$RUNNER_TEMP/october-plan.zip"
-          echo "a8d637a2d9b0ade2aaf452d0141c6818133b60065a284b8f74446da80bbe1d34  $RUNNER_TEMP/october-plan.zip" | sha256sum --check --strict
-          unzip -p "$RUNNER_TEMP/october-plan.zip" plan.json > build/openfda-october/plan.json
+          cp quality/source-batches/openfda-all-20261030/publication-plan.json build/openfda-october/plan.json
       - name: Check FDA copies and publish any authorized exact matches
         env:
           PUBLISH_REQUESTED: ${{ inputs.publish }}
