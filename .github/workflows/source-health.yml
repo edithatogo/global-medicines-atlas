@@ -1,4 +1,4 @@
-name: Capture approved NADAC and EMA checksums
+name: Capture the November 25 NADAC checksum
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   capture:
-    name: Hash the four official source files
+    name: Hash the dated official CMS CSV
     if: github.ref == 'refs/heads/codex/hosted-nadac-ema-checksums-20261124'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -32,11 +32,11 @@ jobs:
           from datetime import UTC, datetime
           from pathlib import Path
           import httpx
-          from scripts.check_archive_status import ema_status, nadac_status, response_chunks
+          from scripts.check_archive_status import nadac_status, response_chunks
           from global_medicines_atlas.acquisition import AcquisitionPolicy, BoundIPAddressTransport
 
           nadac_url = "https://download.medicaid.gov/data/nadac-national-average-drug-acquisition-cost-11-25-2026.csv"
-          allowed_hosts = ("data.medicaid.gov", "download.medicaid.gov", "www.ema.europa.eu")
+          allowed_hosts = ("data.medicaid.gov", "download.medicaid.gov")
           policy = AcquisitionPolicy(allowed_hosts=allowed_hosts, max_redirects=0)
           checksum = hashlib.sha256()
           size = 0
@@ -53,9 +53,6 @@ jobs:
                   size += len(chunk)
               if size == 0:
                   raise ValueError("CMS returned an empty CSV")
-              ema = ema_status(client)
-              if len(ema) != 3 or any(row["state"] != "candidate" for row in ema.values()):
-                  raise ValueError("The three EMA workbook candidates could not be confirmed")
 
           evidence = {
               "observed_at": datetime.now(UTC).isoformat(),
@@ -69,7 +66,6 @@ jobs:
                       "size": size,
                       "sha256": checksum.hexdigest(),
                   },
-                  **ema,
               },
           }
           Path("source-checksums.json").write_text(json.dumps(evidence, indent=2) + "\n", encoding="utf-8")
