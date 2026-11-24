@@ -54,8 +54,10 @@ scope is recorded in the
 The 20 November openFDA snapshot is public at
 `d57769fdc1b17f42e57183fbbbbefc917facd608`. The hosted checksum receipt covers
 2,379 payload ZIPs and four companion files. The approved snapshot excluded
-device UDI. The November and October openFDA publishers run on manual dispatch
-for their frozen manifests. The [hosted October recovery](https://github.com/edithatogo/global-medicines-atlas/actions/runs/45348112303)
+device UDI. The fresh-snapshot workflow checks the FDA index daily and
+resumes manifest-approved work on GitHub-hosted runners. October recovery
+is a separate manual workflow with a committed frozen plan and readback
+receipt. The [hosted October recovery](https://github.com/edithatogo/global-medicines-atlas/actions/runs/45348112303)
 added 65 ZIPs and verified their SHA-256 anonymously. The public October
 revision contains 2,046 of 2,396 ZIPs. Whole-archive verification requires
 the remaining 350 original ZIPs and 420 receipt and metadata files.

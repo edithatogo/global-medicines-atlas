@@ -67,13 +67,15 @@ class MetadataHub(Protocol):
         ...
 
 
-def require_hosted_main(exact_commit: str) -> None:
+def require_hosted_main(
+    exact_commit: str, *, events: tuple[str, ...] = ("workflow_dispatch",)
+) -> None:
     """Refuse local, pull-request, unpinned or other-repository execution."""
     if (
         os.environ.get("GITHUB_ACTIONS") != "true"
         or os.environ.get("GITHUB_REPOSITORY") != REPOSITORY
         or os.environ.get("GITHUB_REF") != "refs/heads/main"
-        or os.environ.get("GITHUB_EVENT_NAME") != "workflow_dispatch"
+        or os.environ.get("GITHUB_EVENT_NAME") not in events
     ):
         raise ValueError(
             "metadata publication requires Actions dispatch on main"
