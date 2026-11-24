@@ -1,4 +1,4 @@
-"""Publish the approved October openFDA archive from a private source."""
+"""Publish and verify the approved October openFDA archive from Actions."""
 
 from __future__ import annotations
 
@@ -8,6 +8,7 @@ import json
 import os
 import re
 import time
+from collections import Counter
 from collections.abc import Iterable, Iterator
 from datetime import UTC, datetime
 from http import HTTPStatus
@@ -47,6 +48,7 @@ MANIFEST = ArtifactBinding(
     size=872268,
 )
 PLAN_SHA256 = "1c63f597717bcbcb4753a644f7e7d07387e6f9cac9740833fb7c915ad1456ed0"
+FDA_ZIP_ORIGIN = "https://download.open.fda.gov/"
 SOURCE_PORT = 18043
 TAILSCALE_IPV4 = IPv4Network("100.64.0.0/10")
 COMMIT_BYTES = 512 * 1024**2
@@ -213,16 +215,22 @@ def publication_order(artifact: ArtifactBinding) -> tuple[int, str]:
     return 1, path
 
 
-def remaining_artifacts(
-    api: Any, hub: Any, plan: PublicationPlan
-) -> tuple[str, list[ArtifactBinding]]:
-    """Resume only from a Hub revision containing approved, matching files."""
+def public_revision(api: Any) -> str:
+    """Pin the existing public dataset before reading inventory."""
     info = api.repo_info(REPOSITORY, repo_type="dataset", revision="main")
     head = str(info.sha)
     if info.private is not False or not re.fullmatch(r"[0-9a-f]{40}", head):
         raise ValueError(
             "October destination must be the existing public dataset"
         )
+    return head
+
+
+def remaining_artifacts(
+    api: Any, hub: Any, plan: PublicationPlan
+) -> tuple[str, list[ArtifactBinding]]:
+    """Resume only from a Hub revision containing approved, matching files."""
+    head = public_revision(api)
     remaining = {
         artifact.relative_path: artifact for artifact in plan.artifacts
     }
@@ -253,6 +261,104 @@ def remaining_artifacts(
                 f"October destination checksum differs: {entry.path}"
             )
     return head, sorted(remaining.values(), key=publication_order)
+
+
+def check_fda_zip(
+    client: httpx.Client, artifact: ArtifactBinding
+) -> dict[str, str | int]:
+    """Compare an FDA ZIP to the frozen binding without retaining the bytes."""
+    path = quote(artifact.relative_path, safe="/")
+    header = client.head(path)
+    length = header.headers.get("Content-Length")
+    if (
+        header.status_code != HTTPStatus.OK
+        or length is None
+        or not length.isdecimal()
+    ):
+        return {
+            "status": "unavailable",
+            "http_status": header.status_code,
+            "reason": "HEAD did not provide a usable length",
+        }
+    if (size := int(length)) != artifact.size:
+        return {"status": "size_mismatch", "bytes": size}
+    size = 0
+    digest = hashlib.sha256()
+    with client.stream("GET", path) as response:
+        if response.status_code != HTTPStatus.OK:
+            return {
+                "status": "unavailable",
+                "http_status": response.status_code,
+            }
+        for block in response.iter_raw():
+            size += len(block)
+            if size > artifact.size:
+                return {"status": "size_mismatch", "bytes_at_least": size}
+            digest.update(block)
+    if size != artifact.size:
+        return {"status": "size_mismatch", "bytes": size}
+    sha256 = digest.hexdigest()
+    status = "match" if sha256 == artifact.sha256 else "digest_mismatch"
+    return {"status": status, "bytes": size, "sha256": sha256}
+
+
+def verify_online(output: Path, exact_commit: str) -> None:
+    """Record online availability against the immutable October inventory."""
+    plan = PublicationPlan.model_validate_json(
+        (output / "plan.json").read_bytes()
+    )
+    if plan.sha256() != PLAN_SHA256:
+        raise ValueError("October plan differs from the approved inventory")
+    hub = cast("Any", import_module("huggingface_hub.hf_api"))
+    api = hub.HfApi(token=False)
+    revision = public_revision(api)
+    public_paths = set(
+        api.list_repo_files(REPOSITORY, repo_type="dataset", revision=revision)
+    ) - {".gitattributes"}
+    planned_paths = {artifact.relative_path for artifact in plan.artifacts}
+    if public_paths - planned_paths:
+        raise ValueError("October destination contains unplanned files")
+    missing_zips = []
+    missing_metadata = []
+    for artifact in plan.artifacts:
+        if artifact.relative_path in public_paths:
+            continue
+        if artifact.relative_path.endswith(".json.zip"):
+            missing_zips.append(artifact)
+        else:
+            missing_metadata.append(artifact.relative_path)
+    print(f"Checking {len(missing_zips)} missing October ZIPs", flush=True)
+    results: dict[str, dict[str, str | int]] = {}
+    with httpx.Client(
+        base_url=FDA_ZIP_ORIGIN,
+        headers={"Accept-Encoding": "identity"},
+        follow_redirects=False,
+        trust_env=False,
+        timeout=30,
+    ) as client:
+        for artifact in missing_zips:
+            try:
+                result = check_fda_zip(client, artifact)
+            except httpx.TransportError as error:
+                result = {
+                    "status": "unavailable",
+                    "reason": type(error).__name__,
+                }
+            results[artifact.relative_path] = result
+    counts = Counter(result["status"] for result in results.values())
+    report = {
+        "commit": exact_commit,
+        "run_id": os.environ["GITHUB_RUN_ID"],
+        "plan_sha256": PLAN_SHA256,
+        "public_revision": revision,
+        "recorded_at": datetime.now(UTC).isoformat(),
+        "public_paths": len(public_paths),
+        "missing_metadata": missing_metadata,
+        "zip_results": results,
+        "zip_counts": counts,
+    }
+    (output / "online.json").write_text(json.dumps(report, indent=2) + "\n")
+    print(f"October FDA ZIP results {dict(counts)}", flush=True)
 
 
 def publish_batches(
@@ -406,7 +512,7 @@ def verify(output: Path, exact_commit: str) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("phase", choices=("publish", "verify"))
+    parser.add_argument("phase", choices=("publish", "verify", "verify-online"))
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--exact-commit", required=True)
     args = parser.parse_args()
@@ -416,6 +522,9 @@ def main() -> int:
     args.output.mkdir(parents=True, exist_ok=True)
     if args.phase == "verify":
         return verify(args.output, args.exact_commit)
+    if args.phase == "verify-online":
+        verify_online(args.output, args.exact_commit)
+        return 0
     publish(args.output, args.exact_commit)
     return 0
 

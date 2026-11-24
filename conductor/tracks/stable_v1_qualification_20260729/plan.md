@@ -1625,9 +1625,8 @@ owns publication and anonymous verification of the frozen inventory.
 - [x] Confirm the same partition timed out at byte zero in both hosted
   attempts. The served manifest and partition passed local SHA-256 checks.
   The public tree held 1,981 of 2,396 expected ZIPs at the last checkpoint.
-- [~] Read one 1 MiB range at a time and save checkpoints of at most four
-  files. Verify that the hosted runner can advance the pinned public tree.
-  Completion requires anonymous byte verification of the entire inventory.
+- [x] Retry with 1 MiB ranges and four-file checkpoints. The run read the
+  first range and timed out opening the next connection.
 
 The serial retry read the first 1 MiB, then timed out opening a new
 connection for the next range. The same chat owns the follow-up in this
@@ -1635,3 +1634,19 @@ worktree on `codex/october-relay-connection-reuse-20261124`. The
 served partition passed all five range and SHA-256 checks both locally
 and through Tailscale Serve. One idle connection reduced the number of
 connections for those reads from five to one.
+
+### October openFDA online recovery — 24 November 2026
+
+The maintainer canceled the SSD-backed retry in run `45325926289` and
+directed recovery from online sources. The same chat owns the workflow
+change on `codex/october-online-recovery-20261124` in the isolated clone
+`/private/tmp/gma-october-online.iudSDX/repo`. GitHub's retained plan binds
+all 4,803 files. The earlier and later receipt artifacts hold transport
+metadata. The original acquisition receipts and ZIPs are separate files.
+
+- [x] Pin the published checkpoint and the retained plan from run
+  `45306884017`. The checkpoint has 3,968 files including 1,981 ZIPs.
+- [~] Check openFDA copies from a GitHub-hosted runner against the frozen
+  checksums and retain the missing metadata inventory.
+- [ ] Restore any remaining original files from an online copy, complete the
+  publication, and verify all 4,803 files anonymously at one public revision.
