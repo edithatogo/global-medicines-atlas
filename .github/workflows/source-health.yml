@@ -121,7 +121,7 @@ jobs:
             --run-id "$GITHUB_RUN_ID" \
             --commit "$GITHUB_SHA" \
             --observation-id "$GITHUB_RUN_ID"
-      - name: Summarize schema drift
+      - name: Summarize source fingerprints
         if: always() && hashFiles('build/source-health.json') != ''
         env:
           RESET_FROM_RUN: ${{ steps.baseline.outputs.reset_from_run }}
@@ -141,7 +141,7 @@ jobs:
               > build/source-health-baseline-reset.json
           fi
           {
-            echo "## Source health and schema drift"
+            echo "## Source health and fingerprint comparison"
             echo
             if [[ -n "$RESET_FROM_RUN" ]]; then
               echo "Baseline reset after artifact loss from run ${RESET_FROM_RUN}."
@@ -164,8 +164,8 @@ jobs:
           if-no-files-found: error
           retention-days: 90
           overwrite: true
-      - name: Escalate detected schema drift
+      - name: Escalate source-health probe failure
         if: steps.probe.outcome == 'failure'
         run: |
-          echo "::error title=Schema drift detected::One or more comparable source schemas changed. Review the metadata-only report."
+          echo "::error title=Source health check failed::Review the metadata-only report for fingerprint changes. For opaque responses the monitor compares up to the first 4 KiB of the sample."
           exit 1

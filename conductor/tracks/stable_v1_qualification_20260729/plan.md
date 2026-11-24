@@ -1614,6 +1614,17 @@ The October Nova Scotia Pharmacare finding and comparison gap remain open.
 This observation recorded HTTP 200 for the provincial CSV and withheld a
 schema fingerprint after reaching the sample limit.
 
+### Source-health fingerprint alert — 24 November 2026
+
+Chat `01a1fc13-09a0-7961-8c2d-388111230f3d` owns the workflow wording in
+the isolated clone `/private/tmp/gma-october-online.iudSDX/repo` on
+`codex/source-health-fingerprint-alert-20261124`.
+
+- [x] Name fingerprint comparisons in the summary and explain the 4 KiB
+  fallback in the alert. Actionlint and 54 focused tests passed. The alert
+  still exits with status 1. Record the reset-free hosted observation in the
+  merged PR's verification receipt.
+
 ### October openFDA relay recovery — 24 November 2026
 
 Chat `01a1fc13-09a0-7961-8c2d-388111230f3d` owns the October publisher
@@ -1649,9 +1660,11 @@ metadata. The original acquisition receipts and ZIPs are separate files.
 - [x] Record the first hosted attempt, run `45330688783`. The runner read
   the pinned plan and failed on a missing `jsonschema` import before reading
   the FDA ZIPs. Publication was skipped.
-- [~] Use the locked publisher environment to check and append available exact
-  ZIPs from the FDA on GitHub-hosted Actions. On branch
-  `codex/october-online-exact-upload-20261124`, retain a receipt with
-  anonymous SHA-256 verification for every published batch.
+- [x] Recover and anonymously verify 65 exact ZIPs from the FDA in
+  [hosted run 45348112303](https://github.com/edithatogo/global-medicines-atlas/actions/runs/45348112303).
+  [PR #1491](https://github.com/edithatogo/global-medicines-atlas/pull/1491)
+  passed all 28 required checks. The public checkpoint contains 2,046 ZIPs
+  and 4,033 files. The remaining 350 ZIPs and 420 receipt and metadata files
+  require an exact downloadable copy.
 - [ ] Restore any remaining original files from an online copy, complete the
   publication, and verify all 4,803 files anonymously at one public revision.
