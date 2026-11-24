@@ -1611,3 +1611,18 @@ advanced from 20 to 23 November. Whether the CSV schema changed remains open.
 The October Nova Scotia Pharmacare finding and comparison gap remain open.
 This observation recorded HTTP 200 for the provincial CSV and withheld a
 schema fingerprint after reaching the sample limit.
+
+### October openFDA relay recovery — 24 November 2026
+
+Chat `01a1fc13-09a0-7961-8c2d-388111230f3d` owns the October publisher
+change in the standard Git worktree
+`/Volumes/PortableSSD/GitHub/gma-pr-1469-workflow-receipt` on
+`codex/october-relay-checkpoints-20261124`. The existing hosted workflow
+owns publication and anonymous verification of the frozen inventory.
+
+- [x] Confirm the same partition timed out at byte zero in both hosted
+  attempts. The served manifest and partition passed local SHA-256 checks.
+  The public tree held 1,981 of 2,396 expected ZIPs at the last checkpoint.
+- [~] Read one 1 MiB range at a time and save checkpoints of at most four
+  files. Verify that the hosted runner can advance the pinned public tree.
+  Completion requires anonymous byte verification of the entire inventory.
