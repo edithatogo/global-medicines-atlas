@@ -1,195 +1,114 @@
-name: Source health and schema drift
+name: Verify published October ZIPs for local cleanup
 
 on:
-  schedule:
-    - cron: "23 16 * * 1" # Weekly source-health observation.
-    - cron: "41 16 1 * *" # Monthly schema-drift observation.
   workflow_dispatch:
-    inputs:
-      reset_missing_baseline:
-        description: Start a new baseline when the last successful artifact is unavailable
-        type: boolean
-        default: false
-
-# Historical uv builds use the patched, content-bound custom CA store.
-env:
-  SSL_CERT_FILE: ${{ github.workspace }}/.ci/trust/cacert.pem
 
 permissions:
-  actions: read # Required to retrieve the prior fingerprint artifact.
-  contents: read # Required by actions/checkout.
-
-concurrency:
-  group: source-health-${{ github.ref }}
-  cancel-in-progress: true
+  contents: read
 
 jobs:
-  observe:
-    name: Bounded source observation
+  verify:
+    name: Anonymous October ZIP readback
+    if: github.ref == 'refs/heads/codex/verify-public-october-20261125'
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        partition: [0, 1, 2, 3, 4, 5, 6, 7]
     steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
           version: "0.13.6"
-          enable-cache: true
-      - run: uv sync --python 3.15.1 --locked
-      - name: Retrieve previous metadata baseline
-        id: baseline
+      - name: Check the pinned public ZIPs against the frozen plan
         env:
-          GH_TOKEN: ${{ github.token }}
-          RESET_MISSING_BASELINE: ${{ inputs.reset_missing_baseline }}
-        shell: bash
+          OCTOBER_PARTITION: ${{ matrix.partition }}
         run: |
-          set -euo pipefail
-          mkdir -p build/previous
-          previous_run_id="$(
-            gh api \
-              "repos/${GITHUB_REPOSITORY}/actions/workflows/source-health.yml/runs?branch=main&status=success&per_page=1" \
-              --jq '.workflow_runs[0].id // ""'
-          )"
-          if [[ -z "${previous_run_id}" ]]; then
-            {
-              echo "path="
-              echo "provenance="
-              echo "run_id="
-              echo "commit="
-            } >> "${GITHUB_OUTPUT}"
-            echo "No previous metadata baseline is available."
-            exit 0
-          fi
-          previous_commit="$(
-            gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${previous_run_id}" \
-              --jq '.head_sha'
-          )"
-          artifact_url="$(
-            gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${previous_run_id}/artifacts" \
-              --jq '[.artifacts[] | select(.name == "source-health-baseline" and .expired == false)] | .[0].archive_download_url // ""'
-          )"
-          if [[ -z "${artifact_url}" ]]; then
-            if [[ "$GITHUB_EVENT_NAME" != workflow_dispatch ||
-                  "$GITHUB_REF" != refs/heads/main ||
-                  "$RESET_MISSING_BASELINE" != true ]]; then
-              echo "::error::The baseline artifact from successful run ${previous_run_id} is unavailable. Recover it or explicitly authorize a reset on main."
-              exit 1
-            fi
-            echo "::warning::Resetting the missing baseline from run ${previous_run_id}. This observation cannot compare schemas across the gap."
-            {
-              echo "reset_from_run=${previous_run_id}"
-              echo "reset_from_commit=${previous_commit}"
-            } >> "${GITHUB_OUTPUT}"
-            exit 0
-          fi
-          gh api "${artifact_url}" > build/previous/baseline.zip
-          unzip -q build/previous/baseline.zip -d build/previous
-          test -f build/previous/source-health.json
-          test -f build/previous/source-health-provenance.json
-          {
-            echo "path=build/previous/source-health.json"
-            echo "provenance=build/previous/source-health-provenance.json"
-            echo "run_id=${previous_run_id}"
-            echo "commit=${previous_commit}"
-          } >> "${GITHUB_OUTPUT}"
-      - name: Run bounded metadata-only probes
-        id: probe
-        continue-on-error: true
-        env:
-          BASELINE_PATH: ${{ steps.baseline.outputs.path }}
-          BASELINE_PROVENANCE: ${{ steps.baseline.outputs.provenance }}
-          BASELINE_RUN_ID: ${{ steps.baseline.outputs.run_id }}
-          BASELINE_COMMIT: ${{ steps.baseline.outputs.commit }}
-        shell: bash
-        run: |
-          baseline_args=()
-          if [[ -n "${BASELINE_PATH}" ]]; then
-            baseline_args=(
-              --baseline "${BASELINE_PATH}"
-              --baseline-provenance "${BASELINE_PROVENANCE}"
-              --baseline-run-id "${BASELINE_RUN_ID}"
-              --baseline-commit "${BASELINE_COMMIT}"
-            )
-          fi
-          uv run --python 3.15.1 python scripts/check_source_health.py \
-            "${baseline_args[@]}" \
-            --repository "$GITHUB_REPOSITORY" \
-            --workflow ".github/workflows/source-health.yml" \
-            --branch "$GITHUB_REF_NAME" \
-            --conclusion success \
-            --run-id "$GITHUB_RUN_ID" \
-            --commit "$GITHUB_SHA" \
-            --observation-id "$GITHUB_RUN_ID"
-      - name: Summarize source fingerprints
-        if: always() && hashFiles('build/source-health.json') != ''
-        env:
-          RESET_FROM_RUN: ${{ steps.baseline.outputs.reset_from_run }}
-          RESET_FROM_COMMIT: ${{ steps.baseline.outputs.reset_from_commit }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [[ -n "$RESET_FROM_RUN" ]]; then
-            if ! jq -e '.baseline | length > 0' build/source-health.json > /dev/null; then
-              echo "::error::Cannot reset the baseline without a comparable source fingerprint."
-              exit 1
-            fi
-            jq -n --argjson previous_run "$RESET_FROM_RUN" --arg previous_commit "$RESET_FROM_COMMIT" \
-              --argjson reset_run "$GITHUB_RUN_ID" --arg reset_commit "$GITHUB_SHA" \
-              '{missing_baseline: {run_id: $previous_run, commit: $previous_commit},
-                reset: {run_id: $reset_run, commit: $reset_commit}, comparison_gap: true}' \
-              > build/source-health-baseline-reset.json
-          fi
-          {
-            echo "## Source health and fingerprint comparison"
-            echo
-            if [[ -n "$RESET_FROM_RUN" ]]; then
-              echo "Baseline reset after artifact loss from run ${RESET_FROM_RUN}."
-              echo "This observation establishes a new comparison point. Drift during the gap remains unassessed."
-              echo
-            fi
-            echo '```json'
-            jq '.summary' build/source-health.json
-            echo '```'
-          } >> "${GITHUB_STEP_SUMMARY}"
-      - name: Upload durable metadata baseline
-        if: always() && hashFiles('build/source-health.json') != ''
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+          test "$RUNNER_ENVIRONMENT" = github-hosted
+          uv run --locked --python 3.15.1 python - <<'PY'
+          import json
+          import os
+          from datetime import UTC, datetime
+          from pathlib import Path
+
+          import httpx
+
+          from global_medicines_atlas.acquisition import AcquisitionPolicy, BoundIPAddressTransport
+          from global_medicines_atlas.publication_transport import PublicationPlan
+          from scripts.check_archive_status import hub_info
+          from scripts.publish_october_openfda_hosted import OctoberReadback, PLAN_SHA256, REPOSITORY
+
+          revision = "f0d60240cb55fa591ad6cf15540a0c2ce0a2eab8"
+          folder = Path("quality/source-batches/openfda-all-20261030")
+          plan = PublicationPlan.model_validate_json((folder / "publication-plan.json").read_bytes())
+          if plan.sha256() != PLAN_SHA256 or plan.target.repository != REPOSITORY:
+              raise ValueError("The frozen October plan does not match")
+
+          policy = AcquisitionPolicy(allowed_hosts=("huggingface.co",))
+          with httpx.Client(
+              transport=BoundIPAddressTransport(policy=policy), timeout=30, trust_env=False
+          ) as client:
+              info = hub_info(client, REPOSITORY, revision)
+          public = {row["rfilename"]: row for row in info["siblings"]}
+          previous = json.loads((folder / "online-recovery.json").read_bytes())
+          if previous["plan_sha256"] != PLAN_SHA256 or previous["resulting_revision"] != revision:
+              raise ValueError("The prior readback is from a different archive")
+          prior = {
+              row["relative_path"]: (row["size"], row["sha256"])
+              for batch in previous["published_batches"]
+              for row in batch["verified"]
+          }
+          candidates = []
+          for artifact in plan.artifacts:
+              name = artifact.relative_path
+              if not name.endswith(".json.zip") or name not in public:
+                  continue
+              remote = public[name]
+              expected = artifact.size, artifact.sha256
+              lfs = remote.get("lfs") or {}
+              if (lfs.get("size"), lfs.get("sha256")) != expected or remote.get("size") != artifact.size:
+                  raise ValueError(f"Public digest mismatch for {name}")
+              if prior.get(name) != expected:
+                  candidates.append(artifact)
+          if len(candidates) != 1981:
+              raise ValueError("The public ZIP inventory changed")
+
+          partition = int(os.environ["OCTOBER_PARTITION"])
+          verifier = OctoberReadback(timeout_seconds=180)
+          result = {
+              "observed_at": datetime.now(UTC).isoformat(),
+              "run_id": os.environ["GITHUB_RUN_ID"],
+              "commit": os.environ["GITHUB_SHA"],
+              "runner_environment": os.environ["RUNNER_ENVIRONMENT"],
+              "partition": partition,
+              "repository": REPOSITORY,
+              "revision": revision,
+              "plan_sha256": PLAN_SHA256,
+              "verified": [],
+              "unverified": [],
+          }
+          output = Path("build/october-verify") / f"partition-{partition}.json"
+          output.parent.mkdir(parents=True)
+          for artifact in candidates[partition::8]:
+              try:
+                  receipt = verifier.verify_artifact(target=plan.target, revision=revision, artifact=artifact)
+              except (httpx.HTTPError, ValueError) as exc:
+                  result["unverified"].append({"relative_path": artifact.relative_path, "error": type(exc).__name__})
+              else:
+                  result["verified"].append(receipt.model_dump(mode="json"))
+              output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+          print(f"Partition {partition} verified {len(result['verified'])} ZIPs; {len(result['unverified'])} unresolved")
+          if result["unverified"]:
+              raise SystemExit(1)
+          PY
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        if: always() && hashFiles('build/october-verify/*.json') != ''
         with:
-          name: source-health-baseline
-          path: |
-            build/source-health.json
-            build/source-health-provenance.json
-            build/source-health-baseline-reset.json
-          if-no-files-found: error
-          retention-days: 90
-          overwrite: true
-      - name: Escalate source-health probe failure
-        if: steps.probe.outcome == 'failure'
-        run: |
-          echo "::error title=Source health check failed::Review the metadata-only report for fingerprint changes. For opaque responses the monitor compares up to the first 4 KiB of the sample."
-          exit 1
-  archive-status:
-    name: Public archive status
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 12
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-        with:
-          persist-credentials: false
-      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
-        with:
-          version: "0.13.6"
-          enable-cache: true
-      - name: Check source editions and pinned archive inventories
-        run: uv run --locked --python 3.15.1 python -m scripts.check_archive_status --output build/archive-status.json
-      - name: Retain archive status
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
-        with:
-          name: archive-status
-          path: build/archive-status.json
+          name: october-anonymous-readback-${{ matrix.partition }}
+          path: build/october-verify/*.json
           if-no-files-found: error
           retention-days: 90
