@@ -183,7 +183,10 @@ def publish_batch(manifest_path: Path, output: Path, exact_commit: str) -> int:
         plan=plan,
         authorization=authorization_from_environment(os.environ),
         root=package,
-        uploader=SnapshotUploader(repository=target.repository),
+        uploader=SnapshotUploader(
+            repository=target.repository,
+            resume_empty_revision=manifest.get("resume_empty_revision"),
+        ),
         recorded_at=datetime.now(UTC),
     )
     (receipts / "uploaded.json").write_text(

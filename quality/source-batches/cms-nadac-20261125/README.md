@@ -1,8 +1,6 @@
 ---
 pretty_name: CMS NADAC 25 November 2026
 license: other
-license_name: CMS public domain label
-license_link: https://www.usa.gov/publicdomain/label/1.0/
 language:
 - en
 ---
