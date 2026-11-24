@@ -318,8 +318,8 @@ def verify_online(output: Path, exact_commit: str) -> None:
     planned_paths = {artifact.relative_path for artifact in plan.artifacts}
     if public_paths - planned_paths:
         raise ValueError("October destination contains unplanned files")
-    missing_zips = []
-    missing_metadata = []
+    missing_zips: list[ArtifactBinding] = []
+    missing_metadata: list[str] = []
     for artifact in plan.artifacts:
         if artifact.relative_path in public_paths:
             continue
@@ -337,14 +337,14 @@ def verify_online(output: Path, exact_commit: str) -> None:
         timeout=30,
     ) as client:
         for artifact in missing_zips:
+            path = artifact.relative_path
             try:
-                result = check_fda_zip(client, artifact)
+                results[path] = check_fda_zip(client, artifact)
             except httpx.TransportError as error:
-                result = {
+                results[path] = {
                     "status": "unavailable",
                     "reason": type(error).__name__,
                 }
-            results[artifact.relative_path] = result
     counts = Counter(result["status"] for result in results.values())
     report = {
         "commit": exact_commit,
