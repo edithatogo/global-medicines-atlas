@@ -84,7 +84,7 @@ jobs:
     timeout-minutes: 355
     permissions:
       contents: read
-      id-token: write
+      id-token: write # Exchange this job identity for temporary Tailscale access.
     outputs:
       archive-complete: ${{ steps.completion.outputs.archive-complete }}
       artifact-id: ${{ steps.receipts.outputs.artifact-id }}
