@@ -1,0 +1,24 @@
+{
+  "batch_id": "openfda-20261125",
+  "repository": "edithatogo/global-medicines-atlas-openfda-20261125",
+  "publication_approved": true,
+  "approval_reference": "Maintainer direction to approve the 25 November 2026 FDA index at the recorded SHA-256, with the existing device UDI exclusions.",
+  "source_authority": "U.S. Food and Drug Administration, openFDA",
+  "source_url": "https://api.fda.gov/download.json",
+  "source_index_date": "2026-11-25",
+  "source_index_sha256": "4c81bacb753854d046fbd1f910e5a24c23a643287765c50621350495d6614265",
+  "indexed_endpoints": 31,
+  "indexed_payload_count": 2431,
+  "expected_endpoints": 30,
+  "expected_payload_count": 2379,
+  "excluded_endpoint": "device/udi",
+  "excluded_payload_count": 52,
+  "rights": {
+    "licence": "CC0 1.0 for content covered by the openFDA dedication",
+    "terms": "https://open.fda.gov/terms/",
+    "attribution": "U.S. Food and Drug Administration, openFDA",
+    "redistribution": "Unmodified ZIPs in the publication scope, with FDA attribution and source URLs.",
+    "excluded_endpoint_reason": "The Unique Device Identifier endpoint contains separately licensed Global Medical Device Nomenclature (GMDN) codes, names and definitions.",
+    "excluded_endpoint_evidence": "https://open.fda.gov/fields/deviceudi_reference.pdf"
+  }
+}
