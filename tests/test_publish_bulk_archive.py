@@ -202,8 +202,23 @@ def test_october_hosted_resume_uses_verified_batches() -> None:
         base_url=october.source_origin("http://100.64.1.2:18043/"),
         transport=httpx.MockTransport(serve),
     ) as client:
-        assert october.publish_batches(api, hub, client, plan) == committed
-    assert sorted(requests) == ["second.zip", "third.zip"]
+        assert (
+            october.publish_batches(
+                api,
+                hub,
+                client,
+                plan,
+                prepared={"third.zip": files["third.zip"]},
+            )
+            == committed
+        )
+        assert requests == ["second.zip"]
+        api.create_commit.reset_mock()
+        with pytest.raises(ValueError, match="October rebuilt file differs"):
+            october.publish_batches(
+                api, hub, client, plan, prepared={"third.zip": b"corrupt"}
+            )
+        api.create_commit.assert_not_called()
     assert scratch_files
     assert all(not path.exists() for path in scratch_files)
     remote.lfs.sha256 = "0" * 64

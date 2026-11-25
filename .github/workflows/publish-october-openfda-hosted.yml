@@ -8,6 +8,11 @@ on:
         type: boolean
         required: true
         default: false
+      private_source:
+        description: Use the approved temporary private read-only October source
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: read
@@ -19,7 +24,7 @@ concurrency:
 jobs:
   recover:
     name: Recover October files online
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && !inputs.private_source
     runs-on: ubuntu-24.04
     timeout-minutes: 355
     outputs:
@@ -72,10 +77,75 @@ jobs:
           if-no-files-found: error
           retention-days: 90
 
+  publish_private:
+    name: Publish October from the private read-only source
+    if: github.ref == 'refs/heads/main' && inputs.publish && inputs.private_source
+    runs-on: ubuntu-24.04
+    timeout-minutes: 355
+    permissions:
+      contents: read
+      id-token: write # Exchange this job identity for temporary Tailscale access.
+    outputs:
+      archive-complete: ${{ steps.completion.outputs.archive-complete }}
+      artifact-id: ${{ steps.receipts.outputs.artifact-id }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.13.6"
+      - name: Load the frozen October plan and synchronize Python 3.15
+        run: |
+          test "$RUNNER_ENVIRONMENT" = github-hosted
+          mkdir -p build/openfda-october
+          cp quality/source-batches/openfda-all-20261030/publication-plan.json build/openfda-october/plan.json
+          uv sync --python 3.15.1 --locked
+      - name: Join the archive tailnet for this job
+        uses: tailscale/github-action@064b10558093f38325e838ddea35486bdc6b1d5c # v4.4.0
+        with:
+          oauth-client-id: ${{ secrets.GMA_OCTOBER_TS_CLIENT_ID }}
+          audience: ${{ secrets.GMA_OCTOBER_TS_AUDIENCE }}
+          tags: tag:gma-fda-october
+          version: "1.104.7"
+          sha256sum: e56693ff74a64f2591b7e819c280635a100aae1ddfb0ef058fcd052b7cd8d16c
+          use-cache: "false"
+          args: --accept-dns=false
+      - name: Transfer validated batches to Hugging Face
+        env:
+          GMA_MAINTAINER_PUBLICATION_APPROVED: yes-i-approve-publication
+          GMA_PUBLICATION_ENVIRONMENT: production
+          GMA_OCTOBER_SOURCE_URL: ${{ secrets.GMA_OCTOBER_SOURCE_URL }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_HUB_DISABLE_PROGRESS_BARS: "1"
+          HF_HUB_DISABLE_XET: "1"
+        run: |
+          sudo tailscale set --accept-routes=false
+          uv run --python 3.15.1 --no-sync --with huggingface-hub==0.34.4 \
+            python -m scripts.publish_october_openfda_hosted publish \
+            --output build/openfda-october --exact-commit "$GITHUB_SHA"
+      - name: Check whether the full inventory is ready for readback
+        id: completion
+        run: |
+          if [[ -s build/openfda-october/uploaded.json ]]; then
+            echo 'archive-complete=true' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Retain October private source receipts
+        id: receipts
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: openfda-october-private-${{ github.run_attempt }}
+          path: build/openfda-october/
+          if-no-files-found: error
+          retention-days: 90
+
   verify:
     name: Verify October archive
-    needs: recover
-    if: needs.recover.outputs.archive-complete == 'true'
+    needs: [recover, publish_private]
+    if: >-
+      ${{ !cancelled() && (needs.recover.outputs.archive-complete == 'true' ||
+          needs.publish_private.outputs.archive-complete == 'true') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 355
     steps:
@@ -87,7 +157,7 @@ jobs:
           version: "0.13.6"
       - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
         with:
-          artifact-ids: ${{ needs.recover.outputs.artifact-id }}
+          artifact-ids: ${{ needs.recover.outputs.artifact-id || needs.publish_private.outputs.artifact-id }}
           path: build/openfda-october/
           merge-multiple: true
       - name: Verify every public file anonymously

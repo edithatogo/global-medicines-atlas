@@ -669,9 +669,15 @@ def recover_fda_zips(
 
 
 def publish_batches(
-    api: Any, hub: Any, client: httpx.Client, plan: PublicationPlan
+    api: Any,
+    hub: Any,
+    client: httpx.Client,
+    plan: PublicationPlan,
+    *,
+    prepared: Mapping[str, bytes] | None = None,
 ) -> str:
     """Upload and commit verified batches, leaving durable resume points."""
+    prepared = prepared or {}
     head, remaining = remaining_artifacts(api, hub, plan)
     count = len(plan.artifacts) - len(remaining)
     for group in commit_groups(remaining):
@@ -680,7 +686,18 @@ def publish_batches(
                 Path(scratch) / str(position) for position in range(len(group))
             ]
             for artifact, source in zip(group, sources, strict=True):
-                download_artifact(client, artifact, source)
+                body = prepared.get(artifact.relative_path)
+                if body is None:
+                    download_artifact(client, artifact, source)
+                else:
+                    if (len(body), hashlib.sha256(body).hexdigest()) != (
+                        artifact.size,
+                        artifact.sha256,
+                    ):
+                        raise ValueError(
+                            f"October rebuilt file differs: {artifact.relative_path}"
+                        )
+                    source.write_bytes(body)
             head = commit_artifacts(
                 api, hub, head, list(zip(group, sources, strict=True))
             )
@@ -706,24 +723,26 @@ def publish(output: Path, exact_commit: str) -> None:
         dict(os.environ)
     ).permits_external_write:
         raise PermissionError("October archive publication requires approval")
-    with (
-        httpx.Client(
-            base_url=source_origin(os.environ["GMA_OCTOBER_SOURCE_URL"]),
-            headers={"Accept-Encoding": "identity"},
-            follow_redirects=False,
-            trust_env=False,
-            limits=httpx.Limits(max_connections=1, max_keepalive_connections=1),
-            timeout=90,
-        ) as client,
-        TemporaryDirectory(prefix="openfda-october-manifest-") as scratch,
-    ):
-        path = Path(scratch) / MANIFEST.relative_path
-        download_artifact(client, MANIFEST, path)
-        plan = archive_plan(path.read_bytes())
-        record_intent(output, plan, exact_commit)
+    plan = PublicationPlan.model_validate_json(
+        (output / "plan.json").read_bytes()
+    )
+    if plan.sha256() != PLAN_SHA256:
+        raise ValueError("October plan differs from the approved inventory")
+    prepared = rebuild_completion_metadata(plan)
+    if archive_plan(prepared[MANIFEST_NAME]) != plan:
+        raise ValueError("Rebuilt October manifest differs from the saved plan")
+    record_intent(output, plan, exact_commit)
+    with httpx.Client(
+        base_url=source_origin(os.environ["GMA_OCTOBER_SOURCE_URL"]),
+        headers={"Accept-Encoding": "identity"},
+        follow_redirects=False,
+        trust_env=False,
+        limits=httpx.Limits(max_connections=1, max_keepalive_connections=1),
+        timeout=90,
+    ) as client:
         hub = cast("Any", import_module("huggingface_hub.hf_api"))
         api = hub.HfApi(token=os.environ["HF_TOKEN"])
-        revision = publish_batches(api, hub, client, plan)
+        revision = publish_batches(api, hub, client, plan, prepared=prepared)
     record_upload(output, plan, revision)
 
 

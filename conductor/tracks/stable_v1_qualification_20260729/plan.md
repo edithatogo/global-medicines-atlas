@@ -1666,5 +1666,24 @@ metadata. The original acquisition receipts and ZIPs are separate files.
   passed all 28 required checks. The public checkpoint contains 2,046 ZIPs
   and 4,033 files. The remaining 350 ZIPs and 420 receipt and metadata files
   require an exact downloadable copy.
-- [ ] Restore any remaining original files from an online copy, complete the
-  publication, and verify all 4,803 files anonymously at one public revision.
+- [ ] Restore the remaining original files, complete the publication, and verify
+  all 4,803 files anonymously at one public revision.
+
+### October openFDA private source recovery — 26 November 2026
+
+Chat `01a20169-2a81-7300-bd08-b81f8b65cadc` owns this recovery in the standalone
+checkout `/Users/doughnut/.codex/gma-nadac-ema-20261124/global-medicines-atlas`
+on `codex/resume-october-private-20261126`. Its scope is the October hosted
+publisher, the existing private source endpoint, and the existing October
+Hugging Face dataset. The November publisher continues in its own workflow.
+
+[Hosted run 45639805739](https://github.com/edithatogo/global-medicines-atlas/actions/runs/45639805739)
+checked the frozen plan at public revision `f0d60240cb55fa591ad6cf15540a0c2ce0a2eab8`.
+All 350 public ZIP candidates differed from the frozen October ZIPs. The
+maintainer approved temporary read-only access to the 350
+missing ZIPs and 418 original records. The runner can rebuild two completion
+files from the committed plan.
+
+- [ ] Restore the temporary read-only endpoint for those originals, publish in
+  the existing four-file checkpoints, and close the endpoint when transfer
+  completes. Verify the complete revision from a separate GitHub-hosted job.
