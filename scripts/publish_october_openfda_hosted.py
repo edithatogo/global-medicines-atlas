@@ -10,6 +10,7 @@ import re
 import time
 from collections import Counter
 from collections.abc import Iterable, Iterator, Mapping
+from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime
 from http import HTTPStatus
 from importlib import import_module
@@ -80,6 +81,7 @@ TAILSCALE_IPV4 = IPv4Network("100.64.0.0/10")
 COMMIT_BYTES = 512 * 1024**2
 COMMIT_FILES = 4
 SOURCE_REQUEST_BYTES = 1024**2
+SOURCE_CONNECTIONS = 8
 SOURCE_REQUEST_SECONDS = 150
 TRANSIENT_STATUS = {408, 429, 500, 502, 503, 504}
 
@@ -183,10 +185,13 @@ def download_range_once(
 def download_artifact(
     client: httpx.Client, artifact: ArtifactBinding, output: Path
 ) -> None:
-    """Retry the interrupted range and verify the assembled file SHA-256."""
+    """Retry interrupted ranges and verify the assembled file SHA-256."""
     with output.open("wb") as stream:
-        for start in range(0, max(artifact.size, 1), SOURCE_REQUEST_BYTES):
-            end = min(start + SOURCE_REQUEST_BYTES, artifact.size)
+        stream.truncate(artifact.size)
+
+    def read_range(start: int) -> None:
+        end = min(start + SOURCE_REQUEST_BYTES, artifact.size)
+        with output.open("r+b") as stream:
             for wait in (2, 4, 0):
                 try:
                     download_range_once(client, artifact, stream, start, end)
@@ -202,6 +207,13 @@ def download_artifact(
                     time.sleep(wait)
                 else:
                     break
+
+    starts = range(0, max(artifact.size, 1), SOURCE_REQUEST_BYTES)
+    with ThreadPoolExecutor(max_workers=SOURCE_CONNECTIONS) as executor:
+        for _ in executor.map(
+            read_range, starts, buffersize=SOURCE_CONNECTIONS
+        ):
+            pass
     with output.open("rb") as stream:
         digest = hashlib.file_digest(stream, "sha256").hexdigest()
     if digest != artifact.sha256:
@@ -737,7 +749,10 @@ def publish(output: Path, exact_commit: str) -> None:
         headers={"Accept-Encoding": "identity"},
         follow_redirects=False,
         trust_env=False,
-        limits=httpx.Limits(max_connections=1, max_keepalive_connections=1),
+        limits=httpx.Limits(
+            max_connections=SOURCE_CONNECTIONS,
+            max_keepalive_connections=SOURCE_CONNECTIONS,
+        ),
         timeout=90,
     ) as client:
         hub = cast("Any", import_module("huggingface_hub.hf_api"))

@@ -8,7 +8,9 @@ import json
 import sys
 import types
 import zipfile
+from collections import Counter
 from pathlib import Path
+from threading import Barrier
 from typing import Any, cast
 from unittest.mock import Mock
 
@@ -267,10 +269,46 @@ def test_october_hosted_download_checks_each_source_range(
     ) as client:
         october.download_artifact(client, artifact, output)
         assert output.read_bytes() == body
-        assert ranges_seen == ["0-3", "4-7", "4-7", "8-9"]
+        assert Counter(ranges_seen) == Counter(["0-3", "4-7", "4-7", "8-9"])
         corrupt_range = True
         with pytest.raises(ValueError, match="source range differs"):
             october.download_artifact(client, artifact, output)
+        corrupt_range = False
+        parts["8-9"] = b"xy"
+        with pytest.raises(ValueError, match="source checksum differs"):
+            october.download_artifact(client, artifact, output)
+
+
+def test_october_reads_bounded_ranges_concurrently(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    body = b"abcdefgh"
+    artifact = ArtifactBinding(
+        relative_path="archive.zip",
+        size=len(body),
+        sha256=hashlib.sha256(body).hexdigest(),
+    )
+    monkeypatch.setattr(october, "SOURCE_REQUEST_BYTES", 4)
+    barrier = Barrier(2)
+
+    def serve(request: httpx.Request) -> httpx.Response:
+        start, end = map(
+            int, request.headers["Range"].removeprefix("bytes=").split("-")
+        )
+        barrier.wait(timeout=5)
+        return httpx.Response(
+            206,
+            headers={"Content-Range": f"bytes {start}-{end}/{len(body)}"},
+            stream=httpx.ByteStream(body[start : end + 1]),
+        )
+
+    with httpx.Client(
+        base_url="http://100.64.1.2:18043/",
+        transport=httpx.MockTransport(serve),
+    ) as client:
+        output = tmp_path / "archive.zip"
+        october.download_artifact(client, artifact, output)
+        assert output.read_bytes() == body
 
 
 @pytest.mark.parametrize(

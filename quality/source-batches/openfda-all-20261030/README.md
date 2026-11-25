@@ -58,8 +58,10 @@ The maintainer stopped the earlier source route on 24 November and authorised
 temporary read-only access to the remaining original files on 26 November.
 Use `publish=true` and `private_source=true` together for that approved
 connection. The GitHub-hosted runner checks the current Hugging Face revision
-and reads only missing originals from the source. It rebuilds the final README
-and artifact manifest from the committed plan. The default route checks public
+and reads only missing originals from the source. It fetches bounded ranges in
+parallel and checks each complete file against the frozen SHA-256 before a
+four-file commit. It rebuilds the final README and artifact manifest from the
+committed plan. The default route checks public
 sources. Publication requires the production environment and explicit
 maintainer approval. Completion requires a separate job to verify the checksums of all
 4,803 files anonymously at one public revision.
