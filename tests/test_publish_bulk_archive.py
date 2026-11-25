@@ -440,6 +440,36 @@ def test_october_online_upload_requires_approval(
         october.recover_online(tmp_path, COMMIT, publish_matches=True)
 
 
+def test_fresh_openfda_waits_before_retrying_fda_rate_limits(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    path = "drug/event/example.json.zip"
+    request = httpx.Request("GET", fresh.ZIP_ROOT + path)
+    advised = httpx.Response(
+        429, headers={"Retry-After": "120"}, request=request
+    )
+    no_advice = httpx.Response(429, request=request)
+    result = {"path": path}
+    download = Mock(
+        side_effect=[
+            httpx.HTTPStatusError(
+                "rate limited", request=request, response=advised
+            ),
+            httpx.HTTPStatusError(
+                "rate limited", request=request, response=no_advice
+            ),
+            result,
+        ]
+    )
+    waits: list[float] = []
+    monkeypatch.setattr(fresh, "download_zip", download)
+    monkeypatch.setattr(fresh.time, "sleep", waits.append)
+    with httpx.Client() as client:
+        assert fresh.fetch_zip(client, path, tmp_path / "archive.zip") == result
+    assert waits == [120, 600]
+    assert download.call_count == 3
+
+
 def fresh_openfda_fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     first, second = "drug/event/first.json.zip", "drug/event/second.json.zip"
     with io.BytesIO() as buffer:

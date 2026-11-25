@@ -10,6 +10,7 @@ import re
 import time
 import zipfile
 from datetime import UTC, date, datetime
+from email.utils import parsedate_to_datetime
 from http import HTTPStatus
 from importlib import import_module
 from itertools import batched
@@ -185,20 +186,43 @@ def download_zip(
     }
 
 
+def source_retry_after(response: httpx.Response) -> float | None:
+    """Read the source's retry interval in seconds or as an HTTP date."""
+    value = response.headers.get("Retry-After")
+    if value is None:
+        return None
+    try:
+        value = value.strip()
+        if value.isascii() and value.isdecimal():
+            return float(int(value))
+        retry_at = parsedate_to_datetime(value)
+    except TypeError, ValueError, OverflowError:
+        return None
+    if retry_at.tzinfo is None:
+        retry_at = retry_at.replace(tzinfo=UTC)
+    return max(0.0, (retry_at - datetime.now(UTC)).total_seconds())
+
+
 def fetch_zip(
     client: httpx.Client, path: str, destination: Path
 ) -> dict[str, Any]:
     """Retry transient, read-only source failures before binding bytes."""
-    for delay in (2, 4):
+    for read_delay, rate_limit_delay in ((2, 300), (4, 600)):
         try:
             return download_zip(client, path, destination)
         except (httpx.TransportError, httpx.HTTPStatusError) as error:
-            if (
-                isinstance(error, httpx.HTTPStatusError)
-                and error.response.status_code not in TRANSIENT_STATUSES
-            ):
-                raise
-            print(f"Retrying FDA read of {path} after {error}", flush=True)
+            delay: float = read_delay
+            if isinstance(error, httpx.HTTPStatusError):
+                if error.response.status_code not in TRANSIENT_STATUSES:
+                    raise
+                if error.response.status_code == HTTPStatus.TOO_MANY_REQUESTS:
+                    delay = (
+                        source_retry_after(error.response) or rate_limit_delay
+                    )
+            print(
+                f"Retrying FDA read of {path} in {delay:g} seconds after {error}",
+                flush=True,
+            )
             time.sleep(delay)
     return download_zip(client, path, destination)
 
