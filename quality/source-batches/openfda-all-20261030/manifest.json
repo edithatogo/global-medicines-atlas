@@ -3,6 +3,7 @@
   "repository": "edithatogo/global-medicines-atlas-openfda-all-20261030",
   "publication_approved": true,
   "approval_reference": "The maintainer approved this archive on 15 November 2026 and confirmed permission for public redistribution of its GMDN material on 23 November 2026.",
+  "verified_revision": "c5b05fc17460f55e87b231644d17472450a33a0e",
   "snapshot_id": "openfda-all-20261030T130532Z",
   "source_authority": "U.S. Food and Drug Administration, openFDA",
   "source_url": "https://open.fda.gov/apis/",

@@ -3,6 +3,12 @@
 Committed contract for publishing the completed openFDA bulk snapshot as
 `edithatogo/global-medicines-atlas-openfda-all-20261030`.
 
+At 22:36 UTC on 26 November 2026, a separate GitHub-hosted runner completed
+anonymous readback of all 4,803 planned files, including 2,396 ZIPs. Every size
+and SHA-256 matched the frozen plan at revision `c5b05fc17460f55e87b231644d17472450a33a0e`.
+[Public revision](https://huggingface.co/datasets/edithatogo/global-medicines-atlas-openfda-all-20261030/tree/c5b05fc17460f55e87b231644d17472450a33a0e) ·
+[Verification receipt](verification-receipt.json)
+
 ## Frozen inventory
 
 Every recorded `download.open.fda.gov` partition for the 31 openFDA endpoints,
@@ -66,12 +72,15 @@ sources. Publication requires the production environment and explicit
 maintainer approval. Completion requires a separate job to verify the checksums of all
 4,803 files anonymously at one public revision.
 
-For this approved temporary recovery, the hosted publisher stops between
-committed batches after approximately four hours and 40 minutes. It retains a
-checkpoint and queues the next GitHub-hosted run while the temporary window is
-open. A source read that is still in progress at the deadline is discarded
-from runner scratch; the next run resumes from the last complete batch. An error or a
-run without checkpoint progress stops the chain for
-investigation. The chain stops when the full inventory reaches the independent
-verification job; it cannot queue another run after 29 November 2026 at 05:00
-UTC. The read-only source remains necessary until all originals are committed.
+The publisher saves a checkpoint and queues a successor after four hours and
+40 minutes. The successor reconciles the public revision before retrieving
+missing files. The first failed attempt requests a recovery check on GitHub.
+The scheduled check can retry a temporary transfer or handoff failure, or a
+lost hosted runner. A checksum mismatch or an access denial stops the job for
+investigation. The temporary source window allows new publishers until
+05:00 UTC on 29 November 2026.
+
+The verification job reads independently from the public revision. After an
+interruption it can reuse anonymous readbacks from the same run and revision.
+The final receipt records the path, size, SHA-256 and public URL for every
+file in the frozen plan.
