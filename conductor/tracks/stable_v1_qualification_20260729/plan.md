@@ -1710,3 +1710,7 @@ The same chat owns the checkpoint dispatch on
 `codex/october-checkpoint-dispatch-recovery` in the same standalone checkout.
 Its next operation is to qualify GitHub recovery when a successful checkpoint's
 request for the next runner loses its acknowledgement.
+
+The same chat owns the first failed attempt on `codex/october-retry-on-failure`
+in that checkout. The hosted publisher will request its own recovery check
+when it fails. The existing schedule continues to pace subsequent attempts.

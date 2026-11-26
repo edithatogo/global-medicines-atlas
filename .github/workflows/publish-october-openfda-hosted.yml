@@ -238,3 +238,22 @@ jobs:
             build/openfda-october/readbacks-*.jsonl
           if-no-files-found: warn
           retention-days: 90
+
+  request_recovery:
+    name: Request a check of the first failed October attempt
+    needs: [publish_private, continue_private, verify]
+    if: >-
+      !cancelled() && github.ref == 'refs/heads/main' && inputs.publish && inputs.private_source &&
+      github.run_attempt == '1' && contains(needs.*.result, 'failure')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    permissions:
+      actions: write # Signal the existing checker from this authorized publisher.
+    steps:
+      - name: Dispatch a recovery check for this exact run and attempt
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          test "$RUNNER_ENVIRONMENT" = github-hosted
+          gh workflow run recover-october-openfda.yml --repo "$GITHUB_REPOSITORY" \
+            --ref main -f "after_attempt=$GITHUB_RUN_ID/$GITHUB_RUN_ATTEMPT"

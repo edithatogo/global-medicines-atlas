@@ -2,6 +2,11 @@ name: Recover interrupted October openFDA jobs
 
 on:
   workflow_dispatch:
+    inputs:
+      after_attempt:
+        description: Check this publisher run ID and attempt as soon as it finishes
+        type: string
+        required: false
   schedule:
     - cron: '11,31,51 * 26-30 11 *'
 
@@ -24,6 +29,7 @@ jobs:
       - name: Resume a transient failure from its last checkpoint
         env:
           GH_TOKEN: ${{ github.token }}
+          AFTER_ATTEMPT: ${{ inputs.after_attempt }}
         run: |
           set -euo pipefail
           test "$RUNNER_ENVIRONMENT" = github-hosted
@@ -35,6 +41,17 @@ jobs:
               --event workflow_dispatch --limit 1 --json databaseId,attempt,status,conclusion --jq '.[0]'
           }
           run=$(latest)
+          if [[ -n "${AFTER_ATTEMPT:-}" ]]; then
+            same_attempt() {
+              jq -e --arg expected "$AFTER_ATTEMPT" '([.databaseId,.attempt] | join("/")) == $expected' <<<"$run" >/dev/null
+            }
+            same_attempt || exit 0
+            if [[ "$(jq -r .status <<<"$run")" != completed ]]; then
+              gh run watch "$(jq -r .databaseId <<<"$run")" --repo "$GITHUB_REPOSITORY" --interval 5 >/dev/null
+              run=$(latest)
+              same_attempt || exit 0
+            fi
+          fi
           if ! jq -e '.status == "completed" and (.conclusion | IN("failure","timed_out","stale","startup_failure"))' <<<"$run" >/dev/null; then
             echo 'No failed October publisher requires recovery.'
             exit 0
