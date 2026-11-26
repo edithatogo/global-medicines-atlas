@@ -153,7 +153,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
-      actions: write
+      actions: write # Dispatch the next bounded run of this approved workflow.
     steps:
       - name: Resume the approved private-source run within its temporary window
         env:
