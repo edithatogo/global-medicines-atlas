@@ -1677,6 +1677,12 @@ on `codex/resume-october-private-20261126`. Its scope is the October hosted
 publisher, the existing private source endpoint, and the existing October
 Hugging Face dataset. The November publisher continues in its own workflow.
 
+The same chat owns `codex/october-hosted-continuation-20261126` in the same
+checkout. It is adding a bounded GitHub-hosted continuation for this exact
+private-source publication. The next operation is to validate and integrate
+that change, then resume from the current public checkpoint and obtain the
+separate anonymous verification receipt.
+
 [Hosted run 45639805739](https://github.com/edithatogo/global-medicines-atlas/actions/runs/45639805739)
 checked the frozen plan at public revision `f0d60240cb55fa591ad6cf15540a0c2ce0a2eab8`.
 All 350 public ZIP candidates differed from the frozen October ZIPs. The

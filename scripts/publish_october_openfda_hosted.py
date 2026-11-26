@@ -19,7 +19,7 @@ from itertools import chain
 from operator import attrgetter
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Any, BinaryIO, cast
+from typing import Any, BinaryIO, NamedTuple, cast
 from urllib.parse import quote, urlsplit
 
 import httpx
@@ -83,7 +83,16 @@ COMMIT_FILES = 4
 SOURCE_REQUEST_BYTES = 1024**2
 SOURCE_CONNECTIONS = 8
 SOURCE_REQUEST_SECONDS = 150
+PUBLICATION_CHECKPOINT_SECONDS = 4 * 60 * 60 + 40 * 60
 TRANSIENT_STATUS = {408, 429, 500, 502, 503, 504}
+
+
+class BatchResult(NamedTuple):
+    """A complete publication or a resumable, committed checkpoint."""
+
+    revision: str
+    complete: bool
+    newly_committed: int
 
 
 def source_origin(value: str) -> str:
@@ -687,12 +696,24 @@ def publish_batches(
     plan: PublicationPlan,
     *,
     prepared: Mapping[str, bytes] | None = None,
-) -> str:
+    deadline: float | None = None,
+) -> BatchResult:
     """Upload and commit verified batches, leaving durable resume points."""
     prepared = prepared or {}
     head, remaining = remaining_artifacts(api, hub, plan)
     count = len(plan.artifacts) - len(remaining)
+    initial_count = count
     for group in commit_groups(remaining):
+        if deadline is not None and time.monotonic() >= deadline:
+            if count == initial_count:
+                raise TimeoutError(
+                    "October publication made no checkpoint progress"
+                )
+            return BatchResult(
+                revision=head,
+                complete=False,
+                newly_committed=count - initial_count,
+            )
         with TemporaryDirectory(prefix="openfda-october-") as scratch:
             sources = [
                 Path(scratch) / str(position) for position in range(len(group))
@@ -726,7 +747,9 @@ def publish_batches(
         raise ValueError(
             "Final October revision does not match the archive inventory"
         )
-    return head
+    return BatchResult(
+        revision=head, complete=True, newly_committed=count - initial_count
+    )
 
 
 def publish(output: Path, exact_commit: str) -> None:
@@ -757,8 +780,28 @@ def publish(output: Path, exact_commit: str) -> None:
     ) as client:
         hub = cast("Any", import_module("huggingface_hub.hf_api"))
         api = hub.HfApi(token=os.environ["HF_TOKEN"])
-        revision = publish_batches(api, hub, client, plan, prepared=prepared)
-    record_upload(output, plan, revision)
+        result = publish_batches(
+            api,
+            hub,
+            client,
+            plan,
+            prepared=prepared,
+            deadline=time.monotonic() + PUBLICATION_CHECKPOINT_SECONDS,
+        )
+    if result.complete:
+        record_upload(output, plan, result.revision)
+    else:
+        (output / "checkpoint.json").write_text(
+            json.dumps(
+                {
+                    "plan_sha256": plan.sha256(),
+                    "remote_revision": result.revision,
+                    "newly_committed": result.newly_committed,
+                    "run_id": os.environ["GITHUB_RUN_ID"],
+                },
+                indent=2,
+            )
+        )
 
 
 def record_intent(

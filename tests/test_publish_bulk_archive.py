@@ -204,15 +204,14 @@ def test_october_hosted_resume_uses_verified_batches() -> None:
         base_url=october.source_origin("http://100.64.1.2:18043/"),
         transport=httpx.MockTransport(serve),
     ) as client:
-        assert (
-            october.publish_batches(
-                api,
-                hub,
-                client,
-                plan,
-                prepared={"third.zip": files["third.zip"]},
-            )
-            == committed
+        assert october.publish_batches(
+            api,
+            hub,
+            client,
+            plan,
+            prepared={"third.zip": files["third.zip"]},
+        ) == october.BatchResult(
+            revision=committed, complete=True, newly_committed=2
         )
         assert requests == ["second.zip"]
         api.create_commit.reset_mock()
@@ -226,6 +225,64 @@ def test_october_hosted_resume_uses_verified_batches() -> None:
     remote.lfs.sha256 = "0" * 64
     with pytest.raises(ValueError, match="destination checksum differs"):
         october.remaining_artifacts(api, hub, plan)
+
+
+def test_october_checkpoints_only_after_a_committed_batch(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    files = {"first.zip": b"first", "second.zip": b"second"}
+    artifacts = tuple(
+        ArtifactBinding(
+            relative_path=path,
+            size=len(body),
+            sha256=hashlib.sha256(body).hexdigest(),
+        )
+        for path, body in files.items()
+    )
+    plan = PublicationPlan(
+        release_version=october.BATCH,
+        target=PublicationTarget(
+            destination=PublicationDestination.HUGGING_FACE,
+            repository=october.REPOSITORY,
+            revision="main",
+            public_base_url=f"https://huggingface.co/datasets/{october.REPOSITORY}",
+        ),
+        artifacts=artifacts,
+    )
+    api, hub = Mock(), Mock()
+    monkeypatch.setattr(october, "COMMIT_FILES", 1)
+    monkeypatch.setattr(
+        october, "remaining_artifacts", Mock(return_value=(COMMIT, artifacts))
+    )
+    commit = Mock(return_value="b" * 40)
+    monkeypatch.setattr(october, "commit_artifacts", commit)
+    monkeypatch.setattr(
+        october,
+        "time",
+        types.SimpleNamespace(monotonic=Mock(side_effect=[0.0, 2.0])),
+    )
+
+    with httpx.Client() as client:
+        result = october.publish_batches(
+            api, hub, client, plan, prepared=files, deadline=1.0
+        )
+        assert result == october.BatchResult(
+            revision="b" * 40, complete=False, newly_committed=1
+        )
+        assert commit.call_count == 1
+        api.list_repo_files.assert_not_called()
+
+        commit.reset_mock()
+        monkeypatch.setattr(
+            october,
+            "time",
+            types.SimpleNamespace(monotonic=Mock(return_value=2.0)),
+        )
+        with pytest.raises(TimeoutError, match="no checkpoint progress"):
+            october.publish_batches(
+                api, hub, client, plan, prepared=files, deadline=1.0
+            )
+        commit.assert_not_called()
 
 
 def test_october_hosted_download_checks_each_source_range(

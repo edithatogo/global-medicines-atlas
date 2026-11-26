@@ -87,6 +87,7 @@ jobs:
       id-token: write # Exchange this job identity for temporary Tailscale access.
     outputs:
       archive-complete: ${{ steps.completion.outputs.archive-complete }}
+      continuation-needed: ${{ steps.completion.outputs.continuation-needed }}
       artifact-id: ${{ steps.receipts.outputs.artifact-id }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
@@ -129,6 +130,11 @@ jobs:
         run: |
           if [[ -s build/openfda-october/uploaded.json ]]; then
             echo 'archive-complete=true' >> "$GITHUB_OUTPUT"
+          elif [[ -s build/openfda-october/checkpoint.json ]]; then
+            echo 'continuation-needed=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'The publisher retained neither a complete upload nor a checkpoint.' >&2
+            exit 1
           fi
       - name: Retain October private source receipts
         id: receipts
@@ -139,6 +145,27 @@ jobs:
           path: build/openfda-october/
           if-no-files-found: error
           retention-days: 90
+
+  continue_private:
+    name: Queue the next October checkpoint
+    needs: [publish_private]
+    if: needs.publish_private.outputs.continuation-needed == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      actions: write
+    steps:
+      - name: Resume the approved private-source run within its temporary window
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if (( $(date -u +%s) >= $(date -u -d '2026-11-29 05:00:00' +%s) )); then
+            echo 'The temporary October continuation window has ended.' >&2
+            exit 1
+          fi
+          gh workflow run publish-october-openfda-hosted.yml \
+            --repo edithatogo/global-medicines-atlas --ref main \
+            -f publish=true -f private_source=true
 
   verify:
     name: Verify October archive
