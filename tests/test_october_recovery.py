@@ -13,7 +13,6 @@ from unittest.mock import Mock
 import httpx
 import pytest
 import yaml
-from requests import exceptions as requests_errors
 from scripts import publish_october_openfda_hosted as october
 
 from global_medicines_atlas.publication_transport import (
@@ -144,9 +143,7 @@ def test_interrupted_verification_reuses_only_same_revision_readbacks(
 
 def test_lost_commit_acknowledgement_requires_inventory_before_another_write():
     api = Mock()
-    api.create_commit.side_effect = requests_errors.ConnectionError(
-        "lost acknowledgement"
-    )
+    api.create_commit.side_effect = httpx.ConnectError("lost acknowledgement")
     with pytest.raises(
         october.TransientOctoberError, match="requires reconciliation"
     ):

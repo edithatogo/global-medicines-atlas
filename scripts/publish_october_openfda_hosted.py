@@ -10,6 +10,7 @@ import re
 import shutil
 import socket
 import subprocess  # ruff: ignore[suspicious-subprocess-import] -- bare Git reads at the frozen public revision.
+import sys
 import time
 from collections import Counter
 from collections.abc import Iterable, Iterator, Mapping
@@ -26,7 +27,6 @@ from typing import Any, BinaryIO, NamedTuple, cast
 from urllib.parse import quote, urlsplit
 
 import httpx
-from requests import exceptions as requests_errors
 from scripts.publish_bulk_archive import (
     CARD_NAME,
     MANIFEST_NAME,
@@ -117,18 +117,10 @@ def transient_reason(error: Exception) -> str | None:
         return str(error)
     if isinstance(error, socket.gaierror) and error.errno == socket.EAI_AGAIN:
         return "temporary DNS failure"
-    if isinstance(
-        error,
-        (
-            AnonymousReadbackHTTPError,
-            httpx.HTTPStatusError,
-            requests_errors.HTTPError,
-        ),
-    ):
-        response = error.response
-        if response is not None and response.status_code in TRANSIENT_STATUS:
-            return f"HTTP {response.status_code}"
-        return None
+    # HTTPX and the optional Hub SDK's Requests client both expose this status.
+    status = getattr(getattr(error, "response", None), "status_code", None)
+    if isinstance(status, int):
+        return f"HTTP {status}" if status in TRANSIENT_STATUS else None
     if isinstance(
         error,
         (
@@ -137,11 +129,22 @@ def transient_reason(error: Exception) -> str | None:
             httpx.RemoteProtocolError,
             AnonymousReadbackTimeoutError,
             TimeoutError,
-            requests_errors.Timeout,
-            requests_errors.ConnectionError,
-            requests_errors.ChunkedEncodingError,
         ),
-    ) and not isinstance(error, requests_errors.SSLError):
+    ):
+        return type(error).__name__
+    requests_errors = sys.modules.get("requests.exceptions")
+    if (
+        requests_errors is not None
+        and isinstance(
+            error,
+            (
+                requests_errors.Timeout,
+                requests_errors.ConnectionError,
+                requests_errors.ChunkedEncodingError,
+            ),
+        )
+        and not isinstance(error, requests_errors.SSLError)
+    ):
         return type(error).__name__
     return None
 
@@ -939,17 +942,20 @@ def publish(output: Path, exact_commit: str) -> None:
     if archive_plan(prepared[MANIFEST_NAME]) != plan:
         raise ValueError("Rebuilt October manifest differs from the saved plan")
     record_intent(output, plan, exact_commit)
-    with httpx.Client(
-        base_url=source_origin(os.environ["GMA_OCTOBER_SOURCE_URL"]),
-        headers={"Accept-Encoding": "identity"},
-        follow_redirects=False,
-        trust_env=False,
-        limits=httpx.Limits(
-            max_connections=SOURCE_CONNECTIONS,
-            max_keepalive_connections=SOURCE_CONNECTIONS,
-        ),
-        timeout=90,
-    ) as client:
+    with (
+        httpx.Client(
+            base_url=source_origin(os.environ["GMA_OCTOBER_SOURCE_URL"]),
+            headers={"Accept-Encoding": "identity"},
+            follow_redirects=False,
+            trust_env=False,
+            limits=httpx.Limits(
+                max_connections=SOURCE_CONNECTIONS,
+                max_keepalive_connections=SOURCE_CONNECTIONS,
+                keepalive_expiry=60,  # The private source keeps authenticated sockets for 65s.
+            ),
+            timeout=90,
+        ) as client
+    ):
         hub = cast("Any", import_module("huggingface_hub.hf_api"))
         api = hub.HfApi(token=os.environ["HF_TOKEN"])
         result = publish_batches(
