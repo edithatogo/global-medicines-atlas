@@ -47,7 +47,7 @@ jobs:
              jq -e 'any(.jobs[]; .name == "Publish October from the private read-only source" and .conclusion != "skipped")' >/dev/null; then exit 0; fi
           while IFS= read -r job; do
             name=$(jq -r '.name' <<<"$job")
-            if [[ "$name" == 'Publish October from the private read-only source' ]] &&
+            if [[ "$name" != 'Verify October archive' ]] &&
                (( now >= 202611290500 )); then continue; fi
             if ! jq -e '(.conclusion | IN("timed_out","stale","startup_failure")) or any(.steps[]?; .name == "Eligible for automatic October retry" and .conclusion == "success")' <<<"$job" >/dev/null; then
               check=$(jq -r '.check_run_url | split("/") | last' <<<"$job")
@@ -60,5 +60,5 @@ jobs:
               echo "Retried October run $id after attempt $attempt ($name)."
             fi
             exit 0
-          done < <(jq -c '.jobs[] | select(.name == "Publish October from the private read-only source" or .name == "Verify October archive") | select(.conclusion | IN("failure","timed_out","stale","startup_failure"))' <<<"$jobs")
+          done < <(jq -c '.jobs[] | select(.name | IN("Publish October from the private read-only source","Queue the next October checkpoint","Verify October archive")) | select(.conclusion | IN("failure","timed_out","stale","startup_failure"))' <<<"$jobs")
           echo 'No eligible transient failure was reported.'
