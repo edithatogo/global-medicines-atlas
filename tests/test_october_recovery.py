@@ -175,6 +175,10 @@ def test_lost_commit_acknowledgement_requires_inventory_before_another_write():
         ("handoff_denied", False),
         ("handoff_expired", False),
         ("handoff_successor", False),
+        ("signal_pending", True),
+        ("signal_wrong_attempt", False),
+        ("signal_superseded", False),
+        ("signal_integrity", False),
     ],
 )
 def test_scheduled_recovery_only_reruns_eligible_jobs(
@@ -185,7 +189,17 @@ def test_scheduled_recovery_only_reruns_eligible_jobs(
         (ROOT / ".github/workflows/recover-october-openfda.yml").read_text()
     )
     script = workflow["jobs"]["recover"]["steps"][0]["run"]
-    state = "in_progress" if failure == "in_progress" else "completed"
+    state = (
+        "in_progress"
+        if failure
+        in {
+            "in_progress",
+            "signal_pending",
+            "signal_wrong_attempt",
+            "signal_superseded",
+        }
+        else "completed"
+    )
     conclusion = failure if failure in {"success", "cancelled"} else "failure"
     attempt = 2 if failure == "verify_only_second_attempt" else 1
     (tmp_path / "latest").write_text(
@@ -204,7 +218,14 @@ def test_scheduled_recovery_only_reruns_eligible_jobs(
             {
                 "name": "Eligible for automatic October retry",
                 "conclusion": "success"
-                if failure in {"marked", "expired_source"}
+                if failure
+                in {
+                    "marked",
+                    "expired_source",
+                    "signal_pending",
+                    "signal_wrong_attempt",
+                    "signal_superseded",
+                }
                 else "skipped",
             }
         ],
@@ -230,6 +251,17 @@ def test_scheduled_recovery_only_reruns_eligible_jobs(
         private.update(name="Verify October archive")
         private["steps"][0]["conclusion"] = "success"
     (tmp_path / "current").write_text(json.dumps({"jobs": jobs}))
+    signal = ""
+    if failure.startswith("signal_"):
+        signal = "12/2" if failure == "signal_wrong_attempt" else "12/1"
+        (tmp_path / "terminal").write_text(
+            json.dumps({
+                "databaseId": 13 if failure == "signal_superseded" else 12,
+                "attempt": 1,
+                "status": "completed",
+                "conclusion": "failure",
+            })
+        )
     if failure == "handoff_successor":
         (tmp_path / "successor").write_text(
             json.dumps({
@@ -249,6 +281,7 @@ def test_scheduled_recovery_only_reruns_eligible_jobs(
     gh.write_text("""#!/bin/sh
 case "$1 $2" in
   'run list') cat latest; if test -f successor; then mv successor latest; fi;;
+  'run watch') printf '%s\n' "$*" > watched; mv terminal latest;;
   'run rerun') printf '%s\n' "$*" > rerun;;
   'api '*/annotations) cat annotations;;
   'api '*/attempts/1/jobs) cat first;;
@@ -274,6 +307,7 @@ esac
         env={
             **os.environ,
             "GITHUB_REPOSITORY": "test/repo",
+            "AFTER_ATTEMPT": signal,
             "PATH": f"{tmp_path}{os.pathsep}{os.environ['PATH']}",
             "RUNNER_ENVIRONMENT": "github-hosted",
         },
@@ -284,6 +318,10 @@ esac
         ).read_text().strip() == "run rerun 12 --failed --repo test/repo"
     else:
         assert not (tmp_path / "rerun").exists()
+    if failure in {"signal_pending", "signal_superseded"}:
+        assert (tmp_path / "watched").read_text().startswith("run watch 12 ")
+    else:
+        assert not (tmp_path / "watched").exists()
 
 
 @pytest.mark.parametrize(
