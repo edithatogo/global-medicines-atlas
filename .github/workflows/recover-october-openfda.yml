@@ -21,7 +21,7 @@ jobs:
     name: Check the latest October publisher
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 25
     permissions:
       actions: write # Retry the failed jobs of the latest authorized October run.
       checks: read # Identify a hosted runner loss reported by GitHub itself.
@@ -33,8 +33,13 @@ jobs:
         run: |
           set -euo pipefail
           test "$RUNNER_ENVIRONMENT" = github-hosted
-          now=$(date -u +%Y%m%d%H%M)
-          if (( now >= 202612010000 )); then exit 0; fi
+          before_deadline() {
+            local utc
+            utc=$(date -u +%Y%m%d%H%M) || return 1
+            [[ "$utc" =~ ^[0-9]{12}$ && "$utc" < "$1" ]]
+          }
+          verification_deadline=202612010000
+          before_deadline "$verification_deadline" || exit 0
           workflow=publish-october-openfda-hosted.yml
           latest() {
             gh run list --repo "$GITHUB_REPOSITORY" --workflow "$workflow" --branch main \
@@ -47,7 +52,7 @@ jobs:
             }
             same_attempt || exit 0
             if [[ "$(jq -r .status <<<"$run")" != completed ]]; then
-              gh run watch "$(jq -r .databaseId <<<"$run")" --repo "$GITHUB_REPOSITORY" --interval 5 >/dev/null
+              timeout 120 gh run watch "$(jq -r .databaseId <<<"$run")" --repo "$GITHUB_REPOSITORY" --interval 5 >/dev/null
               run=$(latest)
               same_attempt || exit 0
             fi
@@ -64,15 +69,20 @@ jobs:
              jq -e 'any(.jobs[]; .name == "Publish October from the private read-only source" and .conclusion != "skipped")' >/dev/null; then exit 0; fi
           while IFS= read -r job; do
             name=$(jq -r '.name' <<<"$job")
-            if [[ "$name" != 'Verify October archive' ]] &&
-               (( now >= 202611290500 )); then continue; fi
+            deadline=202611290500
+            if [[ "$name" == 'Verify October archive' ]]; then deadline=$verification_deadline; fi
+            before_deadline "$deadline" || continue
             if ! jq -e '(.conclusion | IN("timed_out","stale","startup_failure")) or any(.steps[]?; .name == "Eligible for automatic October retry" and .conclusion == "success")' <<<"$job" >/dev/null; then
               check=$(jq -r '.check_run_url | split("/") | last' <<<"$job")
               [[ "$check" =~ ^[0-9]+$ ]] || continue
               if ! gh api "repos/$GITHUB_REPOSITORY/check-runs/$check/annotations" |
                  jq -e 'any(.[]; (.message // "") | test("runner (has )?lost communication|runner (was|has been) shut down|runner has received a shutdown signal|stopped hearing from runner|job was not acquired by ((a|the) )?runner"; "i"))' >/dev/null; then continue; fi
             fi
-            if [[ "$(latest)" == "$run" ]]; then
+            if [[ -n "${AFTER_ATTEMPT:-}" ]] && (( attempt > 1 )); then
+              echo 'Waiting 20 minutes before retrying another transient failure.'
+              sleep 1200
+            fi
+            if before_deadline "$deadline" && [[ "$(latest)" == "$run" ]]; then
               gh run rerun "$id" --failed --repo "$GITHUB_REPOSITORY"
               echo "Retried October run $id after attempt $attempt ($name)."
             fi

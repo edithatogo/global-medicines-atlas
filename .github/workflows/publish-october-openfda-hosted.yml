@@ -240,11 +240,11 @@ jobs:
           retention-days: 90
 
   request_recovery:
-    name: Request a check of the first failed October attempt
+    name: Request a check of a failed October attempt
     needs: [publish_private, continue_private, verify]
     if: >-
       !cancelled() && github.ref == 'refs/heads/main' && inputs.publish && inputs.private_source &&
-      github.run_attempt == '1' && contains(needs.*.result, 'failure')
+      contains(needs.*.result, 'failure')
     runs-on: ubuntu-24.04
     timeout-minutes: 3
     permissions:

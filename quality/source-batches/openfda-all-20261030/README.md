@@ -74,11 +74,12 @@ maintainer approval. Completion requires a separate job to verify the checksums 
 
 The publisher saves a checkpoint and queues a successor after four hours and
 40 minutes. The successor reconciles the public revision before retrieving
-missing files. The first failed attempt requests a recovery check on GitHub.
-The scheduled check can retry a temporary transfer or handoff failure, or a
-lost hosted runner. A checksum mismatch or an access denial stops the job for
-investigation. The temporary source window allows new publishers until
-05:00 UTC on 29 November 2026.
+missing files. Each failed attempt requests a recovery check on GitHub. The
+first eligible failure can retry immediately. A repeated transient failure
+waits 20 minutes, then rechecks the run and access deadline. A scheduled
+check also covers a lost recovery request. A checksum mismatch or an access
+denial stops the job for investigation. The temporary source window allows new
+publishers until 05:00 UTC on 29 November 2026.
 
 The verification job reads independently from the public revision. After an
 interruption it can reuse anonymous readbacks from the same run and revision.
