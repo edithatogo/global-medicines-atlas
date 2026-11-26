@@ -1696,11 +1696,11 @@ maintainer approved temporary read-only access to the 350
 missing ZIPs and 418 original records. The runner can rebuild two completion
 files from the committed plan.
 
-- [ ] Restore the temporary read-only endpoint for those originals, publish in
+- [x] Restore the temporary read-only endpoint for those originals, publish in
   the existing four-file checkpoints, and close the endpoint when transfer
   completes. Verify the complete revision from a separate GitHub-hosted job.
 
-- [~] Chat `01a20169-2a81-7300-bd08-b81f8b65cadc` owns automatic October
+- [x] Chat `01a20169-2a81-7300-bd08-b81f8b65cadc` owns automatic October
   recovery on `codex/october-automatic-recovery-20261126` in the same checkout.
   Recover interrupted reads and ambiguous commits from the public revision.
   Preserve original failures and stop on integrity errors. Close after all
@@ -1708,9 +1708,17 @@ files from the committed plan.
 
 The same chat owns the checkpoint dispatch on
 `codex/october-checkpoint-dispatch-recovery` in the same standalone checkout.
-Its next operation is to qualify GitHub recovery when a successful checkpoint's
-request for the next runner loses its acknowledgement.
+PR #1506 qualified recovery of a checkpoint handoff that loses its acknowledgement.
 
 The same chat owns the first failed attempt on `codex/october-retry-on-failure`
-in that checkout. The hosted publisher will request its own recovery check
-when it fails. The existing schedule continues to pace subsequent attempts.
+in that checkout. PR #1507 added the first failed attempt's direct request
+for a recovery check. The schedule provides a fallback for subsequent attempts.
+
+The same chat owns the October verification receipt on
+`codex/october-openfda-verification-receipt` in that checkout. The private
+source closed after the hosted publisher committed all 4,803 planned paths.
+A separate GitHub-hosted runner read all 4,803 files anonymously at
+`c5b05fc17460f55e87b231644d17472450a33a0e`. All paths, sizes, SHA-256
+digests and revision-pinned URLs matched the frozen plan.
+[Hosted verification](https://github.com/edithatogo/global-medicines-atlas/actions/runs/45872723844/job/140178943180) ·
+[Saved receipt](../../../quality/source-batches/openfda-all-20261030/verification-receipt.json)
