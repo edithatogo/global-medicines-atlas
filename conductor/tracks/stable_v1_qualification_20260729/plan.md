@@ -1722,3 +1722,9 @@ A separate GitHub-hosted runner read all 4,803 files anonymously at
 digests and revision-pinned URLs matched the frozen plan.
 [Hosted verification](https://github.com/edithatogo/global-medicines-atlas/actions/runs/45872723844/job/140178943180) ·
 [Saved receipt](../../../quality/source-batches/openfda-all-20261030/verification-receipt.json)
+
+The same chat owns repeat-failure recovery on
+`codex/october-repeat-failure-recovery` in that checkout. Each failed
+attempt can request a hosted check, with a 20-minute delay for repeated
+transient failures. The checker rechecks the run and access deadline before
+retrying.

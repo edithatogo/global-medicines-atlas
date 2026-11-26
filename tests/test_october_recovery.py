@@ -160,6 +160,31 @@ def test_lost_commit_acknowledgement_requires_inventory_before_another_write():
     )
 
 
+def install_recovery_clock(tmp_path: Path, failure: str) -> None:
+    """Record backoff and allow a source deadline to pass without a real wait."""
+    date = tmp_path / "date"
+    stamp = (
+        "202611290530"
+        if failure in {"expired_source", "handoff_expired"}
+        else "202611271030"
+    )
+    if failure == "signal_repeat_source_expiry":
+        stamp = "202611290450"
+        (tmp_path / "after_wait_clock").write_text("202611290510\n")
+    if failure == "signal_repeat_bad_clock":
+        (tmp_path / "after_wait_clock").write_text("\n")
+    (tmp_path / "clock").write_text(stamp + "\n")
+    date.write_text("#!/bin/sh\ncat clock\n")
+    date.chmod(0o700)
+    pause = tmp_path / "sleep"
+    pause.write_text("""#!/bin/sh
+printf '%s\n' "$1" > delayed
+if test -f after_wait_clock; then mv after_wait_clock clock; fi
+if test -f after_wait_run; then mv after_wait_run latest; fi
+""")
+    pause.chmod(0o700)
+
+
 @pytest.mark.parametrize(
     ("failure", "expect_retry"),
     [
@@ -179,6 +204,11 @@ def test_lost_commit_acknowledgement_requires_inventory_before_another_write():
         ("signal_wrong_attempt", False),
         ("signal_superseded", False),
         ("signal_integrity", False),
+        ("signal_repeat", True),
+        ("signal_repeat_source_expiry", False),
+        ("signal_repeat_bad_clock", False),
+        ("signal_repeat_newer", False),
+        ("signal_repeat_integrity", False),
     ],
 )
 def test_scheduled_recovery_only_reruns_eligible_jobs(
@@ -201,7 +231,10 @@ def test_scheduled_recovery_only_reruns_eligible_jobs(
         else "completed"
     )
     conclusion = failure if failure in {"success", "cancelled"} else "failure"
-    attempt = 2 if failure == "verify_only_second_attempt" else 1
+    repeated_signal = failure.startswith("signal_repeat")
+    attempt = (
+        2 if repeated_signal or failure == "verify_only_second_attempt" else 1
+    )
     (tmp_path / "latest").write_text(
         json.dumps({
             "databaseId": 12,
@@ -248,12 +281,17 @@ def test_scheduled_recovery_only_reruns_eligible_jobs(
         })
     (tmp_path / "first").write_text(json.dumps({"jobs": jobs}))
     if attempt == 2:
-        private.update(name="Verify October archive")
-        private["steps"][0]["conclusion"] = "success"
+        if failure != "signal_repeat_source_expiry":
+            private.update(name="Verify October archive")
+        private["steps"][0]["conclusion"] = (
+            "skipped" if failure == "signal_repeat_integrity" else "success"
+        )
     (tmp_path / "current").write_text(json.dumps({"jobs": jobs}))
     signal = ""
     if failure.startswith("signal_"):
-        signal = "12/2" if failure == "signal_wrong_attempt" else "12/1"
+        signal = (
+            "12/2" if failure == "signal_wrong_attempt" else f"12/{attempt}"
+        )
         (tmp_path / "terminal").write_text(
             json.dumps({
                 "databaseId": 13 if failure == "signal_superseded" else 12,
@@ -262,8 +300,11 @@ def test_scheduled_recovery_only_reruns_eligible_jobs(
                 "conclusion": "failure",
             })
         )
-    if failure == "handoff_successor":
-        (tmp_path / "successor").write_text(
+    if failure in {"handoff_successor", "signal_repeat_newer"}:
+        name = (
+            "successor" if failure == "handoff_successor" else "after_wait_run"
+        )
+        (tmp_path / name).write_text(
             json.dumps({
                 "databaseId": 13,
                 "attempt": 1,
@@ -290,14 +331,7 @@ case "$1 $2" in
 esac
 """)
     gh.chmod(0o700)
-    date = tmp_path / "date"
-    stamp = (
-        "202611290530"
-        if failure in {"expired_source", "handoff_expired"}
-        else "202611271030"
-    )
-    date.write_text(f"#!/bin/sh\necho {stamp}\n")
-    date.chmod(0o700)
+    install_recovery_clock(tmp_path, failure)
     bash = shutil.which("bash")
     assert bash is not None
     subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true] -- execute the checked-in workflow with the fake gh.
@@ -322,6 +356,26 @@ esac
         assert (tmp_path / "watched").read_text().startswith("run watch 12 ")
     else:
         assert not (tmp_path / "watched").exists()
+    if repeated_signal and failure != "signal_repeat_integrity":
+        assert (tmp_path / "delayed").read_text().strip() == "1200"
+    else:
+        assert not (tmp_path / "delayed").exists()
+
+
+def test_every_failed_private_attempt_can_request_its_own_check():
+    workflow = yaml.safe_load(
+        (
+            ROOT / ".github/workflows/publish-october-openfda-hosted.yml"
+        ).read_text()
+    )
+    job = workflow["jobs"]["request_recovery"]
+    assert "github.run_attempt" not in job["if"]
+    assert "inputs.private_source" in job["if"]
+    assert "contains(needs.*.result, 'failure')" in job["if"]
+    assert (
+        "after_attempt=$GITHUB_RUN_ID/$GITHUB_RUN_ATTEMPT"
+        in job["steps"][0]["run"]
+    )
 
 
 @pytest.mark.parametrize(
