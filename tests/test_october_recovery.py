@@ -171,6 +171,10 @@ def test_lost_commit_acknowledgement_requires_inventory_before_another_write():
         ("success", False),
         ("verify_only_second_attempt", True),
         ("expired_source", False),
+        ("handoff_transient", True),
+        ("handoff_denied", False),
+        ("handoff_expired", False),
+        ("handoff_successor", False),
     ],
 )
 def test_scheduled_recovery_only_reruns_eligible_jobs(
@@ -205,11 +209,36 @@ def test_scheduled_recovery_only_reruns_eligible_jobs(
             }
         ],
     }
-    (tmp_path / "first").write_text(json.dumps({"jobs": [private]}))
+    jobs = [private]
+    if failure.startswith("handoff_"):
+        private["conclusion"] = "success"
+        jobs.append({
+            **private,
+            "name": "Queue the next October checkpoint",
+            "conclusion": "failure",
+            "steps": [
+                {
+                    "name": "Eligible for automatic October retry",
+                    "conclusion": "skipped"
+                    if failure == "handoff_denied"
+                    else "success",
+                }
+            ],
+        })
+    (tmp_path / "first").write_text(json.dumps({"jobs": jobs}))
     if attempt == 2:
         private.update(name="Verify October archive")
         private["steps"][0]["conclusion"] = "success"
-    (tmp_path / "current").write_text(json.dumps({"jobs": [private]}))
+    (tmp_path / "current").write_text(json.dumps({"jobs": jobs}))
+    if failure == "handoff_successor":
+        (tmp_path / "successor").write_text(
+            json.dumps({
+                "databaseId": 13,
+                "attempt": 1,
+                "status": "queued",
+                "conclusion": "",
+            })
+        )
     message = (
         "The hosted runner lost communication."
         if failure == "runner_lost"
@@ -219,7 +248,7 @@ def test_scheduled_recovery_only_reruns_eligible_jobs(
     gh = tmp_path / "gh"
     gh.write_text("""#!/bin/sh
 case "$1 $2" in
-  'run list') cat latest;;
+  'run list') cat latest; if test -f successor; then mv successor latest; fi;;
   'run rerun') printf '%s\n' "$*" > rerun;;
   'api '*/annotations) cat annotations;;
   'api '*/attempts/1/jobs) cat first;;
@@ -229,7 +258,11 @@ esac
 """)
     gh.chmod(0o700)
     date = tmp_path / "date"
-    stamp = "202611290530" if failure == "expired_source" else "202611271030"
+    stamp = (
+        "202611290530"
+        if failure in {"expired_source", "handoff_expired"}
+        else "202611271030"
+    )
     date.write_text(f"#!/bin/sh\necho {stamp}\n")
     date.chmod(0o700)
     bash = shutil.which("bash")
@@ -251,3 +284,69 @@ esac
         ).read_text().strip() == "run rerun 12 --failed --repo test/repo"
     else:
         assert not (tmp_path / "rerun").exists()
+
+
+@pytest.mark.parametrize(
+    ("status", "curl_exit", "headers", "retry"),
+    [
+        ("204", 0, "", False),
+        ("503", 0, "", True),
+        ("000", 28, "", True),
+        ("000", 92, "", True),
+        ("403", 0, "X-RateLimit-Remaining: 42", False),
+        ("403", 0, "X-RateLimit-Remaining: 0", True),
+        ("403", 0, "Retry-After: 60", True),
+        ("000", 60, "", False),
+    ],
+)
+def test_checkpoint_dispatch_sends_once_and_classifies_failure(
+    tmp_path, status, curl_exit, headers, retry
+):
+    workflow = yaml.safe_load(
+        (
+            ROOT / ".github/workflows/publish-october-openfda-hosted.yml"
+        ).read_text()
+    )
+    script = workflow["jobs"]["continue_private"]["steps"][0]["run"]
+    curl = tmp_path / "curl"
+    curl.write_text(
+        "#!/bin/sh\nprintf '%s\\n' \"$*\" >> calls\n"
+        f"printf %s {status}\nexit {curl_exit}\n"
+    )
+    curl.chmod(0o700)
+    date = tmp_path / "date"
+    date.write_text('#!/bin/sh\ncase "$*" in *-d*) echo 2;; *) echo 1;; esac\n')
+    date.chmod(0o700)
+    output = tmp_path / "output"
+    output.touch()
+    (tmp_path / "october-dispatch.headers").write_bytes(
+        (headers + "\r\n").encode()
+    )
+    bash = shutil.which("bash")
+    assert bash is not None
+    result = subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true] -- local shell with a synthetic curl command.
+        [bash, "-e", "-c", script],
+        cwd=tmp_path,
+        check=False,
+        env={
+            **os.environ,
+            "PATH": f"{tmp_path}{os.pathsep}{os.environ['PATH']}",
+            "RUNNER_ENVIRONMENT": "github-hosted",
+            "GITHUB_REPOSITORY": "test/repo",
+            "GITHUB_API_URL": "https://api.github.test",
+            "RUNNER_TEMP": str(tmp_path),
+            "GH_TOKEN": "fixture",
+            "GITHUB_OUTPUT": str(output),
+        },
+    )
+    assert result.returncode == (0 if status == "204" else 1)
+    assert output.read_text() == ("retryable=true\n" if retry else "")
+    [request] = (tmp_path / "calls").read_text().splitlines()
+    assert f"--dump-header {tmp_path / 'october-dispatch.headers'}" in request
+    assert request.endswith(
+        "/repos/test/repo/actions/workflows/publish-october-openfda-hosted.yml/dispatches"
+    )
+    assert (
+        '{"ref":"main","inputs":{"publish":"true","private_source":"true"}}'
+        in request
+    )

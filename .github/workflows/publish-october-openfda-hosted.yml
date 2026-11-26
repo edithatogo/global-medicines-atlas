@@ -160,16 +160,37 @@ jobs:
       actions: write # Dispatch the next bounded run of this approved workflow.
     steps:
       - name: Resume the approved private-source run within its temporary window
+        id: dispatch
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          test "$RUNNER_ENVIRONMENT" = github-hosted
           if (( $(date -u +%s) >= $(date -u -d '2026-11-29 05:00:00' +%s) )); then
             echo 'The temporary October continuation window has ended.' >&2
             exit 1
           fi
-          gh workflow run publish-october-openfda-hosted.yml \
-            --repo edithatogo/global-medicines-atlas --ref main \
-            -f publish=true -f private_source=true
+          # Send once. The recovery job checks for a newer run before retrying.
+          transport=0
+          headers="$RUNNER_TEMP/october-dispatch.headers"
+          status=$(curl --disable --silent --show-error --max-time 45 \
+            --output /dev/null --dump-header "$headers" --write-out '%{http_code}' \
+            --header "Authorization: Bearer $GH_TOKEN" --header 'Content-Type: application/json' \
+            --data '{"ref":"main","inputs":{"publish":"true","private_source":"true"}}' \
+            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/actions/workflows/publish-october-openfda-hosted.yml/dispatches") || transport=$?
+          if [[ "$transport" == 0 && "$status" =~ ^2[0-9][0-9]$ ]]; then exit 0; fi
+          echo "GitHub dispatch returned HTTP $status (curl exit $transport)." >&2
+          if [[ "$transport/$status" == 0/403 ]] &&
+             grep -Eiq '^(retry-after:[[:space:]]*[0-9]+|x-ratelimit-remaining:[[:space:]]*0)[[:space:]]*$' "$headers"; then
+            status=429
+          fi
+          case "$transport/$status" in
+            0/408|0/429|0/500|0/502|0/503|0/504|6/*|7/*|16/*|18/*|28/*|52/*|55/*|56/*|92/*)
+              echo 'retryable=true' >> "$GITHUB_OUTPUT" ;;
+          esac
+          exit 1
+      - name: Eligible for automatic October retry
+        if: failure() && steps.dispatch.outputs.retryable == 'true'
+        run: echo 'GitHub can retry the checkpoint handoff after checking for a successor.'
 
   verify:
     name: Verify October archive

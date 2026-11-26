@@ -1705,3 +1705,8 @@ files from the committed plan.
   Recover interrupted reads and ambiguous commits from the public revision.
   Preserve original failures and stop on integrity errors. Close after all
   4,803 anonymous SHA-256 readbacks are retained at one immutable revision.
+
+The same chat owns the checkpoint dispatch on
+`codex/october-checkpoint-dispatch-recovery` in the same standalone checkout.
+Its next operation is to qualify GitHub recovery when a successful checkpoint's
+request for the next runner loses its acknowledgement.
