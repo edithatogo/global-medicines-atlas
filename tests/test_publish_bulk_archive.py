@@ -285,6 +285,148 @@ def test_october_checkpoints_only_after_a_committed_batch(
         commit.assert_not_called()
 
 
+def test_october_abandons_an_unfinished_batch_at_the_deadline(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    files = {"first.zip": b"first", "second.zip": b"second"}
+    artifacts = tuple(
+        ArtifactBinding(
+            relative_path=path,
+            size=len(body),
+            sha256=hashlib.sha256(body).hexdigest(),
+        )
+        for path, body in files.items()
+    )
+    plan = PublicationPlan(
+        release_version=october.BATCH,
+        target=PublicationTarget(
+            destination=PublicationDestination.HUGGING_FACE,
+            repository=october.REPOSITORY,
+            revision="main",
+            public_base_url=f"https://huggingface.co/datasets/{october.REPOSITORY}",
+        ),
+        artifacts=artifacts,
+    )
+    api, hub = Mock(), Mock()
+    monkeypatch.setattr(october, "COMMIT_FILES", 1)
+    monkeypatch.setattr(
+        october, "remaining_artifacts", Mock(return_value=(COMMIT, artifacts))
+    )
+    monkeypatch.setattr(
+        october, "time", types.SimpleNamespace(monotonic=Mock(return_value=0.0))
+    )
+    commit = Mock(return_value="b" * 40)
+    monkeypatch.setattr(october, "commit_artifacts", commit)
+    download = Mock(side_effect=october.CheckpointDeadlineError)
+    monkeypatch.setattr(october, "download_artifact", download)
+    with httpx.Client() as client:
+        result = october.publish_batches(
+            api,
+            hub,
+            client,
+            plan,
+            prepared={"first.zip": files["first.zip"]},
+            deadline=1.0,
+        )
+    assert result == october.BatchResult(
+        revision="b" * 40, complete=False, newly_committed=1
+    )
+    assert commit.call_count == 1
+    assert download.call_count == 1
+    api.list_repo_files.assert_not_called()
+
+
+def test_october_source_range_honours_the_publication_deadline(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    body = b"test"
+    artifact = ArtifactBinding(
+        relative_path="source.zip",
+        size=len(body),
+        sha256=hashlib.sha256(body).hexdigest(),
+    )
+    monkeypatch.setattr(
+        october,
+        "time",
+        types.SimpleNamespace(monotonic=Mock(side_effect=[0.0, 2.0])),
+    )
+    output = io.BytesIO()
+    with (
+        httpx.Client(
+            base_url="http://100.64.1.2:18043/",
+            transport=httpx.MockTransport(
+                lambda _request: httpx.Response(
+                    200, stream=httpx.ByteStream(body)
+                )
+            ),
+        ) as client,
+        pytest.raises(october.CheckpointDeadlineError),
+    ):
+        october.download_range_once(
+            client, artifact, output, 0, len(body), publication_deadline=1.0
+        )
+    assert output.getvalue() == b""
+
+
+def test_october_download_does_not_start_ranges_after_the_deadline(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    body = b"test"
+    artifact = ArtifactBinding(
+        relative_path="source.zip",
+        size=len(body),
+        sha256=hashlib.sha256(body).hexdigest(),
+    )
+    monkeypatch.setattr(
+        october, "time", types.SimpleNamespace(monotonic=Mock(return_value=2.0))
+    )
+    transport = Mock(side_effect=AssertionError("No source request is allowed"))
+    with (
+        httpx.Client(
+            base_url="http://100.64.1.2:18043/",
+            transport=httpx.MockTransport(transport),
+        ) as client,
+        pytest.raises(october.CheckpointDeadlineError),
+    ):
+        october.download_artifact(
+            client, artifact, tmp_path / "source.zip", publication_deadline=1.0
+        )
+    transport.assert_not_called()
+
+
+@pytest.mark.parametrize("transient", [False, True])
+def test_october_deadline_does_not_hide_a_non_transient_source_error(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, *, transient: bool
+) -> None:
+    body = b"test"
+    artifact = ArtifactBinding(
+        relative_path="source.zip",
+        size=len(body),
+        sha256=hashlib.sha256(body).hexdigest(),
+    )
+    request = httpx.Request("GET", "http://100.64.1.2:18043/source.zip")
+    error = (
+        httpx.ReadTimeout("timeout", request=request)
+        if transient
+        else httpx.HTTPStatusError(
+            "denied",
+            request=request,
+            response=httpx.Response(404, request=request),
+        )
+    )
+    monkeypatch.setattr(
+        october,
+        "time",
+        types.SimpleNamespace(monotonic=Mock(side_effect=[0.0, 2.0])),
+    )
+    monkeypatch.setattr(october, "download_range_once", Mock(side_effect=error))
+    expected = october.CheckpointDeadlineError if transient else ValueError
+    with httpx.Client() as client, pytest.raises(expected):
+        october.download_artifact(
+            client, artifact, tmp_path / "source.zip", publication_deadline=1.0
+        )
+
+
 @pytest.mark.parametrize("complete", [False, True])
 def test_october_distinguishes_a_checkpoint_from_a_completed_upload(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, *, complete: bool
