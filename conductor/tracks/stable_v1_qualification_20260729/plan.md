@@ -1699,3 +1699,9 @@ files from the committed plan.
 - [ ] Restore the temporary read-only endpoint for those originals, publish in
   the existing four-file checkpoints, and close the endpoint when transfer
   completes. Verify the complete revision from a separate GitHub-hosted job.
+
+- [~] Chat `01a20169-2a81-7300-bd08-b81f8b65cadc` owns automatic October
+  recovery on `codex/october-automatic-recovery-20261126` in the same checkout.
+  Recover interrupted reads and ambiguous commits from the public revision.
+  Preserve original failures and stop on integrity errors. Close after all
+  4,803 anonymous SHA-256 readbacks are retained at one immutable revision.

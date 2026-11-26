@@ -858,6 +858,20 @@ class HuggingFaceCliUploader:
         return _public_dataset_revision(repository)
 
 
+class AnonymousReadbackHTTPError(ValueError):
+    """Retain the HTTP status without logging a signed delivery URL."""
+
+    def __init__(self, response: httpx.Response) -> None:
+        super().__init__(
+            f"anonymous artifact readback failed (HTTP {response.status_code})"
+        )
+        self.response = response
+
+
+class AnonymousReadbackTimeoutError(ValueError):
+    """The anonymous read exceeded its deadline."""
+
+
 class HuggingFaceAnonymousArtifactVerifier:
     """Verify each published file by an anonymous, digest-bound readback."""
 
@@ -912,7 +926,9 @@ class HuggingFaceAnonymousArtifactVerifier:
             for _attempt in range(4):
                 _require_anonymous_huggingface_url(url)
                 if time.monotonic() > deadline:
-                    raise ValueError("anonymous verification deadline exceeded")
+                    raise AnonymousReadbackTimeoutError(
+                        "anonymous verification deadline exceeded"
+                    )
                 client.cookies.clear()
                 with client.stream("GET", url) as response:
                     if response.is_redirect:
@@ -924,10 +940,10 @@ class HuggingFaceAnonymousArtifactVerifier:
                         url = urljoin(url, location)
                         continue
                     if response.status_code != HTTP_OK_STATUS:
-                        raise ValueError("anonymous artifact readback failed")
+                        raise AnonymousReadbackHTTPError(response)
                     for chunk in response.iter_bytes(chunk_size=64 * 1024):
                         if time.monotonic() > deadline:
-                            raise ValueError(
+                            raise AnonymousReadbackTimeoutError(
                                 "anonymous verification deadline exceeded"
                             )
                         size += len(chunk)

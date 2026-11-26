@@ -7,6 +7,10 @@ import hashlib
 import json
 import os
 import re
+import shutil
+import socket
+import subprocess  # ruff: ignore[suspicious-subprocess-import] -- bare Git reads at the frozen public revision.
+import sys
 import time
 from collections import Counter
 from collections.abc import Iterable, Iterator, Mapping
@@ -29,6 +33,7 @@ from scripts.publish_bulk_archive import (
     artifact_manifest_bytes,
     build_card,
 )
+from scripts.publish_fresh_openfda import source_retry_after
 
 from global_medicines_atlas.acquisition import (
     AcquisitionPolicy,
@@ -36,6 +41,8 @@ from global_medicines_atlas.acquisition import (
     DestinationPolicyError,
 )
 from global_medicines_atlas.data_layer_archive import (
+    AnonymousReadbackHTTPError,
+    AnonymousReadbackTimeoutError,
     HuggingFaceAnonymousArtifactVerifier,
 )
 from global_medicines_atlas.federation_metadata_hosted import (
@@ -84,6 +91,7 @@ SOURCE_REQUEST_BYTES = 1024**2
 SOURCE_CONNECTIONS = 8
 SOURCE_REQUEST_SECONDS = 150
 PUBLICATION_CHECKPOINT_SECONDS = 4 * 60 * 60 + 40 * 60
+MAX_READBACK_WAIT_SECONDS = 600
 TRANSIENT_STATUS = {408, 429, 500, 502, 503, 504}
 
 
@@ -97,6 +105,48 @@ class BatchResult(NamedTuple):
 
 class CheckpointDeadlineError(Exception):
     """Stop an unfinished source read before the hosted job expires."""
+
+
+class TransientOctoberError(RuntimeError):
+    """An interrupted operation can resume from the pinned public inventory."""
+
+
+def transient_reason(error: Exception) -> str | None:
+    """Classify temporary transport failures without logging URLs or tokens."""
+    if isinstance(error, TransientOctoberError):
+        return str(error)
+    if isinstance(error, socket.gaierror) and error.errno == socket.EAI_AGAIN:
+        return "temporary DNS failure"
+    # HTTPX and the optional Hub SDK's Requests client both expose this status.
+    status = getattr(getattr(error, "response", None), "status_code", None)
+    if isinstance(status, int):
+        return f"HTTP {status}" if status in TRANSIENT_STATUS else None
+    if isinstance(
+        error,
+        (
+            httpx.NetworkError,
+            httpx.TimeoutException,
+            httpx.RemoteProtocolError,
+            AnonymousReadbackTimeoutError,
+            TimeoutError,
+        ),
+    ):
+        return type(error).__name__
+    requests_errors = sys.modules.get("requests.exceptions")
+    if (
+        requests_errors is not None
+        and isinstance(
+            error,
+            (
+                requests_errors.Timeout,
+                requests_errors.ConnectionError,
+                requests_errors.ChunkedEncodingError,
+            ),
+        )
+        and not isinstance(error, requests_errors.SSLError)
+    ):
+        return type(error).__name__
+    return None
 
 
 def source_origin(value: str) -> str:
@@ -195,7 +245,7 @@ def download_range_once(
                 )
             stream.write(chunk)
     if position != end:
-        raise ValueError(
+        raise httpx.ReadError(
             f"Incomplete October source file: {artifact.relative_path}"
         )
 
@@ -230,20 +280,26 @@ def download_artifact(
                         publication_deadline=publication_deadline,
                     )
                 except httpx.HTTPError as error:
-                    non_transient = (
-                        isinstance(error, httpx.HTTPStatusError)
-                        and error.response.status_code not in TRANSIENT_STATUS
-                    )
+                    reason = transient_reason(error)
                     if (
-                        not non_transient
+                        reason is not None
                         and publication_deadline is not None
                         and time.monotonic() >= publication_deadline
                     ):
                         raise CheckpointDeadlineError from error
-                    if not wait or non_transient:
+                    if reason is None:
+                        detail = (
+                            f"HTTP {error.response.status_code}"
+                            if isinstance(error, httpx.HTTPStatusError)
+                            else type(error).__name__
+                        )
                         raise ValueError(
                             f"October source read failed: {artifact.relative_path} "
-                            f"at byte {start} ({type(error).__name__})"
+                            f"at byte {start} ({detail})"
+                        ) from None
+                    if not wait:
+                        raise TransientOctoberError(
+                            f"October source {artifact.relative_path} at byte {start}: {reason}"
                         ) from None
                     time.sleep(wait)
                 else:
@@ -313,7 +369,7 @@ def remaining_artifacts(
     remaining = {
         artifact.relative_path: artifact for artifact in plan.artifacts
     }
-    verifier = HuggingFaceAnonymousArtifactVerifier()
+    git_files: list[ArtifactBinding] = []
     entries: Iterable[Any] = api.list_repo_tree(
         REPOSITORY, repo_type="dataset", revision=head, recursive=True
     )
@@ -329,9 +385,7 @@ def remaining_artifacts(
                 f"Unexpected October destination file: {entry.path}"
             )
         if entry.lfs is None:
-            verifier.verify_artifact(
-                target=plan.target, revision=head, artifact=artifact
-            )
+            git_files.append(artifact)
         elif (entry.lfs.sha256, entry.lfs.size) != (
             artifact.sha256,
             artifact.size,
@@ -339,7 +393,69 @@ def remaining_artifacts(
             raise ValueError(
                 f"October destination checksum differs: {entry.path}"
             )
+    if git_files:
+        verify_git_checkpoint(plan.target, head, git_files)
     return head, sorted(remaining.values(), key=publication_order)
+
+
+def verify_git_checkpoint(
+    target: PublicationTarget, revision: str, files: list[ArtifactBinding]
+) -> None:
+    """Fetch ordinary Git blobs once. A bare fetch never downloads LFS payloads."""
+    executable = shutil.which("git")
+    if executable is None:
+        raise RuntimeError("Git is required to read the October checkpoint")
+    with TemporaryDirectory(prefix="october-git-") as directory:
+
+        def git(*arguments: str) -> bytes:
+            return subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true] -- fixed Git commands, frozen paths, no shell.
+                [
+                    executable,
+                    "-c",
+                    "credential.helper=",
+                    "-c",
+                    "http.followRedirects=false",
+                    *arguments,
+                ],
+                cwd=directory,
+                check=True,
+                capture_output=True,
+                timeout=120,
+                env={**os.environ, "GIT_TERMINAL_PROMPT": "0"},
+            ).stdout
+
+        git("init", "--bare", "--quiet")
+        try:
+            git(
+                "fetch",
+                "--quiet",
+                "--no-tags",
+                "--depth=1",
+                target.public_base_url,
+                revision,
+            )
+        except subprocess.CalledProcessError, subprocess.TimeoutExpired:
+            print(
+                "Git checkpoint unavailable; checking the same public revision over HTTPS.",
+                flush=True,
+            )
+            verifier = OctoberReadback(timeout_seconds=120)
+            for artifact in files:
+                verifier.verify_artifact(
+                    target=target, revision=revision, artifact=artifact
+                )
+            return
+        for artifact in files:
+            body = git(
+                "cat-file", "blob", f"{revision}:{artifact.relative_path}"
+            )
+            if (len(body), hashlib.sha256(body).hexdigest()) != (
+                artifact.size,
+                artifact.sha256,
+            ):
+                raise ValueError(
+                    f"October destination checksum differs: {artifact.relative_path}"
+                )
 
 
 def check_fda_zip(
@@ -518,14 +634,26 @@ def commit_artifacts(
         )
         for artifact, source in files
     ]
-    result = api.create_commit(
-        REPOSITORY,
-        repo_type="dataset",
-        revision="main",
-        parent_commit=head,
-        operations=operations,
-        commit_message=f"Archive {len(files)} verified October openFDA files",
-    )
+    try:
+        result = api.create_commit(
+            REPOSITORY,
+            repo_type="dataset",
+            revision="main",
+            parent_commit=head,
+            operations=operations,
+            commit_message=f"Archive {len(files)} verified October openFDA files",
+        )
+    except Exception as error:
+        # The Hub may have accepted the commit before its response was lost.
+        # A new attempt must reconcile the public tree before any further write.
+        cause: BaseException | None = error
+        while isinstance(cause, Exception):
+            if (reason := transient_reason(cause)) is not None:
+                raise TransientOctoberError(
+                    f"October batch commit outcome requires reconciliation: {reason}"
+                ) from None
+            cause = cause.__cause__
+        raise
     revision = str(result.oid)
     if not re.fullmatch(r"[0-9a-f]{40}", revision):
         raise ValueError(
@@ -814,17 +942,20 @@ def publish(output: Path, exact_commit: str) -> None:
     if archive_plan(prepared[MANIFEST_NAME]) != plan:
         raise ValueError("Rebuilt October manifest differs from the saved plan")
     record_intent(output, plan, exact_commit)
-    with httpx.Client(
-        base_url=source_origin(os.environ["GMA_OCTOBER_SOURCE_URL"]),
-        headers={"Accept-Encoding": "identity"},
-        follow_redirects=False,
-        trust_env=False,
-        limits=httpx.Limits(
-            max_connections=SOURCE_CONNECTIONS,
-            max_keepalive_connections=SOURCE_CONNECTIONS,
-        ),
-        timeout=90,
-    ) as client:
+    with (
+        httpx.Client(
+            base_url=source_origin(os.environ["GMA_OCTOBER_SOURCE_URL"]),
+            headers={"Accept-Encoding": "identity"},
+            follow_redirects=False,
+            trust_env=False,
+            limits=httpx.Limits(
+                max_connections=SOURCE_CONNECTIONS,
+                max_keepalive_connections=SOURCE_CONNECTIONS,
+                keepalive_expiry=60,  # The private source keeps authenticated sockets for 65s.
+            ),
+            timeout=90,
+        ) as client
+    ):
         hub = cast("Any", import_module("huggingface_hub.hf_api"))
         api = hub.HfApi(token=os.environ["HF_TOKEN"])
         result = publish_batches(
@@ -882,7 +1013,12 @@ def record_upload(output: Path, plan: PublicationPlan, revision: str) -> None:
 
 
 class OctoberReadback(HuggingFaceAnonymousArtifactVerifier):
-    """Identify the artifact on a checksum or download failure."""
+    """Retry temporary reads and retain completed anonymous reads at one revision."""
+
+    journal: Path | None = None
+    prior: Mapping[str, ArtifactVerification] | None = None
+    deadline: float | None = None
+    interruption: str | None = None
 
     def verify_artifact(
         self,
@@ -891,23 +1027,58 @@ class OctoberReadback(HuggingFaceAnonymousArtifactVerifier):
         revision: str,
         artifact: ArtifactBinding,
     ) -> ArtifactVerification:
-        for wait in (2, 4):
+        if self.prior and artifact.relative_path in self.prior:
+            # verify_publication also binds its URI, digest and size to this revision.
+            return self.prior[artifact.relative_path]
+        if self.deadline is not None and time.monotonic() >= self.deadline:
+            self.interruption = (
+                "October anonymous readback reached its job checkpoint"
+            )
+            raise TransientOctoberError(self.interruption)
+        for wait in (5, 30, 120, None):
             try:
-                return super().verify_artifact(
+                result = super().verify_artifact(
                     target=target, revision=revision, artifact=artifact
                 )
-            except httpx.TransportError:
-                time.sleep(wait)
-        try:
-            return super().verify_artifact(
-                target=target, revision=revision, artifact=artifact
-            )
-        except ValueError, httpx.HTTPError:
-            print(
-                f"October readback failed for {artifact.relative_path}",
-                flush=True,
-            )
-            raise
+            except Exception as error:
+                reason = transient_reason(error)
+                if reason is None:
+                    detail = (
+                        f"HTTP {error.response.status_code}"
+                        if isinstance(error, AnonymousReadbackHTTPError)
+                        else type(error).__name__
+                    )
+                    print(
+                        f"October readback failed for {artifact.relative_path}: {detail}",
+                        flush=True,
+                    )
+                    raise
+                message = f"October readback {artifact.relative_path}: {reason}"
+                if wait is None:
+                    self.interruption = message
+                    raise TransientOctoberError(message) from None
+                delay = float(wait)
+                if isinstance(error, AnonymousReadbackHTTPError):
+                    delay = max(delay, source_retry_after(error.response) or 0)
+                    if (
+                        error.response.status_code
+                        == HTTPStatus.TOO_MANY_REQUESTS
+                    ):
+                        delay = max(delay, 300)
+                if delay > MAX_READBACK_WAIT_SECONDS or (
+                    self.deadline is not None
+                    and time.monotonic() + delay >= self.deadline
+                ):
+                    self.interruption = message
+                    raise TransientOctoberError(message) from None
+                print(f"{message}; retrying in {delay:g}s", flush=True)
+                time.sleep(delay)
+            else:
+                if self.journal is not None:
+                    with self.journal.open("a", encoding="utf-8") as stream:
+                        stream.write(result.model_dump_json() + "\n")
+                return result
+        raise AssertionError("unreachable October readback retry state")
 
 
 def verify(output: Path, exact_commit: str) -> int:
@@ -926,13 +1097,29 @@ def verify(output: Path, exact_commit: str) -> int:
     uploaded = PublicationTransportReceipt.model_validate_json(
         (output / "uploaded.json").read_bytes()
     )
+    reader = OctoberReadback(timeout_seconds=120)
+    head = uploaded.remote_revision or ""
+    if not re.fullmatch(r"[0-9a-f]{40}", head):
+        raise ValueError("October readback requires an immutable revision")
+    reader.journal = output / f"readbacks-{head}.jsonl"
+    prior: dict[str, ArtifactVerification] = {}
+    for path in (output / "prior").glob(f"*/{reader.journal.name}"):
+        for row in path.read_text(encoding="utf-8").splitlines():
+            item = ArtifactVerification.model_validate_json(row)
+            if prior.setdefault(item.relative_path, item) != item:
+                raise ValueError("Conflicting October readback checkpoints")
+    reader.prior = prior
+    reader.deadline = time.monotonic() + PUBLICATION_CHECKPOINT_SECONDS
+    print(f"Restored {len(prior)} anonymous readbacks for {head}", flush=True)
     verified = verify_publication(
         plan=plan,
         uploaded_receipt=uploaded,
-        verifier=OctoberReadback(timeout_seconds=120),
+        verifier=reader,
         recorded_at=datetime.now(UTC),
     )
     (output / "verified.json").write_text(verified.model_dump_json(indent=2))
+    if reader.interruption is not None:
+        raise TransientOctoberError(reader.interruption)
     return int(verified.state is not PublicationTransportState.PUBLIC)
 
 
@@ -949,16 +1136,27 @@ def main() -> int:
     if os.environ.get("RUNNER_ENVIRONMENT") != "github-hosted":
         raise ValueError("October publication requires a GitHub-hosted runner")
     args.output.mkdir(parents=True, exist_ok=True)
-    if args.phase == "verify":
-        return verify(args.output, args.exact_commit)
-    if args.phase in {"verify-online", "publish-online"}:
-        recover_online(
-            args.output,
-            args.exact_commit,
-            publish_matches=args.phase == "publish-online",
-        )
-        return 0
-    publish(args.output, args.exact_commit)
+    try:
+        if args.phase == "verify":
+            return verify(args.output, args.exact_commit)
+        if args.phase in {"verify-online", "publish-online"}:
+            recover_online(
+                args.output,
+                args.exact_commit,
+                publish_matches=args.phase == "publish-online",
+            )
+        else:
+            publish(args.output, args.exact_commit)
+    except Exception as error:
+        reason = transient_reason(error)
+        if reason is None:
+            raise
+        print(f"Temporary October failure: {reason}", flush=True)
+        with Path(os.environ["GITHUB_OUTPUT"]).open(
+            "a", encoding="utf-8"
+        ) as outputs:
+            outputs.write("retryable=true\n")
+        return os.EX_TEMPFAIL
     return 0
 
 

@@ -1,0 +1,64 @@
+name: Recover interrupted October openFDA jobs
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '11,31,51 * 26-30 11 *'
+
+permissions: {}
+
+concurrency:
+  group: recover-interrupted-october-openfda
+  cancel-in-progress: false
+
+jobs:
+  recover:
+    name: Check the latest October publisher
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      actions: write # Retry the failed jobs of the latest authorized October run.
+      checks: read # Identify a hosted runner loss reported by GitHub itself.
+    steps:
+      - name: Resume a transient failure from its last checkpoint
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$RUNNER_ENVIRONMENT" = github-hosted
+          now=$(date -u +%Y%m%d%H%M)
+          if (( now >= 202612010000 )); then exit 0; fi
+          workflow=publish-october-openfda-hosted.yml
+          latest() {
+            gh run list --repo "$GITHUB_REPOSITORY" --workflow "$workflow" --branch main \
+              --event workflow_dispatch --limit 1 --json databaseId,attempt,status,conclusion --jq '.[0]'
+          }
+          run=$(latest)
+          if ! jq -e '.status == "completed" and (.conclusion | IN("failure","timed_out","stale","startup_failure"))' <<<"$run" >/dev/null; then
+            echo 'No failed October publisher requires recovery.'
+            exit 0
+          fi
+          id=$(jq -r .databaseId <<<"$run")
+          attempt=$(jq -r .attempt <<<"$run")
+          jobs=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$id/attempts/$attempt/jobs")
+          # Recover only an explicitly selected private publication or its public verification.
+          if ! gh api "repos/$GITHUB_REPOSITORY/actions/runs/$id/attempts/1/jobs" |
+             jq -e 'any(.jobs[]; .name == "Publish October from the private read-only source" and .conclusion != "skipped")' >/dev/null; then exit 0; fi
+          while IFS= read -r job; do
+            name=$(jq -r '.name' <<<"$job")
+            if [[ "$name" == 'Publish October from the private read-only source' ]] &&
+               (( now >= 202611290500 )); then continue; fi
+            if ! jq -e '(.conclusion | IN("timed_out","stale","startup_failure")) or any(.steps[]?; .name == "Eligible for automatic October retry" and .conclusion == "success")' <<<"$job" >/dev/null; then
+              check=$(jq -r '.check_run_url | split("/") | last' <<<"$job")
+              [[ "$check" =~ ^[0-9]+$ ]] || continue
+              if ! gh api "repos/$GITHUB_REPOSITORY/check-runs/$check/annotations" |
+                 jq -e 'any(.[]; (.message // "") | test("runner (has )?lost communication|runner (was|has been) shut down|runner has received a shutdown signal|stopped hearing from runner|job was not acquired by ((a|the) )?runner"; "i"))' >/dev/null; then continue; fi
+            fi
+            if [[ "$(latest)" == "$run" ]]; then
+              gh run rerun "$id" --failed --repo "$GITHUB_REPOSITORY"
+              echo "Retried October run $id after attempt $attempt ($name)."
+            fi
+            exit 0
+          done < <(jq -c '.jobs[] | select(.name == "Publish October from the private read-only source" or .name == "Verify October archive") | select(.conclusion | IN("failure","timed_out","stale","startup_failure"))' <<<"$jobs")
+          echo 'No eligible transient failure was reported.'

@@ -113,6 +113,7 @@ jobs:
           use-cache: "false"
           args: --accept-dns=false
       - name: Transfer validated batches to Hugging Face
+        id: transfer
         env:
           GMA_MAINTAINER_PUBLICATION_APPROVED: yes-i-approve-publication
           GMA_PUBLICATION_ENVIRONMENT: production
@@ -125,6 +126,9 @@ jobs:
           uv run --python 3.15.1 --no-sync --with huggingface-hub==0.34.4 \
             python -m scripts.publish_october_openfda_hosted publish \
             --output build/openfda-october --exact-commit "$GITHUB_SHA"
+      - name: Eligible for automatic October retry
+        if: failure() && steps.transfer.outputs.retryable == 'true'
+        run: echo 'GitHub can resume this upload from its public checkpoint.'
       - name: Check whether the full inventory is ready for readback
         id: completion
         run: |
@@ -187,17 +191,29 @@ jobs:
           artifact-ids: ${{ needs.recover.outputs.artifact-id || needs.publish_private.outputs.artifact-id }}
           path: build/openfda-october/
           merge-multiple: true
+      - name: Restore anonymous readbacks from this run
+        if: github.run_attempt != '1'
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          pattern: openfda-october-verification-*
+          path: build/openfda-october/prior
       - name: Verify every public file anonymously
+        id: readback
         run: |
           uv sync --python 3.15.1 --locked
           uv run --python 3.15.1 --no-sync \
             python -m scripts.publish_october_openfda_hosted verify \
             --output build/openfda-october --exact-commit "$GITHUB_SHA"
+      - name: Eligible for automatic October retry
+        if: failure() && steps.readback.outputs.retryable == 'true'
+        run: echo 'GitHub can resume anonymous verification at the same revision.'
       - name: Retain the October checksum receipt
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: openfda-october-verification-${{ github.run_attempt }}
-          path: build/openfda-october/verified.json
+          path: |
+            build/openfda-october/verified.json
+            build/openfda-october/readbacks-*.jsonl
           if-no-files-found: warn
           retention-days: 90
