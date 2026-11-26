@@ -95,6 +95,10 @@ class BatchResult(NamedTuple):
     newly_committed: int
 
 
+class CheckpointDeadlineError(Exception):
+    """Stop an unfinished source read before the hosted job expires."""
+
+
 def source_origin(value: str) -> str:
     """Accept only the dedicated port at a literal private Tailscale address."""
     try:
@@ -158,13 +162,15 @@ def download_range_once(
     stream: BinaryIO,
     start: int,
     end: int,
+    *,
+    publication_deadline: float | None = None,
 ) -> None:
     """Read a source range into its exact position in the staging file."""
     path = quote(artifact.relative_path, safe="/")
     ranged = (start, end) != (0, artifact.size)
     expected_status = HTTPStatus.PARTIAL_CONTENT if ranged else HTTPStatus.OK
     headers = {"Range": f"bytes={start}-{end - 1}"} if ranged else {}
-    deadline = time.monotonic() + SOURCE_REQUEST_SECONDS
+    request_deadline = time.monotonic() + SOURCE_REQUEST_SECONDS
     position = stream.seek(start)
     with client.stream("GET", path, headers=headers) as response:
         response.raise_for_status()
@@ -177,7 +183,10 @@ def download_range_once(
                 f"October source range differs: {artifact.relative_path}"
             )
         for chunk in response.iter_raw():
-            if time.monotonic() > deadline:
+            now = time.monotonic()
+            if publication_deadline is not None and now >= publication_deadline:
+                raise CheckpointDeadlineError
+            if now > request_deadline:
                 raise httpx.ReadTimeout("October source request timed out")
             position += len(chunk)
             if position > end:
@@ -192,7 +201,11 @@ def download_range_once(
 
 
 def download_artifact(
-    client: httpx.Client, artifact: ArtifactBinding, output: Path
+    client: httpx.Client,
+    artifact: ArtifactBinding,
+    output: Path,
+    *,
+    publication_deadline: float | None = None,
 ) -> None:
     """Retry interrupted ranges and verify the assembled file SHA-256."""
     with output.open("wb") as stream:
@@ -202,13 +215,32 @@ def download_artifact(
         end = min(start + SOURCE_REQUEST_BYTES, artifact.size)
         with output.open("r+b") as stream:
             for wait in (2, 4, 0):
+                if (
+                    publication_deadline is not None
+                    and time.monotonic() >= publication_deadline
+                ):
+                    raise CheckpointDeadlineError
                 try:
-                    download_range_once(client, artifact, stream, start, end)
+                    download_range_once(
+                        client,
+                        artifact,
+                        stream,
+                        start,
+                        end,
+                        publication_deadline=publication_deadline,
+                    )
                 except httpx.HTTPError as error:
-                    if not wait or (
+                    non_transient = (
                         isinstance(error, httpx.HTTPStatusError)
                         and error.response.status_code not in TRANSIENT_STATUS
+                    )
+                    if (
+                        not non_transient
+                        and publication_deadline is not None
+                        and time.monotonic() >= publication_deadline
                     ):
+                        raise CheckpointDeadlineError from error
+                    if not wait or non_transient:
                         raise ValueError(
                             f"October source read failed: {artifact.relative_path} "
                             f"at byte {start} ({type(error).__name__})"
@@ -703,17 +735,19 @@ def publish_batches(
     head, remaining = remaining_artifacts(api, hub, plan)
     count = len(plan.artifacts) - len(remaining)
     initial_count = count
-    for group in commit_groups(remaining):
-        if deadline is not None and time.monotonic() >= deadline:
-            if count == initial_count:
-                raise TimeoutError(
-                    "October publication made no checkpoint progress"
-                )
-            return BatchResult(
-                revision=head,
-                complete=False,
-                newly_committed=count - initial_count,
+
+    def checkpoint() -> BatchResult:
+        if count == initial_count:
+            raise TimeoutError(
+                "October publication made no checkpoint progress"
             )
+        return BatchResult(
+            revision=head,
+            complete=False,
+            newly_committed=count - initial_count,
+        )
+
+    def commit_group(group: tuple[ArtifactBinding, ...]) -> str:
         with TemporaryDirectory(prefix="openfda-october-") as scratch:
             sources = [
                 Path(scratch) / str(position) for position in range(len(group))
@@ -721,19 +755,32 @@ def publish_batches(
             for artifact, source in zip(group, sources, strict=True):
                 body = prepared.get(artifact.relative_path)
                 if body is None:
-                    download_artifact(client, artifact, source)
-                else:
-                    if (len(body), hashlib.sha256(body).hexdigest()) != (
-                        artifact.size,
-                        artifact.sha256,
-                    ):
-                        raise ValueError(
-                            f"October rebuilt file differs: {artifact.relative_path}"
-                        )
-                    source.write_bytes(body)
-            head = commit_artifacts(
+                    download_artifact(
+                        client,
+                        artifact,
+                        source,
+                        publication_deadline=deadline,
+                    )
+                    continue
+                if (len(body), hashlib.sha256(body).hexdigest()) != (
+                    artifact.size,
+                    artifact.sha256,
+                ):
+                    raise ValueError(
+                        f"October rebuilt file differs: {artifact.relative_path}"
+                    )
+                source.write_bytes(body)
+            return commit_artifacts(
                 api, hub, head, list(zip(group, sources, strict=True))
             )
+
+    for group in commit_groups(remaining):
+        if deadline is not None and time.monotonic() >= deadline:
+            return checkpoint()
+        try:
+            head = commit_group(group)
+        except CheckpointDeadlineError:
+            return checkpoint()
         count += len(group)
         print(
             f"Committed {count}/{len(plan.artifacts)} October files", flush=True

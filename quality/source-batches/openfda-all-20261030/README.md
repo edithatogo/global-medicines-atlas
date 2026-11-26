@@ -69,7 +69,9 @@ maintainer approval. Completion requires a separate job to verify the checksums 
 For this approved temporary recovery, the hosted publisher stops between
 committed batches after approximately four hours and 40 minutes. It retains a
 checkpoint and queues the next GitHub-hosted run while the temporary window is
-open. An error or a run without checkpoint progress stops the chain for
+open. A source read that is still in progress at the deadline is discarded
+from runner scratch; the next run resumes from the last complete batch. An error or a
+run without checkpoint progress stops the chain for
 investigation. The chain stops when the full inventory reaches the independent
 verification job; it cannot queue another run after 29 November 2026 at 05:00
 UTC. The read-only source remains necessary until all originals are committed.

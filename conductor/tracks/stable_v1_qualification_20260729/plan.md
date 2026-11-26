@@ -1683,6 +1683,12 @@ private-source publication. The next operation is to validate and integrate
 that change, then resume from the current public checkpoint and obtain the
 separate anonymous verification receipt.
 
+The same chat owns the follow-up on
+`codex/october-inflight-checkpoint-20261126` in that checkout. This protects
+the same continuation when a slow source read crosses its checkpoint deadline;
+only the unfinished runner scratch is discarded. The next operation is to
+qualify the follow-up and queue it behind the running hosted publisher.
+
 [Hosted run 45639805739](https://github.com/edithatogo/global-medicines-atlas/actions/runs/45639805739)
 checked the frozen plan at public revision `f0d60240cb55fa591ad6cf15540a0c2ce0a2eab8`.
 All 350 public ZIP candidates differed from the frozen October ZIPs. The
