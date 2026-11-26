@@ -285,6 +285,53 @@ def test_october_checkpoints_only_after_a_committed_batch(
         commit.assert_not_called()
 
 
+@pytest.mark.parametrize("complete", [False, True])
+def test_october_distinguishes_a_checkpoint_from_a_completed_upload(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, *, complete: bool
+) -> None:
+    plan_file = october.ONLINE_SOURCES.parent / "publication-plan.json"
+    (tmp_path / "plan.json").write_bytes(plan_file.read_bytes())
+    monkeypatch.setenv("GITHUB_RUN_ID", "123")
+    monkeypatch.setenv("GMA_OCTOBER_SOURCE_URL", "http://100.64.1.2:18043")
+    monkeypatch.setenv("HF_TOKEN", SYNTHETIC_HF_TOKEN)
+    monkeypatch.setattr(
+        october,
+        "authorization_from_environment",
+        Mock(return_value=types.SimpleNamespace(permits_external_write=True)),
+    )
+    monkeypatch.setattr(
+        october,
+        "import_module",
+        Mock(return_value=types.SimpleNamespace(HfApi=Mock())),
+    )
+    monkeypatch.setattr(
+        october,
+        "publish_batches",
+        Mock(
+            return_value=october.BatchResult(
+                revision="b" * 40, complete=complete, newly_committed=4
+            )
+        ),
+    )
+
+    october.publish(tmp_path, COMMIT)
+
+    if complete:
+        receipt = json.loads((tmp_path / "uploaded.json").read_text())
+        assert receipt["state"] == "uploaded"
+        assert receipt["remote_revision"] == "b" * 40
+        assert not (tmp_path / "checkpoint.json").exists()
+    else:
+        checkpoint = json.loads((tmp_path / "checkpoint.json").read_text())
+        assert checkpoint == {
+            "plan_sha256": october.PLAN_SHA256,
+            "remote_revision": "b" * 40,
+            "newly_committed": 4,
+            "run_id": "123",
+        }
+        assert not (tmp_path / "uploaded.json").exists()
+
+
 def test_october_hosted_download_checks_each_source_range(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
