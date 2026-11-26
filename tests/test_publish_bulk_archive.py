@@ -204,15 +204,14 @@ def test_october_hosted_resume_uses_verified_batches() -> None:
         base_url=october.source_origin("http://100.64.1.2:18043/"),
         transport=httpx.MockTransport(serve),
     ) as client:
-        assert (
-            october.publish_batches(
-                api,
-                hub,
-                client,
-                plan,
-                prepared={"third.zip": files["third.zip"]},
-            )
-            == committed
+        assert october.publish_batches(
+            api,
+            hub,
+            client,
+            plan,
+            prepared={"third.zip": files["third.zip"]},
+        ) == october.BatchResult(
+            revision=committed, complete=True, newly_committed=2
         )
         assert requests == ["second.zip"]
         api.create_commit.reset_mock()
@@ -226,6 +225,111 @@ def test_october_hosted_resume_uses_verified_batches() -> None:
     remote.lfs.sha256 = "0" * 64
     with pytest.raises(ValueError, match="destination checksum differs"):
         october.remaining_artifacts(api, hub, plan)
+
+
+def test_october_checkpoints_only_after_a_committed_batch(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    files = {"first.zip": b"first", "second.zip": b"second"}
+    artifacts = tuple(
+        ArtifactBinding(
+            relative_path=path,
+            size=len(body),
+            sha256=hashlib.sha256(body).hexdigest(),
+        )
+        for path, body in files.items()
+    )
+    plan = PublicationPlan(
+        release_version=october.BATCH,
+        target=PublicationTarget(
+            destination=PublicationDestination.HUGGING_FACE,
+            repository=october.REPOSITORY,
+            revision="main",
+            public_base_url=f"https://huggingface.co/datasets/{october.REPOSITORY}",
+        ),
+        artifacts=artifacts,
+    )
+    api, hub = Mock(), Mock()
+    monkeypatch.setattr(october, "COMMIT_FILES", 1)
+    monkeypatch.setattr(
+        october, "remaining_artifacts", Mock(return_value=(COMMIT, artifacts))
+    )
+    commit = Mock(return_value="b" * 40)
+    monkeypatch.setattr(october, "commit_artifacts", commit)
+    monkeypatch.setattr(
+        october,
+        "time",
+        types.SimpleNamespace(monotonic=Mock(side_effect=[0.0, 2.0])),
+    )
+
+    with httpx.Client() as client:
+        result = october.publish_batches(
+            api, hub, client, plan, prepared=files, deadline=1.0
+        )
+        assert result == october.BatchResult(
+            revision="b" * 40, complete=False, newly_committed=1
+        )
+        assert commit.call_count == 1
+        api.list_repo_files.assert_not_called()
+
+        commit.reset_mock()
+        monkeypatch.setattr(
+            october,
+            "time",
+            types.SimpleNamespace(monotonic=Mock(return_value=2.0)),
+        )
+        with pytest.raises(TimeoutError, match="no checkpoint progress"):
+            october.publish_batches(
+                api, hub, client, plan, prepared=files, deadline=1.0
+            )
+        commit.assert_not_called()
+
+
+@pytest.mark.parametrize("complete", [False, True])
+def test_october_distinguishes_a_checkpoint_from_a_completed_upload(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, *, complete: bool
+) -> None:
+    plan_file = october.ONLINE_SOURCES.parent / "publication-plan.json"
+    (tmp_path / "plan.json").write_bytes(plan_file.read_bytes())
+    monkeypatch.setenv("GITHUB_RUN_ID", "123")
+    monkeypatch.setenv("GMA_OCTOBER_SOURCE_URL", "http://100.64.1.2:18043")
+    monkeypatch.setenv("HF_TOKEN", SYNTHETIC_HF_TOKEN)
+    monkeypatch.setattr(
+        october,
+        "authorization_from_environment",
+        Mock(return_value=types.SimpleNamespace(permits_external_write=True)),
+    )
+    monkeypatch.setattr(
+        october,
+        "import_module",
+        Mock(return_value=types.SimpleNamespace(HfApi=Mock())),
+    )
+    monkeypatch.setattr(
+        october,
+        "publish_batches",
+        Mock(
+            return_value=october.BatchResult(
+                revision="b" * 40, complete=complete, newly_committed=4
+            )
+        ),
+    )
+
+    october.publish(tmp_path, COMMIT)
+
+    if complete:
+        receipt = json.loads((tmp_path / "uploaded.json").read_text())
+        assert receipt["state"] == "uploaded"
+        assert receipt["remote_revision"] == "b" * 40
+        assert not (tmp_path / "checkpoint.json").exists()
+    else:
+        checkpoint = json.loads((tmp_path / "checkpoint.json").read_text())
+        assert checkpoint == {
+            "plan_sha256": october.PLAN_SHA256,
+            "remote_revision": "b" * 40,
+            "newly_committed": 4,
+            "run_id": "123",
+        }
+        assert not (tmp_path / "uploaded.json").exists()
 
 
 def test_october_hosted_download_checks_each_source_range(
