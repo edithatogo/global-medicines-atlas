@@ -3,6 +3,7 @@
   "repository": "edithatogo/global-medicines-atlas-openfda-20261125",
   "publication_approved": true,
   "approval_reference": "Maintainer direction to approve the 25 November 2026 FDA index at the recorded SHA-256, with the existing device UDI exclusions.",
+  "verified_revision": "84cf4bd2a1f1046ae853a416dbc57d7ce7965e79",
   "source_authority": "U.S. Food and Drug Administration, openFDA",
   "source_url": "https://api.fda.gov/download.json",
   "source_index_date": "2026-11-25",
